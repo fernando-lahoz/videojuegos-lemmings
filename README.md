@@ -2,7 +2,7 @@
 
 1) Instaláis MSYS2 (instalación limpia recomendable): https://www.msys2.org/
 
-2) En MSYS2 instaláis las herramientas dependencias y a correr
+2) En MSYS2 instaláis las herramientas:
 
 ```shell
 pacman -S mingw-w64-ucrt-x86_64-gcc \
@@ -19,7 +19,7 @@ pacman -S mingw-w64-ucrt-x86_64-gcc \
 
 5) Reiniciar por si acaso.
 
-6) En MSYS2 instaláis las herramientas dependencias y a correr
+6) En MSYS2 instaláis las bibliotecas:
 
 ```shell
 pacman -S mingw-w64-x86_64-SDL2 \
