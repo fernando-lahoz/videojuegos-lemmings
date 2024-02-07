@@ -1,0 +1,8 @@
+#Ignore local settings, except for the tasks
+.vscode
+!.vscode/tasks.json
+
+bin
+build
+CMakeUserPresets.json
+.project_name
