@@ -62,7 +62,7 @@ class Main_loop
                 {
                     return true;
                 }
-                
+
                 send_key_down_event(event.key);
             }
 
@@ -114,10 +114,9 @@ class Main_loop
 
     void start()
     {
-        auto t1 = renderer.loadTexture("assets/geralt_sprite.png");
         auto t2 = renderer.loadTexture("assets/terrain.png");
 
-        main_character = std::make_shared<Geralt>(Point3f(0.4, 0.4, 0), Vector2f(0.1, 0.125), t1);
+        main_character = std::make_shared<Geralt>(Point3f(0.4, 0.4, 0), Vector2f(0.1, 0.125), renderer);
         
         entities.push_back(main_character);
         entities.push_back(std::make_shared<Entity>(Point3f(0, 0.75, 1), Vector2f(1, 0.25), t2));

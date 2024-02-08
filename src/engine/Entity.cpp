@@ -12,9 +12,9 @@
 class Entity
 {
     private:
-    Vector2f direction;
-    Texture texture;
-    Float speed;
+    Texture active_texture;
+    Vector2f speed;
+    Float max_speed_sqr;
     Float max_speed;
 
     protected:
@@ -28,15 +28,15 @@ class Entity
 
     public:
 
-    Entity(Point3f position, Vector2f diagonal, Texture texture, Float maxSpeed=1.5)
+    Entity(Point3f position, Vector2f diagonal, Texture texture, Float _max_speed=1.5)
     {
         this->position = position;
         this->diagonal = diagonal;
-        this->texture = texture;
-        this->max_speed = maxSpeed;
+        this->active_texture = texture;
+        this->max_speed = _max_speed;
+        this->max_speed_sqr = pow2(_max_speed);
 
-        direction = Vector2f(0, 0);
-        speed = 0;
+        speed = Vector2f(0, 0);
     }
 
     Point2f getPosition2D() const
@@ -76,9 +76,14 @@ class Entity
         return Bound2f(getPosition2D(), maxCorner2D());
     }
 
-    Texture getTexture() const
+    Texture getActiveTexture() const
     {
-        return texture;
+        return active_texture;
+    }
+
+    void setActiveTexture(Texture new_texture)
+    {
+        active_texture = new_texture;
     }
 
     // Moves the entity speed*delta_time units
@@ -90,10 +95,13 @@ class Entity
             update_speed_gravity(gravity, delta_time);
         }
 
-        speed = min(speed, max_speed);
-
-        position.x += direction.x * speed * delta_time;
-        position.y += direction.y * speed * delta_time;
+        if (speed.lengthSquared() > max_speed_sqr)
+        {
+            speed = normalize(speed) * max_speed;
+        }
+        
+        position.x += speed.x * delta_time;
+        position.y += speed.y * delta_time;
     }
 
     void set_gravity(Float new_gravity)
@@ -116,27 +124,24 @@ class Entity
         return _has_gravity;
     }
 
-    Vector2f getDirection() const
-    {
-        return direction;
-    }
-
-    Float getSpeed() const
+    Vector2f getSpeed() const
     {
         return speed;
     }
 
-    void setDirection(Vector2f direction)
+    void setSpeed(Vector2f new_speed)
     {
-        if (direction.x != 0 || direction.y != 0)
-            direction = normalize(direction);
-
-        this->direction = direction;
+        speed = new_speed;
     }
 
-    void setSpeed(Float speed)
+    void setSpeedX(Float new_x_speed)
     {
-        this->speed = abs(speed);
+        speed.x = new_x_speed;
+    }
+
+    void setSpeedY(Float new_y_speed)
+    {
+        speed.y = new_y_speed;
     }
 
     // Returns true if this entity collides with other
@@ -149,18 +154,8 @@ class Entity
     void update_speed_gravity(Float gravity, Float delta_time)
     {
         auto speed = getSpeed();
-        auto direction = getDirection();
-
-        auto speedX = speed * direction.x;
-        auto speedY = speed * direction.y;
-
-        speedY += gravity * delta_time;
-        
-        if (speedX != 0 || speedY != 0)
-        {
-            setSpeed(sqrt(pow2(speedX) + pow2(speedY)));
-            setDirection(Vector2f(speedX, speedY));
-        }
+        speed.y += gravity * delta_time;
+        setSpeed(speed);
     }
 
     // Returns the side of this entity that is closest to other

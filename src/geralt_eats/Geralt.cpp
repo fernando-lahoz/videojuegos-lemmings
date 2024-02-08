@@ -1,24 +1,29 @@
 #include "../engine/Entity.cpp"
+#include "../engine/Render_2D.cpp"
 
 
 class Geralt : public Entity
 {
     bool on_ground = false;
+    Texture txt_left, txt_right;
 
     EntityPtr ground;
 
     public:
 
-    Geralt(Point3f position, Vector2f diagonal, Texture texture)
-        : Entity(position, diagonal, texture)
+    Geralt(Point3f position, Vector2f diagonal, Render_2D &render)
+        : Entity(position, diagonal, render.loadTexture("assets/geralt_right.png"))
     {
         gravity = 3;
         enable_gravity();
+
+        txt_left = render.loadTexture("assets/geralt_left.png");
+        txt_right = render.loadTexture("assets/geralt_right.png");
     }
 
     void update_position(Float delta_time) override
     {
-        //std::cout << "direction: " << getDirection() << ", speed: " << getSpeed() << "\n";
+        //std::cout << "direction: " << getSpeed() << "\n";
 
         Entity::update_position(delta_time);
     }
@@ -50,29 +55,25 @@ class Geralt : public Entity
         // Ground collision
         if (other->bound2f().pMin.y >= bound2f().pMax.y)
         {
-            auto direction = getDirection();
-            direction.y = 0;
-            setDirection(direction);
-            
+            setSpeedY(0);
+
             on_ground = true;
             disable_gravity();
             ground = other;
         }
         else
         {
-            setSpeed(0);
-            setDirection(Vector2f(0, 0));
+            setSpeed(Vector2f(0, 0));
         }
     }
 
-    bool jump(Float speed)
+    bool jump(Float new_speed)
     {
-        Vector2f direction = getDirection();
-        
+        Vector2f speed = getSpeed();
+
         if (on_ground)
         {
-            direction.y = -1;
-            setDirection(direction);
+            speed.y = -1;
 
             setSpeed(speed);
             enable_gravity();
@@ -94,56 +95,64 @@ class Geralt : public Entity
         // Launch ray down to check if we are on ground
     }
 
+    void look_left()
+    {
+        setActiveTexture(txt_left);
+    }
+
+    void look_right()
+    {
+        setActiveTexture(txt_right);
+    }
+
     void on_key_down(SDL_KeyboardEvent key) override
     {
-        Vector2f old_direction = getDirection();
+        Vector2f old_speed = getSpeed();
 
         if (key.keysym.sym == SDLK_UP)
         {
             jump(1);
+            return;
         }
         else if (key.keysym.sym == SDLK_DOWN)
         {
             if (!on_ground)
             {
-                old_direction.y = 1;
-                setDirection(old_direction);
-                setSpeed(getSpeed()+0.3);
+                old_speed.y = old_speed.y + 0.3;
             }
         }
         else if (key.keysym.sym == SDLK_LEFT)
         {
-            old_direction.x = -1;
-            setDirection(old_direction);
-            setSpeed(0.3);
+            look_left();
+            old_speed.x = -0.3;
         }
         else if (key.keysym.sym == SDLK_RIGHT)
         {
-            old_direction.x = 1;
-            setDirection(old_direction);
-            setSpeed(0.3);
+            look_right();
+            old_speed.x = 0.3;
         }
+
+        setSpeed(old_speed);
     }
 
     void on_key_up(SDL_KeyboardEvent key) override
     {
-        Vector2f old_direction = getDirection();
+        Vector2f old_speed = getSpeed();
 
         if (key.keysym.sym == SDLK_DOWN)
         {
-            old_direction.y = 0;
-            setDirection(old_direction);
+            old_speed.y = 0;
         }
         else if (key.keysym.sym == SDLK_LEFT)
         {      
-            old_direction.x = 0;
-            setDirection(old_direction);
+            old_speed.x = 0;
         }
         else if (key.keysym.sym == SDLK_RIGHT)
         {
-            old_direction.x = 0;
-            setDirection(old_direction);
+            old_speed.x = 0;
         }
+
+        setSpeed(old_speed);
     }
 };
 
