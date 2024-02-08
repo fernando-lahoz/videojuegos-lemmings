@@ -11,24 +11,29 @@
 
 class Entity
 {
+    private:
+    Vector2f direction;
+    Texture texture;
+    Float speed;
+    Float max_speed;
+
     protected:
+
+    bool _has_gravity = false;
+    Float gravity = 0;
 
     Point3f position;
     Vector2f diagonal;
-    Texture texture;
 
-    Vector2f direction;
-    Float speed;
-
-    bool _has_gravity = false;
 
     public:
 
-    Entity(Point3f position, Vector2f diagonal, Texture texture)
+    Entity(Point3f position, Vector2f diagonal, Texture texture, Float maxSpeed=1.5)
     {
         this->position = position;
         this->diagonal = diagonal;
         this->texture = texture;
+        this->max_speed = maxSpeed;
 
         direction = Vector2f(0, 0);
         speed = 0;
@@ -80,8 +85,35 @@ class Entity
     //  in the direction vector
     virtual void update_position(Float delta_time)
     {
+        if (has_gravity())
+        {
+            update_speed_gravity(gravity, delta_time);
+        }
+
+        speed = min(speed, max_speed);
+
         position.x += direction.x * speed * delta_time;
         position.y += direction.y * speed * delta_time;
+    }
+
+    void set_gravity(Float new_gravity)
+    {
+        this->gravity = new_gravity;
+    }
+
+    void enable_gravity()
+    {
+        _has_gravity = true;
+    }
+
+    void disable_gravity()
+    {
+        _has_gravity = false;
+    }
+
+    bool has_gravity() const
+    {
+        return _has_gravity;
     }
 
     Vector2f getDirection() const
@@ -96,7 +128,10 @@ class Entity
 
     void setDirection(Vector2f direction)
     {
-        this->direction = normalize(direction);
+        if (direction.x != 0 || direction.y != 0)
+            direction = normalize(direction);
+
+        this->direction = direction;
     }
 
     void setSpeed(Float speed)
@@ -105,9 +140,27 @@ class Entity
     }
 
     // Returns true if this entity collides with other
+    //  uses excusive comparisons
     bool collides(std::shared_ptr<Entity> other) const
     {
         return bound2f().overlaps(other->bound2f());
+    }
+
+    void update_speed_gravity(Float gravity, Float delta_time)
+    {
+        auto speed = getSpeed();
+        auto direction = getDirection();
+
+        auto speedX = speed * direction.x;
+        auto speedY = speed * direction.y;
+
+        speedY += gravity * delta_time;
+        
+        if (speedX != 0 || speedY != 0)
+        {
+            setSpeed(sqrt(pow2(speedX) + pow2(speedY)));
+            setDirection(Vector2f(speedX, speedY));
+        }
     }
 
     // Returns the side of this entity that is closest to other
@@ -142,21 +195,6 @@ class Entity
         }
     }
 
-    bool has_gravity() const
-    {
-        return _has_gravity;
-    }
-
-    void activate_gravity()
-    {
-        _has_gravity = true;
-    }
-
-    void deactivate_gravity()
-    {
-        _has_gravity = false;
-    }
-
     virtual void on_key_down(SDL_KeyboardEvent key)
     {
         // Do nothing by default
@@ -182,5 +220,6 @@ class Entity
         // Do nothing by default
     }
 };
+
 
 typedef std::shared_ptr<Entity> EntityPtr;

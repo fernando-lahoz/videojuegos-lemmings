@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "../lib/types.h"
+#include "../math/math.cpp"
 
 template <typename T>
 class Vector3
@@ -362,6 +363,11 @@ class Vector2
     void print() const
     {
         printf("Vector2[%f, %f]\n", x, y);
+    }
+
+    T maxComponent() const
+    {
+        return max(x, y);
     }
 };
 

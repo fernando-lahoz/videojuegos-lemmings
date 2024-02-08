@@ -2,13 +2,13 @@
 #include <thread>
 #include <chrono>
 
-#include "lib/types.h"
+#include "src/lib/types.h"
 
-#include "engine/Render_2D.cpp"
-#include "engine/Entity.cpp"
-#include "engine/Physics.cpp"
+#include "src/engine/Render_2D.cpp"
+#include "src/engine/Entity.cpp"
+#include "src/engine/Physics.cpp"
 
-#include "geralt_eats/Geralt.cpp"
+#include "src/geralt_eats/Geralt.cpp"
 
 
 class Main_loop
@@ -57,6 +57,12 @@ class Main_loop
 
             if (event.type == SDL_KEYDOWN)
             {
+                if (event.key.keysym.sym == SDLK_ESCAPE
+                    || event.key.keysym.sym == SDLK_q)
+                {
+                    return true;
+                }
+                
                 send_key_down_event(event.key);
             }
 
@@ -88,7 +94,6 @@ class Main_loop
         // Send pre-physics event to all entities
         physics.pre_physics(entities, delta_time);
 
-        physics.apply_gravity(entities, delta_time);
         physics.update_positions(entities, delta_time);
         physics.compute_collisions(entities);
         

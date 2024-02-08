@@ -438,6 +438,7 @@ class BoundingBox2
         return *this;
     }
 
+    // Uses exclusive comparisons
     bool overlaps(const BoundingBox2<T> &b2) 
     {
         return (pMin.x < b2.pMax.x &&

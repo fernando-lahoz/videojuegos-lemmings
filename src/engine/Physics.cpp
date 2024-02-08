@@ -12,6 +12,9 @@ class Physics_engine
 {
     public:
 
+    Physics_engine()
+    {}
+
     void update_positions(std::vector<EntityPtr> &entities, Float delta_time)
     {
         // Should vectorize automatically
@@ -33,34 +36,6 @@ class Physics_engine
                     entities[i]->on_collision(entities[j]);
                     entities[j]->on_collision(entities[i]);
                 }
-            }
-        }
-    }
-
-    void apply_gravity(std::vector<EntityPtr> &entities, Float delta_time)
-    {
-        Float g = 3;
-
-        // Should vectorize automatically
-        for (auto& entity : entities)
-        {
-            if (entity->has_gravity())
-            {               
-                auto speed = entity->getSpeed();
-                auto direction = entity->getDirection();
-
-                auto speedX = speed * direction.x;
-                auto speedY = speed * direction.y;
-
-                speedY += g * delta_time;
-
-                entity->setSpeed(sqrt(pow2(speedX) + pow2(speedY)));
-                entity->setDirection(Vector2f(speedX, speedY));
-            }
-            else
-            {
-                entity->deactivate_gravity();
-            
             }
         }
     }
