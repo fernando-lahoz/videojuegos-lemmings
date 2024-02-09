@@ -11,27 +11,32 @@
 
 class Entity
 {
+    private:
+    Texture active_texture;
+    Vector2f speed;
+    Float max_speed_sqr;
+    Float max_speed;
+
     protected:
+
+    bool _has_gravity = false;
+    Float gravity = 0;
 
     Point3f position;
     Vector2f diagonal;
-    Texture texture;
 
-    Vector2f direction;
-    Float speed;
-
-    bool _has_gravity = false;
 
     public:
 
-    Entity(Point3f position, Vector2f diagonal, Texture texture)
+    Entity(Point3f position, Vector2f diagonal, Texture texture, Float _max_speed=1.5)
     {
         this->position = position;
         this->diagonal = diagonal;
-        this->texture = texture;
+        this->active_texture = texture;
+        this->max_speed = _max_speed;
+        this->max_speed_sqr = pow2(_max_speed);
 
-        direction = Vector2f(0, 0);
-        speed = 0;
+        speed = Vector2f(0, 0);
     }
 
     Point2f getPosition2D() const
@@ -71,43 +76,86 @@ class Entity
         return Bound2f(getPosition2D(), maxCorner2D());
     }
 
-    Texture getTexture() const
+    Texture getActiveTexture() const
     {
-        return texture;
+        return active_texture;
+    }
+
+    void setActiveTexture(Texture new_texture)
+    {
+        active_texture = new_texture;
     }
 
     // Moves the entity speed*delta_time units
     //  in the direction vector
     virtual void update_position(Float delta_time)
     {
-        position.x += direction.x * speed * delta_time;
-        position.y += direction.y * speed * delta_time;
+        if (has_gravity())
+        {
+            update_speed_gravity(gravity, delta_time);
+        }
+
+        if (speed.lengthSquared() > max_speed_sqr)
+        {
+            speed = normalize(speed) * max_speed;
+        }
+        
+        position.x += speed.x * delta_time;
+        position.y += speed.y * delta_time;
     }
 
-    Vector2f getDirection() const
+    void set_gravity(Float new_gravity)
     {
-        return direction;
+        this->gravity = new_gravity;
     }
 
-    Float getSpeed() const
+    void enable_gravity()
+    {
+        _has_gravity = true;
+    }
+
+    void disable_gravity()
+    {
+        _has_gravity = false;
+    }
+
+    bool has_gravity() const
+    {
+        return _has_gravity;
+    }
+
+    Vector2f getSpeed() const
     {
         return speed;
     }
 
-    void setDirection(Vector2f direction)
+    void setSpeed(Vector2f new_speed)
     {
-        this->direction = normalize(direction);
+        speed = new_speed;
     }
 
-    void setSpeed(Float speed)
+    void setSpeedX(Float new_x_speed)
     {
-        this->speed = abs(speed);
+        speed.x = new_x_speed;
+    }
+
+    void setSpeedY(Float new_y_speed)
+    {
+        speed.y = new_y_speed;
     }
 
     // Returns true if this entity collides with other
+    //  uses excusive comparisons
     bool collides(std::shared_ptr<Entity> other) const
     {
         return bound2f().overlaps(other->bound2f());
+    }
+
+    void update_speed_gravity(Float gravity, Float delta_time)
+    {
+        auto speed = getSpeed();
+        speed.y += gravity * delta_time;
+        setSpeed(speed);
     }
 
     // Returns the side of this entity that is closest to other
@@ -142,21 +190,6 @@ class Entity
         }
     }
 
-    bool has_gravity() const
-    {
-        return _has_gravity;
-    }
-
-    void activate_gravity()
-    {
-        _has_gravity = true;
-    }
-
-    void deactivate_gravity()
-    {
-        _has_gravity = false;
-    }
-
     virtual void on_key_down(SDL_KeyboardEvent key)
     {
         // Do nothing by default
@@ -182,5 +215,6 @@ class Entity
         // Do nothing by default
     }
 };
+
 
 typedef std::shared_ptr<Entity> EntityPtr;

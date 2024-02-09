@@ -1,4 +1,5 @@
-//#include <fmt/core.h>
+#pragma once
+
 #define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -110,13 +111,14 @@ class Render_2D
         SDL_Rect rect;
 
         auto l_position = camera.world_to_screen(e->getPosition3D());
-        rect.x = (uint) (max(l_position.x, (Float)0) * resolution.x);
-        rect.y = (uint) (max(l_position.y, (Float)0) * resolution.y);
+        rect.x = (uint) (l_position.x * resolution.x);
+        rect.y = (uint) (l_position.y * resolution.y);
 
 
         auto l_diag = camera.world_to_screen(e->bound2f().diagonal());
-        rect.w = (uint) (min(l_diag.x, (Float)1) * resolution.x);
-        rect.h = (uint) (min(l_diag.y, (Float)1) * resolution.y);
+        rect.w = (uint) (l_diag.x * resolution.x);
+        rect.h = (uint) (l_diag.y * resolution.y);
+
 
         return rect;
     }
@@ -127,7 +129,7 @@ class Render_2D
         {
             auto rect = entity_to_rect(entity, camera);
 
-            auto texture = entity->getTexture();
+            auto texture = entity->getActiveTexture();
             SDL_RenderCopy(renderer, texture.get(), nullptr, &rect);          
         }
     }

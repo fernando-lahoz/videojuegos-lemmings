@@ -1,22 +1,39 @@
 #include "../engine/Entity.cpp"
+#include "../engine/Render_2D.cpp"
+
 
 class Geralt : public Entity
 {
     bool on_ground = false;
+    Texture txt_left, txt_right;
+
     EntityPtr ground;
 
     public:
 
-    Geralt(Point3f position, Vector2f diagonal, Texture texture)
-        : Entity(position, diagonal, texture)
+    Geralt(Point3f position, Vector2f diagonal, Render_2D &render)
+        : Entity(position, diagonal, render.loadTexture("assets/geralt_right.png"))
     {
-        speed = 0.3;
-        activate_gravity();
+        gravity = 3;
+        enable_gravity();
+
+        txt_left = render.loadTexture("assets/geralt_left.png");
+        txt_right = render.loadTexture("assets/geralt_right.png");
+    }
+
+    void update_position(Float delta_time) override
+    {
+        //std::cout << "direction: " << getSpeed() << "\n";
+
+        Entity::update_position(delta_time);
     }
 
     void on_collision(EntityPtr other) override
     {
-        speed = 0;
+        if (on_ground && other == ground)
+        {
+            return;
+        }
 
         // Get out of the other entity
         switch (closest_side(other))
@@ -38,18 +55,29 @@ class Geralt : public Entity
         // Ground collision
         if (other->bound2f().pMin.y >= bound2f().pMax.y)
         {
+            setSpeedY(0);
+
             on_ground = true;
-            deactivate_gravity();
+            disable_gravity();
             ground = other;
+        }
+        else
+        {
+            setSpeed(Vector2f(0, 0));
         }
     }
 
-    bool jump(Vector2f direction, Float speed)
+    bool jump(Float new_speed)
     {
+        Vector2f speed = getSpeed();
+
         if (on_ground)
         {
+            speed.y = -1;
+
             setSpeed(speed);
-            setDirection(direction);
+            enable_gravity();
+
             on_ground = false;
 
             return true;
@@ -60,47 +88,71 @@ class Geralt : public Entity
 
     void pre_physics(Float delta_time) override
     {
-        if (on_ground)
-        {
-            speed = 0;
-        }
     }
 
     void post_physics(Float delta_time) override
     {
-        if (on_ground)
-        {
-            // Check down distance with the ground
-            Float ground_distance = ground->bound2f().pMin.y - bound2f().pMax.y;
-            if (ground_distance > 0.01)
-            {
-                on_ground = false;
-                activate_gravity();
-            }
-        }
+        // Launch ray down to check if we are on ground
+    }
+
+    void look_left()
+    {
+        setActiveTexture(txt_left);
+    }
+
+    void look_right()
+    {
+        setActiveTexture(txt_right);
     }
 
     void on_key_down(SDL_KeyboardEvent key) override
     {
+        Vector2f old_speed = getSpeed();
+
         if (key.keysym.sym == SDLK_UP)
         {
-            jump(Vector2f(0, -1), 1);
+            jump(1);
+            return;
         }
         else if (key.keysym.sym == SDLK_DOWN)
         {
-            setSpeed(0.3);
-            setDirection(Vector2f(0, 1));
+            if (!on_ground)
+            {
+                old_speed.y = old_speed.y + 0.3;
+            }
         }
         else if (key.keysym.sym == SDLK_LEFT)
         {
-            setSpeed(0.3);
-            setDirection(Vector2f(-1, 0));
+            look_left();
+            old_speed.x = -0.3;
         }
         else if (key.keysym.sym == SDLK_RIGHT)
         {
-            setSpeed(0.3);
-            setDirection(Vector2f(1, 0));
+            look_right();
+            old_speed.x = 0.3;
         }
+
+        setSpeed(old_speed);
+    }
+
+    void on_key_up(SDL_KeyboardEvent key) override
+    {
+        Vector2f old_speed = getSpeed();
+
+        if (key.keysym.sym == SDLK_DOWN)
+        {
+            old_speed.y = 0;
+        }
+        else if (key.keysym.sym == SDLK_LEFT)
+        {      
+            old_speed.x = 0;
+        }
+        else if (key.keysym.sym == SDLK_RIGHT)
+        {
+            old_speed.x = 0;
+        }
+
+        setSpeed(old_speed);
     }
 };
 
