@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Entity.cpp"
+#include "entity.cpp"
 
 class Rigid_entity : public Entity
 {

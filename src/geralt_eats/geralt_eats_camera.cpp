@@ -4,10 +4,10 @@
 #include <vector>
 #include <chrono>
 
-#include "../engine/Engine.cpp"
-#include "../engine/Entity.cpp"
+#include "../engine/engine.cpp"
+#include "../engine/entity.cpp"
 
-#include "../engine/Render_2D.cpp"
+#include "../engine/render_2D.cpp"
 
 class Geralt_camera : public Camera2D
 {

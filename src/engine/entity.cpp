@@ -1,12 +1,11 @@
 #pragma once
 
-#include "../geometry/Vector.cpp"
-#include "../geometry/Point.cpp"
-#include "../geometry/BoundingBox.cpp"
-#include "../lib/Spectrum.cpp"
-#include "../lib/Pair.cpp"
-#include "../lib/Texture.cpp"
-#include "Engine.hpp"
+#include "geometry/vector.hpp"
+#include "geometry/point.hpp"
+#include "geometry/bounding_box.hpp"
+#include "lib/spectrum.hpp"
+#include "../lib/texture.cpp"
+#include "engine.hpp"
 
 #include <memory>
 #include <vector>

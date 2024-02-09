@@ -4,8 +4,8 @@
 #include <vector>
 #include <chrono>
 
-#include "../engine/Engine.cpp"
-#include "../engine/Rigid_entity.cpp"
+#include "../engine/engine.cpp"
+#include "../engine/rigid_entity.cpp"
 
 
 class Apple : public Rigid_entity

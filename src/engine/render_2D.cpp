@@ -8,13 +8,12 @@
 #include <algorithm>
 #include <unordered_map>
 
-#include "../geometry/Vector.cpp"
-#include "../geometry/Point.cpp"
-#include "../geometry/BoundingBox.cpp"
-#include "../lib/Spectrum.cpp"
-#include "../lib/Pair.cpp"
-#include "../lib/Texture.cpp"
-#include "Entity.cpp"
+#include "geometry/vector.hpp"
+#include "geometry/point.hpp"
+#include "geometry/bounding_box.hpp"
+#include "lib/spectrum.hpp"
+#include "../lib/texture.cpp"
+#include "entity.cpp"
 
 
 

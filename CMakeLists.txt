@@ -3,7 +3,7 @@ project(project_name LANGUAGES CXX)
 
 #-------------------------- COMPILATION FLAGS ----------------------------------
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++20 -save-temps -static-libstdc++ -static-libgcc -static")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++20 -save-temps") # -static-libstdc++ -static-libgcc -static
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Ofast -DNDEBUG")
 
@@ -22,7 +22,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${FullOutputDir}")
 include_directories(include src test)
 
 set(Executables
-    main
+    "main"
 )
 
 # Header Only
@@ -36,20 +36,21 @@ set(SubProjects
 
 set(Modules
     # Order matters! If A depends on B, B must be higher than A
-
+    "geometry/ray"
+    "math/math"
+    "lib/spectrum"
+    "geometry/transform"
 )
 
 #--------------------------- EXTERNAL LIBRARIES --------------------------------
 
 set(Libraries
-    fmt
     SDL2
     SDL2_image
     SDL2_mixer
 )
 
 set(Targets
-    fmt::fmt
     SDL2::SDL2main SDL2::SDL2
     SDL2_image::SDL2_image
     SDL2_mixer::SDL2_mixer
@@ -60,7 +61,6 @@ foreach(Lib IN LISTS Libraries)
 endforeach()
 
 set(LibDirectories
-    ${fmt_INCLUDE_DIRS}
     ${SDL2_INCLUDE_DIRS}
     ${SDL2_image_INCLUDE_DIRS}
     ${SDL2_mixer_INCLUDE_DIRS}

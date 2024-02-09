@@ -1,13 +1,13 @@
 #pragma once
 
 #include <memory>
-#include "../engine/Game.cpp"
-#include "../engine/Render_2D.cpp"
-#include "../engine/Entity.cpp"
+#include "../engine/game.cpp"
+#include "../engine/render_2D.cpp"
+#include "../engine/entity.cpp"
 
-#include "Geralt.cpp"
-#include "Apple.cpp"
-#include "Geralt_eats_camera.cpp"
+#include "geralt.cpp"
+#include "apple.cpp"
+#include "geralt_eats_camera.cpp"
 
 class Geralt_eats_game : public Game
 {

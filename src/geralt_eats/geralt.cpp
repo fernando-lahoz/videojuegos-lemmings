@@ -1,5 +1,5 @@
-#include "../engine/Rigid_entity.cpp"
-#include "../engine/Render_2D.cpp"
+#include "../engine/rigid_entity.cpp"
+#include "../engine/render_2D.cpp"
 
 
 class Geralt : public Rigid_entity

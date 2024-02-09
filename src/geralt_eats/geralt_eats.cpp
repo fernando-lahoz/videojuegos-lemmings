@@ -1,7 +1,7 @@
 #include <memory>
 
-#include "src/engine/Engine.cpp"
-#include "src/geralt_eats/Geralt_eats_game.cpp"
+#include "../engine/engine.hpp"
+#include "geralt_eats_game.cpp"
 
 
 
