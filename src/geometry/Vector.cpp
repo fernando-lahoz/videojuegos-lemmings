@@ -175,12 +175,12 @@ class Vector3
         return Vector3<T>(-x, -y, -z); 
     }
 
-    Float lengthSquared() const { 
+    Float length_squared() const { 
         return x * x + y * y + z * z; 
     }
 
     Float length() const { 
-        return sqrt(lengthSquared()); 
+        return sqrt(length_squared()); 
     }
 
     void print() const
@@ -352,12 +352,12 @@ class Vector2
             return y;
     }
 
-    Float lengthSquared() const { 
+    Float length_squared() const { 
         return x*x + y*y; 
     }
 
     Float length() const { 
-        return std::sqrt(lengthSquared()); 
+        return std::sqrt(length_squared()); 
     }
 
     void print() const

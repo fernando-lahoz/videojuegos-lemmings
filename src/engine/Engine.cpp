@@ -109,7 +109,7 @@ void Engine::sort_by_z_buffer()
 {
     std::sort(entities.begin(), entities.end(), [](EntityPtr a, EntityPtr b) -> bool
     {
-        return a->getPosition3D().z > b->getPosition3D().z && !a->is_deleted();
+        return a->get_position3D().z > b->get_position3D().z && !a->is_deleted();
     });
 }
 

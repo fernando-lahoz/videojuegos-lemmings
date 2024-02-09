@@ -32,7 +32,7 @@ class Apple : public Rigid_entity
 
     void update_position (Engine_ptr engine, Float delta_time) override
     {
-        if (getPosition3D().y > 1)
+        if (get_position3D().y > 1)
         {
             destroy();
         }

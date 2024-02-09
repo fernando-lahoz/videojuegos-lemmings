@@ -7,6 +7,85 @@ class Geralt : public Rigid_entity
     bool on_ground = false;
     Texture txt_left, txt_right;
 
+    enum State
+    {
+        IDLE=1,
+        LEFT=2,
+        RIGHT=4,
+        UP=8,
+        DOWN=16
+    };
+
+    int state = IDLE;
+    bool right_pressed = false, left_pressed = false;
+    bool up_pressed = false, down_pressed = false;
+
+
+    void set_right()
+    {
+        state = state | RIGHT;
+    }
+
+    void set_left()
+    {
+        state = state | LEFT;
+    }
+
+    void set_up()
+    {
+        state = state | UP;
+    }
+
+    void set_down()
+    {
+        state = state | DOWN;
+    }
+
+    void unset_right()
+    {
+        state = state & ~RIGHT;
+    }
+
+    void unset_left()
+    {
+        state = state & ~LEFT;
+    }
+
+    void unset_up()
+    {
+        state = state & ~UP;
+    }
+
+    void unset_down()
+    {
+        state = state & ~DOWN;
+    }
+
+    void go_idle()
+    {
+        state = IDLE;
+    }
+
+    bool is_right()
+    {
+        return state & RIGHT;
+    }
+
+    bool is_left()
+    {
+        return state & LEFT;
+    }
+
+    bool is_up()
+    {
+        return state & UP;
+    }
+
+    bool is_down()
+    {
+        return state & DOWN;
+    }
+
     public:
 
     Geralt(Point3f position, Vector2f diagonal, Engine_ptr engine)
@@ -21,10 +100,58 @@ class Geralt : public Rigid_entity
         txt_right = engine->loadTexture("/home/hsunekichi/Escritorio/videojuegos-lemmings/assets/geralt_right.png");
     }
 
+    void update_state()
+    {
+        auto speed = get_speed();
+
+        if (is_up())
+        {
+            if (on_ground)
+            {
+                speed.y = -1;
+                set_speed(speed);
+                on_ground = false;
+            }
+        }
+
+        if (is_down())
+        {
+            speed.y = speed.y + 1;
+        }
+
+
+        if (is_left())
+        {
+            speed.x = -0.3;
+            look_left();
+        }
+
+        if (is_right())
+        {
+            speed.x = 0.3;
+            look_right();
+        }
+
+        if (is_right() && is_left())
+        {
+            speed.x = 0;
+        }
+
+        if (!is_right() && !is_left())
+        {
+            speed.x = 0;
+        }
+
+        set_speed(speed);
+    }
+
+
+
     void update_position(Engine_ptr engine, Float delta_time) override
     {
-        //std::cout << "direction: " << getSpeed() << "\n";
-
+        update_state();
+        //std::cout << "State: " << state << "\n";
+            
         Rigid_entity::update_position(engine, delta_time);
     }
 
@@ -35,110 +162,61 @@ class Geralt : public Rigid_entity
             return;
         }
 
+        //std::cout << "Geralt collided with " << other->get_type() << "\n";
         Rigid_entity::on_collision(engine, other);
 
         // Ground collision
-        if (other->bound2f().pMin.y >= bound2f().pMax.y)
-        {
-            setSpeedY(0);
-
+        if (closest_side(other) == 3) {
             on_ground = true;
         }
-        else
-        {
-            setSpeed(Vector2f(0, 0));
-        }
-    }
 
-    bool jump(Float new_speed)
-    {
-        Vector2f speed = getSpeed();
-
-        if (on_ground)
-        {
-            speed.y = -1;
-            setSpeed(speed);
-            on_ground = false;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    void pre_physics(Engine_ptr engine, Float delta_time) override
-    {
-    }
-
-    void post_physics(Engine_ptr engine, Float delta_time) override
-    {
-        // Launch ray down to check if we are on ground
     }
 
     void look_left()
     {
-        setActiveTexture(txt_left);
+        set_active_texture(txt_left);
     }
 
     void look_right()
     {
-        setActiveTexture(txt_right);
+        set_active_texture(txt_right);
     }
 
     void on_key_down(Engine_ptr engine, SDL_KeyboardEvent key) override
     {
-        Vector2f old_speed = getSpeed();
-
-        if (key.keysym.sym == SDLK_UP)
+        switch(key.keysym.sym)
         {
-            jump(1);
-            return;
+            case SDLK_UP:
+                set_up();
+                break;
+            case SDLK_DOWN:
+                set_down();
+                break;
+            case SDLK_LEFT:
+                set_left();
+                break;
+            case SDLK_RIGHT:
+                set_right();
+                break;
         }
-        else if (key.keysym.sym == SDLK_DOWN)
-        {
-            if (!on_ground)
-            {
-                old_speed.y = old_speed.y + 0.3;
-            }
-        }
-        else if (key.keysym.sym == SDLK_LEFT)
-        {
-            look_left();
-            old_speed.x = -0.3;
-        }
-        else if (key.keysym.sym == SDLK_RIGHT)
-        {
-            look_right();
-            old_speed.x = 0.3;
-        }
-
-        setSpeed(old_speed);
     }
 
     void on_key_up(Engine_ptr engine, SDL_KeyboardEvent key) override
     {
-        Vector2f old_speed = getSpeed();
-
-        if (key.keysym.sym == SDLK_DOWN)
+        switch(key.keysym.sym)
         {
-            old_speed.y = 0;
+            case SDLK_UP:
+                unset_up();
+                break;
+            case SDLK_DOWN:
+                unset_down();
+                break;
+            case SDLK_LEFT:
+                unset_left();
+                break;
+            case SDLK_RIGHT:
+                unset_right();
+                break;
         }
-        else if (key.keysym.sym == SDLK_LEFT)
-        {      
-            old_speed.x = 0;
-        }
-        else if (key.keysym.sym == SDLK_RIGHT)
-        {
-            old_speed.x = 0;
-        }
-
-        setSpeed(old_speed);
     }
 };
-
-void swap(Entity &a, Entity &b)
-{
-    Entity temp = a;
-    a = b;
-    b = temp;
-}
