@@ -18,11 +18,15 @@ inline int common_prefix(int a, int b, unsigned int *sortedMortonCodes, unsigned
 
 */
 
-template <typename Ty> constexpr auto max(Ty n);
-template <typename Ty, typename ...Args> constexpr auto max(Ty n, Args ...args);
+template <typename Ty>
+constexpr auto max(Ty n);
+template <typename Ty, typename ...Args>
+constexpr auto max(Ty n, Args ...args);
 
-template <typename Ty> constexpr auto min(Ty n);
-template <typename Ty, typename ...Args> constexpr auto min(Ty n, Args ...args);
+template <typename Ty>
+constexpr auto min(Ty n);
+template <typename Ty, typename ...Args>
+constexpr auto min(Ty n, Args ...args);
 
 
 // Clamp implementation
@@ -40,10 +44,11 @@ inline constexpr Float error_bound(int n) {
     return (n * MACHINE_EPSILON) / (1 - n * MACHINE_EPSILON);
 }
 
-template <unsigned N, typename Ty> constexpr auto pow(Ty n);
+template <unsigned N, typename Ty>
+constexpr Ty pow(Ty n);
 
 inline constexpr unsigned int roundup(Float x) {
-    return (unsigned int)ceil(x);
+    return (unsigned int)std::ceil(x);
 }
 
 inline Float next_float_up(Float x);

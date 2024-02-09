@@ -3,7 +3,7 @@ project(project_name LANGUAGES CXX)
 
 #-------------------------- COMPILATION FLAGS ----------------------------------
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++20 -save-temps") # -static-libstdc++ -static-libgcc -static
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++20 -save-temps -static-libstdc++ -static-libgcc -static") # 
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Ofast -DNDEBUG")
 
@@ -22,7 +22,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${FullOutputDir}")
 include_directories(include src test)
 
 set(Executables
-    "main"
+   # "main"
+    "geralt_eats/geralt_eats"
 )
 
 # Header Only
@@ -37,9 +38,14 @@ set(SubProjects
 set(Modules
     # Order matters! If A depends on B, B must be higher than A
     "geometry/ray"
+    "geometry/transform"
     "math/math"
     "lib/spectrum"
-    "geometry/transform"
+    "lib/texture"
+    
+    
+    "engine/engine"
+    "engine/entity"
 )
 
 #--------------------------- EXTERNAL LIBRARIES --------------------------------
@@ -110,14 +116,10 @@ foreach(Executable IN LISTS Executables)
     else()
         MATH(EXPR BarPos "${BarPos} + 1")
         string(SUBSTRING ${Executable} ${BarPos} -1 ExecutableName)
-        set(ExecutablePath "${Executable}.cpp")
+        set(ExecutablePath "src/${Executable}.cpp")
     endif()
 
     add_executable(${ExecutableName} "${ExecutablePath}")
-
-    foreach(Target IN LISTS Targets)
-        target_link_libraries(${ExecutableName} LINK_PUBLIC ${Target})
-    endforeach()
 
     foreach(Mod IN LISTS ModNames)
         target_link_libraries(${ExecutableName} LINK_PUBLIC ${Mod}) 
@@ -127,14 +129,9 @@ foreach(Executable IN LISTS Executables)
         target_link_libraries(${ExecutableName} LINK_PUBLIC ${Project})
     endforeach()
 
-    install(TARGETS ${ExecutableName}
-        RUNTIME ARCHIVE LIBRARY RUNTIME FRAMEWORK BUNDLE PUBLIC_HEADER RESOURCE)
-    install(TARGETS ${ExecutableName}
-        COMPONENT ${ExecutableName}
-        RUNTIME_DEPENDENCIES
-        PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-"
-        POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"
-        DIRECTORIES bin)
+    foreach(Target IN LISTS Targets)
+        target_link_libraries(${ExecutableName} LINK_PUBLIC ${Target})
+    endforeach()
 
 endforeach()
 #---

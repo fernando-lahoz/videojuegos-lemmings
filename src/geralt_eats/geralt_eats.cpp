@@ -1,11 +1,13 @@
 #include <memory>
 
-#include "src/engine/Engine.cpp"
-#include "src/geralt_eats/Geralt_eats_game.cpp"
+#include <SDL2/SDL.h>
+
+#include "engine/engine.hpp"
+#include "geralt_eats/Geralt_eats_game.hpp"
 
 
 
-int main()
+int main(int, char**)
 {
     auto game = std::make_shared<Geralt_eats_game>();
     

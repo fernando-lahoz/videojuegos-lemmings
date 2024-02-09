@@ -1,6 +1,5 @@
 #pragma once
 
-#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -8,13 +7,12 @@
 #include <algorithm>
 #include <unordered_map>
 
-#include "../geometry/Vector.cpp"
-#include "../geometry/Point.cpp"
-#include "../geometry/BoundingBox.cpp"
-#include "../lib/Spectrum.cpp"
-#include "../lib/Pair.cpp"
-#include "../lib/Texture.cpp"
-#include "Entity.cpp"
+#include "geometry/vector.hpp"
+#include "geometry/point.hpp"
+#include "geometry/bounding_box.hpp"
+#include "lib/spectrum.hpp"
+#include "lib/texture.hpp"
+#include "engine/entity.hpp"
 
 
 
@@ -81,8 +79,8 @@ class Camera2D
         return frame.overlaps(entity->bound2f());
     }
 
-    virtual void on_key_down(Engine_ptr engine, SDL_KeyboardEvent key) {}
-    virtual void on_key_up(Engine_ptr engine, SDL_KeyboardEvent key) {}
+    virtual void on_key_down(Engine_ptr, SDL_KeyboardEvent) {}
+    virtual void on_key_up(Engine_ptr, SDL_KeyboardEvent) {}
 };
 
 typedef std::shared_ptr<Camera2D> Camera_ptr;
@@ -99,7 +97,7 @@ class Render_2D
 
     void clear_window(Spectrum color=Spectrum(0, 0, 0))
     {
-        SDL_SetRenderDrawColor(renderer, color.getR(), color.getG(), color.getB(), color.getA());
+        SDL_SetRenderDrawColor(renderer, color.get_r(), color.get_g(), color.get_b(), color.get_a());
         SDL_RenderClear(renderer);
     }
 
@@ -108,13 +106,14 @@ class Render_2D
         SDL_Rect rect;
 
         auto l_position = camera->world_to_screen(e->getPosition3D());
-        rect.x = (uint) (l_position.x * resolution.x);
-        rect.y = (uint) (l_position.y * resolution.y);
+        //TODO: what is this cast meant for
+        rect.x = (unsigned) (l_position.x * resolution.x);
+        rect.y = (unsigned) (l_position.y * resolution.y);
 
 
         auto l_diag = camera->world_to_screen(e->bound2f().diagonal());
-        rect.w = (uint) (l_diag.x * resolution.x);
-        rect.h = (uint) (l_diag.y * resolution.y);
+        rect.w = (unsigned) (l_diag.x * resolution.x);
+        rect.h = (unsigned) (l_diag.y * resolution.y);
 
 
         return rect;
@@ -135,13 +134,14 @@ class Render_2D
 
     SDL_Window* window;
     SDL_Renderer* renderer;
-    uint2 resolution;
+    // TODO: This was a int2
+    Vector2i resolution;
 
     Render_2D() {}
 
     Render_2D(int width, int height)
     {
-        resolution = uint2(width, height);
+        resolution = Vector2i(width, height);
 
         // Window with vsync
         window = SDL_CreateWindow("Render_2D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);

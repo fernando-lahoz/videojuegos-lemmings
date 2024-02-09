@@ -1,26 +1,24 @@
-#pragma once
-
-#include <SDL2/SDL.h>
-#include <vector>   
+#include <vector>
 #include <chrono>
 
-#include "Render_2D.cpp"
-#include "Entity.cpp"
-#include "Physics.cpp"
-#include "Game.cpp"
-#include "Engine.hpp"
+#include <SDL2/SDL.h>
 
+#include "engine/render_2D.hpp"
+#include "engine/entity.hpp"
+#include "engine/physics.hpp"
+#include "engine/game.hpp"
+#include "engine/engine.hpp"
 
-using TimePoint = std::chrono::time_point<
-        std::chrono::steady_clock, 
-        std::chrono::nanoseconds>;
+namespace chr = std::chrono;
+
+using TimePoint = chr::time_point<chr::steady_clock, chr::nanoseconds>;
 
 std::vector<EntityPtr> entities;
 
-Game_ptr game;
-Camera_ptr camera;
-Render_2D renderer;
-Physics_engine physics;
+static Game_ptr game;
+static Camera_ptr camera;
+static Render_2D renderer;
+static Physics_engine physics;
 
 TimePoint check_point;
 
@@ -48,7 +46,7 @@ void Engine::send_key_up_event(SDL_KeyboardEvent key)
 
 
 // Returns true if the program should quit
-bool Engine::processEvents()
+bool Engine::process_events()
 {
     SDL_Event event;
     while(SDL_PollEvent(&event))
@@ -81,9 +79,9 @@ bool Engine::processEvents()
 // Returns delta time in seconds
 double Engine::get_delta_time()
 {
-    TimePoint new_check_point = std::chrono::steady_clock::now();
+    TimePoint new_check_point = chr::steady_clock::now();
 
-    uint64_t delta = std::chrono::duration_cast<std::chrono::nanoseconds>(
+    uint64_t delta = chr::duration_cast<chr::nanoseconds>(
             new_check_point - check_point).count();
 
     check_point = new_check_point;
@@ -141,7 +139,7 @@ void Engine::process_new_entities()
 Engine::Engine(Game_ptr _game)
 {
     SDL_Init(SDL_INIT_VIDEO);
-    check_point = std::chrono::steady_clock::now();
+    check_point = chr::steady_clock::now();
     renderer = Render_2D(800, 800);
     physics = Physics_engine();
 
@@ -159,7 +157,7 @@ void Engine::start()
     {
         double delta_time = get_delta_time();
         game->on_loop_start(this, delta_time);
-        quit = processEvents();
+        quit = process_events();
 
         // Update call to physics engine
         compute_physics(delta_time);
@@ -189,7 +187,7 @@ std::vector<EntityPtr>* Engine::get_entities()
     return &entities;
 }
 
-Texture Engine::loadTexture(const char* path)
+Texture Engine::load_texture(const char* path)
 {
     return renderer.loadTexture(path);
 }

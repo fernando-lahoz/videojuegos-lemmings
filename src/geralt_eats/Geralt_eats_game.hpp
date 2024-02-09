@@ -1,13 +1,14 @@
 #pragma once
 
 #include <memory>
-#include "../engine/Game.cpp"
-#include "../engine/Render_2D.cpp"
-#include "../engine/Entity.cpp"
 
-#include "Geralt.cpp"
-#include "Apple.cpp"
-#include "Geralt_eats_camera.cpp"
+#include "engine/game.hpp"
+#include "engine/render_2D.hpp"
+#include "engine/entity.hpp"
+
+#include "Geralt.hpp"
+#include "Apple.hpp"
+#include "Geralt_eats_camera.hpp"
 
 class Geralt_eats_game : public Game
 {
@@ -25,7 +26,7 @@ class Geralt_eats_game : public Game
 
     void on_game_startup(Engine_ptr engine) override
     {
-        auto t2 = engine->loadTexture("/home/hsunekichi/Escritorio/videojuegos-lemmings/assets/terrain.png");
+        auto t2 = engine->load_texture("assets/terrain.png");
 
         auto geralt = std::make_shared<Geralt>(Point3f(0.4, 0.4, 0), Vector2f(0.1, 0.125), engine);
         auto ground = std::make_shared<Entity>(Point3f(0, 0.75, 1), Vector2f(1, 0.25), t2);
@@ -44,7 +45,7 @@ class Geralt_eats_game : public Game
             Float x_pos = 0.5;
 
             auto apple = std::make_shared<Apple>(Point3f(x_pos, -0.11, 0), Vector2f(0.09, 0.1), 
-                    engine->loadTexture("/home/hsunekichi/Escritorio/videojuegos-lemmings/assets/apple.png"));
+                    engine->load_texture("assets/apple.png"));
             
             apple->set_gravity(2);
             apple->enable_gravity();

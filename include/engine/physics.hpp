@@ -2,12 +2,11 @@
 
 #include <vector>
 
-#include "../geometry/Vector.cpp"
-#include "../geometry/Point.cpp"
-#include "../geometry/BoundingBox.cpp"
-#include "../lib/Pair.cpp"
-#include "Entity.cpp"
-#include "Engine.hpp"
+#include "geometry/vector.hpp"
+#include "geometry/point.hpp"
+#include "geometry/bounding_box.hpp"
+#include "engine/entity.hpp"
+#include "engine/engine.hpp"
 
 class Physics_engine
 {
@@ -32,9 +31,9 @@ class Physics_engine
         auto &entities = *engine->get_entities();
 
         // Should vectorize automatically
-        for(int i = 0; i < entities.size(); i++)
+        for(std::size_t i = 0; i < entities.size(); i++)
         {
-            for(int j = i + 1; j < entities.size(); j++)
+            for(std::size_t j = i + 1; j < entities.size(); j++)
             {
                 if (entities[i]->collides(entities[j]))
                 {

@@ -43,7 +43,7 @@ inline constexpr Float degrees(Float radians) {
 }
 
 template <unsigned N, typename Ty>
-constexpr auto pow(Ty n)
+constexpr Ty pow(Ty n)
 {
     if constexpr (N == 0)
         return 1;

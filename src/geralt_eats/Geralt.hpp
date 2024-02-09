@@ -1,5 +1,7 @@
-#include "../engine/Rigid_entity.cpp"
-#include "../engine/Render_2D.cpp"
+#pragma once
+
+#include "engine/rigid_entity.hpp"
+#include "engine/render_2D.hpp"
 
 
 class Geralt : public Rigid_entity
@@ -11,14 +13,14 @@ class Geralt : public Rigid_entity
 
     Geralt(Point3f position, Vector2f diagonal, Engine_ptr engine)
         : Rigid_entity(position, diagonal, 
-        engine->loadTexture("/home/hsunekichi/Escritorio/videojuegos-lemmings/assets/geralt_right.png"),
+        engine->load_texture("assets/geralt_right.png"),
         "Geralt")
     {
         gravity = 3;
         enable_gravity();
 
-        txt_left = engine->loadTexture("/home/hsunekichi/Escritorio/videojuegos-lemmings/assets/geralt_left.png");
-        txt_right = engine->loadTexture("/home/hsunekichi/Escritorio/videojuegos-lemmings/assets/geralt_right.png");
+        txt_left = engine->load_texture("assets/geralt_left.png");
+        txt_right = engine->load_texture("assets/geralt_right.png");
     }
 
     void update_position(Engine_ptr engine, Float delta_time) override
@@ -135,10 +137,3 @@ class Geralt : public Rigid_entity
         setSpeed(old_speed);
     }
 };
-
-void swap(Entity &a, Entity &b)
-{
-    Entity temp = a;
-    a = b;
-    b = temp;
-}
