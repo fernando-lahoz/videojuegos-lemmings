@@ -4,11 +4,15 @@
 #include <SDL2/SDL.h>
 
 #include "lib/types.hpp"
+#include "lib/spectrum.hpp"
 #include "geometry/vector.hpp"
 #include "geometry/point.hpp"
 #include "geometry/ray.hpp"
-#include "math/math.hpp"
 #include "geometry/bounding_box.hpp"
+#include "geometry/transform.hpp"
+#include "math/math.hpp"
+#include "math/matrix3x3.hpp"
+#include "math/matrix4x4.hpp"
 
 int main(int,char**) {
 

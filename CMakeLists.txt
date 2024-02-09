@@ -38,6 +38,8 @@ set(Modules
     # Order matters! If A depends on B, B must be higher than A
     "geometry/ray"
     "math/math"
+    "lib/spectrum"
+    "geometry/transform"
 )
 
 #--------------------------- EXTERNAL LIBRARIES --------------------------------
