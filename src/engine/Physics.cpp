@@ -7,6 +7,7 @@
 #include "../geometry/BoundingBox.cpp"
 #include "../lib/Pair.cpp"
 #include "Entity.cpp"
+#include "Engine.hpp"
 
 class Physics_engine
 {
@@ -15,17 +16,21 @@ class Physics_engine
     Physics_engine()
     {}
 
-    void update_positions(std::vector<EntityPtr> &entities, Float delta_time)
+    void update_positions(Engine_ptr engine, Float delta_time)
     {
+        auto &entities = *engine->get_entities();
+
         // Should vectorize automatically
         for (auto& entity : entities)
         {
-            entity->update_position(delta_time);
+            entity->update_position(engine, delta_time);
         }
     }
 
-    void compute_collisions(std::vector<EntityPtr> &entities)
+    void compute_collisions(Engine_ptr engine)
     {
+        auto &entities = *engine->get_entities();
+
         // Should vectorize automatically
         for(int i = 0; i < entities.size(); i++)
         {
@@ -33,26 +38,30 @@ class Physics_engine
             {
                 if (entities[i]->collides(entities[j]))
                 {
-                    entities[i]->on_collision(entities[j]);
-                    entities[j]->on_collision(entities[i]);
+                    entities[i]->on_collision(engine, entities[j]);
+                    entities[j]->on_collision(engine, entities[i]);
                 }
             }
         }
     }
 
-    void pre_physics(std::vector<EntityPtr> &entities, Float delta_time)
+    void pre_physics(Engine_ptr engine, Float delta_time)
     {
+        auto &entities = *engine->get_entities();
+
         for (auto& entity : entities)
         {
-            entity->pre_physics(delta_time);
+            entity->pre_physics(engine, delta_time);
         }
     }
 
-    void post_physics(std::vector<EntityPtr> &entities, Float delta_time)
+    void post_physics(Engine_ptr engine, Float delta_time)
     {
+        auto &entities = *engine->get_entities();
+
         for (auto& entity : entities)
         {
-            entity->post_physics(delta_time);
+            entity->post_physics(engine, delta_time);
         }
     }
 };

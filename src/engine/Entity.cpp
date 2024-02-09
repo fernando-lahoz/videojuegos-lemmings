@@ -6,8 +6,12 @@
 #include "../lib/Spectrum.cpp"
 #include "../lib/Pair.cpp"
 #include "../lib/Texture.cpp"
+#include "Engine.hpp"
 
 #include <memory>
+#include <vector>
+#include <SDL2/SDL.h>
+#include <algorithm>
 
 class Entity
 {
@@ -16,19 +20,23 @@ class Entity
     Vector2f speed;
     Float max_speed_sqr;
     Float max_speed;
+    
+    bool deleted_entity = false;
 
     protected:
-
-    bool _has_gravity = false;
-    Float gravity = 0;
 
     Point3f position;
     Vector2f diagonal;
 
+    std::string type;
+
 
     public:
 
-    Entity(Point3f position, Vector2f diagonal, Texture texture, Float _max_speed=1.5)
+    Entity(Point3f position, Vector2f diagonal, 
+            Texture texture, 
+            std::string _type = "Default_entity",
+            Float _max_speed=1.5)
     {
         this->position = position;
         this->diagonal = diagonal;
@@ -36,7 +44,14 @@ class Entity
         this->max_speed = _max_speed;
         this->max_speed_sqr = pow2(_max_speed);
 
+        this->type = _type;
+
         speed = Vector2f(0, 0);
+    }
+
+    std::string get_type() const
+    {
+        return type;
     }
 
     Point2f getPosition2D() const
@@ -86,44 +101,6 @@ class Entity
         active_texture = new_texture;
     }
 
-    // Moves the entity speed*delta_time units
-    //  in the direction vector
-    virtual void update_position(Float delta_time)
-    {
-        if (has_gravity())
-        {
-            update_speed_gravity(gravity, delta_time);
-        }
-
-        if (speed.lengthSquared() > max_speed_sqr)
-        {
-            speed = normalize(speed) * max_speed;
-        }
-        
-        position.x += speed.x * delta_time;
-        position.y += speed.y * delta_time;
-    }
-
-    void set_gravity(Float new_gravity)
-    {
-        this->gravity = new_gravity;
-    }
-
-    void enable_gravity()
-    {
-        _has_gravity = true;
-    }
-
-    void disable_gravity()
-    {
-        _has_gravity = false;
-    }
-
-    bool has_gravity() const
-    {
-        return _has_gravity;
-    }
-
     Vector2f getSpeed() const
     {
         return speed;
@@ -144,18 +121,21 @@ class Entity
         speed.y = new_y_speed;
     }
 
+    bool is_deleted() const
+    {
+        return deleted_entity;
+    }
+
+    void destroy()
+    {
+        deleted_entity = true;
+    }
+
     // Returns true if this entity collides with other
     //  uses excusive comparisons
     bool collides(std::shared_ptr<Entity> other) const
     {
         return bound2f().overlaps(other->bound2f());
-    }
-
-    void update_speed_gravity(Float gravity, Float delta_time)
-    {
-        auto speed = getSpeed();
-        speed.y += gravity * delta_time;
-        setSpeed(speed);
     }
 
     // Returns the side of this entity that is closest to other
@@ -190,27 +170,50 @@ class Entity
         }
     }
 
-    virtual void on_key_down(SDL_KeyboardEvent key)
+    // Event processing is the second thing executed, 
+    //  right after game->on_loop_start()
+    virtual void on_key_down(Engine_ptr engine, SDL_KeyboardEvent key)
     {
         // Do nothing by default
     }
 
-    virtual void on_key_up(SDL_KeyboardEvent key)
+    // Event processing is the second thing executed, 
+    //  right after game->on_loop_start()
+    virtual void on_key_up(Engine_ptr engine, SDL_KeyboardEvent key)
     {
         // Do nothing by default
     }
 
-    virtual void on_collision(std::shared_ptr<Entity> other)
+    // This is called right before the physics are computed
+    virtual void pre_physics(Engine_ptr engine, Float delta_time)
     {
         // Do nothing by default
     }
 
-    virtual void pre_physics(Float delta_time)
+    // Moves the entity speed*delta_time units
+    //  in the direction vector
+    // This is called right after pre_physics
+    //  and before collisions
+    virtual void update_position(Engine_ptr engine, Float delta_time)
+    {
+        if (speed.lengthSquared() > max_speed_sqr)
+        {
+            speed = normalize(speed) * max_speed;
+        }
+        
+        position.x += speed.x * delta_time;
+        position.y += speed.y * delta_time;
+    }
+
+    // Collisions are called right after updating the positions,
+    //  and before the end step
+    virtual void on_collision(Engine_ptr engine, std::shared_ptr<Entity> other)
     {
         // Do nothing by default
     }
 
-    virtual void post_physics(Float delta_time)
+    // This is called after all physics have finished
+    virtual void post_physics(Engine_ptr engine, Float delta_time)
     {
         // Do nothing by default
     }
