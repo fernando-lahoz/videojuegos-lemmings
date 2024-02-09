@@ -1,56 +1,41 @@
-#include "../engine/Entity.cpp"
+#include "../engine/Rigid_entity.cpp"
 #include "../engine/Render_2D.cpp"
 
 
-class Geralt : public Entity
+class Geralt : public Rigid_entity
 {
     bool on_ground = false;
     Texture txt_left, txt_right;
 
-    EntityPtr ground;
-
     public:
 
-    Geralt(Point3f position, Vector2f diagonal, Render_2D &render)
-        : Entity(position, diagonal, render.loadTexture("assets/geralt_right.png"))
+    Geralt(Point3f position, Vector2f diagonal, Engine_ptr engine)
+        : Rigid_entity(position, diagonal, 
+        engine->loadTexture("/home/hsunekichi/Escritorio/videojuegos-lemmings/assets/geralt_right.png"),
+        "Geralt")
     {
         gravity = 3;
         enable_gravity();
 
-        txt_left = render.loadTexture("assets/geralt_left.png");
-        txt_right = render.loadTexture("assets/geralt_right.png");
+        txt_left = engine->loadTexture("/home/hsunekichi/Escritorio/videojuegos-lemmings/assets/geralt_left.png");
+        txt_right = engine->loadTexture("/home/hsunekichi/Escritorio/videojuegos-lemmings/assets/geralt_right.png");
     }
 
-    void update_position(Float delta_time) override
+    void update_position(Engine_ptr engine, Float delta_time) override
     {
         //std::cout << "direction: " << getSpeed() << "\n";
 
-        Entity::update_position(delta_time);
+        Rigid_entity::update_position(engine, delta_time);
     }
 
-    void on_collision(EntityPtr other) override
+    void on_collision(Engine_ptr engine, EntityPtr other) override
     {
-        if (on_ground && other == ground)
+        if (other->get_type() == "Apple")
         {
             return;
         }
 
-        // Get out of the other entity
-        switch (closest_side(other))
-        {
-            case 0:
-                position.x = other->bound2f().pMin.x - diagonal.x;
-                break;
-            case 1:
-                position.x = other->bound2f().pMax.x;
-                break;
-            case 2:
-                position.y = other->bound2f().pMin.y - diagonal.y;
-                break;
-            case 3:
-                position.y = other->bound2f().pMax.y;
-                break;
-        }
+        Rigid_entity::on_collision(engine, other);
 
         // Ground collision
         if (other->bound2f().pMin.y >= bound2f().pMax.y)
@@ -58,8 +43,6 @@ class Geralt : public Entity
             setSpeedY(0);
 
             on_ground = true;
-            disable_gravity();
-            ground = other;
         }
         else
         {
@@ -74,10 +57,7 @@ class Geralt : public Entity
         if (on_ground)
         {
             speed.y = -1;
-
             setSpeed(speed);
-            enable_gravity();
-
             on_ground = false;
 
             return true;
@@ -86,11 +66,11 @@ class Geralt : public Entity
         return false;
     }
 
-    void pre_physics(Float delta_time) override
+    void pre_physics(Engine_ptr engine, Float delta_time) override
     {
     }
 
-    void post_physics(Float delta_time) override
+    void post_physics(Engine_ptr engine, Float delta_time) override
     {
         // Launch ray down to check if we are on ground
     }
@@ -105,7 +85,7 @@ class Geralt : public Entity
         setActiveTexture(txt_right);
     }
 
-    void on_key_down(SDL_KeyboardEvent key) override
+    void on_key_down(Engine_ptr engine, SDL_KeyboardEvent key) override
     {
         Vector2f old_speed = getSpeed();
 
@@ -135,7 +115,7 @@ class Geralt : public Entity
         setSpeed(old_speed);
     }
 
-    void on_key_up(SDL_KeyboardEvent key) override
+    void on_key_up(Engine_ptr engine, SDL_KeyboardEvent key) override
     {
         Vector2f old_speed = getSpeed();
 

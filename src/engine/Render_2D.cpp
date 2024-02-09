@@ -20,6 +20,8 @@
 
 class Camera2D
 {
+    protected:
+    
     Bound2f frame;
 
     public:
@@ -78,8 +80,12 @@ class Camera2D
     {
         return frame.overlaps(entity->bound2f());
     }
+
+    virtual void on_key_down(Engine_ptr engine, SDL_KeyboardEvent key) {}
+    virtual void on_key_up(Engine_ptr engine, SDL_KeyboardEvent key) {}
 };
 
+typedef std::shared_ptr<Camera2D> Camera_ptr;
 
 class Render_2D
 {
@@ -97,25 +103,16 @@ class Render_2D
         SDL_RenderClear(renderer);
     }
 
-    // Sorts the drawables in descending z order
-    void sort_zbuffer(std::vector<EntityPtr> &drawables)
-    {
-        std::sort(drawables.begin(), drawables.end(), [](EntityPtr a, EntityPtr b) -> bool
-        {
-            return a->getPosition3D().z > b->getPosition3D().z;
-        });
-    }
-
-    SDL_Rect entity_to_rect(EntityPtr e, Camera2D &camera)
+    SDL_Rect entity_to_rect(EntityPtr e, Camera_ptr camera)
     {
         SDL_Rect rect;
 
-        auto l_position = camera.world_to_screen(e->getPosition3D());
+        auto l_position = camera->world_to_screen(e->getPosition3D());
         rect.x = (uint) (l_position.x * resolution.x);
         rect.y = (uint) (l_position.y * resolution.y);
 
 
-        auto l_diag = camera.world_to_screen(e->bound2f().diagonal());
+        auto l_diag = camera->world_to_screen(e->bound2f().diagonal());
         rect.w = (uint) (l_diag.x * resolution.x);
         rect.h = (uint) (l_diag.y * resolution.y);
 
@@ -123,9 +120,9 @@ class Render_2D
         return rect;
     }
 
-    void render_entity(EntityPtr entity, Camera2D &camera)
+    void render_entity(EntityPtr entity, Camera_ptr camera)
     {
-        if (camera.isVisible(entity))
+        if (camera->isVisible(entity))
         {
             auto rect = entity_to_rect(entity, camera);
 
@@ -139,6 +136,8 @@ class Render_2D
     SDL_Window* window;
     SDL_Renderer* renderer;
     uint2 resolution;
+
+    Render_2D() {}
 
     Render_2D(int width, int height)
     {
@@ -168,12 +167,8 @@ class Render_2D
         }
     }
 
-    void draw(std::vector<EntityPtr> &entities, Camera2D &camera)
+    void draw(std::vector<EntityPtr> &entities, Camera_ptr camera)
     {
-        // Sort drawables by z order, 
-        //  closer drawables are drawn on top of further ones
-        sort_zbuffer(entities);
-
         clear_window(Spectrum(0.529*255, 0.808*255, 0.922*255));
 
         // Render drawables
@@ -185,4 +180,3 @@ class Render_2D
         SDL_RenderPresent(renderer);
     }
 };
-

@@ -22,26 +22,26 @@ class Texture
     SDL_Texture* load_image(const std::string file, SDL_Renderer* renderer)
     {
         SDL_Texture* sdl_texture = nullptr;
-
+        
         try {
             SDL_Surface* surface = IMG_Load(file.c_str());
             if (surface == nullptr)
             {
-                throw "Failed to load image";
+                throw std::runtime_error("Failed to load image "+file);
             }
 
             sdl_texture = SDL_CreateTextureFromSurface(renderer, surface);
-
             if (sdl_texture == nullptr)
             {
-                throw "Failed to create texture";
+                throw std::runtime_error("Failed to load texture "+file);
             }
 
             SDL_FreeSurface(surface);
         }
-        catch (const char* error)
+        catch (const std::exception e)
         {
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error: %s", error);
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error: %s", e.what());
+            std::cout << e.what() << std::endl;
             throw;
         }
 
