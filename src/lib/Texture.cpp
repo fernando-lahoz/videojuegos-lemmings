@@ -1,13 +1,12 @@
 #pragma once
 
-#define SDL_MAIN_HANDLED
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-
 #include <string>
 #include <memory>
 
-#include "types.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+
+#include "types.hpp"
 
 class Texture
 {

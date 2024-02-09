@@ -1,9 +1,25 @@
 #include <iostream>
+#include <iomanip>
 
-#include <fmt/core.h>
 #include <SDL2/SDL.h>
 
+#include "lib/types.hpp"
+#include "geometry/vector.hpp"
+#include "geometry/point.hpp"
+#include "geometry/ray.hpp"
+#include "math/math.hpp"
+#include "geometry/bounding_box.hpp"
+
 int main(int,char**) {
+
+    std::cout << Vector3f{1, 2, 3} << '\n';
+    std::cout << Point3f{1, 2, 3}.to_vector().max_component() << '\n';
+    std::cout << math::pow<34, uint64_t>(3) << '\n';
+    std::cout << std::setprecision(20) << 1.45999 << math::next_float_up(1.45999) << '\n';
+
+    std::cout << (BoundingBox2<int>)(BoundingBox2<Float>(Point2f(1.464, 2.74), Point2f(1, 2))) << '\n';
+    std::cout << ((Vector2i)Vector2f(1, 2)).length() << '\n';
+
 
     int init_flags = SDL_INIT_TIMER | SDL_INIT_VIDEO;
     if (SDL_Init(init_flags) != 0) {
