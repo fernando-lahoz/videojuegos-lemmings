@@ -15,7 +15,9 @@ using TimePoint = chr::time_point<chr::steady_clock, chr::nanoseconds>;
 
 std::vector<EntityPtr> entities;
 
-static Game_ptr game;
+//Shouldn't be necessary to use a pointer
+static std::shared_ptr<Game> game;
+//Same for the camera
 static Camera_ptr camera;
 static Render_2D renderer;
 static Physics_engine physics;
@@ -79,6 +81,7 @@ bool Engine::process_events()
 // Returns delta time in seconds
 double Engine::get_delta_time()
 {
+    //TODO: Check mean delta_time 
     TimePoint new_check_point = chr::steady_clock::now();
 
     uint64_t delta = chr::duration_cast<chr::nanoseconds>(
@@ -107,7 +110,7 @@ void Engine::sort_by_z_buffer()
 {
     std::sort(entities.begin(), entities.end(), [](EntityPtr a, EntityPtr b) -> bool
     {
-        return a->getPosition3D().z > b->getPosition3D().z && !a->is_deleted();
+        return a->get_position3D().z > b->get_position3D().z && !a->is_deleted();
     });
 }
 
@@ -136,9 +139,9 @@ void Engine::process_new_entities()
         entities.insert(entities.end(), new_entities.begin(), new_entities.end());
 }
 
-Engine::Engine(Game_ptr _game)
+Engine::Engine(std::shared_ptr<Game> _game)
 {
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_EVERYTHING);
     check_point = chr::steady_clock::now();
     renderer = Render_2D(800, 800);
     physics = Physics_engine();

@@ -11,11 +11,11 @@
 
 class Game
 {
-    protected:
+protected:
 
     std::vector<EntityPtr> new_entities;
 
-    public:
+public:
 
     std::vector<EntityPtr> get_new_entities()
     {
@@ -59,6 +59,3 @@ class Game
     // Called when right before an entity is destroyed
     virtual void on_entity_destruction(Engine_ptr, EntityPtr) {}
 };
-
-
-typedef std::shared_ptr<Game> Game_ptr;

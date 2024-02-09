@@ -11,9 +11,9 @@ class Rigid_entity : public Entity
     
     void update_speed_gravity(Float gravity, Float delta_time)
     {
-        auto speed = getSpeed();
+        auto speed = get_speed();
         speed.y += gravity * delta_time;
-        setSpeed(speed);
+        set_speed(speed);
     }
 
     
@@ -46,22 +46,30 @@ class Rigid_entity : public Entity
 
     void on_collision(Engine_ptr engine, EntityPtr other) override
     {
+        auto speed = get_speed();
+
         // Get out of the other entity
         switch (closest_side(other))
         {
             case 0:
                 position.x = other->bound2f().pMin.x - diagonal.x;
+                speed.x = 0;
                 break;
             case 1:
                 position.x = other->bound2f().pMax.x;
+                speed.x = 0;
                 break;
             case 2:
-                position.y = other->bound2f().pMin.y - diagonal.y;
+                position.y = other->bound2f().pMax.y;
+                speed.y = 0;
                 break;
             case 3:
-                position.y = other->bound2f().pMax.y;
+                position.y = other->bound2f().pMin.y - diagonal.y;
+                speed.y = 0;
                 break;
         }
+
+        set_speed(speed);
 
         Entity::on_collision(engine, other);
     }

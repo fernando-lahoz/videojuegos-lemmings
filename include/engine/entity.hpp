@@ -38,69 +38,69 @@ public:
         return type;
     }
 
-    Point2f getPosition2D() const
+    Point2f get_position2D() const
     {
         return Point2f(position.x, position.y);
     }
 
-    Point3f getPosition3D() const
+    Point3f get_position3D() const
     {
         return position;
     }
 
-    void setPosition2D(Point2f p)
+    void set_position2D(Point2f p)
     {
         position.x = p.x;
         position.y = p.y;
     }
 
-    void setPosition3D(Point3f p)
+    void set_position3D(Point3f p)
     {
         position = p;
     }
 
-    Point2f maxCorner2D() const
+    Point2f max_corner2D() const
     {
-        return getPosition2D() + diagonal;
+        return get_position2D() + diagonal;
     }
 
-    Point3f maxCorner3D() const
+    Point3f max_corner3D() const
     {
-        auto maxCorner = maxCorner2D();
+        auto maxCorner = max_corner2D();
         return Point3f(maxCorner.x, maxCorner.y, position.z);
     }
 
     Bound2f bound2f() const
     {
-        return Bound2f(getPosition2D(), maxCorner2D());
+        return Bound2f(get_position2D(), max_corner2D());
     }
 
-    Texture getActiveTexture() const
+    Texture get_active_texture() const
     {
         return active_texture;
     }
 
-    void setActiveTexture(Texture new_texture)
+    void set_active_texture(Texture new_texture)
     {
         active_texture = new_texture;
     }
 
-    Vector2f getSpeed() const
+    Vector2f get_speed() const
     {
         return speed;
     }
 
-    void setSpeed(Vector2f new_speed)
+    void set_speed(Vector2f new_speed)
     {
         speed = new_speed;
     }
 
-    void setSpeedX(Float new_x_speed)
+    void set_speedX(Float new_x_speed)
     {
         speed.x = new_x_speed;
     }
 
-    void setSpeedY(Float new_y_speed)
+    void set_speedY(Float new_y_speed)
     {
         speed.y = new_y_speed;
     }
@@ -131,8 +131,8 @@ public:
     {
         Float distance_right = other->bound2f().pMax.x - bound2f().pMin.x;
         Float distance_left = bound2f().pMax.x - other->bound2f().pMin.x;
-        Float distance_up = bound2f().pMax.y - other->bound2f().pMin.y;
-        Float distance_down = other->bound2f().pMax.y - bound2f().pMin.y;
+        Float distance_up = other->bound2f().pMax.y - bound2f().pMin.y;
+        Float distance_down = bound2f().pMax.y - other->bound2f().pMin.y;
 
         Float min_distance = std::min({distance_right, distance_left, distance_up, distance_down});
 
@@ -156,6 +156,8 @@ public:
 
     // Event processing is the second thing executed, 
     //  right after game->on_loop_start()
+    // It is warranteed that all key down events are sent
+    //  AFTER all key up events
     virtual void on_key_down(Engine_ptr, SDL_KeyboardEvent)
     {
         // Do nothing by default
@@ -163,6 +165,8 @@ public:
 
     // Event processing is the second thing executed, 
     //  right after game->on_loop_start()
+    // It is warranteed that all key up events are sent
+    //  BEFORE all key down events
     virtual void on_key_up(Engine_ptr, SDL_KeyboardEvent)
     {
         // Do nothing by default

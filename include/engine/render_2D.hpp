@@ -105,7 +105,7 @@ class Render_2D
     {
         SDL_Rect rect;
 
-        auto l_position = camera->world_to_screen(e->getPosition3D());
+        auto l_position = camera->world_to_screen(e->get_position3D());
         //TODO: what is this cast meant for
         rect.x = (unsigned) (l_position.x * resolution.x);
         rect.y = (unsigned) (l_position.y * resolution.y);
@@ -125,7 +125,7 @@ class Render_2D
         {
             auto rect = entity_to_rect(entity, camera);
 
-            auto texture = entity->getActiveTexture();
+            auto texture = entity->get_active_texture();
             SDL_RenderCopy(renderer, texture.get(), nullptr, &rect);          
         }
     }
