@@ -5,29 +5,30 @@
 #include <chrono>
 
 #include "engine/engine.hpp"
-#include "engine/rigid_entity.hpp"
+#include "engine/rigid_body.hpp"
 
 
-class Apple : public Rigid_entity
+class Apple : public Rigid_body
 {
     public:
 
     Apple(Point3f position, Vector2f size, Texture texture) 
-    : Rigid_entity(position, size, texture,
+    : Rigid_body(position, size, texture,
         "Apple")
     {
+        set_max_speed(1.5);
         set_gravity(0.3);
         enable_gravity();
     }
 
     void on_collision(Engine_ptr engine, EntityPtr other) override
     {
-        if (other->get_type() == "Geralt")
+        if (other->get_entity_name() == "Geralt")
         {
             destroy();
         }
 
-        Rigid_entity::on_collision(engine, other);
+        Rigid_body::on_collision(engine, other);
     }
 
     void update_position (Engine_ptr engine, Float delta_time) override
@@ -37,6 +38,6 @@ class Apple : public Rigid_entity
             destroy();
         }
 
-        Rigid_entity::update_position(engine, delta_time);
+        Rigid_body::update_position(engine, delta_time);
     }
 };

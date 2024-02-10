@@ -1,10 +1,10 @@
 #pragma once
 
-#include "engine/rigid_entity.hpp"
+#include "engine/rigid_body.hpp"
 #include "engine/render_2D.hpp"
 
 
-class Geralt : public Rigid_entity
+class Geralt : public Rigid_body
 {
     bool on_ground = false;
     Texture txt_left, txt_right;
@@ -91,10 +91,11 @@ class Geralt : public Rigid_entity
 public:
 
     Geralt(Point3f position, Vector2f diagonal, Engine_ptr engine)
-        : Rigid_entity(position, diagonal, 
+        : Rigid_body(position, diagonal, 
         engine->load_texture("assets/geralt_right.png"),
         "Geralt")
     {
+        set_max_speed(1.5);
         gravity = 3;
         enable_gravity();
 
@@ -152,18 +153,18 @@ public:
         update_state();
         //std::cout << "State: " << state << "\n";
 
-        Rigid_entity::update_position(engine, delta_time);
+        Rigid_body::update_position(engine, delta_time);
     }
 
     void on_collision(Engine_ptr engine, EntityPtr other) override
     {
-        if (other->get_type() == "Apple")
+        if (other->get_entity_name() == "Apple")
         {
             return;
         }
 
         //std::cout << "Geralt collided with " << other->get_type() << "\n";
-        Rigid_entity::on_collision(engine, other);
+        Rigid_body::on_collision(engine, other);
 
         // Ground collision
         if (closest_side(other) == 3) {

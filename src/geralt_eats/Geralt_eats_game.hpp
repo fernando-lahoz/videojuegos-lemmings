@@ -29,7 +29,7 @@ class Geralt_eats_game : public Game
         auto t2 = engine->load_texture("assets/terrain.png");
 
         auto geralt = std::make_shared<Geralt>(Point3f(0.4, 0.4, 0), Vector2f(0.1, 0.125), engine);
-        auto ground = std::make_shared<Entity>(Point3f(0, 0.75, 1), Vector2f(1, 0.25), t2);
+        auto ground = std::make_shared<Rigid_body>(Point3f(0, 0.75, 1), Vector2f(1, 0.25), t2, "Ground");
 
         create_entity(geralt);
         create_entity(ground);
@@ -57,7 +57,7 @@ class Geralt_eats_game : public Game
 
     void on_entity_destruction(Engine_ptr engine, EntityPtr entity) override
     {
-        if (entity->get_type() == "Apple")
+        if (entity->get_entity_name() == "Apple")
         {
             n_apples--;
         }

@@ -47,6 +47,9 @@ inline constexpr Float error_bound(int n) {
 template <unsigned N, typename Ty>
 constexpr Ty pow(Ty n);
 
+template <typename Ty>
+constexpr Ty pow2(Ty n);
+
 inline constexpr unsigned int roundup(Float x) {
     return (unsigned int)std::ceil(x);
 }

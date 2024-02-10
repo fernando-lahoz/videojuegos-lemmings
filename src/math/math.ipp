@@ -51,6 +51,13 @@ constexpr Ty pow(Ty n)
         return n * pow<N - 1>(n);
 }
 
+
+template <typename Ty>
+constexpr Ty pow2(Ty n)
+{
+    return pow<2>(n);
+}
+
 inline Float next_float_up(Float x) {
     return std::nextafter(x, INFINITY);
 }

@@ -16,26 +16,33 @@
 class Entity
 {
 private:
-    Texture active_texture;
-    Vector2f speed;
-    Float max_speed_sqr;
-    Float max_speed;
-    
+    Texture active_texture;    
     bool deleted_entity = false;
 
 protected:
     Point3f position;
     Vector2f diagonal;
 
-    std::string type;
+    std::string class_name;
+    std::string entity_name;
 
 public:
     Entity(Point3f position, Vector2f diagonal, Texture texture, 
-            std::string_view _type = "Default_entity", Float _max_speed = 1.5);
+            std::string_view _entity_name, 
+            std::string_view _class_name="Entity");
 
-    std::string get_type() const
+    // Get the specific entity name
+    //  Ex: Main character
+    std::string get_entity_name() const
     {
-        return type;
+        return entity_name;
+    }
+
+    // Returns the type of the entity
+    //  Ex: Rigid body, generic entity
+    std::string get_class() const
+    {
+        return class_name;
     }
 
     Point2f get_position2D() const
@@ -83,26 +90,6 @@ public:
     void set_active_texture(Texture new_texture)
     {
         active_texture = new_texture;
-    }
-
-    Vector2f get_speed() const
-    {
-        return speed;
-    }
-
-    void set_speed(Vector2f new_speed)
-    {
-        speed = new_speed;
-    }
-
-    void set_speedX(Float new_x_speed)
-    {
-        speed.x = new_x_speed;
-    }
-
-    void set_speedY(Float new_y_speed)
-    {
-        speed.y = new_y_speed;
     }
 
     bool is_deleted() const
@@ -184,13 +171,7 @@ public:
     //  and before collisions
     virtual void update_position(Engine_ptr, Float delta_time)
     {
-        if (speed.length_squared() > max_speed_sqr)
-        {
-            speed = normalize(speed) * max_speed;
-        }
-        
-        position.x += speed.x * delta_time;
-        position.y += speed.y * delta_time;
+        // Do nothing by default
     }
 
     // Collisions are called right after updating the positions,
