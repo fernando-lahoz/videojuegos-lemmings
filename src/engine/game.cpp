@@ -12,6 +12,11 @@ std::vector<EntityPtr> Game::get_new_entities()
     return new_entities_tmp;
 }
 
+std::string Game::get_name() const
+{
+    return game_name;
+}
+
 void Game::create_entity(EntityPtr entity)
 {
     new_entities.push_back(entity);

@@ -116,6 +116,14 @@ bool Engine::process_events()
             Engine::change_input_state(event.key, false);
             Engine::send_key_up_event(event.key);
         }
+
+        // Mouse
+        if (event.type == SDL_MOUSEBUTTONDOWN)
+        {
+            // Get mouse coordinates
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+        }
     }
 
     return false;
@@ -208,7 +216,7 @@ Engine::Engine(std::shared_ptr<Game>&& game)
         throw error::sdl_exception(ERROR_CONTEXT);
 
     check_point = std::chrono::steady_clock::now();
-    renderer = Render_2D(800, 800);
+    renderer = Render_2D(game->get_name(), 800, 800);
     physics = Physics_engine();
 }
 
@@ -219,7 +227,7 @@ Engine::Engine(Game *game)
         throw error::sdl_exception(ERROR_CONTEXT);
 
     check_point = std::chrono::steady_clock::now();
-    renderer = Render_2D(800, 800);
+    renderer = Render_2D(game->get_name(), 800, 800);
     physics = Physics_engine();
 }
 

@@ -16,10 +16,17 @@ class Game
 protected:
 
     std::vector<EntityPtr> new_entities;
+    std::string game_name;
 
 public:
 
+    Game(std::string _game_name)
+    : game_name(_game_name)
+    { }
+
     std::vector<EntityPtr> get_new_entities();
+
+    std::string get_name() const;
 
     // Entities are processed after physics 
     //  and before deleting old entities

@@ -29,8 +29,11 @@ public:
 
     Camera2D(Bound2f frame);
 
-    Point2f world_to_screen(Point3f world_point);
+    Point2f world_to_screen(Point2f world_point);
     Vector2f world_to_screen(Vector2f world_vector);
+
+    Point2f screen_to_world(Point2f screen_point);
+    Vector2f screen_to_world(Vector2f screen_vector);
 
     Bound2f get_frame() const;
 
@@ -62,10 +65,15 @@ public:
     Vector2i resolution;
 
     Render_2D() = default;
-
-    Render_2D(int width, int height);
+    Render_2D(std::string window_name, int width, int height);
 
     Texture load_texture(const std::string& file);
+
+    Point2f world_to_raster(Point2f world_point, Camera2D& camera);
+    Vector2f world_to_raster(Vector2f world_vector, Camera2D& camera);
+
+    Point2f raster_to_world(Point2f raster_point, Camera2D& camera);
+    Vector2f raster_to_world(Vector2f raster_vector, Camera2D& camera);
 
     void draw(std::vector<EntityPtr> &entities, Camera2D& camera);
 };

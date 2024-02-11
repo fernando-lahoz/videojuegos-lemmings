@@ -21,6 +21,13 @@ private:
   // Otros miembros privados como LevelManager, UI/HUD, etc.
 
 public:
+
+  Lemmings_game()
+      : Game("Lemmings")
+  {
+    // Inicializar otros miembros privados
+  }
+
   // Sobrescribe funciones de Game
   std::shared_ptr<Camera2D> get_camera() const override
   {

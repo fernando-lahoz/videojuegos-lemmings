@@ -19,6 +19,10 @@ class Geralt_eats_game : public Game
 
     public:
 
+    Geralt_eats_game()
+    : Game("Geralt_eats")
+    { }
+
     std::shared_ptr<Camera2D> get_camera() const override
     {
         return std::make_shared<Geralt_camera>();
