@@ -68,9 +68,11 @@ public:
     //  ray's intersection point will be considered 
     //  (If the ray does not move on z axis, then only entities with 
     //  z == than ray's origin will be considered)
+    // Class name specifies a class of entity wanted for the intersection
     bool intesect_ray(Ray &ray, 
             bool check_z_axis,
             int not_this_entity_id,
+            const std::string &force_class_name,
             Float &hit_offset, 
             EntityPtr &hit_entity);
 };

@@ -195,6 +195,7 @@ bool Engine::intesect_ray(Ray &ray, bool check_z_axis, Float &hit_offset, Entity
 bool Engine::intesect_ray(Ray &ray, 
             bool check_z_axis,
             int not_this_entity_id,
+            const std::string &force_class_name,
             Float &hit_offset, 
             EntityPtr &hit_entity)
 {
@@ -210,6 +211,7 @@ bool Engine::intesect_ray(Ray &ray,
 
         if (bounding_box.intersects(ray, offset) 
             && (offset < hit_offset)
+            && (entity->get_class() == force_class_name)
             && (!check_z_axis 
                 || 
                 (entity->get_position3D().z == ray(offset).z)))

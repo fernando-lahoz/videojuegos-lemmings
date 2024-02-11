@@ -12,6 +12,8 @@ protected:
 
     bool _has_gravity;
     Float gravity = 0;
+
+    #define RIGID_BODY_ID "Rigid_body"
     
     void update_speed_gravity(Float gravity, Float delta_time)
     {
@@ -30,7 +32,10 @@ protected:
 
         EntityPtr ground;
         Float hit_offset;
-        bool intersected = engine.intesect_ray(ray, false, get_entity_id(), hit_offset, ground);
+        bool intersected = engine.intesect_ray(ray, false, 
+                get_entity_id(), 
+                RIGID_BODY_ID,
+                hit_offset, ground);
 
         if (intersected && hit_offset < 0.005)
             return true;
@@ -43,7 +48,7 @@ public:
 
     Rigid_body(Point3f position, Vector2f diagonal, Texture texture, 
         std::string _entity_name, 
-        std::string _class_name = "Rigid_body")
+        std::string _class_name=RIGID_BODY_ID)
         : Entity(position, diagonal, texture, 
                 _entity_name, _class_name)
     {
