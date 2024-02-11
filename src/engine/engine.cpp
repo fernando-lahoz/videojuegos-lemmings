@@ -233,7 +233,7 @@ Engine::Engine(Game *game)
 
 std::shared_ptr<Game> Engine::get_game()
 {
-    return std::move(game);
+    return game;
 }
 
 // Intersect a ray with all entities in the engine
