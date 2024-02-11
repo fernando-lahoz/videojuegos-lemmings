@@ -24,6 +24,7 @@ include_directories(include src test)
 set(Executables
    # "main"
     "geralt_eats/geralt_eats"
+    "lemmings/lemmings"
 )
 
 # Header Only
