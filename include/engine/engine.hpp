@@ -55,6 +55,7 @@ public:
     Texture load_texture(const std::string& path);
     EntityCollection& get_entities();
     double get_delta_time();
+    void destroy_all_entities();
 
 
     bool intesect_ray(Ray &ray, 

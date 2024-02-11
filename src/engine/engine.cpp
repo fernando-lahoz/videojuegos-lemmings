@@ -274,3 +274,11 @@ double Engine::get_delta_time()
 {
     return delta_time;
 }
+
+void Engine::destroy_all_entities()
+{
+    for (auto& entity : entities)
+    {
+        entity->destroy();
+    }
+}
