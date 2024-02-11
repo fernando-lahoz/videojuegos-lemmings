@@ -21,8 +21,8 @@ public:
     {
         this->frame = frame;
     }
-
-    void update_position(Engine& engine)
+    
+    void update_position(Engine& engine) override
     {
         Float delta_time = engine.get_delta_time();
 

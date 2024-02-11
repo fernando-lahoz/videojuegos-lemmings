@@ -19,9 +19,9 @@ class Geralt_eats_game : public Game
 
     public:
 
-    std::unique_ptr<Camera2D> get_camera() const override
+    std::shared_ptr<Camera2D> get_camera() const override
     {
-        return std::make_unique<Geralt_camera>();
+        return std::make_shared<Geralt_camera>();
     }
 
     void on_game_startup(Engine& engine) override

@@ -27,8 +27,8 @@ private:
     void change_input_state(SDL_KeyboardEvent key, bool is_down);
     EngineIO::InputEvent SDL_to_input_event(SDL_KeyboardEvent key);
 
-    std::unique_ptr<Game> game;
-    std::unique_ptr<Camera2D> camera;
+    std::shared_ptr<Game> game;
+    std::shared_ptr<Camera2D> camera;
     Render_2D renderer;
     Physics_engine physics;
 
@@ -53,7 +53,7 @@ public:
      * @throws `std::runtime_error`, if it fails to initialize internal systems.
      */
     Engine(Game* game);
-    Engine(std::unique_ptr<Game>&& game);
+    Engine(std::shared_ptr<Game>&& game);
 
     void start();
 
@@ -61,6 +61,8 @@ public:
     EntityCollection& get_entities();
     double get_delta_time();
     void destroy_all_entities();
+    std::shared_ptr<Game> get_game();
+    
 
 
     bool intesect_ray(Ray &ray, 

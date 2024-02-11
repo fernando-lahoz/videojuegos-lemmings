@@ -17,9 +17,9 @@ void Game::create_entity(EntityPtr entity)
     new_entities.push_back(entity);
 }
 
-std::unique_ptr<Camera2D> Game::get_camera() const
+std::shared_ptr<Camera2D> Game::get_camera() const
 {
-    return std::make_unique<Camera2D>(Bound2f(Point2f(0, 0), Point2f(1, 1)));
+    return std::make_shared<Camera2D>(Bound2f(Point2f(0, 0), Point2f(1, 1)));
 }
 
 void Game::on_loop_start(Engine&) {}

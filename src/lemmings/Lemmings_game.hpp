@@ -22,9 +22,9 @@ private:
 
 public:
   // Sobrescribe funciones de Game
-  std::unique_ptr<Camera2D> get_camera() const override
+  std::shared_ptr<Camera2D> get_camera() const override
   {
-    return std::make_unique<Lemmings_camera>();
+    return std::make_shared<Lemmings_camera>();
   }
 
   void on_game_startup(Engine &engine) override

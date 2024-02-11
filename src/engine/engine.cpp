@@ -201,7 +201,7 @@ void Engine::process_new_entities()
     }
 }
 
-Engine::Engine(std::unique_ptr<Game>&& game)
+Engine::Engine(std::shared_ptr<Game>&& game)
     : game{std::move(game)}
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -221,6 +221,11 @@ Engine::Engine(Game *game)
     check_point = std::chrono::steady_clock::now();
     renderer = Render_2D(800, 800);
     physics = Physics_engine();
+}
+
+std::shared_ptr<Game> Engine::get_game()
+{
+    return std::move(game);
 }
 
 // Intersect a ray with all entities in the engine
