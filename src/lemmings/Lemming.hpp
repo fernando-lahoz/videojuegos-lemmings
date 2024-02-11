@@ -8,7 +8,7 @@ class Lemming : public Rigid_body
   bool on_ground = false;
   Texture txt_left, txt_right, txt;
 
-  const int STATE_N_FRAMES[14] = {8, 9, 4, 16, 16, 16, 8, 30, 8, 32, 24, 8, 16, 16};                                               // number of frames of each animation
+  const int STATE_N_FRAMES[14] = {8, 9, 4, 16, 16, 16, 8, 30, 16, 32, 24, 8, 16, 16};                                              // number of frames of each animation
   const float STATE_ANIMATION_DURATION[14] = {1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f}; // duration of each animation in seconds
   float time_frame_sprite = 0.0f;                                                                                                  // time acumulator for sprite animation
 
@@ -206,7 +206,6 @@ public:
   {
     // gravity = 3;
     // enable_gravity();
-    go_fall(); // Iniciar callendo
   }
 
   int get_state()
@@ -231,6 +230,19 @@ public:
       return false;
     }
     skills = skills | skill;
+  }
+
+  void pre_physics(Engine &engine) override
+  {
+    time_frame_sprite = (time_frame_sprite + engine.get_delta_time() / STATE_ANIMATION_DURATION[get_state()]);
+    if (time_frame_sprite > 1)
+    {
+      time_frame_sprite = 0;
+    }
+
+    std::string path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(static_cast<int>((time_frame_sprite)*STATE_N_FRAMES[get_state()])) + ".png";
+    txt = engine.load_texture(path.c_str());
+    set_active_texture(txt);
   }
 
   void update_state()
@@ -262,16 +274,10 @@ public:
 
   void update_position(Engine &engine) override
   {
-
-    time_frame_sprite = (time_frame_sprite + engine.get_delta_time() / STATE_ANIMATION_DURATION[get_state()]);
-    if (time_frame_sprite > 1)
-    {
-      time_frame_sprite = 0;
-    }
-
     update_state(); // Actualiza el estado antes de calcular la nueva posición
     Rigid_body::update_position(engine);
   }
+
   void on_collision(Engine &engine, EntityPtr other) override
   {
     auto speed = get_speed();
@@ -322,7 +328,7 @@ public:
     Rigid_body::on_collision(engine, other);
   }
 
-  void post_physics(Engine &engine) override
+  void post_physics(Engine &) override
   {
     if (!on_ground && !(is_floating() || is_falling()))
     {
@@ -335,9 +341,5 @@ public:
         go_fall();
       }
     }
-
-    std::string path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(static_cast<int>((time_frame_sprite)*STATE_N_FRAMES[get_state()])) + ".png";
-    txt = engine.load_texture(path.c_str());
-    set_active_texture(txt);
   }
 };
