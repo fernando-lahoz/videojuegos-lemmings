@@ -3,16 +3,16 @@
 #include "geometry/ray.hpp"
 
 inline constexpr Ray::Ray() 
-    : maximum_offset(INFINITY), time(0.f)
+    : maximum_offset(INFINITY)
 { 
 
 }
 
 inline constexpr Ray::Ray(const Point3f &origin, const Vector3f &direction,
-        Float maximum_offset, Float time, bool is_camera_ray)
+        Float maximum_offset, bool is_camera_ray)
     : origin(origin), direction(direction), 
       inv_direction(1 / direction.x, 1 / direction.y, 1 / direction.z),
-      maximum_offset(maximum_offset), time(time),
+      maximum_offset(maximum_offset),
       camera_ray(is_camera_ray) 
 { }
 

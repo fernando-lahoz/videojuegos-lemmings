@@ -558,7 +558,7 @@ constexpr void BoundingBox2<T>::bounding_sphere(Point2<T> &center, Float &radius
 // Algorithm based on the 2D box slab intersection 
 //  implemented branchless by Tavian Barnes
 template <typename T>
-constexpr bool BoundingBox2<T>::intersects(const Ray &ray) const
+constexpr bool BoundingBox2<T>::intersects(const Ray &ray, Float &hit_offset) const
 {
     Float tx1 = (this->pMin.x - ray.origin.x)*ray.inv_direction.x;
     Float tx2 = (this->pMin.x - ray.origin.x)*ray.inv_direction.x;
@@ -572,7 +572,14 @@ constexpr bool BoundingBox2<T>::intersects(const Ray &ray) const
     tmin = std::max(tmin, std::min(ty1, ty2));
     tmax = std::min(tmax, std::max(ty1, ty2));
 
-    return tmax >= tmin;
+    // Initialize hit_offset to the minimum distance in case 
+    //  there was an intersection
+    if (tmin > 0)
+        hit_offset = tmin;
+    else
+        hit_offset = tmax;
+
+    return tmax >= tmin && hit_offset >= 0 && hit_offset <= ray.maximum_offset;
 }
 
 

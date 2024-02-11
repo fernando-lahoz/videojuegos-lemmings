@@ -154,6 +154,17 @@ public:
         //std::cout << "State: " << state << "\n";
 
         Rigid_body::update_position(engine);
+
+        // Ray to check if the player is on the ground
+        Ray ray(get_position3D(), Vector3f(0, 0, -1));
+        EntityPtr ground;
+
+        bool intersected = engine.intesect_ray(ray, true, ray.maximum_offset, ground);
+        
+        if (intersected && ray.maximum_offset < 0.01)
+            on_ground = true;
+        else
+            on_ground = false;
     }
 
     void on_collision(Engine& engine, EntityPtr other) override

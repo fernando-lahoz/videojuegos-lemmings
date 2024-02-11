@@ -162,6 +162,29 @@ Engine::Engine(Game *game)
     physics = Physics_engine();
 }
 
+bool Engine::intesect_ray(Ray &ray, bool check_z_axis, Float &hit_offset, EntityPtr &hit_entity)
+{
+    hit_offset = std::numeric_limits<Float>::max();
+
+    for (auto& entity : entities)
+    {
+        auto bounding_box = entity->bound2f();
+        Float offset;
+
+        if (bounding_box.intersects(ray, offset) 
+            && (offset < hit_offset)
+            && (!check_z_axis 
+                || 
+                (entity->get_position3D().z == ray(offset).z)))
+        {
+            hit_entity = entity;
+            hit_offset = offset;
+        }
+    }
+
+    return hit_offset < std::numeric_limits<Float>::max();
+}
+
 void Engine::start()
 {
     camera = game->get_camera();

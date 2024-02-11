@@ -6,6 +6,7 @@
 #include <string>
 
 #include "lib/texture.hpp"
+#include "geometry/ray.hpp"
 #include "engine/render_2D.hpp"
 #include "engine/entity.hpp"
 #include "engine/game.hpp"
@@ -54,4 +55,5 @@ public:
     Texture load_texture(const std::string& path);
     EntityCollection& get_entities();
     double get_delta_time();
+    bool intesect_ray(Ray &ray, bool check_z_axis, Float &hit_offset, EntityPtr &hit_entity);
 };

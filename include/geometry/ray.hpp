@@ -14,14 +14,13 @@ public:
     Vector3f inv_direction;
 
     mutable Float maximum_offset;
-    Float time;
 
     bool camera_ray = false;
 
     inline constexpr Ray();
 
     inline constexpr Ray(const Point3f &origin, const Vector3f &direction,
-            Float maximum_offset = INFINITY, Float time = 0.f, bool is_camera_ray = false);
+            Float maximum_offset = INFINITY, bool is_camera_ray = false);
 
     // Returns a point along the ray at a given offset
     inline constexpr Point3f operator()(Float offset) const;

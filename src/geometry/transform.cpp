@@ -262,7 +262,7 @@ Ray Transform::operator()(const Ray &ray, Vector3f &oError, Vector3f &dError) co
     }
 
     //TODO: ray.medium does not exist
-    return Ray(origin, direction, tMax, ray.time, 1/*ray.medium*/);
+    return Ray(origin, direction, tMax, ray.is_camera_ray());
 }
 
 Transform* Transform::operator()(const Transform *t) const
