@@ -95,6 +95,11 @@ bool Entity::collides(std::shared_ptr<Entity> other) const
     return bound2f().overlaps(other->bound2f());
 }
 
+bool Entity::contains_the_mouse(Engine& engine) const
+{
+    return bound2f().contains(engine.get_mouse_position());
+}
+
 int Entity::closest_side(std::shared_ptr<Entity> other)
 {
     Float distance_right = other->bound2f().pMax.x - bound2f().pMin.x;
@@ -122,12 +127,12 @@ int Entity::closest_side(std::shared_ptr<Entity> other)
     }
 }
 
-void Entity::on_key_down(Engine&, EngineIO::InputEvent)
+void Entity::on_event_down(Engine&, EngineIO::InputEvent)
 {
     // Do nothing by default
 }
 
-void Entity::on_key_up(Engine&, EngineIO::InputEvent)
+void Entity::on_event_up(Engine&, EngineIO::InputEvent)
 {
     // Do nothing by default
 }

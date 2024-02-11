@@ -52,40 +52,59 @@ EngineIO::InputEvent Engine::SDL_to_input_event(SDL_KeyboardEvent key)
     }
 }
 
-void Engine::send_key_down_event(SDL_KeyboardEvent key)
+EngineIO::InputEvent Engine::SDL_to_input_event(SDL_MouseButtonEvent button)
 {
-    auto event = SDL_to_input_event(key);
-
-    game->on_key_down(*this, event);
-    camera->on_key_down(*this, event);
-
-    for (auto& entity : entities)
+    switch (button.button)
     {
-        entity->on_key_down(*this, event);
+        case SDL_BUTTON_LEFT:
+            return EngineIO::InputEvent::MOUSE_LEFT;
+        case SDL_BUTTON_RIGHT:
+            return EngineIO::InputEvent::MOUSE_RIGHT;
+        case SDL_BUTTON_MIDDLE:
+            return EngineIO::InputEvent::MOUSE_MIDDLE;
+        default:
+            return EngineIO::InputEvent::NONE;
     }
 }
 
-void Engine::send_key_up_event(SDL_KeyboardEvent key)
+void Engine::send_event_down(EngineIO::InputEvent event)
 {
-    auto event = SDL_to_input_event(key);
-
-    game->on_key_up(*this, event);
-    camera->on_key_up(*this, event);
+    game->on_event_down(*this, event);
+    camera->on_event_down(*this, event);
 
     for (auto& entity : entities)
     {
-        entity->on_key_up(*this, event);
+        entity->on_event_down(*this, event);
     }
 }
 
-void Engine::change_input_state(SDL_KeyboardEvent key, bool is_down)
+void Engine::send_event_up(EngineIO::InputEvent event)
 {
-    auto event = SDL_to_input_event(key);
+    game->on_event_up(*this, event);
+    camera->on_event_up(*this, event);
 
+    for (auto& entity : entities)
+    {
+        entity->on_event_up(*this, event);
+    }
+}
+
+void Engine::change_input_state(EngineIO::InputEvent event, bool is_down)
+{
     if (is_down)
         input_state |= event;
     else
         input_state &= ~event;
+}
+
+Point2f Engine::get_mouse_position()
+{
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    Point2f raster_mouse_position = Point2f(x, y);
+    
+    auto mouse_position = renderer.raster_to_world(raster_mouse_position, *camera);
+    return mouse_position;
 }
 
 
@@ -106,23 +125,34 @@ bool Engine::process_events()
             {
                 return true;
             }
+            
+            auto IO_event = Engine::SDL_to_input_event(event.key);
 
-            Engine::change_input_state(event.key, true);
-            Engine::send_key_down_event(event.key);
+            Engine::change_input_state(IO_event, true);
+            Engine::send_event_down(IO_event);
         }
 
         if (event.type == SDL_KEYUP)
         {
-            Engine::change_input_state(event.key, false);
-            Engine::send_key_up_event(event.key);
+            auto IO_event = Engine::SDL_to_input_event(event.key);
+
+            Engine::change_input_state(IO_event, false);
+            Engine::send_event_up(IO_event);
         }
 
         // Mouse
         if (event.type == SDL_MOUSEBUTTONDOWN)
         {
-            // Get mouse coordinates
-            int x, y;
-            SDL_GetMouseState(&x, &y);
+            auto IO_event = Engine::SDL_to_input_event(event.button);
+            Engine::change_input_state(IO_event, true);
+            Engine::send_event_down(IO_event);
+        }
+
+        if (event.type == SDL_MOUSEBUTTONUP)
+        {
+            auto IO_event = Engine::SDL_to_input_event(event.button);
+            Engine::change_input_state(IO_event, false);
+            Engine::send_event_up(IO_event);
         }
     }
 

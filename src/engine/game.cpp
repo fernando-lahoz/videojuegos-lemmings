@@ -31,9 +31,9 @@ void Game::on_loop_start(Engine&) {}
 
 void Game::on_loop_end(Engine&) {}
 
-void Game::on_key_down(Engine&, EngineIO::InputEvent) {}
+void Game::on_event_down(Engine&, EngineIO::InputEvent) {}
 
-void Game::on_key_up(Engine&, EngineIO::InputEvent) {}
+void Game::on_event_up(Engine&, EngineIO::InputEvent) {}
 
 void Game::on_game_startup(Engine&) {}
 

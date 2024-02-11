@@ -16,16 +16,17 @@
 class Engine
 {   
 private:
-    void send_key_down_event(SDL_KeyboardEvent key);
-    void send_key_up_event(SDL_KeyboardEvent key);
+    void send_event_down(EngineIO::InputEvent key);
+    void send_event_up(EngineIO::InputEvent key);
     bool process_events();
     void update_delta_time();
     void compute_physics();
     void sort_by_z_buffer();
     void delete_dead_entities();
     void process_new_entities();
-    void change_input_state(SDL_KeyboardEvent key, bool is_down);
+    void change_input_state(EngineIO::InputEvent key, bool is_down);
     EngineIO::InputEvent SDL_to_input_event(SDL_KeyboardEvent key);
+    EngineIO::InputEvent SDL_to_input_event(SDL_MouseButtonEvent key);
 
     std::shared_ptr<Game> game;
     std::shared_ptr<Camera2D> camera;
@@ -62,6 +63,7 @@ public:
     double get_delta_time();
     void destroy_all_entities();
     std::shared_ptr<Game> get_game();
+    Point2f get_mouse_position();
     
 
 

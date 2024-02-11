@@ -40,4 +40,13 @@ class Apple : public Rigid_body
 
         Rigid_body::update_position(engine);
     }
+
+    void on_event_down(Engine& engine, EngineIO::InputEvent event) override
+    {
+        if (event == EngineIO::InputEvent::MOUSE_LEFT
+            && contains_the_mouse(engine))
+        {
+            destroy();
+        }
+    }
 };

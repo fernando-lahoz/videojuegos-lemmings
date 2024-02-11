@@ -41,8 +41,8 @@ public:
 
     bool isVisible(Entity& entity);
 
-    virtual void on_key_down(Engine&, EngineIO::InputEvent);
-    virtual void on_key_up(Engine&, EngineIO::InputEvent);
+    virtual void on_event_down(Engine&, EngineIO::InputEvent);
+    virtual void on_event_up(Engine&, EngineIO::InputEvent);
 };
 
 class Render_2D

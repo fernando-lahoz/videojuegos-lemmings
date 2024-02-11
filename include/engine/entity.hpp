@@ -71,6 +71,9 @@ public:
     //  uses excusive comparisons
     bool collides(std::shared_ptr<Entity> other) const;
 
+    // Returns true if the mouse is pointing inside the visible entity
+    bool contains_the_mouse(Engine& engine) const;
+
     // Returns the side of this entity that is closest to other
     // 0: right
     // 1: left
@@ -80,15 +83,11 @@ public:
 
     // Event processing is the second thing executed, 
     //  right after game->on_loop_start()
-    // It is warranteed that all key down events are sent
-    //  AFTER all key up events
-    virtual void on_key_down(Engine& engine, EngineIO::InputEvent event);
+    virtual void on_event_down(Engine& engine, EngineIO::InputEvent event);
 
     // Event processing is the second thing executed, 
     //  right after game->on_loop_start()
-    // It is warranteed that all key up events are sent
-    //  BEFORE all key down events
-    virtual void on_key_up(Engine& engine, EngineIO::InputEvent event);
+    virtual void on_event_up(Engine& engine, EngineIO::InputEvent event);
 
     // This is called right before the physics are computed
     virtual void pre_physics(Engine& engine);

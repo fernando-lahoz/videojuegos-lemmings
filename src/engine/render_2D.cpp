@@ -58,12 +58,12 @@ bool Camera2D::isVisible(Entity& entity)
     return frame.overlaps(entity.bound2f());
 }
 
-void Camera2D::on_key_down(Engine&, EngineIO::InputEvent)
+void Camera2D::on_event_down(Engine&, EngineIO::InputEvent)
 {
     // Do nothing by default
 }
 
-void Camera2D::on_key_up(Engine&, EngineIO::InputEvent)
+void Camera2D::on_event_up(Engine&, EngineIO::InputEvent)
 {
     // Do nothing by default
 }
