@@ -19,6 +19,7 @@ class Entity
 private:
     Texture active_texture;    
     bool deleted_entity = false;
+    int entity_id;
 
 protected:
     Point3f position;
@@ -51,6 +52,9 @@ public:
     Point2f max_corner2D() const;
 
     Point3f max_corner3D() const;
+
+    int get_entity_id() const;
+    void set_entity_id(int id);
 
     Bound2f bound2f() const;
 

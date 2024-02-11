@@ -136,8 +136,10 @@ void Engine::process_new_entities()
 {
     auto new_entities = game->get_new_entities();
 
-    if (new_entities.size() > 0)
-        entities.insert(entities.end(), new_entities.begin(), new_entities.end());
+    for (auto& entity : new_entities) {
+        entity->set_entity_id(entities.size());
+        entities.push_back(entity);
+    }
 }
 
 Engine::Engine(std::unique_ptr<Game>&& game)
@@ -192,7 +194,7 @@ bool Engine::intesect_ray(Ray &ray, bool check_z_axis, Float &hit_offset, Entity
 
 bool Engine::intesect_ray(Ray &ray, 
             bool check_z_axis,
-            const std::string &not_this_entity, 
+            int not_this_entity_id,
             Float &hit_offset, 
             EntityPtr &hit_entity)
 {
@@ -200,7 +202,7 @@ bool Engine::intesect_ray(Ray &ray,
 
     for (auto& entity : entities)
     {
-        if (entity->get_entity_name() == not_this_entity)
+        if (entity->get_entity_id() == not_this_entity_id)
             continue;
 
         auto bounding_box = entity->bound2f();

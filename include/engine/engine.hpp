@@ -70,7 +70,7 @@ public:
     //  z == than ray's origin will be considered)
     bool intesect_ray(Ray &ray, 
             bool check_z_axis,
-            const std::string &not_this_entity, 
+            int not_this_entity_id,
             Float &hit_offset, 
             EntityPtr &hit_entity);
 };

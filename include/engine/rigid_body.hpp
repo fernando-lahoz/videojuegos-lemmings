@@ -20,6 +20,24 @@ protected:
         set_speed(speed);
     }
 
+    bool is_grounded(Engine& engine)
+    {
+        // Spawn a ray from the bottom of the entity
+        Point2f origin = max_corner2D();
+        origin.y -= 0.001;
+
+        Ray ray(origin, Vector2f(0, 1));
+
+        EntityPtr ground;
+        Float hit_offset;
+        bool intersected = engine.intesect_ray(ray, false, get_entity_id(), hit_offset, ground);
+
+        if (intersected && hit_offset < 0.005)
+            return true;
+        else
+            return false;
+    }
+
     
 public:
 

@@ -44,6 +44,16 @@ void Entity::set_position3D(Point3f p)
     position = p;
 }
 
+int Entity::get_entity_id() const
+{
+    return entity_id;
+}
+
+void Entity::set_entity_id(int id)
+{
+    entity_id = id;
+}
+
 Point2f Entity::max_corner2D() const
 {
     return get_position2D() + diagonal;
