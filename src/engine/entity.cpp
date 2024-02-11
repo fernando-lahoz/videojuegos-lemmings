@@ -122,12 +122,12 @@ int Entity::closest_side(std::shared_ptr<Entity> other)
     }
 }
 
-void Entity::on_key_down(Engine&, SDL_KeyboardEvent)
+void Entity::on_key_down(Engine&, EngineIO::InputEvent)
 {
     // Do nothing by default
 }
 
-void Entity::on_key_up(Engine&, SDL_KeyboardEvent)
+void Entity::on_key_up(Engine&, EngineIO::InputEvent)
 {
     // Do nothing by default
 }

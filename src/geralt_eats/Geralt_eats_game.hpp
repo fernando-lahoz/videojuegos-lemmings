@@ -50,7 +50,7 @@ class Geralt_eats_game : public Game
             apple->set_gravity(2);
             apple->enable_gravity();
             
-            //create_entity(apple);
+            create_entity(apple);
             n_apples++;
         }
     }

@@ -1,4 +1,5 @@
 #include "engine/render_2D.hpp"
+#include "engine/IO.hpp"
 
 Camera2D::Camera2D()
 {
@@ -26,28 +27,14 @@ Vector2f Camera2D::world_to_screen(Vector2f world_vector)
     return Vector2f(x, y);
 }
 
-void Camera2D::moveRight(Float delta)
+Bound2f Camera2D::get_frame() const
 {
-    frame.pMin.x += delta;
-    frame.pMax.x += delta;
+    return frame;
 }
 
-void Camera2D::moveLeft(Float delta)
+void Camera2D::update_position([[maybe_unused]] Engine&)
 {
-    frame.pMin.x -= delta;
-    frame.pMax.x -= delta;
-}
-
-void Camera2D::moveUp(Float delta)
-{
-    frame.pMin.y += delta;
-    frame.pMax.y += delta;
-}
-
-void Camera2D::moveDown(Float delta)
-{
-    frame.pMin.y -= delta;
-    frame.pMax.y -= delta;
+    // Do nothing by default
 }
 
 bool Camera2D::isVisible(Entity& entity)
@@ -55,12 +42,12 @@ bool Camera2D::isVisible(Entity& entity)
     return frame.overlaps(entity.bound2f());
 }
 
-void Camera2D::on_key_down(Engine&, SDL_KeyboardEvent)
+void Camera2D::on_key_down(Engine&, EngineIO::InputEvent)
 {
     // Do nothing by default
 }
 
-void Camera2D::on_key_up(Engine&, SDL_KeyboardEvent)
+void Camera2D::on_key_up(Engine&, EngineIO::InputEvent)
 {
     // Do nothing by default
 }

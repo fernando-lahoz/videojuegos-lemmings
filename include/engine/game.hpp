@@ -7,6 +7,7 @@
 
 #include "engine/entity.hpp"
 #include "engine/render_2D.hpp"
+#include "engine/IO.hpp"
 
 class Engine;
 
@@ -35,8 +36,8 @@ public:
     virtual void on_loop_end(Engine& engine);
 
     // Events are processed after on_loop_start
-    virtual void on_key_down(Engine& engine, SDL_KeyboardEvent event);
-    virtual void on_key_up(Engine& engine, SDL_KeyboardEvent event);
+    virtual void on_key_down(Engine& engine, EngineIO::InputEvent event);
+    virtual void on_key_up(Engine& engine, EngineIO::InputEvent event);
 
     // This are called before starting the main loop
     //  and after finishing it

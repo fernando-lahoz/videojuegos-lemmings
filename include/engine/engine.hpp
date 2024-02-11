@@ -11,9 +11,10 @@
 #include "engine/entity.hpp"
 #include "engine/game.hpp"
 #include "engine/physics.hpp"
+#include "IO.hpp"
 
 class Engine
-{
+{   
 private:
     void send_key_down_event(SDL_KeyboardEvent key);
     void send_key_up_event(SDL_KeyboardEvent key);
@@ -23,6 +24,8 @@ private:
     void sort_by_z_buffer();
     void delete_dead_entities();
     void process_new_entities();
+    void change_input_state(SDL_KeyboardEvent key, bool is_down);
+    EngineIO::InputEvent SDL_to_input_event(SDL_KeyboardEvent key);
 
     std::unique_ptr<Game> game;
     std::unique_ptr<Camera2D> camera;
@@ -39,6 +42,8 @@ private:
     EntityCollection entities;
 
 public:
+
+    long long input_state = 0;
 
     /**
      * Creates a game engine while adquiring ownership of the object.
@@ -76,4 +81,33 @@ public:
             const std::string &force_class_name,
             Float &hit_offset, 
             EntityPtr &hit_entity);
+
+
+    /********************** Input events **********************/
+
+    bool is_key_down(EngineIO::InputEvent key) const;
+    bool is_key_up(EngineIO::InputEvent key) const;
+    bool any_key_down() const;
+    long long get_all_keys_down() const;
+    
+    bool is_left_arrow_down() const;
+    bool is_right_arrow_down() const;
+    bool is_up_arrow_down() const;
+    bool is_down_arrow_down() const;
+
+    bool is_w_down() const;
+    bool is_a_down() const;
+    bool is_s_down() const;
+    bool is_d_down() const;
+
+    bool is_space_down() const;
+    bool is_shift_down() const;
+    bool is_ctrl_down() const;
+    bool is_alt_down() const;
+
+    bool is_enter_down() const;
+    bool is_esc_down() const;
+    bool is_tab_down() const;
+    bool is_backspace_down() const;
+
 };

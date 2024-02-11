@@ -22,15 +22,20 @@ public:
         this->frame = frame;
     }
 
-    void on_key_down([[maybe_unused]] Engine &engine, SDL_KeyboardEvent key)
+    void update_position(Engine& engine)
     {
-        if (key.keysym.sym == SDLK_d)
+        Float delta_time = engine.get_delta_time();
+
+        if (engine.is_a_down())
         {
-            moveRight(0.01);
+            frame.pMin.x -= 0.1 * delta_time;
+            frame.pMax.x -= 0.1 * delta_time;
         }
-        else if (key.keysym.sym == SDLK_a)
+
+        if (engine.is_d_down())
         {
-            moveLeft(0.01);
+            frame.pMin.x += 0.1 * delta_time;
+            frame.pMax.x += 0.1 * delta_time;
         }
     }
 };

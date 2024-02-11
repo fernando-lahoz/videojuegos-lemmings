@@ -13,6 +13,7 @@
 #include "lib/spectrum.hpp"
 #include "lib/texture.hpp"
 #include "engine/entity.hpp"
+#include "engine/IO.hpp"
 
 class Engine;
 
@@ -29,21 +30,16 @@ public:
     Camera2D(Bound2f frame);
 
     Point2f world_to_screen(Point3f world_point);
-
     Vector2f world_to_screen(Vector2f world_vector);
 
-    void moveRight(Float delta);
+    Bound2f get_frame() const;
 
-    void moveLeft(Float delta);
-
-    void moveUp(Float delta);
-
-    void moveDown(Float delta);
+    virtual void update_position(Engine&);
 
     bool isVisible(Entity& entity);
 
-    virtual void on_key_down(Engine&, SDL_KeyboardEvent);
-    virtual void on_key_up(Engine&, SDL_KeyboardEvent);
+    virtual void on_key_down(Engine&, EngineIO::InputEvent);
+    virtual void on_key_up(Engine&, EngineIO::InputEvent);
 };
 
 class Render_2D

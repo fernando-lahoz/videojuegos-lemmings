@@ -8,28 +8,84 @@
 #include "engine/physics.hpp"
 #include "engine/game.hpp"
 #include "engine/engine.hpp"
+#include "engine/IO.hpp"
 #include "lib/error.hpp"
+
+EngineIO::InputEvent Engine::SDL_to_input_event(SDL_KeyboardEvent key)
+{
+    switch (key.keysym.sym)
+    {
+        case SDLK_RIGHT:
+            return EngineIO::InputEvent::RIGHT_ARROW;
+        case SDLK_LEFT:
+            return EngineIO::InputEvent::LEFT_ARROW;
+        case SDLK_UP:
+            return EngineIO::InputEvent::UP_ARROW;
+        case SDLK_DOWN:
+            return EngineIO::InputEvent::DOWN_ARROW;
+        case SDLK_w:
+            return EngineIO::InputEvent::W;
+        case SDLK_a:
+            return EngineIO::InputEvent::A;
+        case SDLK_s:
+            return EngineIO::InputEvent::S;
+        case SDLK_d:
+            return EngineIO::InputEvent::D;
+        case SDLK_SPACE:
+            return EngineIO::InputEvent::SPACE;
+        case SDLK_LSHIFT:
+            return EngineIO::InputEvent::SHIFT;
+        case SDLK_LCTRL:
+            return EngineIO::InputEvent::CTRL;
+        case SDLK_LALT:
+            return EngineIO::InputEvent::ALT;
+        case SDLK_RETURN:
+            return EngineIO::InputEvent::ENTER;
+        case SDLK_ESCAPE:
+            return EngineIO::InputEvent::ESC;
+        case SDLK_TAB:
+            return EngineIO::InputEvent::TAB;
+        case SDLK_BACKSPACE:
+            return EngineIO::InputEvent::BACKSPACE;
+        default:
+            return EngineIO::InputEvent::NONE;
+    }
+}
 
 void Engine::send_key_down_event(SDL_KeyboardEvent key)
 {
-    game->on_key_down(*this, key);
-    camera->on_key_down(*this, key);
+    auto event = SDL_to_input_event(key);
+
+    game->on_key_down(*this, event);
+    camera->on_key_down(*this, event);
 
     for (auto& entity : entities)
     {
-        entity->on_key_down(*this, key);
+        entity->on_key_down(*this, event);
     }
 }
 
 void Engine::send_key_up_event(SDL_KeyboardEvent key)
 {
-    game->on_key_up(*this, key);
-    camera->on_key_up(*this, key);
+    auto event = SDL_to_input_event(key);
+
+    game->on_key_up(*this, event);
+    camera->on_key_up(*this, event);
 
     for (auto& entity : entities)
     {
-        entity->on_key_up(*this, key);
+        entity->on_key_up(*this, event);
     }
+}
+
+void Engine::change_input_state(SDL_KeyboardEvent key, bool is_down)
+{
+    auto event = SDL_to_input_event(key);
+
+    if (is_down)
+        input_state |= event;
+    else
+        input_state &= ~event;
 }
 
 
@@ -51,11 +107,13 @@ bool Engine::process_events()
                 return true;
             }
 
+            Engine::change_input_state(event.key, true);
             Engine::send_key_down_event(event.key);
         }
 
         if (event.type == SDL_KEYUP)
         {
+            Engine::change_input_state(event.key, false);
             Engine::send_key_up_event(event.key);
         }
     }
@@ -102,6 +160,7 @@ void Engine::compute_physics()
     // Send pre-physics event to all entities
     physics.pre_physics(*this);
 
+    camera->update_position(*this);
     physics.update_positions(*this);
     physics.compute_collisions(*this);
     
@@ -282,3 +341,92 @@ void Engine::destroy_all_entities()
         entity->destroy();
     }
 }
+
+
+
+/********************** Input events **********************/
+
+bool Engine::is_key_down(EngineIO::InputEvent key) const {
+    return input_state & key;
+}
+
+bool Engine::is_key_up(EngineIO::InputEvent key) const {
+    return !(input_state & key);
+}
+
+bool Engine::any_key_down() const {
+    return input_state != 0;
+}
+
+long long Engine::get_all_keys_down() const
+{
+    return input_state;
+}
+
+bool Engine::is_left_arrow_down() const {
+    return is_key_down(EngineIO::InputEvent::LEFT_ARROW);
+}
+
+bool Engine::is_right_arrow_down() const {
+    return is_key_down(EngineIO::InputEvent::RIGHT_ARROW);
+}
+
+bool Engine::is_up_arrow_down() const {
+    return is_key_down(EngineIO::InputEvent::UP_ARROW);
+}
+
+bool Engine::is_down_arrow_down() const {
+    return is_key_down(EngineIO::InputEvent::DOWN_ARROW);
+}
+
+bool Engine::is_w_down() const {
+    return is_key_down(EngineIO::InputEvent::W);
+}
+
+bool Engine::is_a_down() const {
+    return is_key_down(EngineIO::InputEvent::A);
+}
+
+bool Engine::is_s_down() const {
+    return is_key_down(EngineIO::InputEvent::S);
+}
+
+bool Engine::is_d_down() const {
+    return is_key_down(EngineIO::InputEvent::D);
+}
+
+bool Engine::is_space_down() const {
+    return is_key_down(EngineIO::InputEvent::SPACE);
+}
+
+bool Engine::is_shift_down() const {
+    return is_key_down(EngineIO::InputEvent::SHIFT);
+}
+
+bool Engine::is_ctrl_down() const {
+    return is_key_down(EngineIO::InputEvent::CTRL);
+}
+
+bool Engine::is_alt_down() const {
+    return is_key_down(EngineIO::InputEvent::ALT);
+}
+
+bool Engine::is_enter_down() const {
+    return is_key_down(EngineIO::InputEvent::ENTER);
+}
+
+bool Engine::is_esc_down() const {
+    return is_key_down(EngineIO::InputEvent::ESC);
+}
+
+bool Engine::is_backspace_down() const {
+    return is_key_down(EngineIO::InputEvent::BACKSPACE);
+}
+
+bool Engine::is_tab_down() const {
+    return is_key_down(EngineIO::InputEvent::TAB);
+}
+
+
+
+

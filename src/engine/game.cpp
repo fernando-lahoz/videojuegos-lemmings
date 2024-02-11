@@ -1,5 +1,6 @@
 #include "engine/game.hpp"
 #include "engine/engine.hpp"
+#include "engine/IO.hpp"
 
 std::vector<EntityPtr> Game::get_new_entities()
 {
@@ -25,9 +26,9 @@ void Game::on_loop_start(Engine&) {}
 
 void Game::on_loop_end(Engine&) {}
 
-void Game::on_key_down(Engine&, SDL_KeyboardEvent) {}
+void Game::on_key_down(Engine&, EngineIO::InputEvent) {}
 
-void Game::on_key_up(Engine&, SDL_KeyboardEvent) {}
+void Game::on_key_up(Engine&, EngineIO::InputEvent) {}
 
 void Game::on_game_startup(Engine&) {}
 
