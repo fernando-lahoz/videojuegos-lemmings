@@ -4,7 +4,7 @@
 
 class Rigid_body : public Entity
 {
-    protected:
+protected:
 
     Vector2f speed;
     Float max_speed_sqr;
@@ -21,7 +21,7 @@ class Rigid_body : public Entity
     }
 
     
-    public:
+public:
 
     Rigid_body(Point3f position, Vector2f diagonal, Texture texture, 
         std::string _entity_name, 
@@ -101,7 +101,7 @@ class Rigid_body : public Entity
         max_speed_sqr = math::pow2(new_max_speed);
     }
 
-    void on_collision(Engine_ptr engine, EntityPtr other) override
+    void on_collision([[maybe_unused]]Engine& engine, EntityPtr other) override
     {
         // If the entity is not moving, collision will not move it
         // Only rigid bodies can collide with other rigid bodies
@@ -137,8 +137,9 @@ class Rigid_body : public Entity
         set_speed(speed);
     }
 
-    void update_position(Engine_ptr engine, Float delta_time) override
+    void update_position(Engine& engine) override
     {
+        double delta_time = engine.get_delta_time();
         if (has_gravity())
         {
             update_speed_gravity(gravity, delta_time);

@@ -22,7 +22,7 @@ class Geralt_camera : public Camera2D
         this->frame = frame;
     }
 
-    void on_key_down(Engine_ptr engine, SDL_KeyboardEvent key)
+    void on_key_down([[maybe_unused]]Engine& engine, SDL_KeyboardEvent key)
     {
         if (key.keysym.sym == SDLK_d)
         {

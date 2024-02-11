@@ -9,12 +9,17 @@
 
 int main(int, char**)
 {
-    auto game = std::make_shared<Geralt_eats_game>();
-    
-    Engine engine(game);
-    engine.start();
+    try
+    {
+        Engine engine = Engine(new Geralt_eats_game());
+        engine.start();
+    }
+    catch(std::exception& e)
+    {
+        std::cout << "Error: " << e.what() << '\n';
+    }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 

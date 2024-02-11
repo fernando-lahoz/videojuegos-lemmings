@@ -8,41 +8,27 @@
 #include "engine/physics.hpp"
 #include "engine/game.hpp"
 #include "engine/engine.hpp"
-
-namespace chr = std::chrono;
-
-using TimePoint = chr::time_point<chr::steady_clock, chr::nanoseconds>;
-
-std::vector<EntityPtr> entities;
-
-//Shouldn't be necessary to use a pointer
-static std::shared_ptr<Game> game;
-//Same for the camera
-static Camera_ptr camera;
-static Render_2D renderer;
-static Physics_engine physics;
-
-TimePoint check_point;
+#include "lib/error.hpp"
 
 void Engine::send_key_down_event(SDL_KeyboardEvent key)
 {
-    game->on_key_down(this, key);
-    camera->on_key_down(this, key);
+    game->on_key_down(*this, key);
+    camera->on_key_down(*this, key);
 
     for (auto& entity : entities)
     {
-        entity->on_key_down(this, key);
+        entity->on_key_down(*this, key);
     }
 }
 
 void Engine::send_key_up_event(SDL_KeyboardEvent key)
 {
-    game->on_key_up(this, key);
-    camera->on_key_up(this, key);
+    game->on_key_up(*this, key);
+    camera->on_key_up(*this, key);
 
     for (auto& entity : entities)
     {
-        entity->on_key_up(this, key);
+        entity->on_key_up(*this, key);
     }
 }
 
@@ -79,29 +65,48 @@ bool Engine::process_events()
 
 
 // Returns delta time in seconds
-double Engine::get_delta_time()
+void Engine::update_delta_time()
 {
-    //TODO: Check mean delta_time 
-    TimePoint new_check_point = chr::steady_clock::now();
+    TimePoint new_check_point = std::chrono::steady_clock::now();
 
-    uint64_t delta = chr::duration_cast<chr::nanoseconds>(
+    uint64_t new_delta = std::chrono::duration_cast<std::chrono::nanoseconds>(
             new_check_point - check_point).count();
 
     check_point = new_check_point;
 
-    return (double)delta / 1e9;
+    if (total_delta_ns > 0 && new_delta > 4 * total_delta_ns / total_measurements)
+    {
+        // Invalid delta time (game freezed) -> replace by mean delta time
+        delta_ns = total_delta_ns / total_measurements;
+    }
+    else if ((total_measurements & 0xFFFF) == 0)
+    {
+        // Mean delta time can grow over time, so we reset after some thousand
+        // measurements to the last valid delta time
+        delta_ns = new_delta;
+        total_delta_ns = new_delta;
+        total_measurements = 1;
+    }
+    else
+    {
+        delta_ns = new_delta;
+        total_delta_ns += new_delta;
+        total_measurements++;
+    }
+
+    delta_time = (double)delta_ns / 1e9;
 }
 
-void Engine::compute_physics(double delta_time)
+void Engine::compute_physics()
 {
     // Send pre-physics event to all entities
-    physics.pre_physics(this, delta_time);
+    physics.pre_physics(*this);
 
-    physics.update_positions(this, delta_time);
-    physics.compute_collisions(this);
+    physics.update_positions(*this);
+    physics.compute_collisions(*this);
     
     // Send post-physics event to all entities
-    physics.post_physics(this, delta_time);
+    physics.post_physics(*this);
 }
 
 // Sorts the drawables in descending z order.
@@ -114,21 +119,17 @@ void Engine::sort_by_z_buffer()
     });
 }
 
+// Removes all entities with a deleted flag, assuming an ordered vector with
+//  all dead entities at the end
 void Engine::delete_dead_entities()
 {
-    // Reverse iterator loop
-    for (auto it = entities.rbegin(); it != entities.rend(); ++it)
-    {
-        // Since we are deleting from the end, it should be fast
-        if ((*it)->is_deleted()) {
-            game->on_entity_destruction(this, *it);
-            entities.erase(std::next(it).base());
-        }
-        // No more entities to delete (since they are sorted)
-        else {
-            break;
-        }
-    }
+    auto is_deleted = [](EntityPtr entity){return entity->is_deleted();};
+    auto iterator = std::find_if(entities.begin(), entities.end(), is_deleted);
+    
+    std::for_each(iterator, entities.end(), [this](EntityPtr entity) {
+        game->on_entity_destruction(*this, entity);
+    });
+    entities.resize(std::distance(entities.begin(), iterator));
 }
 
 void Engine::process_new_entities()
@@ -139,31 +140,42 @@ void Engine::process_new_entities()
         entities.insert(entities.end(), new_entities.begin(), new_entities.end());
 }
 
-Engine::Engine(std::shared_ptr<Game> _game)
+Engine::Engine(std::unique_ptr<Game>&& game)
+    : game{std::move(game)}
 {
-    SDL_Init(SDL_INIT_EVERYTHING);
-    check_point = chr::steady_clock::now();
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+        throw error::sdl_exception(ERROR_CONTEXT);
+
+    check_point = std::chrono::steady_clock::now();
     renderer = Render_2D(800, 800);
     physics = Physics_engine();
+}
 
+Engine::Engine(Game *game)
+    : game{game}
+{
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+        throw error::sdl_exception(ERROR_CONTEXT);
 
-    game = _game;
+    check_point = std::chrono::steady_clock::now();
+    renderer = Render_2D(800, 800);
+    physics = Physics_engine();
 }
 
 void Engine::start()
 {
     camera = game->get_camera();
-    game->on_game_startup(this);
+    game->on_game_startup(*this);
 
     bool quit = false;
     while(!quit)
     {
-        double delta_time = get_delta_time();
-        game->on_loop_start(this, delta_time);
+        update_delta_time();
+        game->on_loop_start(*this);
         quit = process_events();
 
         // Update call to physics engine
-        compute_physics(delta_time);
+        compute_physics();
 
 
         // Update entitie list
@@ -174,23 +186,28 @@ void Engine::start()
         delete_dead_entities();
 
 
-        game->on_loop_end(this, delta_time);
+        game->on_loop_end(*this);
 
         // Draw call to renderer
-        renderer.draw(entities, camera);
+        renderer.draw(entities, *camera);
     }
 
-    game->on_game_shutdown(this);
+    game->on_game_shutdown(*this);
 
     SDL_Quit();
 }
 
-std::vector<EntityPtr>* Engine::get_entities()
+Engine::EntityCollection& Engine::get_entities()
 {
-    return &entities;
+    return entities;
 }
 
-Texture Engine::load_texture(const char* path)
+Texture Engine::load_texture(const std::string& path)
 {
-    return renderer.loadTexture(path);
+    return renderer.load_texture(path);
+}
+
+double Engine::get_delta_time()
+{
+    return delta_time;
 }

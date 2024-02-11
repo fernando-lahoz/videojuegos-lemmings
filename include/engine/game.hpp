@@ -6,8 +6,9 @@
 #include <SDL2/SDL.h>
 
 #include "engine/entity.hpp"
-#include "engine/engine.hpp"
 #include "engine/render_2D.hpp"
+
+class Engine;
 
 class Game
 {
@@ -17,45 +18,31 @@ protected:
 
 public:
 
-    std::vector<EntityPtr> get_new_entities()
-    {
-        std::vector<EntityPtr> new_entities_tmp;
-        
-        // Gets entities to local and clears the game vector
-        new_entities_tmp.swap(new_entities);
-
-        return new_entities_tmp;
-    }
+    std::vector<EntityPtr> get_new_entities();
 
     // Entities are processed after physics 
     //  and before deleting old entities
-    void create_entity(EntityPtr entity)
-    {
-        new_entities.push_back(entity);
-    }
+    void create_entity(EntityPtr entity);
 
-    virtual Camera_ptr get_camera() const
-    {
-        return std::make_shared<Camera2D>(Bound2f(Point2f(0, 0), Point2f(1, 1)));
-    }
+    virtual std::unique_ptr<Camera2D> get_camera() const;
 
     // This is called right before event processing
     //  It is the first thing called in the loop
-    virtual void on_loop_start(Engine_ptr, Float) {}
+    virtual void on_loop_start(Engine& engine);
 
     // This is called at the end of the loop and 
     //  right before the draw call
-    virtual void on_loop_end(Engine_ptr, Float) {}
+    virtual void on_loop_end(Engine& engine);
 
     // Events are processed after on_loop_start
-    virtual void on_key_down(Engine_ptr, SDL_KeyboardEvent) {}
-    virtual void on_key_up(Engine_ptr, SDL_KeyboardEvent) {}
+    virtual void on_key_down(Engine& engine, SDL_KeyboardEvent event);
+    virtual void on_key_up(Engine& engine, SDL_KeyboardEvent event);
 
     // This are called before starting the main loop
     //  and after finishing it
-    virtual void on_game_startup(Engine_ptr) {}
-    virtual void on_game_shutdown(Engine_ptr) {}
+    virtual void on_game_startup(Engine& engine);
+    virtual void on_game_shutdown(Engine& engine);
 
     // Called when right before an entity is destroyed
-    virtual void on_entity_destruction(Engine_ptr, EntityPtr) {}
+    virtual void on_entity_destruction(Engine& engine, EntityPtr entity);
 };

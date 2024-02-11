@@ -36,14 +36,20 @@ set(SubProjects
 )
 
 set(Modules
-    # Order matters! If A depends on B, B must be higher than A
+    # Order matters! If A depends on B, B must be higher than A (not really)
     "geometry/ray"
     "geometry/transform"
+
     "math/math"
+
     "lib/spectrum"
     "lib/texture"
+
     "engine/engine"
     "engine/entity"
+    "engine/render_2D"
+    "engine/physics"
+    "engine/game"
 )
 
 #--------------------------- EXTERNAL LIBRARIES --------------------------------

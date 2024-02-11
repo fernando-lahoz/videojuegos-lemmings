@@ -90,17 +90,17 @@ class Geralt : public Rigid_body
 
 public:
 
-    Geralt(Point3f position, Vector2f diagonal, Engine_ptr engine)
+    Geralt(Point3f position, Vector2f diagonal, Engine& engine)
         : Rigid_body(position, diagonal, 
-        engine->load_texture("assets/geralt_right.png"),
+        engine.load_texture("assets/geralt_right.png"),
         "Geralt")
     {
         set_max_speed(1.5);
         gravity = 3;
         enable_gravity();
 
-        txt_left = engine->load_texture("assets/geralt_left.png");
-        txt_right = engine->load_texture("assets/geralt_right.png");
+        txt_left = engine.load_texture("assets/geralt_left.png");
+        txt_right = engine.load_texture("assets/geralt_right.png");
     }
 
     void update_state()
@@ -148,15 +148,15 @@ public:
         set_speed(speed);
     }
 
-    void update_position(Engine_ptr engine, Float delta_time) override
+    void update_position(Engine& engine) override
     {
         update_state();
         //std::cout << "State: " << state << "\n";
 
-        Rigid_body::update_position(engine, delta_time);
+        Rigid_body::update_position(engine);
     }
 
-    void on_collision(Engine_ptr engine, EntityPtr other) override
+    void on_collision(Engine& engine, EntityPtr other) override
     {
         if (other->get_entity_name() == "Apple")
         {
@@ -183,7 +183,7 @@ public:
         set_active_texture(txt_right);
     }
 
-    void on_key_down(Engine_ptr engine, SDL_KeyboardEvent key) override
+    void on_key_down([[maybe_unused]]Engine& engine, SDL_KeyboardEvent key) override
     {
         switch(key.keysym.sym)
         {
@@ -202,7 +202,7 @@ public:
         }
     }
 
-    void on_key_up(Engine_ptr engine, SDL_KeyboardEvent key) override
+    void on_key_up([[maybe_unused]]Engine& engine, SDL_KeyboardEvent key) override
     {
         switch(key.keysym.sym)
         {

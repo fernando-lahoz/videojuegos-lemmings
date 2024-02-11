@@ -21,7 +21,7 @@ class Apple : public Rigid_body
         enable_gravity();
     }
 
-    void on_collision(Engine_ptr engine, EntityPtr other) override
+    void on_collision(Engine& engine, EntityPtr other) override
     {
         if (other->get_entity_name() == "Geralt")
         {
@@ -31,13 +31,13 @@ class Apple : public Rigid_body
         Rigid_body::on_collision(engine, other);
     }
 
-    void update_position (Engine_ptr engine, Float delta_time) override
+    void update_position (Engine& engine) override
     {
         if (get_position3D().y > 1)
         {
             destroy();
         }
 
-        Rigid_body::update_position(engine, delta_time);
+        Rigid_body::update_position(engine);
     }
 };
