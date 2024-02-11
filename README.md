@@ -82,3 +82,14 @@ tengamos que hacer una entrega.
 ```
 
 **¡¡Cuidado!!** No uses esta terminal para introducir los comandos de git.
+
+## En Ubuntu
+
+```
+sudo apt install gcc g++ make cmake ninja-build libc6-dev
+./scripts/install_dependencies.sh
+```
+
+En principio no es necesario eliminar instalaciones previas de SDL2 que se
+hayan hecho con el gestor de paquetes del sistema, pero si da algún problema
+probad a eliminarlas.

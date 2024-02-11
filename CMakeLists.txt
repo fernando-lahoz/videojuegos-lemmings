@@ -3,11 +3,12 @@ project(project_name LANGUAGES CXX)
 
 #-------------------------- COMPILATION FLAGS ----------------------------------
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++20 -save-temps -static-libstdc++ -static-libgcc -static") # 
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++20 -save-temps")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Ofast -DNDEBUG")
 
 if (WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc -static") 
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -mwindows")
 endif()
 
@@ -61,20 +62,22 @@ set(Libraries
     SDL2_mixer
 )
 
-set(Targets
-    SDL2::SDL2main SDL2::SDL2
-    SDL2_image::SDL2_image
-    SDL2_mixer::SDL2_mixer
-)
+INCLUDE(FindPkgConfig)
 
 foreach(Lib IN LISTS Libraries)
-    find_package(${Lib} REQUIRED GLOBAL)
+    find_package(${Lib} REQUIRED)
 endforeach()
 
 set(LibDirectories
     ${SDL2_INCLUDE_DIRS}
     ${SDL2_image_INCLUDE_DIRS}
     ${SDL2_mixer_INCLUDE_DIRS}
+)
+
+set(Targets
+    SDL2::SDL2main SDL2::SDL2
+    SDL2_image::SDL2_image
+    SDL2_mixer::SDL2_mixer
 )
 
 #---------------------------- OBJECT COMPILATION -------------------------------
