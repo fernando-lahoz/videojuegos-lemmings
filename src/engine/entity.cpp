@@ -90,6 +90,22 @@ void Entity::destroy()
     deleted_entity = true;
 }
 
+bool Entity::mouse_was_hovering() const
+{
+    return mouse_over;
+}
+
+void Entity::enable_mouse_hover()
+{
+    mouse_over = true;
+}
+
+void Entity::disable_mouse_hover()
+{
+    mouse_over = false;
+}
+
+
 bool Entity::collides(std::shared_ptr<Entity> other) const
 {
     return bound2f().overlaps(other->bound2f());
@@ -98,6 +114,11 @@ bool Entity::collides(std::shared_ptr<Entity> other) const
 bool Entity::contains_the_mouse(Engine& engine) const
 {
     return bound2f().contains(engine.get_mouse_position());
+}
+
+bool Entity::contains_the_mouse([[maybe_unused]] Engine& engine, Point2f mouse_position) const
+{
+    return bound2f().contains(mouse_position);
 }
 
 int Entity::closest_side(std::shared_ptr<Entity> other)

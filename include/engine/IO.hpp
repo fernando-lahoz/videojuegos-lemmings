@@ -21,8 +21,11 @@ namespace EngineIO
         ESC=8192,
         TAB=16384,
         BACKSPACE=32768,
-        MOUSE_LEFT=65536,
-        MOUSE_RIGHT=131072,
-        MOUSE_MIDDLE=262144,
+        MOUSE_HOVER=65536,
+        MOUSE_LEFT=131072,
+        MOUSE_RIGHT=262144,
+        MOUSE_MIDDLE=524288,
+        MOUSE_SCROLL_UP=1048576,
+        MOUSE_SCROLL_DOWN=2097152
     };
 }

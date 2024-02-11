@@ -24,6 +24,7 @@ private:
     void sort_by_z_buffer();
     void delete_dead_entities();
     void process_new_entities();
+    void send_mouse_hover();
     void change_input_state(EngineIO::InputEvent key, bool is_down);
     EngineIO::InputEvent SDL_to_input_event(SDL_KeyboardEvent key);
     EngineIO::InputEvent SDL_to_input_event(SDL_MouseButtonEvent key);

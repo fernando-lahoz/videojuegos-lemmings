@@ -67,6 +67,25 @@ EngineIO::InputEvent Engine::SDL_to_input_event(SDL_MouseButtonEvent button)
     }
 }
 
+void Engine::send_mouse_hover()
+{
+    auto mouse_position = get_mouse_position();
+
+    for (auto& entity : entities)
+    {
+        if (entity->contains_the_mouse(*this, mouse_position))
+        {
+            entity->enable_mouse_hover();
+            entity->on_event_down(*this, EngineIO::InputEvent::MOUSE_HOVER);
+        }
+        else if (entity->mouse_was_hovering())
+        {
+            entity->disable_mouse_hover();
+            entity->on_event_up(*this, EngineIO::InputEvent::MOUSE_HOVER);
+        }
+    }
+}
+
 void Engine::send_event_down(EngineIO::InputEvent event)
 {
     game->on_event_down(*this, event);
@@ -102,7 +121,7 @@ Point2f Engine::get_mouse_position()
     int x, y;
     SDL_GetMouseState(&x, &y);
     Point2f raster_mouse_position = Point2f(x, y);
-    
+
     auto mouse_position = renderer.raster_to_world(raster_mouse_position, *camera);
     return mouse_position;
 }
@@ -155,6 +174,8 @@ bool Engine::process_events()
             Engine::send_event_up(IO_event);
         }
     }
+
+    send_mouse_hover();
 
     return false;
 }

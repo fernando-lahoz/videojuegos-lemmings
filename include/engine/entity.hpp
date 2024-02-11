@@ -21,6 +21,7 @@ private:
     Texture active_texture;    
     bool deleted_entity = false;
     int entity_id;
+    bool mouse_over = false;
 
 protected:
     Point3f position;
@@ -67,12 +68,18 @@ public:
 
     void destroy();
 
+    bool mouse_was_hovering() const;
+    void enable_mouse_hover();
+    void disable_mouse_hover();
+
+
     // Returns true if this entity collides with other
     //  uses excusive comparisons
     bool collides(std::shared_ptr<Entity> other) const;
 
     // Returns true if the mouse is pointing inside the visible entity
     bool contains_the_mouse(Engine& engine) const;
+    bool contains_the_mouse(Engine& engine, Point2f mouse_position) const;
 
     // Returns the side of this entity that is closest to other
     // 0: right

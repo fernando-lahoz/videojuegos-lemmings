@@ -48,8 +48,10 @@ class Geralt_eats_game : public Game
 
             Float x_pos = 0.5;
 
-            auto apple = std::make_shared<Apple>(Point3f(x_pos, -0.11, 0), Vector2f(0.09, 0.1), 
-                    engine.load_texture("assets/apple.png"));
+            auto apple = std::make_shared<Apple>(
+                    Point3f(x_pos, -0.11, 0), 
+                    Vector2f(0.09, 0.1), 
+                    engine);
             
             apple->set_gravity(2);
             apple->enable_gravity();
