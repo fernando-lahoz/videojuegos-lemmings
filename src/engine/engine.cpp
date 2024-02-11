@@ -162,9 +162,14 @@ Engine::Engine(Game *game)
     physics = Physics_engine();
 }
 
+// Intersect a ray with all entities in the engine
+// If check_z_axis is true, only entities with a z coordinate == than the
+//  ray's intersection point will be considered 
+//  (If the ray does not move on z axis, then only entities with 
+//  z == than ray's origin will be considered)
 bool Engine::intesect_ray(Ray &ray, bool check_z_axis, Float &hit_offset, EntityPtr &hit_entity)
 {
-    hit_offset = std::numeric_limits<Float>::max();
+    hit_offset = INFINITY;
 
     for (auto& entity : entities)
     {
@@ -182,7 +187,38 @@ bool Engine::intesect_ray(Ray &ray, bool check_z_axis, Float &hit_offset, Entity
         }
     }
 
-    return hit_offset < std::numeric_limits<Float>::max();
+    return hit_offset < INFINITY;
+}
+
+bool Engine::intesect_ray(Ray &ray, 
+            bool check_z_axis,
+            const std::string &not_this_entity, 
+            Float &hit_offset, 
+            EntityPtr &hit_entity)
+{
+    hit_offset = INFINITY;
+
+    for (auto& entity : entities)
+    {
+        if (entity->get_entity_name() == not_this_entity)
+            continue;
+
+        auto bounding_box = entity->bound2f();
+        Float offset;
+
+        if (bounding_box.intersects(ray, offset) 
+            && (offset < hit_offset)
+            && (!check_z_axis 
+                || 
+                (entity->get_position3D().z == ray(offset).z)))
+        {
+            hit_entity = entity;
+            hit_offset = offset;
+        }
+    }
+
+    return hit_offset < INFINITY;
+
 }
 
 void Engine::start()

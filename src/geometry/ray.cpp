@@ -10,6 +10,6 @@ std::ostream& operator<<(std::ostream& os, const Ray &ray)
 
 void Ray::print() const
 {
-    printf("Ray[origin=%f, %f, %f, direction=%f, %f, %f, maximum_offset=%f, time=%f]\n", 
+    printf("Ray[origin=%f, %f, %f, direction=%f, %f, %f, maximum_offset=%f]\n", 
             origin.x, origin.y, origin.z, direction.x, direction.y, direction.z, maximum_offset);
 }

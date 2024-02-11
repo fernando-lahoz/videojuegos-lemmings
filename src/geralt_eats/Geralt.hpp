@@ -22,6 +22,22 @@ class Geralt : public Rigid_body
     bool right_pressed = false, left_pressed = false;
     bool up_pressed = false, down_pressed = false;
 
+    bool find_ground(Engine& engine)
+    {
+        Point2f origin = max_corner2D();
+        origin.y -= 0.001;
+
+        Ray ray(origin, Vector2f(0, 1));
+
+        EntityPtr ground;
+        Float hit_offset;
+        bool intersected = engine.intesect_ray(ray, false, "Geralt", hit_offset, ground);
+
+        if (intersected && hit_offset < 0.01)
+            return true;
+        else
+            return false;
+    }
 
     void set_right()
     {
@@ -155,16 +171,16 @@ public:
 
         Rigid_body::update_position(engine);
 
-        // Ray to check if the player is on the ground
-        Ray ray(get_position3D(), Vector3f(0, 0, -1));
-        EntityPtr ground;
-
-        bool intersected = engine.intesect_ray(ray, true, ray.maximum_offset, ground);
-        
-        if (intersected && ray.maximum_offset < 0.01)
+        if (find_ground(engine))
+        {
+            std::cout << "Ground detected\n";
             on_ground = true;
+        }
         else
+        {
+            std::cout << "Not on ground\n";
             on_ground = false;
+        }
     }
 
     void on_collision(Engine& engine, EntityPtr other) override

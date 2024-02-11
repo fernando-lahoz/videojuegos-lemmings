@@ -55,5 +55,22 @@ public:
     Texture load_texture(const std::string& path);
     EntityCollection& get_entities();
     double get_delta_time();
-    bool intesect_ray(Ray &ray, bool check_z_axis, Float &hit_offset, EntityPtr &hit_entity);
+
+
+    bool intesect_ray(Ray &ray, 
+            bool check_z_axis,
+            Float &hit_offset, 
+            EntityPtr &hit_entity);
+
+    // Intersect a ray with all entities in the engine
+    //  except for the entity with name not_this_entity
+    // If check_z_axis is true, only entities with a z coordinate == than the
+    //  ray's intersection point will be considered 
+    //  (If the ray does not move on z axis, then only entities with 
+    //  z == than ray's origin will be considered)
+    bool intesect_ray(Ray &ray, 
+            bool check_z_axis,
+            const std::string &not_this_entity, 
+            Float &hit_offset, 
+            EntityPtr &hit_entity);
 };

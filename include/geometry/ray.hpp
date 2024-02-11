@@ -21,6 +21,9 @@ public:
 
     inline constexpr Ray(const Point3f &origin, const Vector3f &direction,
             Float maximum_offset = INFINITY, bool is_camera_ray = false);
+    
+    inline constexpr Ray(const Point2f &_origin, const Vector2f &_direction,
+            Float _maximum_offset = INFINITY, bool _is_camera_ray = false);
 
     // Returns a point along the ray at a given offset
     inline constexpr Point3f operator()(Float offset) const;
