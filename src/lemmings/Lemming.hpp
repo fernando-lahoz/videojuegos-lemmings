@@ -37,12 +37,12 @@ class Lemming : public Rigid_body
     CLIMBING = 5,
     FLOATING = 6,
     EXPLODING = 7,
-    DIGGING_VERTICAL = 8,   // TODO: ADD assets
-    DIGGING_HORIZONTAL = 9, // TODO: ADD assets
-    DIGGING_DIAGONAL = 10,  // TODO: ADD assets
-    ESCAPING = 11,          // TODO: ADD assets
-    DROWNING = 12,          // TODO: ADD assets
-    CRASHING = 13,          // TODO: ADD assets
+    DIGGING_VERTICAL = 8,
+    DIGGING_HORIZONTAL = 9,
+    DIGGING_DIAGONAL = 10,
+    ESCAPING = 11,
+    DROWNING = 12,
+    CRASHING = 13,
   };
 
   int state = IDLE;
