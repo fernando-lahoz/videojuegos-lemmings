@@ -30,7 +30,6 @@ private:
   {
     txt = engine.load_texture(basic_path + std::to_string(levelNumber) + ".png");
     size_map_x = (0.8 / txt.get_height()) * txt.get_width();
-    std::cout << txt.get_height() << std::endl;
     switch (levelNumber)
     {
     case 0:
@@ -75,7 +74,7 @@ private:
     {
       auto map = std::make_shared<Entity>(Point3f(-(size_map_x / 2), 0, 1), Vector2f(size_map_x, 0.8), txt, "MAP");
       auto door = std::make_shared<Door>(Point3f(-0.694457, 0.0447037, 0), (0.8f / txt.get_height()), engine, 8, 1.0f, 15, 1.0f);
-      auto gate = std::make_shared<Gate>(Point3f(0.436, 0.406, 2), (0.8f / txt.get_height()), engine, 0, 0.8f);
+      auto gate = std::make_shared<Gate>(Point3f(0.50631, 0.486225, 2), (0.8f / txt.get_height()), engine, 1, 0.8f);
 
       engine.get_game()->create_entity(map);
       engine.get_game()->create_entity(door);
@@ -85,8 +84,8 @@ private:
     case 3:
     {
       auto map = std::make_shared<Entity>(Point3f(-(size_map_x / 2), 0, 1), Vector2f(size_map_x, 0.8), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(-0.295, 0.18, 0), (0.8f / txt.get_height()), engine, 8, 1.0f, 15, 1.0f);
-      auto gate = std::make_shared<Gate>(Point3f(0.436, 0.406, 2), (0.8f / txt.get_height()), engine, 0, 0.8f);
+      auto door = std::make_shared<Door>(Point3f(-0.399963, 0.0235361, 0), (0.8f / txt.get_height()), engine, 8, 1.0f, 15, 1.0f);
+      auto gate = std::make_shared<Gate>(Point3f(-0.483425, 0.506176, 2), (0.8f / txt.get_height()), engine, 1, 0.8f);
 
       engine.get_game()->create_entity(map);
       engine.get_game()->create_entity(door);
@@ -96,7 +95,7 @@ private:
     case 4:
     {
       auto map = std::make_shared<Entity>(Point3f(-(size_map_x / 2), 0, 1), Vector2f(size_map_x, 0.8), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(-0.295, 0.18, 0), (0.8f / txt.get_height()), engine, 8, 1.0f, 15, 1.0f);
+      auto door = std::make_shared<Door>(Point3f(-0.295, 0.18, 0), (0.8f / txt.get_height()), engine, 8, 1.0f, 15, 1.0f, true);
       auto gate = std::make_shared<Gate>(Point3f(0.436, 0.406, 2), (0.8f / txt.get_height()), engine, 0, 0.8f);
 
       engine.get_game()->create_entity(map);

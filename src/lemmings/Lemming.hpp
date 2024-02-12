@@ -16,10 +16,11 @@ class Lemming : public Rigid_body
   bool is_playing = true;         // Indica si la animación está actualmente en reproducción
   int current_frame = 0;          // Frame actual de la animación
   int distance_fall = 0;
+  bool do_action_in_frame = false;
 
   const int STATE_IS_LOOP_ANIMATION[14] = {false, true, true, true, true, true, true, false, true, true, true, false, false, false}; // indicates if the animation is loop
   const int STATE_N_FRAMES[14] = {8, 9, 4, 16, 16, 16, 8, 30, 16, 32, 24, 8, 16, 16};                                                // number of frames of each animation
-  const float STATE_ANIMATION_DURATION[14] = {1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};   // duration of each animation in seconds
+  const float STATE_ANIMATION_DURATION[14] = {1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};   // duration of each animation in seconds
 
   enum Skills
   {
@@ -285,6 +286,7 @@ public:
       speed.x = 0;
       speed.y = 0.2;
       set_speed(speed);
+      return;
     }
 
     if (is_floating())
@@ -292,6 +294,7 @@ public:
       speed.x = 0;
       speed.y = 0.1;
       set_speed(speed);
+      return;
     }
 
     if (is_walking())
@@ -300,6 +303,28 @@ public:
       speed.y = 0.1;
       set_speed(speed);
       on_ground = false;
+      return;
+    }
+    if (is_digging_vertical())
+    {
+      if (current_frame == 4 || current_frame == 12)
+      {
+        if (!do_action_in_frame)
+        {
+          do_action_in_frame = true;
+          speed.x = 0;
+          speed.y = 0.05;
+          set_speed(speed);
+        }
+      }
+      else
+      {
+        do_action_in_frame = false;
+        speed.x = 0;
+        speed.y = 0;
+        set_speed(speed);
+      }
+      return;
     }
   }
 
@@ -393,13 +418,11 @@ public:
       destroy();
     }
     set_speed(speed);
-
-    Rigid_body::on_collision(engine, other);
   }
 
   void post_physics(Engine &) override
   {
-    if (!on_ground && !(is_floating() || is_falling()))
+    if (!on_ground && !(is_floating() || is_falling() || is_digging_vertical() || is_climbing()))
     {
       if (skills & FLOAT)
       {
