@@ -8,9 +8,15 @@ class Lemming : public Rigid_body
   bool on_ground = false;
   Texture txt_left, txt_right, txt;
 
-  const int STATE_N_FRAMES[14] = {8, 9, 4, 16, 16, 16, 8, 30, 16, 32, 24, 8, 16, 16};                                              // number of frames of each animation
-  const float STATE_ANIMATION_DURATION[14] = {1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f}; // duration of each animation in seconds
-  float time_frame_sprite = 0.0f;                                                                                                  // time acumulator for sprite animation
+  float time_frame_sprite = 0.0f; // Acumulador de tiempo para la animación del sprite
+  std::string base_path;          // Base para el path de las texturas de animación
+  bool is_loop;                   // Indica si la animación es en bucle
+  bool is_playing = true;         // Indica si la animación está actualmente en reproducción
+  int current_frame = 0;          // Frame actual de la animación
+
+  const int STATE_IS_LOOP_ANIMATION[14] = {false, true, true, true, true, true, true, false, true, true, true, false, false, false}; // indicates if the animation is loop
+  const int STATE_N_FRAMES[14] = {8, 9, 4, 16, 16, 16, 8, 30, 16, 32, 24, 8, 16, 16};                                                // number of frames of each animation
+  const float STATE_ANIMATION_DURATION[14] = {1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};   // duration of each animation in seconds
 
   enum Skills
   {
@@ -219,7 +225,7 @@ public:
    * @param skill The skill to add.
    * @return True if the skill was successfully added, false otherwise.
    */
-  bool add_skill(Skills skill)
+  bool add_skill(int skill)
   {
     if (skills & skill) // The new skill cannot be added before
     {
@@ -232,17 +238,39 @@ public:
     skills = skills | skill;
   }
 
+  void update_animation(Engine &engine)
+  {
+    if (!is_playing)
+      return;
+
+    time_frame_sprite += engine.get_delta_time();
+    if (time_frame_sprite >= STATE_ANIMATION_DURATION[get_state()] / STATE_N_FRAMES[get_state()])
+    {
+      time_frame_sprite = 0.0f;
+      current_frame = (current_frame + 1) % STATE_N_FRAMES[get_state()];
+
+      if (!STATE_IS_LOOP_ANIMATION[get_state()] && current_frame == 0)
+      {
+        is_playing = false; // Detiene la animación si no es en bucle
+        if (is_escaping() || is_crashing() || is_exploding() || is_drowning())
+        {
+          destroy();
+          std::cout << "Lemming destruido\n";
+        }
+
+        return;
+      }
+
+      std::string frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
+
+      Texture txt = engine.load_texture(frame_path.c_str());
+      set_active_texture(txt);
+    }
+  }
+
   void pre_physics(Engine &engine) override
   {
-    time_frame_sprite = (time_frame_sprite + engine.get_delta_time() / STATE_ANIMATION_DURATION[get_state()]);
-    if (time_frame_sprite > 1)
-    {
-      time_frame_sprite = 0;
-    }
-
-    std::string path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(static_cast<int>((time_frame_sprite)*STATE_N_FRAMES[get_state()])) + ".png";
-    txt = engine.load_texture(path.c_str());
-    set_active_texture(txt);
+    update_animation(engine);
   }
 
   void update_state()
@@ -323,6 +351,12 @@ public:
       }
     }
 
+    if (other->get_entity_name() == "Gate")
+    {
+      go_escape();
+      speed.x = 0;
+      speed.y = 0;
+    }
     set_speed(speed);
 
     Rigid_body::on_collision(engine, other);

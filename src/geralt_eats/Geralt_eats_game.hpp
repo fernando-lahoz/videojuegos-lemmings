@@ -19,9 +19,13 @@ class Geralt_eats_game : public Game
 
     public:
 
-    std::unique_ptr<Camera2D> get_camera() const override
+    Geralt_eats_game()
+    : Game("Geralt_eats")
+    { }
+
+    std::shared_ptr<Camera2D> get_camera() const override
     {
-        return std::make_unique<Geralt_camera>();
+        return std::make_shared<Geralt_camera>();
     }
 
     void on_game_startup(Engine& engine) override
@@ -44,13 +48,15 @@ class Geralt_eats_game : public Game
 
             Float x_pos = 0.5;
 
-            auto apple = std::make_shared<Apple>(Point3f(x_pos, -0.11, 0), Vector2f(0.09, 0.1), 
-                    engine.load_texture("assets/apple.png"));
+            auto apple = std::make_shared<Apple>(
+                    Point3f(x_pos, -0.11, 0), 
+                    Vector2f(0.09, 0.1), 
+                    engine);
             
             apple->set_gravity(2);
             apple->enable_gravity();
             
-            //create_entity(apple);
+            create_entity(apple);
             n_apples++;
         }
     }

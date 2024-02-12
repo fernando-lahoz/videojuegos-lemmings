@@ -8,6 +8,8 @@
 #include "Lemmings_camera.hpp"
 #include "Lemming.hpp"
 #include "Level_manager.hpp"
+#include "Door.hpp"
+#include "Gate.hpp"
 
 // Incluir otros archivos necesarios como Lemming, LevelManager, etc.
 
@@ -21,10 +23,16 @@ private:
   // Otros miembros privados como LevelManager, UI/HUD, etc.
 
 public:
-  // Sobrescribe funciones de Game
-  std::unique_ptr<Camera2D> get_camera() const override
+  Lemmings_game()
+      : Game("Lemmings")
   {
-    return std::make_unique<Lemmings_camera>();
+    // Inicializar otros miembros privados
+  }
+
+  // Sobrescribe funciones de Game
+  std::shared_ptr<Camera2D> get_camera() const override
+  {
+    return std::make_shared<Lemmings_camera>();
   }
 
   void on_game_startup(Engine &engine) override
@@ -35,11 +43,15 @@ public:
     auto map1 = std::make_shared<Entity>(Point3f(0, 0.6, 1), Vector2f(0.1, 0.25), t2, "MAP");
     auto map2 = std::make_shared<Entity>(Point3f(0.9, 0.6, 1), Vector2f(0.1, 0.25), t2, "MAP");
     auto map3 = std::make_shared<Entity>(Point3f(0.45, 0.6, 1), Vector2f(0.1, 0.25), t2, "MAP");
+    auto door = std::make_shared<Door>(Point3f(0.2, 0.5, 1), Vector2f(0.082, 0.052), engine, 1, 1.0f, 15, 1.0f);
+    auto gate = std::make_shared<Gate>(Point3f(0.8, 0.65, 1), Vector2f(0.088, 0.104), engine, 1, 0.8f);
 
     create_entity(map);
     create_entity(map1);
     create_entity(map2);
     create_entity(map3);
+    create_entity(door);
+    create_entity(gate);
   }
 
   void on_loop_start([[maybe_unused]] Engine &engine) override

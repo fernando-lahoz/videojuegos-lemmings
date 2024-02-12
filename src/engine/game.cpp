@@ -1,5 +1,6 @@
 #include "engine/game.hpp"
 #include "engine/engine.hpp"
+#include "engine/IO.hpp"
 
 std::vector<EntityPtr> Game::get_new_entities()
 {
@@ -11,23 +12,28 @@ std::vector<EntityPtr> Game::get_new_entities()
     return new_entities_tmp;
 }
 
+std::string Game::get_name() const
+{
+    return game_name;
+}
+
 void Game::create_entity(EntityPtr entity)
 {
     new_entities.push_back(entity);
 }
 
-std::unique_ptr<Camera2D> Game::get_camera() const
+std::shared_ptr<Camera2D> Game::get_camera() const
 {
-    return std::make_unique<Camera2D>(Bound2f(Point2f(0, 0), Point2f(1, 1)));
+    return std::make_shared<Camera2D>(Bound2f(Point2f(0, 0), Point2f(1, 1)));
 }
 
 void Game::on_loop_start(Engine&) {}
 
 void Game::on_loop_end(Engine&) {}
 
-void Game::on_key_down(Engine&, SDL_KeyboardEvent) {}
+void Game::on_event_down(Engine&, EngineIO::InputEvent) {}
 
-void Game::on_key_up(Engine&, SDL_KeyboardEvent) {}
+void Game::on_event_up(Engine&, EngineIO::InputEvent) {}
 
 void Game::on_game_startup(Engine&) {}
 

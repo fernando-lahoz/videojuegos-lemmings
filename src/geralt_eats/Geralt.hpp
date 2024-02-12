@@ -9,85 +9,6 @@ class Geralt : public Rigid_body
     bool on_ground = false;
     Texture txt_left, txt_right;
 
-    enum State
-    {
-        IDLE=1,
-        LEFT=2,
-        RIGHT=4,
-        UP=8,
-        DOWN=16
-    };
-
-    int state = IDLE;
-    bool right_pressed = false, left_pressed = false;
-    bool up_pressed = false, down_pressed = false;
-
-
-    void set_right()
-    {
-        state = state | RIGHT;
-    }
-
-    void set_left()
-    {
-        state = state | LEFT;
-    }
-
-    void set_up()
-    {
-        state = state | UP;
-    }
-
-    void set_down()
-    {
-        state = state | DOWN;
-    }
-
-    void unset_right()
-    {
-        state = state & ~RIGHT;
-    }
-
-    void unset_left()
-    {
-        state = state & ~LEFT;
-    }
-
-    void unset_up()
-    {
-        state = state & ~UP;
-    }
-
-    void unset_down()
-    {
-        state = state & ~DOWN;
-    }
-
-    void go_idle()
-    {
-        state = IDLE;
-    }
-
-    bool is_right()
-    {
-        return state & RIGHT;
-    }
-
-    bool is_left()
-    {
-        return state & LEFT;
-    }
-
-    bool is_up()
-    {
-        return state & UP;
-    }
-
-    bool is_down()
-    {
-        return state & DOWN;
-    }
-
 public:
 
     Geralt(Point3f position, Vector2f diagonal, Engine& engine)
@@ -103,11 +24,11 @@ public:
         txt_right = engine.load_texture("assets/geralt_right.png");
     }
 
-    void update_state()
+    void update_state(Engine &engine)
     {
         auto speed = get_speed();
 
-        if (is_up())
+        if (engine.is_up_arrow_down())
         {
             if (on_ground)
             {
@@ -117,30 +38,30 @@ public:
             }
         }
 
-        if (is_down())
+        if (engine.is_down_arrow_down())
         {
             speed.y = speed.y + 1;
         }
 
 
-        if (is_left())
+        if (engine.is_left_arrow_down())
         {
             speed.x = -0.3;
             look_left();
         }
 
-        if (is_right())
+        if (engine.is_right_arrow_down())
         {
             speed.x = 0.3;
             look_right();
         }
 
-        if (is_right() && is_left())
+        if (engine.is_right_arrow_down() && engine.is_left_arrow_down())
         {
             speed.x = 0;
         }
 
-        if (!is_right() && !is_left())
+        if (!engine.is_right_arrow_down() && !engine.is_left_arrow_down())
         {
             speed.x = 0;
         }
@@ -150,7 +71,7 @@ public:
 
     void update_position(Engine& engine) override
     {
-        update_state();
+        update_state(engine);
         //std::cout << "State: " << state << "\n";
 
         Rigid_body::update_position(engine);
@@ -186,43 +107,5 @@ public:
     void look_right()
     {
         set_active_texture(txt_right);
-    }
-
-    void on_key_down([[maybe_unused]]Engine& engine, SDL_KeyboardEvent key) override
-    {
-        switch(key.keysym.sym)
-        {
-            case SDLK_UP:
-                set_up();
-                break;
-            case SDLK_DOWN:
-                set_down();
-                break;
-            case SDLK_LEFT:
-                set_left();
-                break;
-            case SDLK_RIGHT:
-                set_right();
-                break;
-        }
-    }
-
-    void on_key_up([[maybe_unused]]Engine& engine, SDL_KeyboardEvent key) override
-    {
-        switch(key.keysym.sym)
-        {
-            case SDLK_UP:
-                unset_up();
-                break;
-            case SDLK_DOWN:
-                unset_down();
-                break;
-            case SDLK_LEFT:
-                unset_left();
-                break;
-            case SDLK_RIGHT:
-                unset_right();
-                break;
-        }
     }
 };

@@ -1,4 +1,5 @@
 #include "engine/render_2D.hpp"
+#include "engine/IO.hpp"
 
 Camera2D::Camera2D()
 {
@@ -10,7 +11,7 @@ Camera2D::Camera2D(Bound2f frame)
     this->frame = frame;
 }
 
-Point2f Camera2D::world_to_screen(Point3f world_point)
+Point2f Camera2D::world_to_screen(Point2f world_point)
 {
     float x = (world_point.x - frame.pMin.x) / (frame.width());
     float y = (world_point.y - frame.pMin.y) / (frame.height());
@@ -26,28 +27,30 @@ Vector2f Camera2D::world_to_screen(Vector2f world_vector)
     return Vector2f(x, y);
 }
 
-void Camera2D::moveRight(Float delta)
+Point2f Camera2D::screen_to_world(Point2f screen_point)
 {
-    frame.pMin.x += delta;
-    frame.pMax.x += delta;
+    float x = screen_point.x * frame.width() + frame.pMin.x;
+    float y = screen_point.y * frame.height() + frame.pMin.y;
+
+    return Point2f(x, y);
 }
 
-void Camera2D::moveLeft(Float delta)
+Vector2f Camera2D::screen_to_world(Vector2f screen_vector)
 {
-    frame.pMin.x -= delta;
-    frame.pMax.x -= delta;
+    float x = screen_vector.x * frame.width();
+    float y = screen_vector.y * frame.height();
+
+    return Vector2f(x, y);
 }
 
-void Camera2D::moveUp(Float delta)
+Bound2f Camera2D::get_frame() const
 {
-    frame.pMin.y += delta;
-    frame.pMax.y += delta;
+    return frame;
 }
 
-void Camera2D::moveDown(Float delta)
+void Camera2D::update_position([[maybe_unused]] Engine&)
 {
-    frame.pMin.y -= delta;
-    frame.pMax.y -= delta;
+    // Do nothing by default
 }
 
 bool Camera2D::isVisible(Entity& entity)
@@ -55,12 +58,12 @@ bool Camera2D::isVisible(Entity& entity)
     return frame.overlaps(entity.bound2f());
 }
 
-void Camera2D::on_key_down(Engine&, SDL_KeyboardEvent)
+void Camera2D::on_event_down(Engine&, EngineIO::InputEvent)
 {
     // Do nothing by default
 }
 
-void Camera2D::on_key_up(Engine&, SDL_KeyboardEvent)
+void Camera2D::on_event_up(Engine&, EngineIO::InputEvent)
 {
     // Do nothing by default
 }
@@ -77,15 +80,15 @@ SDL_Rect Render_2D::entity_to_rect(Entity& e, Camera2D& camera)
 {
     SDL_Rect rect;
 
-    auto l_position = camera.world_to_screen(e.get_position3D());
+    auto w_position = world_to_raster(e.get_position2D(), camera);
     //TODO: what is this cast meant for
-    rect.x = (unsigned) (l_position.x * resolution.x);
-    rect.y = (unsigned) (l_position.y * resolution.y);
+    rect.x = (unsigned) (w_position.x);
+    rect.y = (unsigned) (w_position.y);
 
 
-    auto l_diag = camera.world_to_screen(e.bound2f().diagonal());
-    rect.w = (unsigned) (l_diag.x * resolution.x);
-    rect.h = (unsigned) (l_diag.y * resolution.y);
+    auto w_diag = world_to_raster(e.bound2f().diagonal(), camera);
+    rect.w = (unsigned) (w_diag.x);
+    rect.h = (unsigned) (w_diag.y);
 
 
     return rect;
@@ -102,12 +105,12 @@ void Render_2D::render_entity(Entity& entity, Camera2D& camera)
     }
 }
 
-Render_2D::Render_2D(int width, int height)
+Render_2D::Render_2D(std::string window_name, int width, int height)
 {
     resolution = Vector2i(width, height);
 
     // Window with vsync
-    window = SDL_CreateWindow("Render_2D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
+    window = SDL_CreateWindow(window_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     // Config alpha layers
@@ -129,6 +132,33 @@ Texture Render_2D::load_texture(const std::string& file)
         return texture;
     }
 }
+
+
+Point2f Render_2D::world_to_raster(Point2f world_point, Camera2D& camera)
+{
+    auto screen_p = camera.world_to_screen(world_point);
+    return Point2f(screen_p.x * resolution.x, screen_p.y * resolution.y);
+}
+
+Vector2f Render_2D::world_to_raster(Vector2f world_vector, Camera2D& camera)
+{
+    auto screen_v = camera.world_to_screen(world_vector);
+    return Vector2f(screen_v.x * resolution.x, screen_v.y * resolution.y);
+}
+
+Point2f Render_2D::raster_to_world(Point2f raster_point, Camera2D& camera)
+{
+    auto screen_p = Point2f(raster_point.x / resolution.x, raster_point.y / resolution.y);
+    return camera.screen_to_world(screen_p);
+}
+
+Vector2f Render_2D::raster_to_world(Vector2f raster_vector, Camera2D& camera)
+{
+    auto screen_v = Vector2f(raster_vector.x / resolution.x, raster_vector.y / resolution.y);
+    return camera.screen_to_world(screen_v);
+}
+
+
 
 void Render_2D::draw(std::vector<EntityPtr> &entities, Camera2D& camera)
 {

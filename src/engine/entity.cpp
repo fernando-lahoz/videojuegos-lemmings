@@ -90,9 +90,35 @@ void Entity::destroy()
     deleted_entity = true;
 }
 
+bool Entity::mouse_was_hovering() const
+{
+    return mouse_over;
+}
+
+void Entity::enable_mouse_hover()
+{
+    mouse_over = true;
+}
+
+void Entity::disable_mouse_hover()
+{
+    mouse_over = false;
+}
+
+
 bool Entity::collides(std::shared_ptr<Entity> other) const
 {
     return bound2f().overlaps(other->bound2f());
+}
+
+bool Entity::contains_the_mouse(Engine& engine) const
+{
+    return bound2f().contains(engine.get_mouse_position());
+}
+
+bool Entity::contains_the_mouse([[maybe_unused]] Engine& engine, Point2f mouse_position) const
+{
+    return bound2f().contains(mouse_position);
 }
 
 int Entity::closest_side(std::shared_ptr<Entity> other)
@@ -122,12 +148,12 @@ int Entity::closest_side(std::shared_ptr<Entity> other)
     }
 }
 
-void Entity::on_key_down(Engine&, SDL_KeyboardEvent)
+void Entity::on_event_down(Engine&, EngineIO::InputEvent)
 {
     // Do nothing by default
 }
 
-void Entity::on_key_up(Engine&, SDL_KeyboardEvent)
+void Entity::on_event_up(Engine&, EngineIO::InputEvent)
 {
     // Do nothing by default
 }

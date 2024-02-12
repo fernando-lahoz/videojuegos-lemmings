@@ -11,6 +11,7 @@
 #include "geometry/bounding_box.hpp"
 #include "lib/spectrum.hpp"
 #include "lib/texture.hpp"
+#include "engine/IO.hpp"
 
 class Engine;
 
@@ -20,6 +21,7 @@ private:
     Texture active_texture;    
     bool deleted_entity = false;
     int entity_id;
+    bool mouse_over = false;
 
 protected:
     Point3f position;
@@ -66,9 +68,18 @@ public:
 
     void destroy();
 
+    bool mouse_was_hovering() const;
+    void enable_mouse_hover();
+    void disable_mouse_hover();
+
+
     // Returns true if this entity collides with other
     //  uses excusive comparisons
     bool collides(std::shared_ptr<Entity> other) const;
+
+    // Returns true if the mouse is pointing inside the visible entity
+    bool contains_the_mouse(Engine& engine) const;
+    bool contains_the_mouse(Engine& engine, Point2f mouse_position) const;
 
     // Returns the side of this entity that is closest to other
     // 0: right
@@ -79,15 +90,11 @@ public:
 
     // Event processing is the second thing executed, 
     //  right after game->on_loop_start()
-    // It is warranteed that all key down events are sent
-    //  AFTER all key up events
-    virtual void on_key_down(Engine& engine, SDL_KeyboardEvent event);
+    virtual void on_event_down(Engine& engine, EngineIO::InputEvent event);
 
     // Event processing is the second thing executed, 
     //  right after game->on_loop_start()
-    // It is warranteed that all key up events are sent
-    //  BEFORE all key down events
-    virtual void on_key_up(Engine& engine, SDL_KeyboardEvent event);
+    virtual void on_event_up(Engine& engine, EngineIO::InputEvent event);
 
     // This is called right before the physics are computed
     virtual void pre_physics(Engine& engine);

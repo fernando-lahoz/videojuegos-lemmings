@@ -10,12 +10,18 @@
 
 class Apple : public Rigid_body
 {
+    Texture black_apple;
+    Texture red_apple;
+
     public:
 
-    Apple(Point3f position, Vector2f size, Texture texture) 
-    : Rigid_body(position, size, texture,
+    Apple(Point3f position, Vector2f size, Engine& engine) 
+    : Rigid_body(position, size, engine.load_texture("assets/apple.png"),
         "Apple")
     {
+        black_apple = engine.load_texture("assets/apple.png");
+        red_apple = engine.load_texture("assets/red_apple.png");
+
         set_max_speed(1.5);
         set_gravity(0.3);
         enable_gravity();
@@ -39,5 +45,27 @@ class Apple : public Rigid_body
         }
 
         Rigid_body::update_position(engine);
+    }
+
+    void on_event_down(Engine& engine, EngineIO::InputEvent event) override
+    {
+        if (event == EngineIO::InputEvent::MOUSE_LEFT
+            && contains_the_mouse(engine))
+        {
+            destroy();
+        }
+
+        if (event == EngineIO::InputEvent::MOUSE_HOVER)
+        {
+            set_active_texture(red_apple);
+        }
+    }
+
+    void on_event_up([[maybe_unused]] Engine& engine, EngineIO::InputEvent event) override
+    {
+        if (event == EngineIO::InputEvent::MOUSE_HOVER)
+        {
+            set_active_texture(black_apple);
+        }
     }
 };

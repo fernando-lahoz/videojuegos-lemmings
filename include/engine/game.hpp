@@ -7,6 +7,7 @@
 
 #include "engine/entity.hpp"
 #include "engine/render_2D.hpp"
+#include "engine/IO.hpp"
 
 class Engine;
 
@@ -15,16 +16,23 @@ class Game
 protected:
 
     std::vector<EntityPtr> new_entities;
+    std::string game_name;
 
 public:
 
+    Game(std::string _game_name)
+    : game_name(_game_name)
+    { }
+
     std::vector<EntityPtr> get_new_entities();
+
+    std::string get_name() const;
 
     // Entities are processed after physics 
     //  and before deleting old entities
     void create_entity(EntityPtr entity);
 
-    virtual std::unique_ptr<Camera2D> get_camera() const;
+    virtual std::shared_ptr<Camera2D> get_camera() const;
 
     // This is called right before event processing
     //  It is the first thing called in the loop
@@ -35,8 +43,8 @@ public:
     virtual void on_loop_end(Engine& engine);
 
     // Events are processed after on_loop_start
-    virtual void on_key_down(Engine& engine, SDL_KeyboardEvent event);
-    virtual void on_key_up(Engine& engine, SDL_KeyboardEvent event);
+    virtual void on_event_down(Engine& engine, EngineIO::InputEvent event);
+    virtual void on_event_up(Engine& engine, EngineIO::InputEvent event);
 
     // This are called before starting the main loop
     //  and after finishing it
