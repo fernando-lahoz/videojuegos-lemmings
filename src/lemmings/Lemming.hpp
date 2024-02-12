@@ -364,6 +364,13 @@ public:
       speed.x = 0;
       speed.y = 0;
     }
+
+    if (other->get_entity_name() == "Fire")
+    {
+      go_escape();
+      speed.x = 0;
+      speed.y = 0;
+    }
     set_speed(speed);
 
     Rigid_body::on_collision(engine, other);
