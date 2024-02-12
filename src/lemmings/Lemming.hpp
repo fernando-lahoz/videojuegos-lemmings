@@ -263,7 +263,7 @@ public:
 
       std::string frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
 
-      Texture txt = engine.load_texture(frame_path);
+      Texture txt = engine.load_texture(frame_path.c_str());
       set_active_texture(txt);
     }
   }
@@ -354,6 +354,13 @@ public:
     if (other->get_entity_name() == "Gate")
     {
       go_escape();
+      speed.x = 0;
+      speed.y = 0;
+    }
+
+    if (other->get_entity_name() == "Liquid")
+    {
+      go_drown();
       speed.x = 0;
       speed.y = 0;
     }

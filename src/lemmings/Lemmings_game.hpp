@@ -10,6 +10,7 @@
 #include "Level_manager.hpp"
 #include "Door.hpp"
 #include "Gate.hpp"
+#include "Liquid.hpp"
 
 // Incluir otros archivos necesarios como Lemming, LevelManager, etc.
 
@@ -45,6 +46,7 @@ public:
     auto map3 = std::make_shared<Entity>(Point3f(0.45, 0.6, 1), Vector2f(0.1, 0.25), t2, "MAP");
     auto door = std::make_shared<Door>(Point3f(0.2, 0.5, 1), Vector2f(0.082, 0.052), engine, 1, 1.0f, 15, 1.0f);
     auto gate = std::make_shared<Gate>(Point3f(0.8, 0.65, 1), Vector2f(0.088, 0.104), engine, 1, 0.8f);
+    auto liquid = std::make_shared<Liquid>(Point3f(0.4, 0.7, 1), Vector2f(0.128, 0.06), engine, 1, 0.8f);
 
     create_entity(map);
     create_entity(map1);
@@ -52,6 +54,7 @@ public:
     create_entity(map3);
     create_entity(door);
     create_entity(gate);
+    // create_entity(liquid);
   }
 
   void on_loop_start([[maybe_unused]] Engine &engine) override
