@@ -43,20 +43,18 @@ class Geralt_eats_game : public Game
     {
         while (n_apples < max_apples)
         {
-            // Between 0.1 and 0.9
             //Float x_pos = ((Float)rand() / RAND_MAX) * 0.8 + 0.1;
-
             Float x_pos = 0.5;
 
             auto apple = std::make_shared<Apple>(
                     Point3f(x_pos, -0.11, 0), 
                     Vector2f(0.09, 0.1), 
                     engine);
-            
+
             apple->set_gravity(2);
             apple->enable_gravity();
             
-            create_entity(apple);
+            //create_entity(apple);
             n_apples++;
         }
     }

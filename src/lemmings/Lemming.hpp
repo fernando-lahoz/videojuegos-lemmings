@@ -306,7 +306,7 @@ public:
     Rigid_body::update_position(engine);
   }
 
-  void on_collision(Engine &engine, EntityPtr other) override
+  void on_collision(Engine &engine, EntityPtr other, Point2f intersection_point) override
   {
     auto speed = get_speed();
 
@@ -319,7 +319,7 @@ public:
           return;
       }
 
-      switch (closest_side(other))
+      switch (bound2f().closest_side(intersection_point))
       {
       case 0:
         position.x = other->bound2f().pMax.x;
@@ -366,7 +366,7 @@ public:
     }
     set_speed(speed);
 
-    Rigid_body::on_collision(engine, other);
+    Rigid_body::on_collision(engine, other, intersection_point);
   }
 
   void post_physics(Engine &) override

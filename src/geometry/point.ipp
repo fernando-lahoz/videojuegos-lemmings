@@ -298,6 +298,17 @@ constexpr bool Point2<T>::operator==(const Point2<T> &p) const {
     return x == p.x && y == p.y;
 }
 
+// Operator =
+template <typename T>
+constexpr Point2<T> &Point2<T>::operator=(const Point2<T> &p)
+{
+    assert(!p.has_NaNs());
+    x = p.x; 
+    y = p.y;
+
+    return *this;
+}
+
 template <typename T>
 constexpr bool Point2<T>::operator!=(const Point2<T> &p) const {
     return x != p.x || y != p.y;
@@ -374,7 +385,7 @@ constexpr Vector2<T> Point2<T>::operator-(const Point2<T> &p) const
 template <typename T>
 constexpr Point2<T> Point2<T>::operator-(const Vector2<T> &v) const 
 {
-    assert(!v.hasNaNs());
+    assert(!v.has_NaNs());
     return Point2<T>(x - v.x, y - v.y);
 }
 
@@ -386,7 +397,7 @@ constexpr Point2<T> Point2<T>::operator-() const {
 template <typename T>
 constexpr Point2<T> &Point2<T>::operator-=(const Vector2<T> &v) 
 {
-    assert(!v.hasNaNs());
+    assert(!v.has_NaNs());
     x -= v.x; 
     y -= v.y;
 
@@ -394,9 +405,19 @@ constexpr Point2<T> &Point2<T>::operator-=(const Vector2<T> &v)
 }
 
 template <typename T>
+constexpr Point2<T> &Point2<T>::operator-=(const Point2<T> &p)
+{
+    assert(!p.has_NaNs());
+    x -= p.x; 
+    y -= p.y;
+
+    return *this;
+}
+
+template <typename T>
 constexpr Point2<T> &Point2<T>::operator+=(const Point2<T> &p) 
 {
-    assert(!p.hasNaNs());
+    assert(!p.has_NaNs());
     x += p.x; 
     y += p.y;
 
@@ -406,7 +427,7 @@ constexpr Point2<T> &Point2<T>::operator+=(const Point2<T> &p)
 template <typename T>
 constexpr Point2<T> Point2<T>::operator+(const Point2<T> &p) const 
 {
-    assert(!p.hasNaNs());
+    assert(!p.has_NaNs());
     return Point2<T>(x + p.x, y + p.y);
 }
 

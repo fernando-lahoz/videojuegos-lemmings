@@ -248,6 +248,7 @@ void Engine::delete_dead_entities()
     std::for_each(iterator, entities.end(), [this](EntityPtr entity) {
         game->on_entity_destruction(*this, entity);
     });
+    
     entities.resize(std::distance(entities.begin(), iterator));
 }
 

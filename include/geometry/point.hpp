@@ -91,6 +91,7 @@ public:
     constexpr bool has_Inf() const;
 
     constexpr Point2(const Point2<T> &p);
+    constexpr Point2<T>& operator=(const Point2<T> &p);
 
     constexpr bool operator==(const Point2<T> &v) const;
     constexpr bool operator!=(const Point2<T> &v) const;
@@ -103,7 +104,9 @@ public:
 
     constexpr Vector2<T> operator-(const Point2<T> &p) const;
     constexpr Point2<T> operator-(const Vector2<T> &v) const;
+
     constexpr Point2<T> &operator-=(const Vector2<T> &v);
+    constexpr Point2<T> &operator-=(const Point2<T> &p);
 
     constexpr Point2<T> operator-() const;
 

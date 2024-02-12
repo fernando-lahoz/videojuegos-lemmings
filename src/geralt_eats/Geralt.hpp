@@ -82,7 +82,7 @@ public:
             on_ground = false;
     }
 
-    void on_collision(Engine& engine, EntityPtr other) override
+    void on_collision(Engine& engine, EntityPtr other, Point2f intersection_point) override
     {
         if (other->get_entity_name() == "Apple")
         {
@@ -90,13 +90,7 @@ public:
         }
 
         //std::cout << "Geralt collided with " << other->get_type() << "\n";
-        Rigid_body::on_collision(engine, other);
-
-        // Ground collision
-        if (closest_side(other) == 3) {
-            on_ground = true;
-        }
-
+        Rigid_body::on_collision(engine, other, intersection_point);
     }
 
     void look_left()

@@ -124,7 +124,9 @@ public:
         max_speed_sqr = math::pow2(new_max_speed);
     }
 
-    void on_collision([[maybe_unused]]Engine& engine, EntityPtr other) override
+    void on_collision([[maybe_unused]]Engine& engine, 
+            EntityPtr other,
+            Point2f intersection_point) override
     {
         // If the entity is not moving, collision will not move it
         // Only rigid bodies can collide with other rigid bodies
@@ -136,26 +138,45 @@ public:
 
         auto speed = get_speed();
 
-        // Get out of the other entity
-        switch (closest_side(other))
+        Point2f l_intersection_point = world_to_local(intersection_point);
+
+        Point2f upper = Point2f(0.5, 0);
+        Point2f lower = Point2f(0.5, 1);
+        Point2f left = Point2f(0, 0.2);
+        Point2f right = Point2f(1, 0.2);
+
+        Float distance_up = distance(l_intersection_point, upper);
+        Float distance_down = distance(l_intersection_point, lower);
+        Float distance_left = distance(l_intersection_point, left);
+        Float distance_right = distance(l_intersection_point, right);
+
+        //std::cout << l_intersection_point << ", d_l" << distance_left << ", d_d" << distance_down << "\n";
+
+
+        Float min_distance = std::min({distance_up, distance_down, 
+            distance_left, distance_right});
+
+        if (min_distance == distance_up)
         {
-            case 0:
-                position.x = other->bound2f().pMin.x - diagonal.x;
-                speed.x = 0;
-                break;
-            case 1:
-                position.x = other->bound2f().pMax.x;
-                speed.x = 0;
-                break;
-            case 2:
-                position.y = other->bound2f().pMax.y;
-                speed.y = 0;
-                break;
-            case 3:
-                position.y = other->bound2f().pMin.y - diagonal.y;
-                speed.y = 0;
-                break;
+            speed.y = 0;
+            position.y = other->bound2f().pMax.y;
         }
+        else if (min_distance == distance_down)
+        {
+            speed.y = 0;
+            position.y = other->bound2f().pMin.y - diagonal.y;
+        }
+        else if (min_distance == distance_left)
+        {
+            speed.x = 0;
+            position.x = other->bound2f().pMax.x;
+        }
+        else if (min_distance == distance_right)
+        {
+            speed.x = 0;
+            position.x = other->bound2f().pMin.x - diagonal.x;
+        }
+        
 
         set_speed(speed);
     }
