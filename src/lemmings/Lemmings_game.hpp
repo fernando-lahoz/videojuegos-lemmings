@@ -12,6 +12,9 @@
 #include "Gate.hpp"
 #include "Liquid.hpp"
 #include "Fire.hpp"
+#include "Flamethrower.hpp"
+#include "Spinner.hpp"
+#include "Chain.hpp"
 
 // Incluir otros archivos necesarios como Lemming, LevelManager, etc.
 
@@ -47,8 +50,11 @@ public:
     auto map3 = std::make_shared<Entity>(Point3f(0.45, 0.6, 1), Vector2f(0.1, 0.25), t2, "MAP");
     auto door = std::make_shared<Door>(Point3f(0.2, 0.5, 1), Vector2f(0.082, 0.052), engine, 1, 1.0f, 15, 1.0f);
     auto gate = std::make_shared<Gate>(Point3f(0.8, 0.65, 1), Vector2f(0.088, 0.104), engine, 1, 0.8f);
-    auto liquid = std::make_shared<Liquid>(Point3f(0.4, 0.7, 1), Vector2f(0.128, 0.06), engine, 1, 0.8f);
-    auto fire = std::make_shared<Fire>(Point3f(0.4, 0.7, 1), Vector2f(0.128, 0.06), engine, 0.8f);
+    // auto liquid = std::make_shared<Liquid>(Point3f(0.4, 0.7, 1), Vector2f(0.128, 0.06), engine, 1, 0.8f);
+    // auto fire = std::make_shared<Fire>(Point3f(0.4, 0.7, 1), Vector2f(0.128, 0.06), engine, 0.8f);
+    auto flamethrower = std::make_shared<Flamethrower>(Point3f(0.34, 0.68, 1), Vector2f(0.128, 0.06), engine, false, 0.8f);
+    auto spinner = std::make_shared<Spinner>(Point3f(0.4, 0.7, 1), Vector2f(0.128, 0.06), engine, 0.8f);
+    auto chain = std::make_shared<Chain>(Point3f(0.4, 0.66, 1), Vector2f(0.032, 0.076), engine, 0.8f);
 
     create_entity(map);
     create_entity(map1);
@@ -57,7 +63,10 @@ public:
     create_entity(door);
     create_entity(gate);
     // create_entity(liquid);
-    create_entity(fire);
+    // create_entity(fire);
+    // create_entity(flamethrower);
+    // create_entity(spinner);
+    create_entity(chain);
   }
 
   void on_loop_start([[maybe_unused]] Engine &engine) override

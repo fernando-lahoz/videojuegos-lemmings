@@ -18,15 +18,20 @@ protected:
 
 public:
   Structure(Point3f position, Vector2f diagonal, Engine &engine, std::string base_path, int structure_type, int max_frames, float animation_duration, std::string name = "Structure", bool is_loop = false, bool is_event_triggered = false)
-      : Entity(position, diagonal, engine.load_texture(base_path + "_0_0.png"), name),
+      : Entity(position, diagonal, engine.load_texture(base_path + "_" + std::to_string(structure_type) + "_0.png"), name),
         base_path(base_path),
         is_loop(is_loop),
         is_event_triggered(is_event_triggered),
         is_playing(!is_event_triggered), // Si no se dispara por evento, comienza a reproducir inmediatamente
+        structure_type(structure_type),
         max_frames(max_frames),
-        animation_duration(animation_duration),
-        structure_type(structure_type)
+        animation_duration(animation_duration)
   {
+  }
+
+  bool get_is_playing()
+  {
+    return is_playing;
   }
 
   void update_animation(Engine &engine)
@@ -43,8 +48,8 @@ public:
       if (!is_loop && current_frame == 0)
       {
         is_playing = false; // Detiene la animación si no es en bucle
-        std::cout << "Animacion acabada\n";
-        return;
+        if (!is_event_triggered)
+          return;
       }
 
       std::string frame_path = base_path + "_" + std::to_string(structure_type) + "_" + std::to_string(current_frame) + ".png";
@@ -62,5 +67,10 @@ public:
       current_frame = 0;
       time_frame_sprite = 0.0f;
     }
+  }
+
+  void pre_physics(Engine &engine) override
+  {
+    Structure::update_animation(engine);
   }
 };

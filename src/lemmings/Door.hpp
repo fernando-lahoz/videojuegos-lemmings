@@ -1,4 +1,6 @@
 
+#pragma once
+
 #include "Structure.hpp"
 
 class Door : public Structure

@@ -3,6 +3,8 @@
 #include "engine/rigid_body.hpp"
 #include "engine/render_2D.hpp"
 
+#include "Chain.hpp"
+
 class Lemming : public Rigid_body
 {
   bool on_ground = false;
@@ -370,6 +372,24 @@ public:
       go_escape();
       speed.x = 0;
       speed.y = 0;
+    }
+
+    if (other->get_entity_name() == "Spinner" || other->get_entity_name() == "Flamethrower")
+    {
+      speed.x = 0;
+      speed.y = 0;
+      destroy();
+    }
+
+    if (other->get_entity_name() == "Chain")
+    {
+      std::shared_ptr<Chain> chain_ptr = std::dynamic_pointer_cast<Chain>(other);
+      if (chain_ptr && chain_ptr->get_is_playing())
+        return;
+      chain_ptr->trigger_event_animation();
+      speed.x = 0;
+      speed.y = 0;
+      destroy();
     }
     set_speed(speed);
 
