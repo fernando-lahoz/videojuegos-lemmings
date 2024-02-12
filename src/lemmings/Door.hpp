@@ -10,12 +10,16 @@ private:
   int spawned_lemmings = 0;
   int max_lemmings;
   float spawn_interval;
+  Vector2f lemming_size;
+  bool is_debug;
+  bool change = false;
 
 public:
-  Door(Point3f position, Vector2f diagonal, Engine &engine, int structure_type, float animation_duration, int max_lemmings, float spawn_interval)
-      : Structure(position, diagonal, engine, "assets/door/door", structure_type, 10, animation_duration, "Door", false, false),
+  Door(Point3f position, float size, Engine &engine, int structure_type, float animation_duration, int max_lemmings, float spawn_interval, bool is_debug = false)
+      : Structure(position, Vector2f(41 * size, 25 * size), engine, "assets/door/door", structure_type, 10, animation_duration, "Door", false, false, is_debug),
         max_lemmings(max_lemmings),
-        spawn_interval(spawn_interval)
+        spawn_interval(spawn_interval),
+        lemming_size(Vector2f(20 * size, 20 * size))
   {
   }
 
@@ -32,7 +36,6 @@ public:
         spawn_timer = 0.0f;
         spawned_lemmings++;
         // Asume que hay una función para crear e inicializar un Lemming
-        auto lemming_size = Vector2f(0.08, 0.08);
         auto lemming = std::make_shared<Lemming>(calculate_spawn_position(lemming_size), lemming_size, engine);
         engine.get_game()->create_entity(lemming);
         std::cout << "Lemming creado\n";

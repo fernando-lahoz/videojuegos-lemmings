@@ -15,6 +15,7 @@ class Lemming : public Rigid_body
   bool is_loop;                   // Indica si la animación es en bucle
   bool is_playing = true;         // Indica si la animación está actualmente en reproducción
   int current_frame = 0;          // Frame actual de la animación
+  int distance_fall = 0;
 
   const int STATE_IS_LOOP_ANIMATION[14] = {false, true, true, true, true, true, true, false, true, true, true, false, false, false}; // indicates if the animation is loop
   const int STATE_N_FRAMES[14] = {8, 9, 4, 16, 16, 16, 8, 30, 16, 32, 24, 8, 16, 16};                                                // number of frames of each animation

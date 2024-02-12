@@ -6,6 +6,6 @@ class Gate : public Structure
 {
 public:
   // Constructor de Gate
-  Gate(Point3f position, Vector2f diagonal, Engine &engine, int structure_type, float animation_duration)
-      : Structure(position, diagonal, engine, "assets/gate/gate", structure_type, 6, animation_duration, "Gate", true /* is_loop */, false /* is_event_triggered */) {}
+  Gate(Point3f position, float size, Engine &engine, int structure_type, float animation_duration, bool is_debug = false)
+      : Structure(position, Vector2f(44 * size, 52 * size), engine, "assets/gate/gate", structure_type, 6, animation_duration, "Gate", true /* is_loop */, false /* is_event_triggered */, is_debug) {}
 };

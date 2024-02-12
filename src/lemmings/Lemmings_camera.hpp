@@ -21,21 +21,21 @@ public:
     {
         this->frame = frame;
     }
-    
-    void update_position(Engine& engine) override
+
+    void update_position(Engine &engine) override
     {
         Float delta_time = engine.get_delta_time();
 
         if (engine.is_a_down())
         {
-            frame.pMin.x -= 0.1 * delta_time;
-            frame.pMax.x -= 0.1 * delta_time;
+            frame.pMin.x -= 0.2 * delta_time;
+            frame.pMax.x -= 0.2 * delta_time;
         }
 
         if (engine.is_d_down())
         {
-            frame.pMin.x += 0.1 * delta_time;
-            frame.pMax.x += 0.1 * delta_time;
+            frame.pMin.x += 0.2 * delta_time;
+            frame.pMax.x += 0.2 * delta_time;
         }
     }
 };
