@@ -31,7 +31,7 @@ protected:
 public:
     Entity(Point3f position, Vector2f diagonal, Texture texture, 
             std::string_view _entity_name, 
-            std::string_view _class_name="Entity");
+            std::string_view _class_name = "Entity");
 
     // Get the specific entity name
     //  Ex: Main character

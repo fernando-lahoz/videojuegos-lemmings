@@ -13,7 +13,7 @@ protected:
     bool _has_gravity;
     Float gravity = 0;
 
-    #define RIGID_BODY_ID "Rigid_body"
+    static constexpr char RIGID_BODY_ID[] = "Rigid_body";
     
     void update_speed_gravity(Float gravity, Float delta_time)
     {
