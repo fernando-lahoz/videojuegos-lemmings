@@ -29,6 +29,6 @@ public:
 
   void on_game_startup(Engine &engine) override
   {
-    Level level(engine, 1); // Crea el nivel correspondiente
+    Level level(engine, 0); // Crea el nivel correspondiente
   }
 };
