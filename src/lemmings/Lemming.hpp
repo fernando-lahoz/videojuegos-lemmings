@@ -334,7 +334,7 @@ public:
     Rigid_body::update_position(engine);
   }
 
-  void on_collision(Engine &engine, EntityPtr other) override
+  void on_collision(Engine &, EntityPtr other) override
   {
     auto speed = get_speed();
 

@@ -137,6 +137,10 @@ public:
     Rigid_body::update_position(engine);
   }
 
+  void on_collision([[maybe_unused]] Engine &, EntityPtr) override
+  {
+  }
+
   void post_physics(Engine &) override
   {
     if (change)
