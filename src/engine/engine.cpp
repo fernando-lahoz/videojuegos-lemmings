@@ -126,6 +126,31 @@ Point2f Engine::get_mouse_position()
     return mouse_position;
 }
 
+bool Engine::ray_march_alpha(Ray &ray, Float &offset, 
+        Float &max_offset, 
+        EntityPtr entity) const
+{
+    Float search_distance = max_offset - offset;
+
+    int n_samples = 100;
+    Float step_size = search_distance / n_samples;
+
+    for (int i = 0; i < n_samples; i++)
+    {
+        Float t = offset + step_size*i;
+        Point3f p3 = ray(t);
+        Point2f p = Point2f(p3.x, p3.y);
+
+        if (entity->contains(p))
+        {
+            offset = t;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 
 // Returns true if the program should quit
 bool Engine::process_events()
@@ -289,42 +314,14 @@ std::shared_ptr<Game> Engine::get_game()
     return game;
 }
 
-// Intersect a ray with all entities in the engine
-// If check_z_axis is true, only entities with a z coordinate == than the
-//  ray's intersection point will be considered 
-//  (If the ray does not move on z axis, then only entities with 
-//  z == than ray's origin will be considered)
-bool Engine::intesect_ray(Ray &ray, bool check_z_axis, Float &hit_offset, EntityPtr &hit_entity)
-{
-    hit_offset = INFINITY;
-
-    for (auto& entity : entities)
-    {
-        auto bounding_box = entity->bound2f();
-        Float offset;
-
-        if (bounding_box.intersects(ray, offset) 
-            && (offset < hit_offset)
-            && (!check_z_axis 
-                || 
-                (entity->get_position3D().z == ray(offset).z)))
-        {
-            hit_entity = entity;
-            hit_offset = offset;
-        }
-    }
-
-    return hit_offset < INFINITY;
-}
-
 bool Engine::intesect_ray(Ray &ray, 
-            bool check_z_axis,
             int not_this_entity_id,
             const std::string &force_class_name,
-            Float &hit_offset, 
+            Float &hit_offset1, 
+            Float &hit_offset2, 
             EntityPtr &hit_entity)
 {
-    hit_offset = INFINITY;
+    hit_offset1 = INFINITY;
 
     for (auto& entity : entities)
     {
@@ -333,20 +330,37 @@ bool Engine::intesect_ray(Ray &ray,
 
         auto bounding_box = entity->bound2f();
         Float offset;
+        Point2f origin;
+        bool intersects = false;
+        origin.x = ray.origin.x;
+        origin.y = ray.origin.y;
 
-        if (bounding_box.intersects(ray, offset) 
-            && (offset < hit_offset)
-            && (entity->get_class() == force_class_name)
-            && (!check_z_axis 
-                || 
-                (entity->get_position3D().z == ray(offset).z)))
+        if (bounding_box.contains(origin)) 
         {
-            hit_entity = entity;
-            hit_offset = offset;
+            offset = 0;
+            intersects = true;
+        }
+        else {
+            intersects = bounding_box.intersects(ray, offset);
+        }                
+
+        if (intersects
+            && (offset < hit_offset1)
+            && (entity->get_class() == force_class_name))
+        {
+            Float max_offset;
+            bounding_box.second_intersection(ray, max_offset);
+
+            if (ray_march_alpha(ray, offset, max_offset, entity))
+            {
+                hit_offset1 = offset;
+                hit_offset2 = max_offset;
+                hit_entity = entity;
+            }
         }
     }
 
-    return hit_offset < INFINITY;
+    return hit_offset1 < INFINITY;
 
 }
 

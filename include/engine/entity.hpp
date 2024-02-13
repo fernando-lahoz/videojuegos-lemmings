@@ -76,14 +76,8 @@ public:
 
 
     // Returns true if this entity collides with other.
-    //  uses excusive comparisons, 
-    //  and returns the closes side 
-    //  of the entity to the intersection
-    // 0: right
-    // 1: up
-    // 2: left
-    // 3: down
-    bool collides(std::shared_ptr<Entity> other, Point2f &intersection_point) const;
+    //  uses excusive comparisons
+    bool collides(std::shared_ptr<Entity> other) const;
     bool contains(Point2f point) const;
 
     // Returns true if the mouse is pointing inside the visible entity
@@ -110,8 +104,7 @@ public:
     // Collisions are called right after updating the positions,
     //  and before the end step
     virtual void on_collision(Engine& engine, 
-            std::shared_ptr<Entity> other, 
-            Point2f intersection_point);
+            std::shared_ptr<Entity> other);
 
     // This is called after all physics have finished
     virtual void post_physics(Engine& engine);

@@ -21,12 +21,10 @@ void Physics_engine::compute_collisions(Engine& engine)
     {
         for(std::size_t j = i + 1; j < entities.size(); j++)
         {
-            Point2f intersection_point;
-
-            if (entities[i]->collides(entities[j], intersection_point))
+            if (entities[i]->collides(entities[j]))
             {
-                entities[i]->on_collision(engine, entities[j], intersection_point);
-                entities[j]->on_collision(engine, entities[i], intersection_point);
+                entities[i]->on_collision(engine, entities[j]);
+                entities[j]->on_collision(engine, entities[i]);
             }
         }
     }

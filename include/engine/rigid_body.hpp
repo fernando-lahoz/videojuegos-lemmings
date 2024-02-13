@@ -31,11 +31,12 @@ protected:
         Ray ray(origin, Vector2f(0, 1));
 
         EntityPtr ground;
-        Float hit_offset;
-        bool intersected = engine.intesect_ray(ray, false, 
+        Float hit_offset, hit_offset_max;
+        bool intersected = engine.intesect_ray(ray, 
                 get_entity_id(), 
                 RIGID_BODY_ID,
-                hit_offset, ground);
+                hit_offset, hit_offset_max,
+                ground);
 
         if (intersected && hit_offset < 0.005)
             return true;
@@ -124,10 +125,108 @@ public:
         max_speed_sqr = math::pow2(new_max_speed);
     }
 
-    void on_collision([[maybe_unused]]Engine& engine, 
-            EntityPtr other,
-            Point2f intersection_point) override
+    // 0: right
+    // 1: up
+    // 2: left
+    // 3: down
+    int closest_intersection(Engine &engine, Float &closest_offset)
     {
+        // Launch rays in four directions to check for collisions
+        //  with other entities
+        Point2f up = bound2f().pMin + Vector2f(diagonal.x / 2, 0);
+        Point2f down = bound2f().pMin + Vector2f(diagonal.x / 2, diagonal.y);
+        Point2f left = bound2f().pMin + Vector2f(0, diagonal.y / 2);
+        Point2f right = bound2f().pMin + Vector2f(diagonal.x, diagonal.y / 2);
+        
+        Ray up_ray(up, Vector2f(0, -1));
+        Ray down_ray(down, Vector2f(0, 1));
+        Ray left_ray(left, Vector2f(-1, 0));
+        Ray right_ray(right, Vector2f(1, 0));
+
+        Float hit_offset_max;
+
+        int closest = -1;
+        closest_offset = INFINITY;
+
+        for (int i = 0; i < 4; i++)
+        {
+            Ray ray;
+            Float hit_offset;
+            EntityPtr hit_entity;
+            switch (i)
+            {
+                case 0:
+                    ray = right_ray;
+                    break;
+                case 1:
+                    ray = up_ray;
+                    break;
+                case 2:
+                    ray = left_ray;
+                    break;
+                case 3:
+                    ray = down_ray;
+                    break;
+            }
+
+            bool intersected = engine.intesect_ray(ray, 
+                    get_entity_id(),
+                    RIGID_BODY_ID,
+                    hit_offset, 
+                    hit_offset_max,
+                    hit_entity);
+
+            if (intersected && hit_offset < closest_offset)
+            {
+                closest_offset = hit_offset;
+                closest = i;
+            }
+        }
+
+        return closest;
+    }
+
+    bool inverse_collision_distance(Engine &engine, int direction, Float &distance)
+    {
+        Ray ray;
+        Float distance_min;
+        EntityPtr hit_entity;
+
+        if (direction == 0)
+        {
+            Point2f right = bound2f().pMin + Vector2f(diagonal.x, diagonal.y / 2);
+            ray = Ray(right, Vector2f(-1, 0));    
+        }
+        else if (direction == 1)
+        {
+            Point2f up = bound2f().pMin + Vector2f(diagonal.x / 2, 0);
+            ray = Ray(up, Vector2f(0, 1));
+        }
+        else if (direction == 2)
+        {
+            Point2f left = bound2f().pMin + Vector2f(0, diagonal.y / 2);
+            ray = Ray(left, Vector2f(1, 0));
+        }
+        else if (direction == 3)
+        {
+            Point2f down = bound2f().pMin + Vector2f(diagonal.x / 2, diagonal.y);
+            ray = Ray(down, Vector2f(0, -1));
+        }
+
+        bool intersected = engine.intesect_ray(ray, 
+                    get_entity_id(),
+                    RIGID_BODY_ID,
+                    distance_min, 
+                    distance,
+                    hit_entity);
+
+        return intersected;
+    }
+
+    void on_collision([[maybe_unused]]Engine& engine, 
+            EntityPtr other) override
+    {
+        std::cout << "Collision with " << other->get_entity_name() << std::endl;
         // If the entity is not moving, collision will not move it
         // Only rigid bodies can collide with other rigid bodies
         if (speed.length_squared() == 0 ||
@@ -138,45 +237,34 @@ public:
 
         auto speed = get_speed();
 
-        Point2f l_intersection_point = world_to_local(intersection_point);
+        Float closest_offset, distance;
 
-        Point2f upper = Point2f(0.5, 0);
-        Point2f lower = Point2f(0.5, 1);
-        Point2f left = Point2f(0, 0.2);
-        Point2f right = Point2f(1, 0.2);
+        int closest_side = closest_intersection(engine, closest_offset);
+        bool got_distance = inverse_collision_distance(engine, closest_side, distance);
 
-        Float distance_up = distance(l_intersection_point, upper);
-        Float distance_down = distance(l_intersection_point, lower);
-        Float distance_left = distance(l_intersection_point, left);
-        Float distance_right = distance(l_intersection_point, right);
+        std::cout << "Closest side: " << closest_side << std::endl;
+        std::cout << "Distance inside: " << distance << std::endl;
 
-        //std::cout << l_intersection_point << ", d_l" << distance_left << ", d_d" << distance_down << "\n";
-
-
-        Float min_distance = std::min({distance_up, distance_down, 
-            distance_left, distance_right});
-
-        if (min_distance == distance_up)
+        if (got_distance && closest_side == 0)
         {
-            speed.y = 0;
-            position.y = other->bound2f().pMax.y;
-        }
-        else if (min_distance == distance_down)
-        {
-            speed.y = 0;
-            position.y = other->bound2f().pMin.y - diagonal.y;
-        }
-        else if (min_distance == distance_left)
-        {
+            position.x -= distance;
             speed.x = 0;
-            position.x = other->bound2f().pMax.x;
         }
-        else if (min_distance == distance_right)
+        else if (got_distance && closest_side == 1)
         {
-            speed.x = 0;
-            position.x = other->bound2f().pMin.x - diagonal.x;
+            position.y += distance;
+            speed.y = 0;
         }
-        
+        else if (got_distance && closest_side == 2)
+        {
+            position.x += distance;
+            speed.x = 0;
+        }
+        else if (got_distance && closest_side == 3)
+        {
+            position.y -= distance;
+            speed.y = 0;
+        }
 
         set_speed(speed);
     }

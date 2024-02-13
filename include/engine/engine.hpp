@@ -26,6 +26,9 @@ private:
     void process_new_entities();
     void send_mouse_hover();
     void change_input_state(EngineIO::InputEvent key, bool is_down);
+    bool ray_march_alpha(Ray &ray, Float &offset, Float &max_offset, 
+                            EntityPtr entity) const;
+
     EngineIO::InputEvent SDL_to_input_event(SDL_KeyboardEvent key);
     EngineIO::InputEvent SDL_to_input_event(SDL_MouseButtonEvent key);
 
@@ -67,12 +70,6 @@ public:
     Point2f get_mouse_position();
     
 
-
-    bool intesect_ray(Ray &ray, 
-            bool check_z_axis,
-            Float &hit_offset, 
-            EntityPtr &hit_entity);
-
     // Intersect a ray with all entities in the engine
     //  except for the entity with name not_this_entity
     // If check_z_axis is true, only entities with a z coordinate == than the
@@ -81,10 +78,10 @@ public:
     //  z == than ray's origin will be considered)
     // Class name specifies a class of entity wanted for the intersection
     bool intesect_ray(Ray &ray, 
-            bool check_z_axis,
             int not_this_entity_id,
             const std::string &force_class_name,
-            Float &hit_offset, 
+            Float &hit_offset1,
+            Float &hit_offset2, 
             EntityPtr &hit_entity);
 
 

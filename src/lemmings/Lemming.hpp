@@ -306,7 +306,7 @@ public:
     Rigid_body::update_position(engine);
   }
 
-  void on_collision(Engine &engine, EntityPtr other, Point2f intersection_point) override
+  void on_collision(Engine &engine, EntityPtr other) override
   {
     auto speed = get_speed();
 
@@ -319,35 +319,16 @@ public:
           return;
       }
 
-      switch (bound2f().closest_side(intersection_point))
+      Float closest_offset;
+
+      if (closest_intersection(engine, closest_offset) == 3)
       {
-      case 0:
-        position.x = other->bound2f().pMax.x;
-        if (direction < 0)
-          direction *= -1;
-        speed.x = 0;
-        // std::cout << "Lemming turn right\n";
-        break;
-      case 1:
-        position.x = other->bound2f().pMin.x - diagonal.x;
-        if (direction > 0)
-          direction *= -1;
-        speed.x = 0;
-        // std::cout << "Lemming turn left\n";
-        break;
-      case 2:
-        position.y = other->bound2f().pMax.y;
-        speed.y = 0;
-        break;
-      case 3:
         position.y = other->bound2f().pMin.y - diagonal.y;
         on_ground = true;
         if (is_floating() || is_falling())
         {
           go_walk();
         }
-
-        break;
       }
     }
 
@@ -366,7 +347,7 @@ public:
     }
     set_speed(speed);
 
-    Rigid_body::on_collision(engine, other, intersection_point);
+    Rigid_body::on_collision(engine, other);
   }
 
   void post_physics(Engine &) override

@@ -59,7 +59,7 @@ bool Texture::is_alpha_pixel(Point2f lpixel) const
         throw std::runtime_error("No surface loaded");
 
     if (pixel.x < 0 || pixel.y < 0 || pixel.x >= surface->w || pixel.y >= surface->h)
-        throw std::out_of_range("Pixel coordinates out of range");
+        throw std::out_of_range("Pixel coordinates out of range on alpha check");
 
     int bpp = surface->format->BytesPerPixel;
     Uint8* p = (Uint8*)surface->pixels + pixel.y * surface->pitch + pixel.x * bpp;

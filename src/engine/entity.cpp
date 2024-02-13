@@ -148,7 +148,7 @@ void Entity::disable_mouse_hover()
 // 1: Top
 // 2: Left
 // 3: Bottom
-bool Entity::collides(std::shared_ptr<Entity> other, Point2f &intersection_point) const
+bool Entity::collides(std::shared_ptr<Entity> other) const
 {
     if (bound2f().overlaps(other->bound2f()))
     {        
@@ -174,7 +174,6 @@ bool Entity::collides(std::shared_ptr<Entity> other, Point2f &intersection_point
 
                 if (!txt.is_alpha_pixel(lsample) && !other_txt.is_alpha_pixel(other_lsample))
                 {
-                    intersection_point = sample_point;
                     return true;
                 }
             }
@@ -241,7 +240,7 @@ void Entity::update_position(Engine&)
     // Do nothing by default
 }
 
-void Entity::on_collision(Engine&, std::shared_ptr<Entity>, Point2f)
+void Entity::on_collision(Engine&, std::shared_ptr<Entity>)
 {
     // Do nothing by default
 }

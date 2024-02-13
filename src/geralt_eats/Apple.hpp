@@ -27,14 +27,14 @@ class Apple : public Rigid_body
         enable_gravity();
     }
 
-    void on_collision(Engine& engine, EntityPtr other, Point2f intersection_point) override
+    void on_collision(Engine& engine, EntityPtr other) override
     {
         if (other->get_entity_name() == "Geralt")
         {
             destroy();
         }
 
-        Rigid_body::on_collision(engine, other, intersection_point);
+        Rigid_body::on_collision(engine, other);
     }
 
     void update_position (Engine& engine) override
