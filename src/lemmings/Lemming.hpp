@@ -213,7 +213,7 @@ public:
       return false;
     }
     if (((is_floating() || is_falling()) && (skill >= Utils::SKILL_EGOIST)) ||
-        (is_escaping() || is_crashing() || is_exploding() || is_drowning()) || (skill >= Utils::SKILL_EGOIST && skills >= Utils::SKILL_EGOIST) || false) // TODO: ADD RESTRICTIONS OF what cases you can't add a skill to the lemming
+        (is_escaping() || is_crashing() || is_exploding() || is_drowning()) || (skill >= Utils::SKILL_EGOIST && skills >= Utils::SKILL_EGOIST) || false)
     {
       return false;
     }
