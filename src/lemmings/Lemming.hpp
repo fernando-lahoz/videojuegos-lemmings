@@ -2,14 +2,15 @@
 
 #include "engine/rigid_body.hpp"
 #include "engine/render_2D.hpp"
+#include "utils.hpp"
 
 #include "Chain.hpp"
 
 class Lemming : public Rigid_body
 {
   bool on_ground = false;
-  Texture txt_left, txt_right, txt;
-
+  Texture txt;
+  Level_info &level_info;
   float time_frame_sprite = 0.0f; // Acumulador de tiempo para la animación del sprite
   std::string base_path;          // Base para el path de las texturas de animación
   bool is_loop;                   // Indica si la animación es en bucle
@@ -18,201 +19,172 @@ class Lemming : public Rigid_body
   int distance_fall = 0;
   bool do_action_in_frame = false;
 
-  const int STATE_IS_LOOP_ANIMATION[14] = {false, true, true, true, true, true, true, false, true, true, true, false, false, false}; // indicates if the animation is loop
-  const int STATE_N_FRAMES[14] = {8, 9, 4, 16, 16, 16, 8, 30, 16, 32, 24, 8, 16, 16};                                                // number of frames of each animation
-  const float STATE_ANIMATION_DURATION[14] = {1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};   // duration of each animation in seconds
+  int skills = Utils::NO_SKILLS;
 
-  enum Skills
-  {
-    NO_SKILLS = 0,
-    BLOCK = 1,
-    BUILD = 2,
-    CLIMB = 4,
-    FLOAT = 8,
-    DIG_VERTICAL = 16,
-    DIG_HORIZONTAL = 32,
-    DIG_DIAGONAL = 64,
-    EXPLODE = 128,
-  };
-
-  int skills = NO_SKILLS;
-
-  enum State
-  {
-    IDLE = 0,
-    WALKING = 1,
-    FALLING = 2,
-    BLOCKING = 3,
-    BUILDING = 4,
-    CLIMBING = 5,
-    FLOATING = 6,
-    EXPLODING = 7,
-    DIGGING_VERTICAL = 8,
-    DIGGING_HORIZONTAL = 9,
-    DIGGING_DIAGONAL = 10,
-    ESCAPING = 11,
-    DROWNING = 12,
-    CRASHING = 13,
-  };
-
-  int state = IDLE;
+  int state = Utils::IDLE;
 
   int direction = 1; // Comienza moviéndose hacia la derecha
 
   void go_idle()
   {
-    state = IDLE;
+    state = Utils::IDLE;
     // std::cout << "GO IDLE\n";
   }
 
   void go_walk()
   {
-    state = WALKING;
+    state = Utils::WALKING;
     // std::cout << "GO WALKING\n";
   }
 
   void go_fall()
   {
-    state = FALLING;
+    state = Utils::FALLING;
     // std::cout << "GO FALLING\n";
   }
 
   void go_block()
   {
-    state = BLOCKING;
+    state = Utils::BLOCKING;
     // std::cout << "GO BLOCKING\n";
   }
 
   void go_build()
   {
-    state = BUILDING;
+    state = Utils::BUILDING;
     // std::cout << "GO BUILDING\n";
   }
 
   void go_climb()
   {
-    state = CLIMBING;
+    state = Utils::CLIMBING;
     // std::cout << "GO CLIMBING\n";
   }
 
   void go_float()
   {
-    state = FLOATING;
+    state = Utils::FLOATING;
     // std::cout << "GO FLOATING\n";
   }
 
   void go_explode()
   {
-    state = EXPLODING;
+    state = Utils::EXPLODING;
     // std::cout << "GO EXPLODING\n";
   }
 
   void go_dig_vertical()
   {
-    state = DIGGING_VERTICAL;
+    state = Utils::DIGGING_VERTICAL;
     // std::cout << "GO DIGGING_VERTICAL\n";
   }
 
   void go_dig_horizontal()
   {
-    state = DIGGING_HORIZONTAL;
+    state = Utils::DIGGING_HORIZONTAL;
     // std::cout << "GO DIGGING_HORIZONTAL\n";
   }
 
   void go_dig_diagonal()
   {
-    state = DIGGING_DIAGONAL;
+    state = Utils::DIGGING_DIAGONAL;
     // std::cout << "GO DIGGING_DIAGONAL\n";
   }
 
   void go_escape()
   {
-    state = ESCAPING;
+    state = Utils::ESCAPING;
     // std::cout << "GO DIGGING_DIAGONAL\n";
   }
 
   void go_drown()
   {
-    state = DROWNING;
+    state = Utils::DROWNING;
     // std::cout << "GO DIGGING_DIAGONAL\n";
   }
 
   void go_crash()
   {
-    state = CRASHING;
+    state = Utils::CRASHING;
     // std::cout << "GO DIGGING_DIAGONAL\n";
   }
 
   bool is_idle()
   {
-    return state == IDLE;
+    return state == Utils::IDLE;
   }
 
   bool is_falling()
   {
-    return state == FALLING;
+    return state == Utils::FALLING;
   }
 
   bool is_walking()
   {
-    return state == WALKING;
+    return state == Utils::WALKING;
   }
 
   bool is_blocking()
   {
-    return state == BLOCKING;
+    return state == Utils::BLOCKING;
   }
 
   bool is_building()
   {
-    return state == BUILDING;
+    return state == Utils::BUILDING;
   }
 
   bool is_climbing()
   {
-    return state == CLIMBING;
+    return state == Utils::CLIMBING;
   }
 
   bool is_floating()
   {
-    return state == FLOATING;
+    return state == Utils::FLOATING;
   }
 
   bool is_exploding()
   {
-    return state == EXPLODING;
+    return state == Utils::EXPLODING;
   }
 
   bool is_digging_vertical()
   {
-    return state == DIGGING_VERTICAL;
+    return state == Utils::DIGGING_VERTICAL;
   }
 
   bool is_digging_horizontal()
   {
-    return state == DIGGING_HORIZONTAL;
+    return state == Utils::DIGGING_HORIZONTAL;
+  }
+
+  bool is_digging_diagonal()
+  {
+    return state == Utils::DIGGING_DIAGONAL;
   }
 
   bool is_escaping()
   {
-    return state == ESCAPING;
+    return state == Utils::ESCAPING;
   }
 
   bool is_drowning()
   {
-    return state == DROWNING;
+    return state == Utils::DROWNING;
   }
 
   bool is_crashing()
   {
-    return state == CRASHING;
+    return state == Utils::CRASHING;
   }
 
 public:
-  Lemming(Point3f position, Vector2f diagonal, Engine &engine)
+  Lemming(Point3f position, Vector2f diagonal, Engine &engine, Level_info &_level_info)
       : Rigid_body(position, diagonal,
                    engine.load_texture("assets/lemming/lemming_1_2_0.png"),
-                   "Lemming", "Lemming")
+                   "Lemming", "Lemming"),
+        level_info(_level_info)
   {
     // gravity = 3;
     // enable_gravity();
@@ -235,11 +207,23 @@ public:
     {
       return false;
     }
-    if ((is_blocking() && skill & ~EXPLODE) || false) // TODO: ADD RESTRICTIONS OF what cases you can't add a skill to the lemming
+    if ((is_blocking() && skill & ~Utils::EXPLODE) || false) // TODO: ADD RESTRICTIONS OF what cases you can't add a skill to the lemming
     {
       return false;
     }
     skills = skills | skill;
+    return true;
+  }
+
+  /**
+   * @brief Checks if the Lemming have a skill.
+   *
+   * @param skill The skill to check.
+   * @return True if the Lemming have the skill, false otherwise.
+   */
+  bool is_skill(int skill)
+  {
+    return skills & skill;
   }
 
   void update_animation(Engine &engine)
@@ -248,12 +232,12 @@ public:
       return;
 
     time_frame_sprite += engine.get_delta_time();
-    if (time_frame_sprite >= STATE_ANIMATION_DURATION[get_state()] / STATE_N_FRAMES[get_state()])
+    if (time_frame_sprite >= Utils::STATE_ANIMATION_DURATION[get_state()] / Utils::STATE_N_FRAMES[get_state()])
     {
       time_frame_sprite = 0.0f;
-      current_frame = (current_frame + 1) % STATE_N_FRAMES[get_state()];
+      current_frame = (current_frame + 1) % Utils::STATE_N_FRAMES[get_state()];
 
-      if (!STATE_IS_LOOP_ANIMATION[get_state()] && current_frame == 0)
+      if (!Utils::STATE_IS_LOOP_ANIMATION[get_state()] && current_frame == 0)
       {
         is_playing = false; // Detiene la animación si no es en bucle
         if (is_escaping() || is_crashing() || is_exploding() || is_drowning())
@@ -343,7 +327,7 @@ public:
       if (other->get_entity_name() == "Lemming")
       {
         std::shared_ptr<Lemming> lemming_ptr = std::dynamic_pointer_cast<Lemming>(other);
-        if (lemming_ptr && lemming_ptr->get_state() != BLOCKING)
+        if (lemming_ptr && lemming_ptr->get_state() != Utils::BLOCKING)
           return;
       }
 
@@ -424,7 +408,7 @@ public:
   {
     if (!on_ground && !(is_floating() || is_falling() || is_digging_vertical() || is_climbing()))
     {
-      if (skills & FLOAT)
+      if (skills & Utils::FLOAT)
       {
         go_float();
       }
@@ -432,6 +416,41 @@ public:
       {
         go_fall();
       }
+    }
+  }
+
+  void on_event_down(Engine &engine, EngineIO::InputEvent event) override
+  {
+    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine))
+    {
+      std::cout << "LEMMING PULSADO" << std::endl;
+      if (Utils::HUD_TO_SKILL[level_info.get_option_selected()] != Utils::NO_SKILLS)
+      {
+        bool res = add_skill(Utils::HUD_TO_SKILL[level_info.get_option_selected()]);
+        if (res)
+        {
+          std::cout << "HABILIDAD AÑADIDA" << std::endl;
+        }
+        else
+        {
+          std::cout << "HABILIDAD NO AÑADIDA" << std::endl;
+        }
+      }
+    }
+
+    if (event == EngineIO::InputEvent::MOUSE_HOVER && level_info.get_is_cursor_hover() == false)
+    {
+      level_info.set_txt("assets/cursor_hover.png", engine);
+      level_info.set_is_cursor_hover(true);
+    }
+  }
+
+  void on_event_up([[maybe_unused]] Engine &engine, EngineIO::InputEvent event) override
+  {
+    if (event == EngineIO::InputEvent::MOUSE_HOVER && level_info.get_is_cursor_hover() == true)
+    {
+      level_info.set_txt("assets/cursor.png", engine);
+      level_info.set_is_cursor_hover(false);
     }
   }
 };
