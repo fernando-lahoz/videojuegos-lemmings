@@ -3,6 +3,8 @@
 #include "engine/entity.hpp"
 #include <string>
 
+#include "Level_info.hpp"
+
 class Structure : public Rigid_body
 {
 protected:
@@ -17,9 +19,10 @@ protected:
   float animation_duration = 0.0f; // Duración total de la animación
   bool is_debug;
   bool change = false;
+  Level_info &level_info;
 
 public:
-  Structure(Point3f position, Vector2f diagonal, Engine &engine, std::string base_path, int structure_type, int max_frames, float animation_duration, std::string name = "Structure", bool is_loop = false, bool is_event_triggered = false, bool is_debug = false)
+  Structure(Point3f position, Vector2f diagonal, Engine &engine, std::string base_path, int structure_type, int max_frames, float animation_duration, std::string name, bool is_loop, bool is_event_triggered, Level_info &_level_info, bool is_debug = false)
       : Rigid_body(position, diagonal, engine.load_texture(base_path + "_" + std::to_string(structure_type) + "_0.png"), name),
         base_path(base_path),
         is_loop(is_loop),
@@ -28,7 +31,8 @@ public:
         structure_type(structure_type),
         max_frames(max_frames),
         animation_duration(animation_duration),
-        is_debug(is_debug)
+        is_debug(is_debug),
+        level_info(_level_info)
   {
   }
 

@@ -8,17 +8,21 @@
 #include "Lemmings_camera.hpp"
 #include "Lemming.hpp"
 #include "Level.hpp"
+#include "Level_info.hpp"
+#include "Cursor.hpp"
 
+// ASK: change_bkg() ???
+// ASK: when entity destroy() MOUSE_HOVER doesn't change
+// ASK: destroy_all_entities() with a filter for a specific _entity_name (CURSOR)
 class Lemmings_game : public Game
 {
 private:
-  // Otros miembros privados como LevelManager, UI/HUD, etc.
+  Level_info level_info;
 
 public:
   Lemmings_game()
       : Game("Lemmings")
   {
-    // Inicializar otros miembros privados
   }
 
   // Sobrescribe funciones de Game
@@ -29,6 +33,10 @@ public:
 
   void on_game_startup(Engine &engine) override
   {
-    Level level(engine, 0); // Crea el nivel correspondiente
+    level_info.set_txt("assets/cursor.png", engine);
+
+    auto cursor = std::make_shared<Cursor>(engine, level_info, 0.05);
+    engine.get_game()->create_entity(cursor);
+    Level level(engine, 0, level_info); // Crea el nivel correspondiente
   }
 };
