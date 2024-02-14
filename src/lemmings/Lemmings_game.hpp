@@ -14,6 +14,8 @@
 // ASK: change_bkg() ???
 // ASK: when entity destroy() MOUSE_HOVER doesn't change
 // ASK: destroy_all_entities() with a filter for a specific _entity_name (CURSOR)
+// ASK: on_detect_border_cursor() when the cursor is moved around [0-0.05,-] and [0.95-1,-] executes a function
+// ASK: do_action_all_entities() with a filter for a specific _entity_name (Lemming)
 class Lemmings_game : public Game
 {
 private:

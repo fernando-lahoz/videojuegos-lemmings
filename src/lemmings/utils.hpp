@@ -12,14 +12,15 @@ namespace Utils
   enum Lemming_Skills
   {
     NO_SKILLS = 0,
-    BLOCK = 1,
-    BUILD = 2,
-    CLIMB = 4,
-    FLOAT = 8,
-    DIG_VERTICAL = 16,
-    DIG_HORIZONTAL = 32,
-    DIG_DIAGONAL = 64,
-    EXPLODE = 128,
+    CLIMB = 1,
+    FLOAT = 2,
+    EXPLODE = 4,
+    SKILL_EGOIST = 8,
+    BLOCK = 8,
+    BUILD = 16,
+    DIG_VERTICAL = 32,
+    DIG_HORIZONTAL = 64,
+    DIG_DIAGONAL = 128,
   };
 
   enum Lemming_State
@@ -65,6 +66,8 @@ namespace Utils
     HUD_MINIMAP = 18,
     HUD_CURSOR = 19,
   };
+
+  const int NO_OPTION_SELECTED = 11;
 
   const int HUD_TO_SKILL[20] = {NO_SKILLS, NO_SKILLS, CLIMB, FLOAT, EXPLODE, BLOCK, BUILD, DIG_HORIZONTAL, DIG_DIAGONAL, DIG_VERTICAL, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS};
 }

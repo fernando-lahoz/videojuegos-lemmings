@@ -23,11 +23,11 @@ class Lemming : public Rigid_body
 
   int state = Utils::IDLE;
 
-  //Este booleano indica si un lemming es marcado para explotar
+  // Este booleano indica si un lemming es marcado para explotar
   bool dead_marked = false;
-  //Este es el tiempo de vida que le queda al lemming si es marcado para explotar
+  // Este es el tiempo de vida que le queda al lemming si es marcado para explotar
   double time_to_live = 5.0f;
-  
+
   int direction = 1; // Comienza moviéndose hacia la derecha
 
   void go_idle()
@@ -212,7 +212,8 @@ public:
     {
       return false;
     }
-    if ((is_blocking() && skill & ~Utils::EXPLODE) || false) // TODO: ADD RESTRICTIONS OF what cases you can't add a skill to the lemming
+    if (((is_floating() || is_falling()) && (skill >= Utils::SKILL_EGOIST)) ||
+        (is_escaping() || is_crashing() || is_exploding() || is_drowning()) || (skill >= Utils::SKILL_EGOIST && skills >= Utils::SKILL_EGOIST) || false) // TODO: ADD RESTRICTIONS OF what cases you can't add a skill to the lemming
     {
       return false;
     }
@@ -263,22 +264,27 @@ public:
 
   void pre_physics(Engine &engine) override
   {
+    level_info.check_action_possible();
     update_animation(engine);
   }
 
-  //Pre: True
-  //Post: Actualiza el tiempo de vida del lemming, de estar marcado para morir
-  //y lo hace explotar en caso de que se acabe su tiempo de vida
-  void update_explode_countdown(Engine &engine){
+  // Pre: True
+  // Post: Actualiza el tiempo de vida del lemming, de estar marcado para morir
+  // y lo hace explotar en caso de que se acabe su tiempo de vida
+  void update_explode_countdown(Engine &engine)
+  {
 
-    //Si el lemming ha sido marcado para morir
-    if(dead_marked){
+    // Si el lemming ha sido marcado para morir
+    if (dead_marked)
+    {
 
-      //Restamos el delta time si el tiempo de vida es mayor a cero
-      if(time_to_live > 0.0f) time_to_live -= engine.get_delta_time();
+      // Restamos el delta time si el tiempo de vida es mayor a cero
+      if (time_to_live > 0.0f)
+        time_to_live -= engine.get_delta_time();
 
-      //Si se acaba el tiempo explotamos
-      if(time_to_live <= 0.0f) go_explode();
+      // Si se acaba el tiempo explotamos
+      if (time_to_live <= 0.0f)
+        go_explode();
     }
   }
 
@@ -286,11 +292,12 @@ public:
   {
     auto speed = get_speed();
 
-    if(is_exploding())
+    if (is_walking())
     {
-      speed.x = 0;
-      speed.y = 0;
+      speed.x = direction * 0.1;
+      speed.y = 0.1;
       set_speed(speed);
+      on_ground = false;
       return;
     }
 
@@ -310,14 +317,35 @@ public:
       return;
     }
 
-    if (is_walking())
+    if (is_exploding())
     {
-      speed.x = direction * 0.1;
-      speed.y = 0.1;
+      speed.x = 0;
+      speed.y = 0;
       set_speed(speed);
-      on_ground = false;
       return;
     }
+
+    if (is_idle())
+    {
+      speed.x = 0;
+      speed.y = 0;
+      set_speed(speed);
+      return;
+    }
+
+    if (is_escaping())
+    {
+      return;
+    }
+
+    if (is_blocking())
+    {
+      speed.x = 0;
+      speed.y = 0;
+      set_speed(speed);
+      return;
+    }
+
     if (is_digging_vertical())
     {
       if (current_frame == 4 || current_frame == 12)
@@ -363,29 +391,43 @@ public:
       switch (closest_side(other))
       {
       case 0:
-        position.x = other->bound2f().pMax.x;
-        if (direction < 0)
-          direction *= -1;
-        speed.x = 0;
-        // std::cout << "Lemming turn right\n";
+        if (!(is_digging_vertical() || is_digging_horizontal() || is_digging_diagonal()))
+        {
+          position.x = other->bound2f().pMax.x;
+          if (direction < 0)
+            direction *= -1;
+          speed.x = 0;
+          // std::cout << "Lemming turn right\n";
+        }
+
         break;
       case 1:
-        position.x = other->bound2f().pMin.x - diagonal.x;
-        if (direction > 0)
-          direction *= -1;
-        speed.x = 0;
-        // std::cout << "Lemming turn left\n";
+        if (!(is_digging_vertical() || is_digging_horizontal() || is_digging_diagonal()))
+        {
+          position.x = other->bound2f().pMin.x - diagonal.x;
+          if (direction > 0)
+            direction *= -1;
+          speed.x = 0;
+          // std::cout << "Lemming turn left\n";
+        }
         break;
       case 2:
-        position.y = other->bound2f().pMax.y;
-        speed.y = 0;
+        if (!(is_digging_vertical() || is_digging_horizontal() || is_digging_diagonal()))
+        {
+          position.y = other->bound2f().pMax.y;
+          direction *= -1;
+          speed.y = 0;
+        }
         break;
       case 3:
-        position.y = other->bound2f().pMin.y - diagonal.y;
-        on_ground = true;
-        if (is_floating() || is_falling())
+        if (!(is_digging_vertical() || is_digging_horizontal() || is_digging_diagonal()))
         {
-          go_walk();
+          position.y = other->bound2f().pMin.y - diagonal.y;
+          on_ground = true;
+          if (is_floating() || is_falling())
+          {
+            go_walk();
+          }
         }
 
         break;
@@ -435,6 +477,36 @@ public:
 
   void post_physics(Engine &) override
   {
+    if (skills & Utils::EXPLODE)
+    {
+      go_explode();
+      return;
+    }
+    if (skills & Utils::BLOCK)
+    {
+      go_block();
+      return;
+    }
+    if (skills & Utils::DIG_VERTICAL)
+    {
+      go_dig_vertical();
+      return;
+    }
+    if (skills & Utils::DIG_HORIZONTAL)
+    {
+      go_dig_horizontal();
+      return;
+    }
+    if (skills & Utils::DIG_DIAGONAL)
+    {
+      go_dig_diagonal();
+      return;
+    }
+    if (skills & Utils::BUILD)
+    {
+      go_build();
+      return;
+    }
     if (!on_ground && !(is_floating() || is_falling() || is_digging_vertical() || is_climbing()))
     {
       if (skills & Utils::FLOAT)
@@ -453,11 +525,13 @@ public:
     if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine))
     {
       std::cout << "LEMMING PULSADO" << std::endl;
-      if (Utils::HUD_TO_SKILL[level_info.get_option_selected()] != Utils::NO_SKILLS)
+      int skill = Utils::HUD_TO_SKILL[level_info.get_option_selected()];
+      if (skill != Utils::NO_SKILLS && level_info.get_action_possible())
       {
         bool res = add_skill(Utils::HUD_TO_SKILL[level_info.get_option_selected()]);
         if (res)
         {
+          level_info.action_done();
           std::cout << "HABILIDAD AÑADIDA" << std::endl;
         }
         else
@@ -467,10 +541,14 @@ public:
       }
     }
 
-    if (event == EngineIO::InputEvent::MOUSE_HOVER && level_info.get_is_cursor_hover() == false)
+    if (event == EngineIO::InputEvent::MOUSE_HOVER)
     {
-      level_info.set_txt("assets/cursor_hover.png", engine);
-      level_info.set_is_cursor_hover(true);
+      level_info.add_lemming_hovered();
+      if (level_info.get_is_cursor_hover() == false)
+      {
+        level_info.set_txt("assets/cursor_hover.png", engine);
+        level_info.set_is_cursor_hover(true);
+      }
     }
   }
 
@@ -478,6 +556,8 @@ public:
   {
     if (event == EngineIO::InputEvent::MOUSE_HOVER && level_info.get_is_cursor_hover() == true)
     {
+      level_info.sub_lemming_hovered();
+
       level_info.set_txt("assets/cursor.png", engine);
       level_info.set_is_cursor_hover(false);
     }
