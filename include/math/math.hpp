@@ -57,6 +57,7 @@ inline constexpr unsigned int roundup(Float x) {
 inline Float next_float_up(Float x);
 
 inline Float next_float_down(Float x);
+inline Float truncate(Float x, int n);
 
 // Using curand generator
 /*

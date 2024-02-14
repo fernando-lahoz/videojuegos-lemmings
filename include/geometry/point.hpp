@@ -142,5 +142,11 @@ inline Float distance_squared(const Point2<T> &p1, const Point2<T> &p2) {
 
 
 //TODO: more operators (inverse[-, /], from literals...) for Point2-3 and Vector2-3
+template <typename T>
+Point2<T> clamp(const Point2<T> &p, const Point2<T> &min, const Point2<T> &max);
+
+template <typename T>
+Point3<T> clamp(const Point3<T> &p, const Point3<T> &min, const Point3<T> &max);
+
 
 #include "geometry/point.ipp"

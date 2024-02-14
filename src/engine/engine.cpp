@@ -126,18 +126,20 @@ Point2f Engine::get_mouse_position()
     return mouse_position;
 }
 
-bool Engine::ray_march_alpha(Ray &ray, Float &offset, 
-        Float &max_offset, 
+
+bool Engine::ray_march_alpha_init(Ray &ray, Float &offset, 
+        Float min_offset,
+        Float max_offset, 
         EntityPtr entity) const
 {
-    Float search_distance = max_offset - offset;
+    Float search_distance = max_offset - min_offset;
 
     int n_samples = 100;
     Float step_size = search_distance / n_samples;
 
     for (int i = 0; i < n_samples; i++)
     {
-        Float t = offset + step_size*i;
+        Float t = min_offset + step_size*i;
         Point3f p3 = ray(t);
         Point2f p = Point2f(p3.x, p3.y);
 
@@ -150,6 +152,34 @@ bool Engine::ray_march_alpha(Ray &ray, Float &offset,
 
     return false;
 }
+
+
+bool Engine::ray_march_alpha_end(Ray &ray, Float &offset, 
+        Float min_offset,
+        Float max_offset, 
+        EntityPtr entity) const
+{
+    Float search_distance = max_offset - min_offset;
+
+    int n_samples = 100;
+    Float step_size = search_distance / n_samples;
+
+    for (int i = 0; i < n_samples; i++)
+    {
+        Float t = max_offset - step_size*i;
+        Point3f p3 = ray(t);
+        Point2f p = Point2f(p3.x, p3.y);
+
+        if (entity->contains(p))
+        {
+            offset = t;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 
 
 // Returns true if the program should quit
@@ -329,31 +359,32 @@ bool Engine::intesect_ray(Ray &ray,
             continue;
 
         auto bounding_box = entity->bound2f();
-        Float offset;
+        Float offset, min_offset, max_offset;
         Point2f origin;
         bool intersects = false;
         origin.x = ray.origin.x;
         origin.y = ray.origin.y;
+
+        intersects = bounding_box.all_intersections(ray, min_offset, max_offset);
+            
+        if (min_offset > 0)
+            offset = min_offset;
+        else
+            offset = max_offset;
 
         if (bounding_box.contains(origin)) 
         {
             offset = 0;
             intersects = true;
         }
-        else {
-            intersects = bounding_box.intersects(ray, offset);
-        }                
-
+ 
         if (intersects
             && (offset < hit_offset1)
             && (entity->get_class() == force_class_name))
         {
-            Float max_offset;
-            bounding_box.second_intersection(ray, max_offset);
-
-            if (ray_march_alpha(ray, offset, max_offset, entity))
+            if (ray_march_alpha_init(ray, offset, offset, max_offset, entity))
             {
-                hit_offset1 = offset;
+                hit_offset1 = min_offset;
                 hit_offset2 = max_offset;
                 hit_entity = entity;
             }
@@ -361,7 +392,47 @@ bool Engine::intesect_ray(Ray &ray,
     }
 
     return hit_offset1 < INFINITY;
+}
 
+bool Engine::intesect_ray_entity(Ray &ray, 
+            EntityPtr entity,
+            Float &hit_offset1, 
+            Float &hit_offset2)
+{
+    hit_offset1 = INFINITY;
+
+    auto bounding_box = entity->bound2f();
+    Float offset, min_offset, max_offset;
+    Point2f origin;
+    bool intersects = false;
+    origin.x = ray.origin.x;
+    origin.y = ray.origin.y;
+
+
+    intersects = bounding_box.all_intersections(ray, min_offset, max_offset);
+    
+    if (min_offset > 0)
+        offset = min_offset;
+    else
+        offset = max_offset;
+
+    if (bounding_box.contains(origin)) 
+    {
+        offset = 0;
+        intersects = true;
+    }
+    
+
+    if (intersects && (offset < hit_offset1))
+    {
+        if (ray_march_alpha_init(ray, offset, offset, max_offset, entity))
+        {
+            hit_offset1 = min_offset;
+            hit_offset2 = max_offset;
+        }
+    }
+
+    return hit_offset1 < INFINITY;
 }
 
 void Engine::start()

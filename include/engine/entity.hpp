@@ -77,6 +77,7 @@ public:
 
     // Returns true if this entity collides with other.
     //  uses excusive comparisons
+    bool collides(std::shared_ptr<Entity> other, Point2f &collision_point) const;
     bool collides(std::shared_ptr<Entity> other) const;
     bool contains(Point2f point) const;
 

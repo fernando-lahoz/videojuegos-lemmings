@@ -52,6 +52,8 @@ void Texture::load(const std::string& file, SDL_Renderer* renderer)
 bool Texture::is_alpha_pixel(Point2f lpixel) const
 {
     Point2i pixel;
+    lpixel = clamp(lpixel, Point2f(0.00000001, 0.00000001), Point2f(0.999999, 0.999999));
+
     pixel.x = lpixel.x * get_width();
     pixel.y = lpixel.y * get_height();
 
@@ -59,7 +61,7 @@ bool Texture::is_alpha_pixel(Point2f lpixel) const
         throw std::runtime_error("No surface loaded");
 
     if (pixel.x < 0 || pixel.y < 0 || pixel.x >= surface->w || pixel.y >= surface->h)
-        throw std::out_of_range("Pixel coordinates out of range on alpha check");
+        throw std::out_of_range("Pixel coordinates out of range on alpha check, lpixel: " + std::to_string(lpixel.x) + ", " + std::to_string(lpixel.y));
 
     int bpp = surface->format->BytesPerPixel;
     Uint8* p = (Uint8*)surface->pixels + pixel.y * surface->pitch + pixel.x * bpp;

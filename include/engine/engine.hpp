@@ -26,8 +26,6 @@ private:
     void process_new_entities();
     void send_mouse_hover();
     void change_input_state(EngineIO::InputEvent key, bool is_down);
-    bool ray_march_alpha(Ray &ray, Float &offset, Float &max_offset, 
-                            EntityPtr entity) const;
 
     EngineIO::InputEvent SDL_to_input_event(SDL_KeyboardEvent key);
     EngineIO::InputEvent SDL_to_input_event(SDL_MouseButtonEvent key);
@@ -84,6 +82,20 @@ public:
             Float &hit_offset2, 
             EntityPtr &hit_entity);
 
+    bool intesect_ray_entity(Ray &ray, 
+            EntityPtr entity,
+            Float &hit_offset1, 
+            Float &hit_offset2);
+            
+    bool ray_march_alpha_init(Ray &ray, Float &offset, 
+                            Float min_offset, 
+                            Float max_offset, 
+                            EntityPtr entity) const;
+
+    bool ray_march_alpha_end(Ray &ray, Float &offset, 
+                            Float min_offset, 
+                            Float max_offset, 
+                            EntityPtr entity) const;
 
     /********************** Input events **********************/
 

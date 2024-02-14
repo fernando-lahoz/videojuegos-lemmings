@@ -9,6 +9,7 @@
 #include "Geralt.hpp"
 #include "Apple.hpp"
 #include "Geralt_eats_camera.hpp"
+#include "../lemmings/Lemming.hpp"
 
 class Geralt_eats_game : public Game
 {
@@ -30,13 +31,22 @@ class Geralt_eats_game : public Game
 
     void on_game_startup(Engine& engine) override
     {
+        auto ground_alpha = engine.load_texture("assets/ground_alpha.png");
         auto t2 = engine.load_texture("assets/terrain.png");
 
-        auto geralt = std::make_shared<Geralt>(Point3f(0.4, 0.4, 0), Vector2f(0.1, 0.125), engine);
-        auto ground = std::make_shared<Rigid_body>(Point3f(0, 0.75, 0), Vector2f(1, 0.25), t2, "Ground");
+        auto lemm = engine.load_texture("assets/maps/bkg/1 - Just dig!.png");
 
+        auto geralt = std::make_shared<Geralt>(Point3f(0.4, 0.1, 0), Vector2f(0.1, 0.125), engine);
+        auto ground = std::make_shared<Rigid_body>(Point3f(0, 0.45, 0), Vector2f(1, 0.25), ground_alpha, "Ground");
+        //auto ground = std::make_shared<Rigid_body>(Point3f(0, 0.55, 1), Vector2f(1, 0.25), lemm, "MAP");
+        auto lemming = std::make_shared<Lemming>(Point3f(0.47, 0.0, 0), Vector2f(0.08, 0.08), engine);
+
+        auto ground2 = std::make_shared<Rigid_body>(Point3f(0.7, 0, 0), Vector2f(0.3, 1), t2, "Ground");
+
+        create_entity(lemming);
         create_entity(geralt);
         create_entity(ground);
+        create_entity(ground2);
     }
 
     void on_loop_start([[maybe_unused]]Engine& engine) override

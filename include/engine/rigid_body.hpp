@@ -13,6 +13,8 @@ protected:
     bool _has_gravity;
     Float gravity = 0;
 
+    enum Sides {RIGHT=1, UP=2, LEFT=4, DOWN=8};
+
     static constexpr char RIGID_BODY_ID[] = "Rigid_body";
     
     void update_speed_gravity(Float gravity, Float delta_time)
@@ -25,9 +27,7 @@ protected:
     bool is_grounded(Engine& engine)
     {
         // Spawn a ray from the bottom of the entity
-        Point2f origin = max_corner2D();
-        origin.y -= 0.001;
-
+        Point2f origin = bound2f().pMin + Vector2f(diagonal.x / 2, diagonal.y);
         Ray ray(origin, Vector2f(0, 1));
 
         EntityPtr ground;
@@ -38,10 +38,17 @@ protected:
                 hit_offset, hit_offset_max,
                 ground);
 
-        if (intersected && hit_offset < 0.005)
+        if (intersected && ground->contains(origin))
+        {
+            hit_offset = 0;
+        }
+
+        if (intersected && hit_offset < 0.0005) {
             return true;
-        else
+        }
+        else {
             return false;
+        }
     }
 
     
@@ -125,108 +132,87 @@ public:
         max_speed_sqr = math::pow2(new_max_speed);
     }
 
-    // 0: right
-    // 1: up
-    // 2: left
-    // 3: down
-    int closest_intersection(Engine &engine, Float &closest_offset)
+
+    // Returns true if the ray intersected
+    //  tmin contains the minimum hit offset
+    //  and tmax contains the maximum hit offset
+    bool distance(Engine &engine, Ray ray, EntityPtr collided_entity, 
+            Float &tmin, Float &tmax, Float &thit)
     {
-        // Launch rays in four directions to check for collisions
-        //  with other entities
+        bool intersected = engine.intesect_ray_entity(ray, 
+                collided_entity,
+                tmin, 
+                tmax);
+
+        intersected = intersected && tmax > 0;
+
+        Point2f origin = Point2f(ray.origin.x, ray.origin.y);
+        if (collided_entity->contains(origin))
+        {
+            thit = 0;
+        }
+        else if (tmin < 0) {
+            thit = tmax;
+        }
+        else {
+            thit = tmin;
+        }
+
+        if (intersected)
+        {
+            engine.ray_march_alpha_end(ray, tmax, 0, tmax, collided_entity);
+
+            if (tmin < 0)
+            {
+                ray.direction = -ray.direction;
+                tmin = -tmin;
+                engine.ray_march_alpha_end(ray, tmin, 0, tmin, collided_entity);
+                tmin = -tmin;
+            }
+            else
+            {
+                engine.ray_march_alpha_end(ray, tmin, 0, tmin, collided_entity);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    bool distance_up(Engine &engine, EntityPtr collided_entity, Float &tmin, Float &tmax, Float &thit)
+    {
         Point2f up = bound2f().pMin + Vector2f(diagonal.x / 2, 0);
-        Point2f down = bound2f().pMin + Vector2f(diagonal.x / 2, diagonal.y);
-        Point2f left = bound2f().pMin + Vector2f(0, diagonal.y / 2);
-        Point2f right = bound2f().pMin + Vector2f(diagonal.x, diagonal.y / 2);
-        
-        Ray up_ray(up, Vector2f(0, -1));
-        Ray down_ray(down, Vector2f(0, 1));
-        Ray left_ray(left, Vector2f(-1, 0));
-        Ray right_ray(right, Vector2f(1, 0));
-
-        Float hit_offset_max;
-
-        int closest = -1;
-        closest_offset = INFINITY;
-
-        for (int i = 0; i < 4; i++)
-        {
-            Ray ray;
-            Float hit_offset;
-            EntityPtr hit_entity;
-            switch (i)
-            {
-                case 0:
-                    ray = right_ray;
-                    break;
-                case 1:
-                    ray = up_ray;
-                    break;
-                case 2:
-                    ray = left_ray;
-                    break;
-                case 3:
-                    ray = down_ray;
-                    break;
-            }
-
-            bool intersected = engine.intesect_ray(ray, 
-                    get_entity_id(),
-                    RIGID_BODY_ID,
-                    hit_offset, 
-                    hit_offset_max,
-                    hit_entity);
-
-            if (intersected && hit_offset < closest_offset)
-            {
-                closest_offset = hit_offset;
-                closest = i;
-            }
-        }
-
-        return closest;
+        Ray ray(up, Vector2f(0, -1));
+        return distance(engine, ray, collided_entity, tmin, tmax, thit);
     }
 
-    bool inverse_collision_distance(Engine &engine, int direction, Float &distance)
+    bool distance_down(Engine &engine, EntityPtr collided_entity, Float &tmin, Float &tmax, Float &thit)
     {
-        Ray ray;
-        Float distance_min;
-        EntityPtr hit_entity;
-
-        if (direction == 0)
-        {
-            Point2f right = bound2f().pMin + Vector2f(diagonal.x, diagonal.y / 2);
-            ray = Ray(right, Vector2f(-1, 0));    
-        }
-        else if (direction == 1)
-        {
-            Point2f up = bound2f().pMin + Vector2f(diagonal.x / 2, 0);
-            ray = Ray(up, Vector2f(0, 1));
-        }
-        else if (direction == 2)
-        {
-            Point2f left = bound2f().pMin + Vector2f(0, diagonal.y / 2);
-            ray = Ray(left, Vector2f(1, 0));
-        }
-        else if (direction == 3)
-        {
-            Point2f down = bound2f().pMin + Vector2f(diagonal.x / 2, diagonal.y);
-            ray = Ray(down, Vector2f(0, -1));
-        }
-
-        bool intersected = engine.intesect_ray(ray, 
-                    get_entity_id(),
-                    RIGID_BODY_ID,
-                    distance_min, 
-                    distance,
-                    hit_entity);
-
-        return intersected;
+        Point2f down = bound2f().pMin + Vector2f(diagonal.x / 2, diagonal.y);
+        Ray ray(down, Vector2f(0, 1));
+        return distance(engine, ray, collided_entity, tmin, tmax, thit);
     }
+
+    bool distance_left(Engine &engine, EntityPtr collided_entity, Float &tmin, Float &tmax, Float &thit)
+    {
+        Point2f left = bound2f().pMin + Vector2f(0, diagonal.y / 2);
+        Ray ray(left, Vector2f(-1, 0));
+        return distance(engine, ray, collided_entity, tmin, tmax, thit);
+    }
+
+    bool distance_right(Engine &engine, EntityPtr collided_entity, Float &tmin, Float &tmax, Float &thit)
+    {
+        Point2f right = bound2f().pMin + Vector2f(diagonal.x, diagonal.y / 2);
+        Ray ray(right, Vector2f(1, 0));
+        return distance(engine, ray, collided_entity, tmin, tmax, thit);
+    }
+
+
 
     void on_collision([[maybe_unused]]Engine& engine, 
             EntityPtr other) override
     {
-        std::cout << "Collision with " << other->get_entity_name() << std::endl;
         // If the entity is not moving, collision will not move it
         // Only rigid bodies can collide with other rigid bodies
         if (speed.length_squared() == 0 ||
@@ -237,40 +223,52 @@ public:
 
         auto speed = get_speed();
 
-        Float closest_offset, distance;
+        //std::cout << "Closest side: " << closest_side << std::endl;
 
-        int closest_side = closest_intersection(engine, closest_offset);
-        bool got_distance = inverse_collision_distance(engine, closest_side, distance);
+        Float tmin, tmax, thit;
 
-        std::cout << "Closest side: " << closest_side << std::endl;
-        std::cout << "Distance inside: " << distance << std::endl;
-
-        if (got_distance && closest_side == 0)
+        // Only will collide when tmin is negative
+        if (distance_up(engine, other, tmin, tmax, thit) && 
+            thit < 0.0005)
         {
-            position.x -= distance;
-            speed.x = 0;
-        }
-        else if (got_distance && closest_side == 1)
-        {
-            position.y += distance;
             speed.y = 0;
+            position.y += -tmin;
         }
-        else if (got_distance && closest_side == 2)
+
+        if (distance_down(engine, other, tmin, tmax, thit) && 
+            thit < 0.0005)
         {
-            position.x += distance;
-            speed.x = 0;
-        }
-        else if (got_distance && closest_side == 3)
-        {
-            position.y -= distance;
             speed.y = 0;
+            position.y -= -tmin;
         }
+
+        if (distance_left(engine, other, tmin, tmax, thit) && 
+            thit < 0.0005)
+        {
+            speed.x = 0;
+            position.x += -tmin;
+        }
+
+        if (distance_right(engine, other, tmin, tmax, thit) && 
+            thit < 0.0005)
+        {
+            speed.x = 0;
+            position.x -= -tmin;
+        }       
 
         set_speed(speed);
     }
 
     void update_position(Engine& engine) override
     {
+        if (is_grounded(engine)) {
+            disable_gravity();
+        }
+        else {
+            enable_gravity();
+        }
+
+        
         double delta_time = engine.get_delta_time();
         if (has_gravity())
         {

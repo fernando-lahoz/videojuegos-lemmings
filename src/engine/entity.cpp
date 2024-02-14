@@ -141,14 +141,7 @@ void Entity::disable_mouse_hover()
     mouse_over = false;
 }
 
-
-// Returns the closest side of the entity to the other entity
-//  and whether it collided o not
-// 0: Right
-// 1: Top
-// 2: Left
-// 3: Bottom
-bool Entity::collides(std::shared_ptr<Entity> other) const
+bool Entity::collides(std::shared_ptr<Entity> other, Point2f &collision_point) const
 {
     if (bound2f().overlaps(other->bound2f()))
     {        
@@ -174,6 +167,7 @@ bool Entity::collides(std::shared_ptr<Entity> other) const
 
                 if (!txt.is_alpha_pixel(lsample) && !other_txt.is_alpha_pixel(other_lsample))
                 {
+                    collision_point = sample_point;
                     return true;
                 }
             }
@@ -181,6 +175,12 @@ bool Entity::collides(std::shared_ptr<Entity> other) const
     }    
 
     return false;
+}
+
+bool Entity::collides(std::shared_ptr<Entity> other) const
+{
+    Point2f collision_point;
+    return collides(other, collision_point);
 }
 
 bool Entity::contains(Point2f point) const

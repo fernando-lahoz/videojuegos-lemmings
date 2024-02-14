@@ -608,7 +608,7 @@ constexpr bool BoundingBox2<T>::intersects(const Ray &ray, Float &hit_offset) co
 }
 
 template <typename T>
-constexpr bool BoundingBox2<T>::second_intersection(const Ray &ray, Float &hit_offset) const
+constexpr bool BoundingBox2<T>::all_intersections(const Ray &ray, Float &min_offset, Float &max_offset) const
 {
     Float tx1 = (this->pMin.x - ray.origin.x)*ray.inv_direction.x;
     Float tx2 = (this->pMax.x - ray.origin.x)*ray.inv_direction.x;
@@ -622,11 +622,10 @@ constexpr bool BoundingBox2<T>::second_intersection(const Ray &ray, Float &hit_o
     tmin = std::max(tmin, std::min(ty1, ty2));
     tmax = std::min(tmax, std::max(ty1, ty2));
     
-    // Initialize hit_offset to the minimum distance in case 
-    //  there was an intersection
-    hit_offset = tmax;
+    min_offset = tmin;
+    max_offset = tmax;
 
-    return tmax >= tmin && hit_offset >= 0 && hit_offset <= ray.maximum_offset;
+    return tmax >= tmin;
 }
 
 template <typename T>

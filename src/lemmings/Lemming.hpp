@@ -303,6 +303,7 @@ public:
   void update_position(Engine &engine) override
   {
     update_state(); // Actualiza el estado antes de calcular la nueva posición
+
     Rigid_body::update_position(engine);
   }
 
@@ -319,11 +320,9 @@ public:
           return;
       }
 
-      Float closest_offset;
-
-      if (closest_intersection(engine, closest_offset) == 3)
+      Float thit, tmin, tmax;
+      if (distance_down(engine, other, tmin, tmax, thit) && thit < 0.005)
       {
-        position.y = other->bound2f().pMin.y - diagonal.y;
         on_ground = true;
         if (is_floating() || is_falling())
         {
