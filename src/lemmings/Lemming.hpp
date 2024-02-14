@@ -57,6 +57,11 @@ class Lemming : public Rigid_body
 
   int state = IDLE;
 
+  //Este booleano indica si un lemming es marcado para explotar
+  bool dead_marked = false;
+  //Este es el tiempo de vida que le queda al lemming si es marcado para explotar
+  double time_to_live = 5.0f;
+  
   int direction = 1; // Comienza moviéndose hacia la derecha
 
   void go_idle()
@@ -277,9 +282,33 @@ public:
     update_animation(engine);
   }
 
+  //Pre: True
+  //Post: Actualiza el tiempo de vida del lemming, de estar marcado para morir
+  //y lo hace explotar en caso de que se acabe su tiempo de vida
+  void update_explode_countdown(Engine &engine){
+
+    //Si el lemming ha sido marcado para morir
+    if(dead_marked){
+
+      //Restamos el delta time si el tiempo de vida es mayor a cero
+      if(time_to_live > 0.0f) time_to_live -= engine.get_delta_time();
+
+      //Si se acaba el tiempo explotamos
+      if(time_to_live <= 0.0f) go_explode();
+    }
+  }
+
   void update_state()
   {
     auto speed = get_speed();
+
+    if(is_exploding())
+    {
+      speed.x = 0;
+      speed.y = 0;
+      set_speed(speed);
+      return;
+    }
 
     if (is_falling())
     {
@@ -420,8 +449,11 @@ public:
     set_speed(speed);
   }
 
-  void post_physics(Engine &) override
+  void post_physics(Engine &e) override
   {
+
+    update_explode_countdown(e);
+
     if (!on_ground && !(is_floating() || is_falling() || is_digging_vertical() || is_climbing()))
     {
       if (skills & FLOAT)
