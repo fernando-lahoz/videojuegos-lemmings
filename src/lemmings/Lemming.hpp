@@ -433,11 +433,8 @@ public:
     set_speed(speed);
   }
 
-  void post_physics(Engine &e) override
+  void post_physics(Engine &) override
   {
-
-    update_explode_countdown(e);
-
     if (!on_ground && !(is_floating() || is_falling() || is_digging_vertical() || is_climbing()))
     {
       if (skills & Utils::FLOAT)
