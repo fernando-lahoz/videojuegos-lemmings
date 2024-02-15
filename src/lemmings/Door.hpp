@@ -30,7 +30,7 @@ public:
     if (!is_playing)
     { // Espera a que la animación termine para comenzar a invocar
       spawn_timer += engine.get_delta_time();
-      if (spawn_timer >= spawn_interval && spawned_lemmings < max_lemmings)
+      if (spawn_timer >= spawn_interval && spawned_lemmings < max_lemmings && !level_info.get_dead_marked())
       {
         // Lógica para invocar Lemmings
         spawn_timer = 0.0f;

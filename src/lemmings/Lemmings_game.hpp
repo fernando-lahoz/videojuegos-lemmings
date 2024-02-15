@@ -10,6 +10,7 @@
 #include "Level.hpp"
 #include "Level_info.hpp"
 #include "Cursor.hpp"
+#include "utils.hpp"
 
 // ASK: change_bkg() ???
 // ASK: when entity destroy() MOUSE_HOVER doesn't change
@@ -40,5 +41,23 @@ public:
     auto cursor = std::make_shared<Cursor>(engine, level_info, 0.05);
     engine.get_game()->create_entity(cursor);
     Level level(engine, 0, level_info); // Crea el nivel correspondiente
+  }
+  void on_loop_start(Engine &engine) override
+  {
+    if (level_info.update_explode_countdown(engine))
+    {
+      auto &entities = engine.get_entities();
+      for (std::size_t i = 0; i < entities.size(); i++)
+      {
+        if (entities[i]->get_entity_name() == "Lemming")
+        {
+          std::shared_ptr<Lemming> lemming_ptr = std::dynamic_pointer_cast<Lemming>(entities[i]);
+          if (lemming_ptr)
+          {
+            lemming_ptr->add_skill(Utils::EXPLODE);
+          }
+        }
+      }
+    }
   }
 };

@@ -68,6 +68,11 @@ public:
         level_info.set_option_selected(n);
       }
 
+      if (n == Utils::HUD_ALL_EXPLODE)
+      {
+        level_info.set_dead_marked(true);
+      }
+
       if (is_changeable)
       {
         if (changed)
