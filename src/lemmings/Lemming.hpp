@@ -18,6 +18,7 @@ class Lemming : public Rigid_body
   int current_frame = 0;          // Frame actual de la animación
   int distance_fall = 0;
   bool do_action_in_frame = false;
+  bool is_hovered = false;
 
   int skills = Utils::NO_SKILLS;
 
@@ -518,7 +519,12 @@ public:
 
     if (event == EngineIO::InputEvent::MOUSE_HOVER)
     {
-      level_info.add_lemming_hovered();
+      if (!is_hovered)
+      {
+        level_info.add_lemmings_hovered();
+        is_hovered = true;
+      }
+
       if (level_info.get_is_cursor_hover() == false)
       {
         level_info.set_txt("assets/cursor_hover.png", engine);
@@ -531,7 +537,11 @@ public:
   {
     if (event == EngineIO::InputEvent::MOUSE_HOVER && level_info.get_is_cursor_hover() == true)
     {
-      level_info.sub_lemming_hovered();
+      if (is_hovered)
+      {
+        level_info.sub_lemmings_hovered();
+        is_hovered = false;
+      }
 
       level_info.set_txt("assets/cursor.png", engine);
       level_info.set_is_cursor_hover(false);

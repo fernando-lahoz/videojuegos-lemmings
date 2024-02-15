@@ -36,10 +36,24 @@ public:
   }
   bool get_action_possible() { return is_action_possible; }
 
-  void add_lemming_hovered() { lemmings_hovered++; }
-  void sub_lemming_hovered() { lemmings_hovered--; }
+  void add_lemmings_hovered() { lemmings_hovered++; }
+  void sub_lemmings_hovered() { lemmings_hovered--; }
+  int get_lemmings_hovered() { return lemmings_hovered; }
 
-  void set_is_cursor_hover(bool _is_cursor_hover) { is_cursor_hover = _is_cursor_hover; }
+  void set_is_cursor_hover(bool _is_cursor_hover)
+  {
+    if (_is_cursor_hover == false)
+    {
+      if (lemmings_hovered == 0)
+      {
+        is_cursor_hover = _is_cursor_hover;
+      }
+    }
+    else
+    {
+      is_cursor_hover = _is_cursor_hover;
+    }
+  }
   bool get_is_cursor_hover() { return is_cursor_hover; }
 
   void set_txt(std::string path, Engine &engine) { txt = engine.load_texture(path); }

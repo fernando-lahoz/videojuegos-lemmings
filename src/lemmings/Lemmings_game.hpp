@@ -22,6 +22,8 @@ class Lemmings_game : public Game
 private:
   Level_info level_info;
 
+  int last_lemmings_hovered = 0;
+
 public:
   Lemmings_game()
       : Game("Lemmings")
@@ -44,6 +46,14 @@ public:
   }
   void on_loop_start(Engine &engine) override
   {
+    int actual_lemmings_hovered = level_info.get_lemmings_hovered();
+
+    if (actual_lemmings_hovered != last_lemmings_hovered)
+    {
+      std::cout << "Lemmings hovered: " << actual_lemmings_hovered << std::endl;
+      last_lemmings_hovered = actual_lemmings_hovered;
+    }
+
     if (level_info.update_explode_countdown(engine))
     {
       auto &entities = engine.get_entities();
