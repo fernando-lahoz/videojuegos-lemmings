@@ -10,6 +10,9 @@ protected:
     Float max_speed_sqr;
     Float max_speed = -1;
 
+    Point2f down_point, up_point,
+            left_point, right_point;
+
     bool _has_gravity;
     Float gravity = 0;
 
@@ -27,7 +30,7 @@ protected:
     bool is_grounded(Engine& engine)
     {
         // Spawn a ray from the bottom of the entity
-        Point2f origin = bound2f().pMin + Vector2f(diagonal.x / 2, diagonal.y);
+        Point2f origin = local_to_world(down_point);
         Ray ray(origin, Vector2f(0, 1));
 
         EntityPtr ground;
@@ -62,6 +65,11 @@ public:
     {
         speed = Vector2f(0, 0);
         max_speed_sqr = -1;
+
+        right_point = default_right_point();
+        left_point = default_left_point();
+        up_point = default_up_point();
+        down_point = default_down_point();
 
         disable_gravity();
     }
@@ -132,6 +140,47 @@ public:
         max_speed_sqr = math::pow2(new_max_speed);
     }
 
+    void override_right_point(Point2f new_p)
+    {
+        right_point = new_p;
+    }
+
+    void override_left_point(Point2f new_p)
+    {
+        left_point = new_p;
+    }
+
+    void override_up_point(Point2f new_p)
+    {
+        up_point = new_p;
+    }
+
+    void override_down_point(Point2f new_p)
+    {
+        down_point = new_p;
+    }
+
+    Point2f default_right_point() const
+    {
+        return Point2f(1, 0.5);
+    }
+
+    Point2f default_left_point() const
+    {
+        return Point2f(0, 0.5);
+    }
+
+    Point2f default_up_point() const
+    {
+        return Point2f(0.5, 0);
+    }
+
+    Point2f default_down_point() const
+    {
+        return Point2f(0.5, 1);
+    }
+
+
 
     // Returns true if the ray intersected
     //  tmin contains the minimum hit offset
@@ -182,29 +231,29 @@ public:
 
     bool distance_up(Engine &engine, EntityPtr collided_entity, Float &tmin, Float &tmax, Float &thit)
     {
-        Point2f up = bound2f().pMin + Vector2f(diagonal.x / 2, 0);
-        Ray ray(up, Vector2f(0, -1));
+        Point2f p = local_to_world(up_point);
+        Ray ray(p, Vector2f(0, -1));
         return distance(engine, ray, collided_entity, tmin, tmax, thit);
     }
 
     bool distance_down(Engine &engine, EntityPtr collided_entity, Float &tmin, Float &tmax, Float &thit)
     {
-        Point2f down = bound2f().pMin + Vector2f(diagonal.x / 2, diagonal.y);
-        Ray ray(down, Vector2f(0, 1));
+        Point2f p = local_to_world(down_point);
+        Ray ray(p, Vector2f(0, 1));
         return distance(engine, ray, collided_entity, tmin, tmax, thit);
     }
 
     bool distance_left(Engine &engine, EntityPtr collided_entity, Float &tmin, Float &tmax, Float &thit)
     {
-        Point2f left = bound2f().pMin + Vector2f(0, diagonal.y / 2);
-        Ray ray(left, Vector2f(-1, 0));
+        Point2f p = local_to_world(left_point);
+        Ray ray(p, Vector2f(-1, 0));
         return distance(engine, ray, collided_entity, tmin, tmax, thit);
     }
 
     bool distance_right(Engine &engine, EntityPtr collided_entity, Float &tmin, Float &tmax, Float &thit)
     {
-        Point2f right = bound2f().pMin + Vector2f(diagonal.x, diagonal.y / 2);
-        Ray ray(right, Vector2f(1, 0));
+        Point2f p = local_to_world(right_point);
+        Ray ray(p, Vector2f(1, 0));
         return distance(engine, ray, collided_entity, tmin, tmax, thit);
     }
 
