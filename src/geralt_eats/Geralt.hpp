@@ -77,9 +77,15 @@ public:
         Rigid_body::update_position(engine);
 
         if (is_grounded(engine))
+        {
+            disable_gravity();
             on_ground = true;
+        }
         else
+        {
+            enable_gravity();
             on_ground = false;
+        }
     }
 
     void on_collision(Engine& engine, EntityPtr other) override

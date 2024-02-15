@@ -391,7 +391,7 @@ bool Engine::intesect_ray(Ray &ray,
         }
     }
 
-    return hit_offset1 < INFINITY;
+    return hit_offset1 < INFINITY && hit_offset2 > 0;
 }
 
 bool Engine::intesect_ray_entity(Ray &ray, 
@@ -432,7 +432,7 @@ bool Engine::intesect_ray_entity(Ray &ray,
         }
     }
 
-    return hit_offset1 < INFINITY;
+    return hit_offset1 < INFINITY && hit_offset2 > 0;
 }
 
 void Engine::start()

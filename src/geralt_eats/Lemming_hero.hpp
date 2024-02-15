@@ -146,7 +146,7 @@ class Lemming_hero : public Rigid_body
 
   bool is_falling()
   {
-    return state == FALLING;
+    return state == FALLING && !on_ground;
   }
 
   bool is_walking()
@@ -171,7 +171,7 @@ class Lemming_hero : public Rigid_body
 
   bool is_floating()
   {
-    return state == FLOATING;
+    return state == FLOATING && !on_ground;
   }
 
   bool is_exploding()
@@ -277,11 +277,55 @@ public:
 
   void pre_physics(Engine &engine) override
   {
-    //update_animation(engine);
+    update_animation(engine);
   }
 
   void update_state(Engine &engine)
   {
+    if (is_grounded(engine))
+    {
+      on_ground = true;
+      go_walk();
+    }
+    else
+    {
+      on_ground = false;
+    }
+
+    if (is_falling())
+    {
+      speed.x = 0;
+      speed.y = 0.2;
+      set_speed(speed);
+    }
+
+    if (is_floating())
+    {
+      speed.x = 0;
+      speed.y = 0.1;
+      set_speed(speed);
+    }
+
+    if (is_walking())
+    {
+      speed.x = direction * 0.1;
+      speed.y = 0.1;
+      set_speed(speed);
+    }
+
+    if (on_ground)
+    {
+      auto speed = get_speed();
+      
+      // If going down, stop the lemming
+      if (speed.y > 0)
+      {
+        speed.y = 0;
+        set_speed(speed);
+      }
+    }
+
+
     auto speed = get_speed();
 
     if (engine.is_up_arrow_down())
@@ -319,29 +363,6 @@ public:
     {
       direction = 0;
     }
-
-
-    if (is_falling())
-    {
-      speed.x = 0;
-      speed.y = 0.2;
-      set_speed(speed);
-    }
-
-    if (is_floating())
-    {
-      speed.x = 0;
-      speed.y = 0.1;
-      set_speed(speed);
-    }
-
-    if (is_walking())
-    {
-      speed.x = direction * 0.1;
-      speed.y = 0.1;
-      set_speed(speed);
-      on_ground = false;
-    }
   }
 
   void update_position(Engine &engine) override
@@ -367,7 +388,6 @@ public:
       Float thit, tmin, tmax;
       if (distance_down(engine, other, tmin, tmax, thit) && thit < 0.005)
       {
-        on_ground = true;
         if (is_floating() || is_falling())
         {
           go_walk();

@@ -34,12 +34,19 @@ protected:
         Ray ray(origin, Vector2f(0, 1));
 
         EntityPtr ground;
-        Float hit_offset, hit_offset_max;
+        Float hit_offset, hit_offset_min, hit_offset_max;
         bool intersected = engine.intesect_ray(ray, 
                 get_entity_id(), 
                 RIGID_BODY_ID,
-                hit_offset, hit_offset_max,
+                hit_offset_min, hit_offset_max,
                 ground);
+
+        if (hit_offset_min < 0) {
+            hit_offset = hit_offset_max;
+        }
+        else {
+            hit_offset = hit_offset_max;
+        }
 
         if (intersected && ground->contains(origin))
         {
@@ -47,6 +54,7 @@ protected:
         }
 
         if (intersected && hit_offset < 0.0005) {
+            std::cout << "Grounded with min:" << hit_offset << ", max: " << hit_offset_max << std::endl;
             return true;
         }
         else {
@@ -309,15 +317,7 @@ public:
     }
 
     void update_position(Engine& engine) override
-    {
-        if (is_grounded(engine)) {
-            disable_gravity();
-        }
-        else {
-            enable_gravity();
-        }
-
-        
+    {        
         double delta_time = engine.get_delta_time();
         if (has_gravity())
         {
