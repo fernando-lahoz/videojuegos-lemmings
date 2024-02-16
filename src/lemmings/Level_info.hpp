@@ -10,6 +10,7 @@ private:
   bool is_cursor_hover = false;
   bool is_action_possible = false;
   int lemmings_hovered = 0;
+  std::string lemming_hovered_type = "";
 
   // Este booleano indica si un lemming es marcado para explotar
   bool dead_marked = false;
@@ -21,7 +22,7 @@ public:
   {
     option_selected = option;
   }
-  int get_option_selected() { return option_selected; }
+  int get_option_selected() const { return option_selected; }
 
   void action_done()
   {
@@ -34,11 +35,11 @@ public:
       is_action_possible = true;
     }
   }
-  bool get_action_possible() { return is_action_possible; }
+  bool get_action_possible() const { return is_action_possible; }
 
   void add_lemmings_hovered() { lemmings_hovered++; }
   void sub_lemmings_hovered() { lemmings_hovered--; }
-  int get_lemmings_hovered() { return lemmings_hovered; }
+  int get_lemmings_hovered() const { return lemmings_hovered; }
 
   void set_is_cursor_hover(bool _is_cursor_hover)
   {
@@ -61,6 +62,9 @@ public:
 
   void set_dead_marked(bool new_value) { dead_marked = new_value; }
   bool get_dead_marked() { return dead_marked; }
+
+  void set_lemming_hovered_type(std::string new_value) { lemming_hovered_type = new_value; }
+  std::string get_lemming_hovered_type() const { return lemming_hovered_type; }
 
   // Pre: True
   // Post: Actualiza el tiempo de vida del lemming, de estar marcado para morir

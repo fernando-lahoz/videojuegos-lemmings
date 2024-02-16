@@ -13,9 +13,10 @@ class Lemming : public Rigid_body
   Level_info &level_info;
   float time_frame_sprite = 0.0f; // Acumulador de tiempo para la animación del sprite
   std::string base_path;          // Base para el path de las texturas de animación
-  bool is_loop;                   // Indica si la animación es en bucle
-  bool is_playing = true;         // Indica si la animación está actualmente en reproducción
-  int current_frame = 0;          // Frame actual de la animación
+  std::string type = "WALKER";
+  bool is_loop;           // Indica si la animación es en bucle
+  bool is_playing = true; // Indica si la animación está actualmente en reproducción
+  int current_frame = 0;  // Frame actual de la animación
   int distance_fall = 0;
   bool do_action_in_frame = false;
   bool is_hovered = false;
@@ -26,27 +27,66 @@ class Lemming : public Rigid_body
 
   int direction = 1; // Comienza moviéndose hacia la derecha
 
+  std::string get_type()
+  {
+    return type;
+  }
+
   void go_idle()
   {
     state = Utils::IDLE;
+    type = Utils::LEMMING_TYPE[Utils::IDLE];
     // std::cout << "GO IDLE\n";
   }
 
   void go_walk()
   {
     state = Utils::WALKING;
+    if (skills & Utils::FLOAT && skills & Utils::CLIMB)
+    {
+      type = Utils::LEMMING_TYPE[14]; // ATHLETE
+    }
+    else if (skills & Utils::FLOAT)
+    {
+      type = Utils::LEMMING_TYPE[Utils::FLOATING];
+    }
+    else if (skills & Utils::CLIMB)
+    {
+      type = Utils::LEMMING_TYPE[Utils::CLIMBING];
+    }
+    else
+    {
+      type = Utils::LEMMING_TYPE[Utils::WALKING];
+    }
     // std::cout << "GO WALKING\n";
   }
 
   void go_fall()
   {
     state = Utils::FALLING;
+    if (skills & Utils::FLOAT && skills & Utils::CLIMB)
+    {
+      type = Utils::LEMMING_TYPE[14]; // ATHLETE
+    }
+    else if (skills & Utils::FLOAT)
+    {
+      type = Utils::LEMMING_TYPE[Utils::FLOATING];
+    }
+    else if (skills & Utils::CLIMB)
+    {
+      type = Utils::LEMMING_TYPE[Utils::CLIMBING];
+    }
+    else
+    {
+      type = Utils::LEMMING_TYPE[Utils::FALLING];
+    }
     // std::cout << "GO FALLING\n";
   }
 
   void go_block()
   {
     state = Utils::BLOCKING;
+    type = Utils::LEMMING_TYPE[Utils::BLOCKING];
     // std::cout << "GO BLOCKING\n";
   }
 
@@ -54,60 +94,92 @@ class Lemming : public Rigid_body
   {
     state = Utils::BUILDING;
     // std::cout << "GO BUILDING\n";
+    type = Utils::LEMMING_TYPE[Utils::BUILDING];
   }
 
   void go_climb()
   {
     state = Utils::CLIMBING;
+    if (skills & Utils::FLOAT && skills & Utils::CLIMB)
+    {
+      type = Utils::LEMMING_TYPE[14]; // ATHLETE
+    }
+    else if (skills & Utils::FLOAT)
+    {
+      type = "ERROR NO HAVE CLIMB SKILL BUT FLOAT SKILL HAS";
+    }
+    else
+    {
+      type = Utils::LEMMING_TYPE[Utils::CLIMBING];
+    }
     // std::cout << "GO CLIMBING\n";
   }
 
   void go_float()
   {
     state = Utils::FLOATING;
+    if (skills & Utils::FLOAT && skills & Utils::CLIMB)
+    {
+      type = Utils::LEMMING_TYPE[14]; // ATHLETE
+    }
+    else if (skills & Utils::CLIMB)
+    {
+      type = "ERROR NO HAVE FLOAT SKILL BUT CLIMB SKILL HAS";
+    }
+    else
+    {
+      type = Utils::LEMMING_TYPE[Utils::FLOATING];
+    }
     // std::cout << "GO FLOATING\n";
   }
 
   void go_explode()
   {
     state = Utils::EXPLODING;
+    type = Utils::LEMMING_TYPE[Utils::EXPLODING];
     // std::cout << "GO EXPLODING\n";
   }
 
-  void go_dig_vertical()
+  void go_dig()
   {
-    state = Utils::DIGGING_VERTICAL;
-    // std::cout << "GO DIGGING_VERTICAL\n";
+    state = Utils::DIGGING;
+    type = Utils::LEMMING_TYPE[Utils::DIGGING];
+    // std::cout << "GO DIGGING\n";
   }
 
-  void go_dig_horizontal()
+  void go_bash()
   {
-    state = Utils::DIGGING_HORIZONTAL;
-    // std::cout << "GO DIGGING_HORIZONTAL\n";
+    state = Utils::BASHING;
+    type = Utils::LEMMING_TYPE[Utils::BASHING];
+    // std::cout << "GO BASHING\n";
   }
 
-  void go_dig_diagonal()
+  void go_mine()
   {
-    state = Utils::DIGGING_DIAGONAL;
-    // std::cout << "GO DIGGING_DIAGONAL\n";
+    state = Utils::MINING;
+    type = Utils::LEMMING_TYPE[Utils::MINING];
+    // std::cout << "GO MINING\n";
   }
 
   void go_escape()
   {
     state = Utils::ESCAPING;
-    // std::cout << "GO DIGGING_DIAGONAL\n";
+    type = Utils::LEMMING_TYPE[Utils::ESCAPING];
+    // std::cout << "GO MINING\n";
   }
 
   void go_drown()
   {
     state = Utils::DROWNING;
-    // std::cout << "GO DIGGING_DIAGONAL\n";
+    type = Utils::LEMMING_TYPE[Utils::DROWNING];
+    // std::cout << "GO MINING\n";
   }
 
   void go_crash()
   {
     state = Utils::CRASHING;
-    // std::cout << "GO DIGGING_DIAGONAL\n";
+    type = Utils::LEMMING_TYPE[Utils::CRASHING];
+    // std::cout << "GO MINING\n";
   }
 
   bool is_idle()
@@ -150,19 +222,19 @@ class Lemming : public Rigid_body
     return state == Utils::EXPLODING;
   }
 
-  bool is_digging_vertical()
+  bool is_digging()
   {
-    return state == Utils::DIGGING_VERTICAL;
+    return state == Utils::DIGGING;
   }
 
-  bool is_digging_horizontal()
+  bool is_bashing()
   {
-    return state == Utils::DIGGING_HORIZONTAL;
+    return state == Utils::BASHING;
   }
 
-  bool is_digging_diagonal()
+  bool is_mining()
   {
-    return state == Utils::DIGGING_DIAGONAL;
+    return state == Utils::MINING;
   }
 
   bool is_escaping()
@@ -208,12 +280,33 @@ public:
     {
       return false;
     }
-    if (((is_floating() || is_falling()) && (skill >= Utils::SKILL_EGOIST)) ||
+
+    // RESTRICTIONS
+    if (((is_floating() || is_falling()) && (skill >= Utils::SKILL_EGOIST)) || ((skill == Utils::CLIMB || skill == Utils::FLOAT) && (skills >= Utils::SKILL_EGOIST)) ||
         (is_escaping() || is_crashing() || is_exploding() || is_drowning()) || (skill >= Utils::SKILL_EGOIST && skills >= Utils::SKILL_EGOIST) || false)
     {
       return false;
     }
     skills = skills | skill;
+    if (skills < Utils::SKILL_EGOIST)
+    {
+      if (skills & Utils::FLOAT && skills & Utils::CLIMB)
+      {
+        type = Utils::LEMMING_TYPE[14]; // ATHLETE
+      }
+      else if (skills & Utils::FLOAT)
+      {
+        type = Utils::LEMMING_TYPE[Utils::FLOATING];
+      }
+      else if (skills & Utils::CLIMB)
+      {
+        type = Utils::LEMMING_TYPE[Utils::CLIMBING];
+      }
+      else
+      {
+        type = Utils::LEMMING_TYPE[Utils::FALLING];
+      }
+    }
     return true;
   }
 
@@ -322,7 +415,7 @@ public:
       return;
     }
 
-    if (is_digging_vertical())
+    if (is_digging())
     {
       if (current_frame == 4 || current_frame == 12)
       {
@@ -367,7 +460,7 @@ public:
       switch (closest_side(other))
       {
       case 0:
-        if (!(is_digging_vertical() || is_digging_horizontal() || is_digging_diagonal()))
+        if (!(is_digging() || is_bashing() || is_mining()))
         {
           position.x = other->bound2f().pMax.x;
           if (direction < 0)
@@ -378,7 +471,7 @@ public:
 
         break;
       case 1:
-        if (!(is_digging_vertical() || is_digging_horizontal() || is_digging_diagonal()))
+        if (!(is_digging() || is_bashing() || is_mining()))
         {
           position.x = other->bound2f().pMin.x - diagonal.x;
           if (direction > 0)
@@ -388,7 +481,7 @@ public:
         }
         break;
       case 2:
-        if (!(is_digging_vertical() || is_digging_horizontal() || is_digging_diagonal()))
+        if (!(is_digging() || is_bashing() || is_mining()))
         {
           position.y = other->bound2f().pMax.y;
           direction *= -1;
@@ -396,7 +489,7 @@ public:
         }
         break;
       case 3:
-        if (!(is_digging_vertical() || is_digging_horizontal() || is_digging_diagonal()))
+        if (!(is_digging() || is_bashing() || is_mining()))
         {
           position.y = other->bound2f().pMin.y - diagonal.y;
           on_ground = true;
@@ -463,19 +556,19 @@ public:
       go_block();
       return;
     }
-    if (skills & Utils::DIG_VERTICAL)
+    if (skills & Utils::DIG)
     {
-      go_dig_vertical();
+      go_dig();
       return;
     }
-    if (skills & Utils::DIG_HORIZONTAL)
+    if (skills & Utils::BASH)
     {
-      go_dig_horizontal();
+      go_bash();
       return;
     }
-    if (skills & Utils::DIG_DIAGONAL)
+    if (skills & Utils::MINE)
     {
-      go_dig_diagonal();
+      go_mine();
       return;
     }
     if (skills & Utils::BUILD)
@@ -483,7 +576,7 @@ public:
       go_build();
       return;
     }
-    if (!on_ground && !(is_floating() || is_falling() || is_digging_vertical() || is_climbing()))
+    if (!on_ground && !(is_floating() || is_falling() || is_digging() || is_climbing()))
     {
       if (skills & Utils::FLOAT)
       {
@@ -521,6 +614,7 @@ public:
     {
       if (!is_hovered)
       {
+        level_info.set_lemming_hovered_type(type);
         level_info.add_lemmings_hovered();
         is_hovered = true;
       }
@@ -541,6 +635,11 @@ public:
       {
         level_info.sub_lemmings_hovered();
         is_hovered = false;
+        if (level_info.get_lemmings_hovered() == 0)
+        {
+
+          level_info.set_lemming_hovered_type("");
+        }
       }
 
       level_info.set_txt("assets/cursor.png", engine);

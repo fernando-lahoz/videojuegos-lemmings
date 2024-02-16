@@ -7,6 +7,9 @@
 #include "HUD.hpp"
 #include "Level_info.hpp"
 #include "utils.hpp"
+#include "Text_image.hpp"
+#include "Dynamic_value_display.hpp"
+#include "Dynamic_text_image.hpp"
 
 class HUDs
 {
@@ -27,6 +30,8 @@ public:
     auto hudElement = std::make_shared<HUD>(Point3f(-0.0006, 0, 4), Vector2f(1.001, 1), level_info, engine, "assets/hud/hud_", Utils::HUD_BACKGROUND, false, false, false, false);
     engine.get_game()->create_entity(hudElement);
     elements.push_back(hudElement);
+
+    // BUTTONS
 
     hudElement = std::make_shared<HUD>(Utils::positions[0], size, level_info, engine, "assets/hud/hud_option_", Utils::HUD_VELOCITY, false, false, false, false);
     engine.get_game()->create_entity(hudElement);
@@ -76,15 +81,15 @@ public:
     engine.get_game()->create_entity(hudElement);
     elements.push_back(hudElement);
 
-    hudElement = std::make_shared<HUD>(Utils::positions[7], size, level_info, engine, "assets/hud/hud_option_", Utils::HUD_DIG_HORIZONTAL);
+    hudElement = std::make_shared<HUD>(Utils::positions[7], size, level_info, engine, "assets/hud/hud_option_", Utils::HUD_BASH);
     engine.get_game()->create_entity(hudElement);
     elements.push_back(hudElement);
 
-    hudElement = std::make_shared<HUD>(Utils::positions[8], size, level_info, engine, "assets/hud/hud_option_", Utils::HUD_DIG_DIAGONAL);
+    hudElement = std::make_shared<HUD>(Utils::positions[8], size, level_info, engine, "assets/hud/hud_option_", Utils::HUD_MINE);
     engine.get_game()->create_entity(hudElement);
     elements.push_back(hudElement);
 
-    hudElement = std::make_shared<HUD>(Utils::positions[9], size, level_info, engine, "assets/hud/hud_option_", Utils::HUD_DIG_VERTICAL);
+    hudElement = std::make_shared<HUD>(Utils::positions[9], size, level_info, engine, "assets/hud/hud_option_", Utils::HUD_DIG);
     engine.get_game()->create_entity(hudElement);
     elements.push_back(hudElement);
 
@@ -99,5 +104,99 @@ public:
     hudElement = std::make_shared<HUD>(Point3f(0.654, 0.8208333333, 3), Vector2f(0.325, 0.1486111), level_info, engine, "assets/hud/hud_minimap_", Utils::HUD_MINIMAP, false, false, false, false);
     engine.get_game()->create_entity(hudElement);
     elements.push_back(hudElement);
+
+    // TEXT
+    double size = 0.045;
+    double size_width = 0.5333333333 * size;
+
+    auto textElement2 = std::make_shared<Dynamic_text_image>(Point3f(0.022, 0.775 - size / 2, 3), Vector2f(7 * size_width, size), level_info, engine, Utils::STATS_GAME, &Level_info::get_lemming_hovered_type);
+    engine.get_game()->create_entity(textElement2);
+    elements.push_back(textElement2);
+
+    // textElement = std::make_shared<Text_image>(Point3f(0.022, 0.775 - size / 2, 3), Vector2f(7 * size_width, size), level_info, engine, Utils::STATS_GAME, "WALKER");
+    // engine.get_game()->create_entity(textElement);
+    // elements.push_back(textElement);
+
+    // textElement = std::make_shared<Text_image>(Point3f(0.022 + size_width * 8, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "3");
+    // engine.get_game()->create_entity(textElement);
+    // elements.push_back(textElement);
+
+    // textElement = std::make_shared<Text_image>(Point3f(0.022 + size_width * 9, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "3");
+    // engine.get_game()->create_entity(textElement);
+    // elements.push_back(textElement);
+
+    // textElement = std::make_shared<Text_image>(Point3f(0.022 + size_width * 10, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "3");
+    // engine.get_game()->create_entity(textElement);
+    // elements.push_back(textElement);
+
+    auto textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 26.5, 0.775 - size / 2, 3), Vector2f(3 * size_width, size), level_info, engine, Utils::STATS_GAME, "OUT");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 23, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "3");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 22, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "3");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 21, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "3");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 17.5, 0.775 - size / 2, 3), Vector2f(2 * size_width, size), level_info, engine, Utils::STATS_GAME, "IN");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 15, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "1");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 14, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "0");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 13, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "0");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 12, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "%");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 9, 0.775 - size / 2, 3), Vector2f(4 * size_width, size), level_info, engine, Utils::STATS_GAME, "TIME");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 4.5, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "4");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 3.25, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "-");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width * 2, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "5");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    textElement = std::make_shared<Text_image>(Point3f(0.98 - size_width, 0.775 - size / 2, 3), Vector2f(size_width, size), level_info, engine, Utils::STATS_GAME, "9");
+    engine.get_game()->create_entity(textElement);
+    elements.push_back(textElement);
+
+    Dynamic_value_display display(
+        level_info,                       // Referencia a Level_info
+        engine,                           // Instancia de Engine
+        Utils::STATS_GAME,                // text_type
+        3,                                // maxDigits
+        0.022 + size_width * 9,           // startX
+        0.775 - size / 2,                 // startY
+        size_width,                       // digitWidth
+        size,                             // digitHeight
+        &Level_info::get_lemmings_hovered // Función miembro de Level_info
+    );
+
+    display.add_to_game(); // Agrega los dígitos al juego
   }
 };

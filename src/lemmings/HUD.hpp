@@ -21,6 +21,7 @@ private:
   Texture txt;
   Level_info &level_info;
   int option_selected = 11;
+  float last_position;
 
 public:
   HUD(Point3f position, Vector2f size, Level_info &_level_info, Engine &engine, std::string _path, int _n, bool _is_hovereable = false, bool _is_clickable = true, bool _is_changeable = false, bool _is_selectable = true)
@@ -47,6 +48,7 @@ public:
     path = _path;
     n = _n;
     txt = engine.load_texture(_path + std::to_string(_n) + ".png");
+    last_position = position.x;
   }
 
   void pre_physics(Engine &) override
@@ -54,7 +56,10 @@ public:
     if (is_cursor && option_selected != level_info.get_option_selected())
     {
       option_selected = level_info.get_option_selected();
-      set_position3D(Point3f(Utils::positions[option_selected].x, Utils::positions[option_selected].y, 2));
+      Point3f actual_position = get_position3D();
+      auto new_position = Utils::positions[option_selected].x + actual_position.x - last_position;
+      last_position = Utils::positions[option_selected].x;
+      set_position3D(Point3f(new_position, Utils::positions[option_selected].y, 2));
     }
   }
 
