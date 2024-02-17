@@ -11,10 +11,11 @@ private:
   int digitIndex;                              // Índice del dígito deseado
   int maxDigits;                               // Número máximo de dígitos del valor
   int (Level_info::*getValueFunction)() const; // Puntero a función miembro de Level_info
+  bool is_static_n_digits;
 
 public:
-  Dynamic_digit_image(Point3f position, Vector2f diagonal, Level_info &_level_info, Engine &engine, int text_type, int _digitIndex, int _maxDigits, int (Level_info::*_getValueFunction)() const)
-      : Text_image(position, diagonal, _level_info, engine, text_type, "0", true), lastDigit(-1), digitIndex(_digitIndex), maxDigits(_maxDigits), getValueFunction(_getValueFunction)
+  Dynamic_digit_image(Point3f position, Vector2f diagonal, Level_info &_level_info, Engine &engine, int text_type, int _digitIndex, int _maxDigits, int (Level_info::*_getValueFunction)() const, bool _is_static_n_digits)
+      : Text_image(position, diagonal, _level_info, engine, text_type, "0", true), lastDigit(-1), digitIndex(_digitIndex), maxDigits(_maxDigits), getValueFunction(_getValueFunction), is_static_n_digits(_is_static_n_digits)
   {
   }
 
@@ -25,8 +26,8 @@ public:
 
     int currentValue = (level_info.*getValueFunction)(); // Invoca la función de Level_info
     int relevantDigit = extract_relevant_digit(currentValue);
-    // Decide si este y todos los dígitos superiores son cero (para text_type == 0)
-    bool shouldHideDigit = (text_type == 0) && (relevantDigit == 0) && are_all_higher_digits_zero(currentValue);
+    // Decide si este y todos los dígitos superiores son cero
+    bool shouldHideDigit = (!is_static_n_digits) && (relevantDigit == 0) && are_all_higher_digits_zero(currentValue);
 
     if (relevantDigit != lastDigit)
     {

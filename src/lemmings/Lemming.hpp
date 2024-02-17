@@ -11,6 +11,7 @@ class Lemming : public Rigid_body
   bool on_ground = false;
   Texture txt;
   Level_info &level_info;
+  Engine &engine;
   float time_frame_sprite = 0.0f; // Acumulador de tiempo para la animación del sprite
   std::string base_path;          // Base para el path de las texturas de animación
   std::string type = "WALKER";
@@ -253,11 +254,11 @@ class Lemming : public Rigid_body
   }
 
 public:
-  Lemming(Point3f position, Vector2f diagonal, Engine &engine, Level_info &_level_info)
+  Lemming(Point3f position, Vector2f diagonal, Engine &_engine, Level_info &_level_info)
       : Rigid_body(position, diagonal,
-                   engine.load_texture("assets/lemming/lemming_1_2_0.png"),
+                   _engine.load_texture("assets/lemming/lemming_1_2_0.png"),
                    "Lemming", "Lemming"),
-        level_info(_level_info)
+        level_info(_level_info), engine(_engine)
   {
     // gravity = 3;
     // enable_gravity();
@@ -335,9 +336,14 @@ public:
       if (!Utils::STATE_IS_LOOP_ANIMATION[get_state()] && current_frame == 0)
       {
         is_playing = false; // Detiene la animación si no es en bucle
-        if (is_escaping() || is_crashing() || is_exploding() || is_drowning())
+        if (is_escaping())
         {
-          destroy();
+          level_info.add_n_lemmings_in();
+          destroy_lemming(engine);
+        }
+        if (is_crashing() || is_exploding() || is_drowning())
+        {
+          destroy_lemming(engine);
           std::cout << "Lemming destruido\n";
         }
 
@@ -528,7 +534,7 @@ public:
     {
       speed.x = 0;
       speed.y = 0;
-      destroy();
+      destroy_lemming(engine);
     }
 
     if (other->get_entity_name() == "Chain")
@@ -539,7 +545,7 @@ public:
       chain_ptr->trigger_event_animation();
       speed.x = 0;
       speed.y = 0;
-      destroy();
+      destroy_lemming(engine);
     }
     set_speed(speed);
   }
@@ -621,7 +627,7 @@ public:
 
       if (level_info.get_is_cursor_hover() == false)
       {
-        level_info.set_txt("assets/cursor_hover.png", engine);
+        level_info.set_cursor_txt("assets/cursor_hover.png", engine);
         level_info.set_is_cursor_hover(true);
       }
     }
@@ -642,8 +648,25 @@ public:
         }
       }
 
-      level_info.set_txt("assets/cursor.png", engine);
+      level_info.set_cursor_txt("assets/cursor.png", engine);
       level_info.set_is_cursor_hover(false);
     }
+  }
+
+  void destroy_lemming(Engine &engine)
+  {
+    if (is_hovered)
+    {
+      level_info.sub_lemmings_hovered();
+      if (level_info.get_lemmings_hovered() == 0)
+      {
+        level_info.set_lemming_hovered_type("");
+      }
+    }
+    level_info.set_cursor_txt("assets/cursor.png", engine);
+    level_info.set_is_cursor_hover(false);
+
+    level_info.sub_n_lemmings_out();
+    destroy();
   }
 };

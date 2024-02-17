@@ -15,10 +15,11 @@ private:
   float startX, startY;
   float digit_width, digit_height;
   int (Level_info::*getValueFunction)() const;
+  bool is_static_n_digits;
 
 public:
-  Dynamic_value_display(Level_info &_level_info, Engine &_engine, int _text_type, int _max_digits, float _startX, float _startY, float _digit_width, float _digit_height, int (Level_info::*_getValueFunction)() const)
-      : level_info(_level_info), engine(_engine), max_digits(_max_digits), text_type(_text_type), startX(_startX), startY(_startY), digit_width(_digit_width), digit_height(_digit_height), getValueFunction(_getValueFunction)
+  Dynamic_value_display(Level_info &_level_info, Engine &_engine, int _text_type, int _max_digits, float _startX, float _startY, float _digit_width, float _digit_height, int (Level_info::*_getValueFunction)() const, bool _is_static_n_digits = true)
+      : level_info(_level_info), engine(_engine), max_digits(_max_digits), text_type(_text_type), startX(_startX), startY(_startY), digit_width(_digit_width), digit_height(_digit_height), getValueFunction(_getValueFunction), is_static_n_digits(_is_static_n_digits)
   {
     create_digit_images();
   }
@@ -36,7 +37,8 @@ public:
           text_type,
           i,
           max_digits,
-          getValueFunction);
+          getValueFunction,
+          is_static_n_digits);
       digit_images.push_back(digit_image);
     }
   }

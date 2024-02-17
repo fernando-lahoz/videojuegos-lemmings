@@ -7,10 +7,10 @@
 
 #include "Lemmings_camera.hpp"
 #include "Lemming.hpp"
-#include "Level.hpp"
 #include "Level_info.hpp"
 #include "Cursor.hpp"
 #include "utils.hpp"
+#include "Screen_manager.hpp"
 
 // ASK: change_bkg() ???
 // ASK: when entity destroy() MOUSE_HOVER doesn't change
@@ -21,12 +21,11 @@ class Lemmings_game : public Game
 {
 private:
   Level_info level_info;
-
-  int last_lemmings_hovered = 0;
+  Screen_manager screen;
 
 public:
   Lemmings_game()
-      : Game("Lemmings")
+      : Game("Lemmings"), screen(level_info)
   {
   }
 
@@ -38,36 +37,16 @@ public:
 
   void on_game_startup(Engine &engine) override
   {
-    level_info.set_txt("assets/cursor.png", engine);
+    level_info.set_cursor_txt("assets/cursor.png", engine);
 
     auto cursor = std::make_shared<Cursor>(engine, level_info, 0.05);
     engine.get_game()->create_entity(cursor);
-    Level level(engine, 0, level_info); // Crea el nivel correspondiente
+    Level level(level_info);
+    screen.go_level(engine, 0);
   }
+
   void on_loop_start(Engine &engine) override
   {
-    int actual_lemmings_hovered = level_info.get_lemmings_hovered();
-
-    if (actual_lemmings_hovered != last_lemmings_hovered)
-    {
-      std::cout << "Lemmings hovered: " << actual_lemmings_hovered << std::endl;
-      last_lemmings_hovered = actual_lemmings_hovered;
-    }
-
-    if (level_info.update_explode_countdown(engine))
-    {
-      auto &entities = engine.get_entities();
-      for (std::size_t i = 0; i < entities.size(); i++)
-      {
-        if (entities[i]->get_entity_name() == "Lemming")
-        {
-          std::shared_ptr<Lemming> lemming_ptr = std::dynamic_pointer_cast<Lemming>(entities[i]);
-          if (lemming_ptr)
-          {
-            lemming_ptr->add_skill(Utils::EXPLODE);
-          }
-        }
-      }
-    }
+    screen.update_game(engine);
   }
 };

@@ -25,7 +25,7 @@ public:
     if (level_info.get_is_cursor_hover() != state)
     {
       state = !state;
-      set_active_texture(level_info.get_txt());
+      set_active_texture(level_info.get_cursor_txt());
     }
   }
 };
