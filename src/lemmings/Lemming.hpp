@@ -344,9 +344,7 @@ public:
         if (is_crashing() || is_exploding() || is_drowning())
         {
           destroy_lemming(engine);
-          std::cout << "Lemming destruido\n";
         }
-
         return;
       }
 

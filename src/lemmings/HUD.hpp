@@ -77,6 +77,14 @@ public:
       {
         level_info.set_dead_marked(true);
       }
+      else if (n == Utils::HUD_ADD_SPAWN_VELOCITY)
+      {
+        level_info.add_spawn_velocity();
+      }
+      else if (n == Utils::HUD_SUB_SPAWN_VELOCITY)
+      {
+        level_info.sub_spawn_velocity();
+      }
 
       if (is_changeable)
       {

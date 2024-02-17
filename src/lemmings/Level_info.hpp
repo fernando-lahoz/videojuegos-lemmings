@@ -5,23 +5,32 @@
 class Level_info
 {
 private:
+  // principal settings
   int level = 0;
   bool is_playing = false;
   bool level_ended = false;
   bool spawn_ended = false;
 
+  // hud selection
   int option_selected = Utils::NO_OPTION_SELECTED;
+
+  // cursor
   Texture cursor_txt;
   bool is_cursor_hover = false;
   bool is_action_possible = false;
+
+  // lemming count
   int lemmings_hovered = 0;
   std::string lemming_hovered_type = "";
+
+  // level stats
   int n_lemmings_out = 0;
   int n_lemmings_in = 0;
   int percen_lemmings_in = 0;
   double time_left = 0.0f;
   int actual_minutes_left = 0;
   int actual_seconds_left = 0;
+  int spawn_velocity = 1;
 
   // Este booleano indica si un lemming es marcado para explotar
   bool dead_marked = false;
@@ -43,6 +52,7 @@ public:
     time_to_live = 5.0f;
     percen_lemmings_in = 0;
     time_left = Utils::LEVEL_TIME_LIMIT[_level];
+    spawn_velocity = Utils::LEVEL_SPAWN_VELOCITY[_level];
     actual_minutes_left = 0;
     actual_seconds_left = 0;
     spawn_ended = false;
@@ -67,6 +77,22 @@ public:
   void add_lemmings_hovered() { lemmings_hovered++; }
   void sub_lemmings_hovered() { lemmings_hovered--; }
   int get_lemmings_hovered() const { return lemmings_hovered; }
+
+  void add_spawn_velocity()
+  {
+    if (spawn_velocity < 97)
+    {
+      spawn_velocity = spawn_velocity + 3;
+    }
+  }
+  void sub_spawn_velocity()
+  {
+    if (spawn_velocity > 3)
+    {
+      spawn_velocity = spawn_velocity - 3;
+    }
+  }
+  int get_spawn_velocity() const { return spawn_velocity; }
 
   void add_n_lemmings_out() { n_lemmings_out++; }
   void sub_n_lemmings_out()

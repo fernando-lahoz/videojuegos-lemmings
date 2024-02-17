@@ -29,7 +29,7 @@ public:
     if (!is_playing)
     { // Espera a que la animación termine para comenzar a invocar
       spawn_timer += engine.get_delta_time();
-      if (spawn_timer >= Utils::LEVEL_SPAWN_VELOCITY[level] / 50 && spawned_lemmings < Utils::LEVEL_N_LEMMINGS[level] && !level_info.get_dead_marked())
+      if (spawn_timer >= 0.1 + (level_info.get_spawn_velocity() / 50.0f) && spawned_lemmings < Utils::LEVEL_N_LEMMINGS[level] && !level_info.get_dead_marked())
       {
         // Lógica para invocar Lemmings
         spawn_timer = 0.0f;
@@ -38,7 +38,6 @@ public:
         // Asume que hay una función para crear e inicializar un Lemming
         auto lemming = std::make_shared<Lemming>(calculate_spawn_position(lemming_size), lemming_size, engine, level_info);
         engine.get_game()->create_entity(lemming);
-        std::cout << "Lemming creado\n";
         if (spawned_lemmings == Utils::LEVEL_N_LEMMINGS[level])
         {
           level_info.set_spawn_ended();

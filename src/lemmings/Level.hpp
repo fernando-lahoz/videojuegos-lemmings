@@ -54,7 +54,8 @@ public:
       engine.get_game()->create_entity(map2);
       engine.get_game()->create_entity(map3);
       engine.get_game()->create_entity(door);
-      engine.get_game()->create_entity(gate);
+      // engine.get_game()->create_entity(gate);
+
       // engine.get_game()->create_entity(liquid);
       // engine.get_game()->create_entity(fire);
       // engine.get_game()->create_entity(flamethrower);
