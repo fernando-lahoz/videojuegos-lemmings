@@ -73,6 +73,9 @@ void Engine::send_mouse_hover()
 
     for (auto& entity : entities)
     {
+        if (entity->is_deleted())
+            continue;
+
         if (entity->contains_the_mouse(*this, mouse_position))
         {
             entity->enable_mouse_hover();
@@ -93,7 +96,8 @@ void Engine::send_event_down(EngineIO::InputEvent event)
 
     for (auto& entity : entities)
     {
-        entity->on_event_down(*this, event);
+        if (!entity->is_deleted())
+            entity->on_event_down(*this, event);
     }
 }
 
@@ -104,7 +108,8 @@ void Engine::send_event_up(EngineIO::InputEvent event)
 
     for (auto& entity : entities)
     {
-        entity->on_event_up(*this, event);
+        if (!entity->is_deleted())
+            entity->on_event_up(*this, event);
     }
 }
 
@@ -299,6 +304,9 @@ bool Engine::intesect_ray(Ray &ray, bool check_z_axis, Float &hit_offset, Entity
 
     for (auto& entity : entities)
     {
+        if (entity->is_deleted())
+            continue;
+
         auto bounding_box = entity->bound2f();
         Float offset;
 
@@ -327,7 +335,7 @@ bool Engine::intesect_ray(Ray &ray,
 
     for (auto& entity : entities)
     {
-        if (entity->get_entity_id() == not_this_entity_id)
+        if (entity->is_deleted() || entity->get_entity_id() == not_this_entity_id)
             continue;
 
         auto bounding_box = entity->bound2f();
