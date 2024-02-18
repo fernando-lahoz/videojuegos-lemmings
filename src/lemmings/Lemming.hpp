@@ -280,6 +280,11 @@ public:
     return index;
   }
 
+  void add_skill_explode_all()
+  {
+    skills = skills | Utils::EXPLODE;
+  }
+
   /**
    * @brief Adds a skill to the Lemming.
    *

@@ -52,8 +52,8 @@ public:
     if (game_info.get_do_action() == Utils::ACTIONS::GO_MENU)
     {
       clear_screen(engine);
-      // std::cout << "GO TO MENU" << std::endl;
-      // go_menu(engine, game_info.get_build_menu(), 0);
+      std::cout << "GO TO MENU" << std::endl;
+      go_menu(engine, game_info.get_build_menu(), 0);
     }
     else if (game_info.get_do_action() == Utils::ACTIONS::GO_LEVEL)
     {
@@ -96,7 +96,7 @@ public:
               std::shared_ptr<Lemming> lemming_ptr = std::dynamic_pointer_cast<Lemming>(entities[i]);
               if (lemming_ptr)
               {
-                lemming_ptr->add_skill(Utils::EXPLODE);
+                lemming_ptr->add_skill_explode_all();
               }
             }
           }

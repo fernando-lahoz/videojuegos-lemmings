@@ -45,7 +45,7 @@ public:
       auto map2 = std::make_shared<Entity>(Point3f(0.9, 0.2, 20), Vector2f(0.1, 0.25), txt, "MAP");
       auto map3 = std::make_shared<Entity>(Point3f(0.45, 0.2, 20), Vector2f(0.1, 0.25), txt, "MAP");
       auto door = std::make_shared<Door>(Point3f(0.5, 0.0, 21), (0.713f / txt.get_height()) / 2, engine, 1, 1.0f, levelNumber, game_info);
-      auto gate = std::make_shared<Gate>(Point3f(0.8, 0.25, 21), (0.713f / txt.get_height()) / 2, engine, 1, 0.8f, game_info);
+      // auto gate = std::make_shared<Gate>(Point3f(0.8, 0.25, 21), (0.713f / txt.get_height()) / 2, engine, 1, 0.8f, game_info);
 
       // auto liquid = std::make_shared<Liquid>(Point3f(0.4, 0.3, 19), (0.713f / txt.get_height()) / 2, engine, 1, 0.8f, game_info);
       // auto fire = std::make_shared<Fire>(Point3f(0.4, 0.3, 19), (0.713f / txt.get_height()) / 2, engine, 0.8f, game_info);
@@ -58,7 +58,7 @@ public:
       engine.get_game().create_entity(map2);
       engine.get_game().create_entity(map3);
       engine.get_game().create_entity(door);
-      engine.get_game().create_entity(gate);
+      // engine.get_game().create_entity(gate);
 
       // engine.get_game().create_entity(liquid);
       // engine.get_game().create_entity(fire);

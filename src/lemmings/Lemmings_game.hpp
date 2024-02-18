@@ -14,7 +14,23 @@
 
 // ASK: change_bkg() ???
 // ASK: on_detect_border_cursor() when the cursor is moved around [0-0.05,-] and [0.95-1,-] executes a function
+
 // cuando se intenta borrar mas de 10 entidades (en un for haciendo destroy) colapsa y se cierra el juego
+
+// TODO: adapt lemming movement to alpha calculations
+// TODO: add movements to the lemming (BUILD, CLIMB, BASH, MINING, CRASHING)
+// TODO: add logic when the cursor is moved around [0-0.05,-] and [0.95-1,-] moves the camera
+// TODO: process all text assets for level info in menus
+// TODO: create animations for menus
+// TODO: add credits animations with project contributors
+// TODO: add a level selector menu
+// TODO: add level intro & outro menu
+// TODO: add player vs IA mode
+// TODO: add sound effects
+// TODO: add exit button functionality
+// TODO: add counter explosion above the lemmings
+// TODO: add 12-30 level
+
 class Lemmings_game : public Game
 {
 private:
@@ -47,6 +63,7 @@ public:
   {
     screen.update_game(engine);
   }
+
   // void on_entity_destruction(Engine &engine, EntityPtr entity) override
   // {
   //   std::cout << "DELETED: " << entity->get_entity_name() << std::endl;
