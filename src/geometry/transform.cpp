@@ -261,7 +261,6 @@ Ray Transform::operator()(const Ray &ray, Vector3f &oError, Vector3f &dError) co
         tMax -= dt;
     }
 
-    //TODO: ray.medium does not exist
     return Ray(origin, direction, tMax, ray.is_camera_ray());
 }
 

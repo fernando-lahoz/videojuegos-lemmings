@@ -1,7 +1,7 @@
 #include "engine/entity.hpp"
 #include "engine/engine.hpp"
 
-Entity::Entity(Point3f position, Vector2f diagonal, Texture texture, 
+Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture, 
             std::string_view _entity_name, 
             std::string_view _class_name)
 {

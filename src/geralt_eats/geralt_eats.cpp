@@ -6,7 +6,6 @@
 #include "geralt_eats/Geralt_eats_game.hpp"
 
 
-
 int main(int, char**)
 {
     try

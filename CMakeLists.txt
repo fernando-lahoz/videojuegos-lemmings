@@ -5,7 +5,7 @@ project(project_name LANGUAGES CXX)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++20 -save-temps")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Ofast -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
 if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc -static") 
@@ -52,6 +52,8 @@ set(Modules
     "engine/render_2D"
     "engine/physics"
     "engine/game"
+    "engine/rigid_body"
+    "engine/fixed_text"
 )
 
 #--------------------------- EXTERNAL LIBRARIES --------------------------------

@@ -13,7 +13,6 @@ public:
 
     constexpr Point3() = default;
     constexpr Point3(T x, T y, T z) ;
-    //TODO: debería ser más explícito
     constexpr Point3(T f);
 
     template <typename U>

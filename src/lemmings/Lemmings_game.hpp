@@ -38,7 +38,7 @@ public:
     game_info.set_cursor_txt("assets/cursor.png", engine);
 
     auto cursor = std::make_shared<Cursor>(engine, game_info, 0.05);
-    engine.get_game()->create_entity(cursor);
+    engine.get_game().create_entity(cursor);
     screen.go_menu(engine, Utils::MENU_TYPE::TITLE, 0);
     // screen.go_level(engine, 0);
   }

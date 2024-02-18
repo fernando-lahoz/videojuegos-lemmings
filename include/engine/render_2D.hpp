@@ -14,6 +14,7 @@
 #include "lib/texture.hpp"
 #include "engine/entity.hpp"
 #include "engine/IO.hpp"
+#include "engine/fixed_text.hpp"
 
 class Engine;
 
@@ -39,7 +40,8 @@ public:
 
     virtual void update_position(Engine&);
 
-    bool isVisible(Entity& entity);
+    bool is_visible(const Entity& entity);
+    bool is_visible(const Bound2f& bound);
 
     virtual void on_event_down(Engine&, EngineIO::InputEvent);
     virtual void on_event_up(Engine&, EngineIO::InputEvent);
@@ -56,6 +58,8 @@ protected:
     SDL_Rect entity_to_rect(Entity& e, Camera2D& camera);
 
     void render_entity(Entity& entity, Camera2D& camera);
+
+    void render_fixed_text(FixedText& text, Camera2D& camera);
 
 public:
 

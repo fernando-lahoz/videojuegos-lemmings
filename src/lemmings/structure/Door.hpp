@@ -36,7 +36,7 @@ public:
         game_info.add_n_lemmings_out();
         // Asume que hay una función para crear e inicializar un Lemming
         auto lemming = std::make_shared<Lemming>(calculate_spawn_position(lemming_size), lemming_size, engine, game_info);
-        engine.get_game()->create_entity(lemming);
+        engine.get_game().create_entity(lemming);
         if (spawned_lemmings == Utils::LEVEL_N_LEMMINGS[level])
         {
           game_info.set_spawn_ended();

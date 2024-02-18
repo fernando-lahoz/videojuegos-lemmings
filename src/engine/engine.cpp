@@ -283,9 +283,9 @@ Engine::Engine(Game *game)
     physics = Physics_engine();
 }
 
-std::shared_ptr<Game> Engine::get_game()
+Game& Engine::get_game()
 {
-    return game;
+    return *game;
 }
 
 // Intersect a ray with all entities in the engine

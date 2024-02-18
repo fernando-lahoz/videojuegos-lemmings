@@ -63,7 +63,7 @@ public:
     EntityCollection& get_entities();
     double get_delta_time();
     void destroy_all_entities();
-    std::shared_ptr<Game> get_game();
+    Game& get_game();
     Point2f get_mouse_position();
     
 

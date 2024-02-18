@@ -39,7 +39,7 @@ public:
           max_digits,
           getValueFunction,
           is_static_n_digits);
-      engine.get_game()->create_entity(digit_image);
+      engine.get_game().create_entity(digit_image);
     }
   }
 };

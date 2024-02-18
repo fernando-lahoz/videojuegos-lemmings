@@ -48,14 +48,19 @@ Bound2f Camera2D::get_frame() const
     return frame;
 }
 
-void Camera2D::update_position([[maybe_unused]] Engine&)
+void Camera2D::update_position(Engine&)
 {
     // Do nothing by default
 }
 
-bool Camera2D::isVisible(Entity& entity)
+bool Camera2D::is_visible(const Entity& entity)
 {
-    return frame.overlaps(entity.bound2f());
+    return is_visible(entity.bound2f());
+}
+
+bool Camera2D::is_visible(const Bound2f& bound)
+{
+    return frame.overlaps(bound);
 }
 
 void Camera2D::on_event_down(Engine&, EngineIO::InputEvent)
@@ -81,14 +86,13 @@ SDL_Rect Render_2D::entity_to_rect(Entity& e, Camera2D& camera)
     SDL_Rect rect;
 
     auto w_position = world_to_raster(e.get_position2D(), camera);
-    //TODO: what is this cast meant for
-    rect.x = (unsigned) (w_position.x);
-    rect.y = (unsigned) (w_position.y);
+    rect.x = (int) (w_position.x);
+    rect.y = (int) (w_position.y);
 
 
     auto w_diag = world_to_raster(e.bound2f().diagonal(), camera);
-    rect.w = (unsigned) (w_diag.x);
-    rect.h = (unsigned) (w_diag.y);
+    rect.w = (int) (w_diag.x);
+    rect.h = (int) (w_diag.y);
 
 
     return rect;
@@ -96,12 +100,37 @@ SDL_Rect Render_2D::entity_to_rect(Entity& e, Camera2D& camera)
 
 void Render_2D::render_entity(Entity& entity, Camera2D& camera)
 {
-    if (camera.isVisible(entity))
+    if (camera.is_visible(entity))
     {
         auto rect = entity_to_rect(entity, camera);
 
         auto texture = entity.get_active_texture();
         SDL_RenderCopy(renderer, texture.get(), nullptr, &rect);          
+    }
+}
+
+void Render_2D::render_fixed_text(FixedText& text, Camera2D& camera)
+{
+    auto bound = text.bound2f();
+    auto [w_map, h_map] = text.texture_letter_size;
+    auto [w_pre, h_pre] = bound.diagonal();
+    auto [w, h] = world_to_raster(bound.diagonal(), camera);
+
+    for (auto letter : text.entity_name)
+    {
+        if (camera.is_visible(bound))
+        {
+            
+            auto [x_map, y_map] = text.map(letter);
+            SDL_Rect letter_in_texture = {.x = x_map * w_map, .y = y_map * h_map, .w = w_map, .h = h_map};
+            Texture font_texture = text.get_active_texture();
+
+            auto [x, y] = world_to_raster(bound.pMin, camera);
+            SDL_Rect rect = {.x = (int)x, .y = (int)y, .w = (int)w, .h = (int)h};
+            SDL_RenderCopy(renderer, font_texture.get(), &letter_in_texture, &rect);
+        }
+        bound.pMin.x += w_pre;
+        bound.pMax.x += w_pre;
     }
 }
 
@@ -167,7 +196,13 @@ void Render_2D::draw(std::vector<EntityPtr> &entities, Camera2D& camera)
     // Render drawables
     for (auto &d : entities)
     {
-        render_entity(*d, camera);
+        FixedText *text_ptr = dynamic_cast<FixedText*>(d.get());
+        if (text_ptr != nullptr) {
+            render_fixed_text(*text_ptr, camera);
+        }
+        else {
+            render_entity(*d, camera);
+        }
     }
 
     SDL_RenderPresent(renderer);
