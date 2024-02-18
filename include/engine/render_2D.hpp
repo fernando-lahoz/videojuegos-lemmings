@@ -77,5 +77,5 @@ public:
     Point2f raster_to_world(Point2f raster_point, Camera2D& camera);
     Vector2f raster_to_world(Vector2f raster_vector, Camera2D& camera);
 
-    void draw(std::vector<EntityPtr> &entities, Camera2D& camera);
+    void draw(std::vector<EntityPtr> &entities, std::vector<std::shared_ptr<Camera2D>>& camera);
 };

@@ -1,5 +1,6 @@
 #include "engine/render_2D.hpp"
 #include "engine/IO.hpp"
+#include "engine/engine.hpp"
 
 Camera2D::Camera2D()
     : src{Point2f(0, 0), Point2f(1, 1)}, dst{}
@@ -208,19 +209,23 @@ Vector2f Render_2D::raster_to_world(Vector2f raster_vector, Camera2D& camera)
 
 
 
-void Render_2D::draw(std::vector<EntityPtr> &entities, Camera2D& camera)
+void Render_2D::draw(std::vector<EntityPtr> &entities,
+        std::vector<std::shared_ptr<Camera2D>>& cameras)
 {
     clear_window(Spectrum(0.529*255, 0.808*255, 0.922*255));
 
-    // Render drawables
-    for (auto &d : entities)
+    for (auto& camera : cameras)
     {
-        FixedText *text_ptr = dynamic_cast<FixedText*>(d.get());
-        if (text_ptr != nullptr) {
-            render_fixed_text(*text_ptr, camera);
-        }
-        else {
-            render_entity(*d, camera);
+        // Render drawables
+        for (auto &d : entities)
+        {
+            FixedText *text_ptr = dynamic_cast<FixedText*>(d.get());
+            if (text_ptr != nullptr) {
+                render_fixed_text(*text_ptr, *camera);
+            }
+            else {
+                render_entity(*d, *camera);
+            }
         }
     }
 

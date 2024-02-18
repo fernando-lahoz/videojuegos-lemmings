@@ -14,7 +14,15 @@
 #include "IO.hpp"
 
 class Engine
-{   
+{ 
+public:
+    using TimePoint = std::chrono::time_point<std::chrono::steady_clock,
+                                              std::chrono::nanoseconds>;
+
+    using EntityCollection = std::vector<std::shared_ptr<Entity>>;
+
+    using CameraCollection = std::vector<std::shared_ptr<Camera2D>>;
+
 private:
     void send_event_down(EngineIO::InputEvent key);
     void send_event_up(EngineIO::InputEvent key);
@@ -31,18 +39,14 @@ private:
     EngineIO::InputEvent SDL_to_input_event(SDL_MouseButtonEvent key);
 
     std::shared_ptr<Game> game;
-    using CameraCollection = std::vector<std::shared_ptr<Camera2D>>;
     CameraCollection cameras;
     Render_2D renderer;
     Physics_engine physics;
 
-    using TimePoint = std::chrono::time_point<std::chrono::steady_clock,
-                                              std::chrono::nanoseconds>;
     TimePoint check_point;
     uint64_t delta_ns = 0, total_delta_ns = 0, total_measurements = 1;
     double delta_time; // Delta time in seconds
 
-    using EntityCollection = std::vector<std::shared_ptr<Entity>>;
     EntityCollection entities;
 
     Point2f mouse_position;

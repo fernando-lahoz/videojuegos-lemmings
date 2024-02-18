@@ -239,7 +239,6 @@ void Engine::update_delta_time()
     }
 
     delta_time = (double)delta_ns / 1e9;
-    std::cout << "delta: " << delta_time << '\n';
 }
 
 void Engine::compute_physics()
@@ -376,6 +375,8 @@ void Engine::start()
     bool quit = false;
     while (!quit && !quit_event)
     {
+        
+
         update_delta_time();
         update_mouse_position();
 
@@ -395,8 +396,7 @@ void Engine::start()
         delete_dead_entities();
 
         // Draw call to renderer
-        for (auto& camera : cameras)
-            renderer.draw(entities, *camera);
+        renderer.draw(entities, cameras);
     }
 
     game->on_game_shutdown(*this);
