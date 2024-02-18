@@ -22,9 +22,12 @@ void Game::create_entity(EntityPtr entity)
     new_entities.push_back(entity);
 }
 
-std::shared_ptr<Camera2D> Game::get_camera() const
+std::shared_ptr<Camera2D> Game::get_main_camera() const
 {
-    return std::make_shared<Camera2D>(Bound2f(Point2f(0, 0), Point2f(1, 1)));
+    return std::make_shared<Camera2D>(
+        Bound2f(Point2f(0, 0), Point2f(1, 1)), //world_frame
+        Bound2f(Point2f(0, 0), Point2f(800, 800))  //camera_frame
+    );
 }
 
 void Game::on_loop_start(Engine&) {}

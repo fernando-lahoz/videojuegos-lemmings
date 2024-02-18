@@ -21,14 +21,12 @@ class Engine;
 class Camera2D
 {
 protected:
-
-    Bound2f frame;
+    Bound2f src, dst;
 
 public:
-
     Camera2D();
 
-    Camera2D(Bound2f frame);
+    Camera2D(Bound2f world_frame, Bound2f window_frame);
 
     Point2f world_to_screen(Point2f world_point);
     Vector2f world_to_screen(Vector2f world_vector);
@@ -36,7 +34,8 @@ public:
     Point2f screen_to_world(Point2f screen_point);
     Vector2f screen_to_world(Vector2f screen_vector);
 
-    Bound2f get_frame() const;
+    Bound2f get_window_frame() const;
+    Bound2f get_world_frame() const;
 
     virtual void update_position(Engine&);
 
@@ -65,7 +64,6 @@ public:
 
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
-    // TODO: This was a int2
     Vector2i resolution;
 
     Render_2D() = default;

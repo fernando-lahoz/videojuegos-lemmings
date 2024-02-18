@@ -44,7 +44,7 @@ public:
   }
 
   // Sobrescribe funciones de Game
-  std::shared_ptr<Camera2D> get_camera() const override
+  std::shared_ptr<Camera2D> get_main_camera() const override
   {
     return std::make_shared<Lemmings_camera>();
   }

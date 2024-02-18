@@ -69,8 +69,6 @@ EngineIO::InputEvent Engine::SDL_to_input_event(SDL_MouseButtonEvent button)
 
 void Engine::send_mouse_hover()
 {
-    auto mouse_position = get_mouse_position();
-
     for (auto &entity : entities)
     {
         if (entity->is_deleted())
@@ -92,7 +90,8 @@ void Engine::send_mouse_hover()
 void Engine::send_event_down(EngineIO::InputEvent event)
 {
     game->on_event_down(*this, event);
-    camera->on_event_down(*this, event);
+    for (auto& camera : cameras)
+        camera->on_event_down(*this, event);
 
     for (auto &entity : entities)
     {
@@ -104,7 +103,8 @@ void Engine::send_event_down(EngineIO::InputEvent event)
 void Engine::send_event_up(EngineIO::InputEvent event)
 {
     game->on_event_up(*this, event);
-    camera->on_event_up(*this, event);
+    for (auto& camera : cameras)
+        camera->on_event_up(*this, event);
 
     for (auto &entity : entities)
     {
@@ -121,14 +121,37 @@ void Engine::change_input_state(EngineIO::InputEvent event, bool is_down)
         input_state &= ~event;
 }
 
-Point2f Engine::get_mouse_position()
+void Engine::update_mouse_position()
 {
     int x, y;
     SDL_GetMouseState(&x, &y);
-    Point2f raster_mouse_position = Point2f(x, y);
+    mouse_position.x = (Float) x;
+    mouse_position.y = (Float) y;
+}
 
-    auto mouse_position = renderer.raster_to_world(raster_mouse_position, *camera);
-    return mouse_position;
+Point2f Engine::get_mouse_position()
+{
+    return renderer.raster_to_world(mouse_position, *cameras[0]);
+}
+
+Point2f Engine::get_mouse_position_in_camera(Camera2D& camera)
+{
+    return renderer.raster_to_world(mouse_position, camera);
+}
+
+void Engine::show_cursor()
+{
+    SDL_ShowCursor(SDL_ENABLE);
+}
+
+void Engine::hide_cursor()
+{
+    SDL_ShowCursor(SDL_DISABLE);
+}
+
+bool Engine::is_cursor_visible()
+{
+    return SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE;
 }
 
 // Returns true if the program should quit
@@ -216,6 +239,7 @@ void Engine::update_delta_time()
     }
 
     delta_time = (double)delta_ns / 1e9;
+    std::cout << "delta: " << delta_time << '\n';
 }
 
 void Engine::compute_physics()
@@ -223,7 +247,8 @@ void Engine::compute_physics()
     // Send pre-physics event to all entities
     physics.pre_physics(*this);
 
-    camera->update_position(*this);
+    for (auto& camera : cameras)
+        camera->update_position(*this);
     physics.update_positions(*this);
     physics.compute_collisions(*this);
 
@@ -270,20 +295,18 @@ Engine::Engine(std::shared_ptr<Game> &&game)
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
         throw error::sdl_exception(ERROR_CONTEXT);
 
+    cameras.push_back(this->game->get_main_camera());
     check_point = std::chrono::steady_clock::now();
-    renderer = Render_2D(game->get_name(), 800, 800);
+    auto [w, h] = cameras[0]->get_window_frame().diagonal();
+    renderer = Render_2D(this->game->get_name(), (int)w, (int)h);
+
     physics = Physics_engine();
 }
 
 Engine::Engine(Game *game)
-    : game{game}
+    : Engine{std::shared_ptr<Game>(game)}
 {
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
-        throw error::sdl_exception(ERROR_CONTEXT);
 
-    check_point = std::chrono::steady_clock::now();
-    renderer = Render_2D(game->get_name(), 800, 800);
-    physics = Physics_engine();
 }
 
 Game &Engine::get_game()
@@ -347,13 +370,15 @@ bool Engine::intesect_ray(Ray &ray,
 
 void Engine::start()
 {
-    camera = game->get_camera();
+    cameras.push_back(game->get_main_camera());
     game->on_game_startup(*this);
 
     bool quit = false;
-    while (!quit)
+    while (!quit && !quit_event)
     {
         update_delta_time();
+        update_mouse_position();
+
         game->on_loop_start(*this);
         quit = process_events();
 
@@ -370,12 +395,18 @@ void Engine::start()
         delete_dead_entities();
 
         // Draw call to renderer
-        renderer.draw(entities, *camera);
+        for (auto& camera : cameras)
+            renderer.draw(entities, *camera);
     }
 
     game->on_game_shutdown(*this);
 
     SDL_Quit();
+}
+
+void Engine::quit()
+{
+    quit_event = true;
 }
 
 Engine::EntityCollection &Engine::get_entities()

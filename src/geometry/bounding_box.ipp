@@ -481,6 +481,24 @@ constexpr bool BoundingBox2<T>::contains_exclusively(const Point2<T> &p)
 }
 
 template <typename T>
+constexpr T BoundingBox2<T>::is_near_border(const Point2<T> &p, Border border, T distance)
+{
+    switch (border)
+    {
+    case Border::TOP:
+        return std::abs(pMin.y - p.y) <= distance;
+    case Border::BOTTOM:
+        return std::abs(pMax.y - p.y) <= distance;
+    case Border::RIGHT:
+        return std::abs(pMin.x - p.x) <= distance;
+    case Border::LEFT:
+        return std::abs(pMax.x - p.x) <= distance;
+    default:
+        return false;
+    }
+}
+
+template <typename T>
 constexpr BoundingBox2<T> BoundingBox2<T>::expand(T delta) 
 {
     return BoundingBox2<T>(pMin - Vector2<T>(delta, delta),
@@ -493,13 +511,13 @@ constexpr Vector2<T> BoundingBox2<T>::diagonal() const {
 }
 
 template <typename T>
-constexpr Float BoundingBox2<T>::width() const 
+constexpr T BoundingBox2<T>::width() const 
 {
     return pMax.x - pMin.x;
 }
 
 template <typename T>
-constexpr Float BoundingBox2<T>::height() const 
+constexpr T BoundingBox2<T>::height() const 
 {
     return pMax.y - pMin.y;
 }

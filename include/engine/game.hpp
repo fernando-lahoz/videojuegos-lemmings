@@ -32,7 +32,7 @@ public:
     //  and before deleting old entities
     void create_entity(EntityPtr entity);
 
-    virtual std::shared_ptr<Camera2D> get_camera() const;
+    virtual std::shared_ptr<Camera2D> get_main_camera() const;
 
     // This is called right before event processing
     //  It is the first thing called in the loop

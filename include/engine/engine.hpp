@@ -25,12 +25,14 @@ private:
     void delete_dead_entities();
     void process_new_entities();
     void send_mouse_hover();
+    void update_mouse_position();
     void change_input_state(EngineIO::InputEvent key, bool is_down);
     EngineIO::InputEvent SDL_to_input_event(SDL_KeyboardEvent key);
     EngineIO::InputEvent SDL_to_input_event(SDL_MouseButtonEvent key);
 
     std::shared_ptr<Game> game;
-    std::shared_ptr<Camera2D> camera;
+    using CameraCollection = std::vector<std::shared_ptr<Camera2D>>;
+    CameraCollection cameras;
     Render_2D renderer;
     Physics_engine physics;
 
@@ -42,6 +44,10 @@ private:
 
     using EntityCollection = std::vector<std::shared_ptr<Entity>>;
     EntityCollection entities;
+
+    Point2f mouse_position;
+    bool quit_event = false;
+    
 
 public:
 
@@ -58,6 +64,7 @@ public:
     Engine(std::shared_ptr<Game>&& game);
 
     void start();
+    void quit();
 
     Texture load_texture(const std::string& path);
     EntityCollection& get_entities();
@@ -65,8 +72,11 @@ public:
     void destroy_all_entities();
     Game& get_game();
     Point2f get_mouse_position();
+    Point2f get_mouse_position_in_camera(Camera2D& camera);
     
-
+    void show_cursor();
+    void hide_cursor();
+    bool is_cursor_visible();
 
     bool intesect_ray(Ray &ray, 
             bool check_z_axis,

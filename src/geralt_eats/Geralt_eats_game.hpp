@@ -46,7 +46,7 @@ public:
     : Game("Geralt_eats")
     { }
 
-    std::shared_ptr<Camera2D> get_camera() const override
+    std::shared_ptr<Camera2D> get_main_camera() const override
     {
         return std::make_shared<Geralt_camera>();
     }
@@ -65,7 +65,7 @@ public:
                     Vector2i(16, 30), lemmings_font_map, "Geralt Eats Apples!!"));
     }
 
-    void on_loop_start([[maybe_unused]]Engine& engine) override
+    void on_loop_start(Engine& engine) override
     {
         while (n_apples < max_apples)
         {
@@ -85,6 +85,7 @@ public:
             create_entity(apple);
             n_apples++;
         }
+        
     }
 
     void on_entity_destruction([[maybe_unused]]Engine& engine, EntityPtr entity) override
