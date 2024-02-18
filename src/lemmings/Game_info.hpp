@@ -1,13 +1,22 @@
 
 #pragma once
 
-#include "utils.hpp"
-class Level_info
+#include <vector>
+
+#include "lemmings/utils.hpp"
+
+class Game_info
 {
 private:
-  // principal settings
+  // global settings
+  int do_action = Utils::NO_ACTION;
+  int actual_state = Utils::MENU;
+  bool sound_effects = true;
+  int build_level = 0;
+  int build_menu = 0;
+
+  // principal level settings
   int level = 0;
-  bool is_playing = false;
   bool level_ended = false;
   bool spawn_ended = false;
 
@@ -24,6 +33,7 @@ private:
   std::string lemming_hovered_type = "";
 
   // level stats
+  std::vector<int> skill_amount;
   int n_lemmings_out = 0;
   int n_lemmings_in = 0;
   int percen_lemmings_in = 0;
@@ -38,29 +48,59 @@ private:
   double time_to_live = 5.0f;
 
 public:
-  void start_level_info(int _level)
+  void start_game_info(int _level)
   {
     level_ended = false;
-    is_playing = true;
     level = _level;
     option_selected = Utils::NO_OPTION_SELECTED;
     is_action_possible = false;
     is_cursor_hover = false;
     n_lemmings_out = 0;
     n_lemmings_in = 0;
+    lemmings_hovered = 0;
     lemming_hovered_type = "";
     time_to_live = 5.0f;
     percen_lemmings_in = 0;
     time_left = Utils::LEVEL_TIME_LIMIT[_level];
     spawn_velocity = Utils::LEVEL_SPAWN_VELOCITY[_level];
+    skill_amount.clear();
+    skill_amount = Utils::LEVEL_SKILLS_AMOUNT[_level];
     actual_minutes_left = 0;
     actual_seconds_left = 0;
     spawn_ended = false;
+    dead_marked = false;
   }
+
+  void set_do_action(int action) { do_action = action; }
+  int get_do_action() const { return do_action; }
+
+  void set_actual_state(int state) { actual_state = state; }
+  int get_actual_state() const { return actual_state; }
+
+  void set_sound_effects(bool new_value) { sound_effects = new_value; }
+  bool get_sound_effects() const { return sound_effects; }
+
+  void set_build_level(int _level) { build_level = _level; }
+  int get_build_level() const { return build_level; }
+
+  void set_build_menu(int _menu) { build_menu = _menu; }
+  int get_build_menu() const { return build_menu; }
+
   void set_spawn_ended() { spawn_ended = true; }
 
   void set_option_selected(int option) { option_selected = option; }
   int get_option_selected() const { return option_selected; }
+
+  void sub_skill_amount(int i) { skill_amount[i]--; }
+  int get_skill_amount(int i) const { return skill_amount[i]; }
+  int get_skill_amount0() const { return skill_amount[0]; }
+  int get_skill_amount1() const { return skill_amount[1]; }
+  int get_skill_amount2() const { return skill_amount[2]; }
+  int get_skill_amount3() const { return skill_amount[3]; }
+  int get_skill_amount4() const { return skill_amount[4]; }
+  int get_skill_amount5() const { return skill_amount[5]; }
+  int get_skill_amount6() const { return skill_amount[6]; }
+  int get_skill_amount7() const { return skill_amount[7]; }
 
   void action_done() { is_action_possible = false; }
   void check_action_possible()

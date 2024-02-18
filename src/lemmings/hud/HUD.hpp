@@ -4,8 +4,9 @@
 
 #include "engine/engine.hpp"
 #include "engine/rigid_body.hpp"
-#include "Level_info.hpp"
-#include "utils.hpp"
+
+#include "lemmings/Game_info.hpp"
+#include "lemmings/utils.hpp"
 
 class HUD : public Rigid_body
 {
@@ -19,13 +20,13 @@ private:
   int n;
   bool changed = false;
   Texture txt;
-  Level_info &level_info;
+  Game_info &game_info;
   int option_selected = 11;
   float last_position;
 
 public:
-  HUD(Point3f position, Vector2f size, Level_info &_level_info, Engine &engine, std::string _path, int _n, bool _is_hovereable = false, bool _is_clickable = true, bool _is_changeable = false, bool _is_selectable = true)
-      : Rigid_body(position, size, engine.load_texture(_path + std::to_string(_n) + ".png"), "HUD"), level_info(_level_info) //, HUDs &_huds
+  HUD(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, std::string _path, int _n, bool _is_hovereable = false, bool _is_clickable = true, bool _is_changeable = false, bool _is_selectable = true)
+      : Rigid_body(position, size, engine.load_texture(_path + std::to_string(_n) + ".png"), "HUD"), game_info(_game_info) //, HUDs &_huds
   {
     is_hovereable = _is_hovereable;
     is_clickable = _is_clickable;
@@ -37,8 +38,8 @@ public:
     txt = engine.load_texture(_path + std::to_string(_n) + ".png");
   }
 
-  HUD(Point3f position, Vector2f size, Level_info &_level_info, Engine &engine, std::string _path, int _n, bool _is_hovereable, bool _is_clickable, bool _is_changeable, bool _is_selectable, bool _is_cursor)
-      : Rigid_body(position, size, engine.load_texture(_path + std::to_string(_n) + ".png"), "HUD"), level_info(_level_info) //, HUDs &_huds
+  HUD(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, std::string _path, int _n, bool _is_hovereable, bool _is_clickable, bool _is_changeable, bool _is_selectable, bool _is_cursor)
+      : Rigid_body(position, size, engine.load_texture(_path + std::to_string(_n) + ".png"), "HUD"), game_info(_game_info) //, HUDs &_huds
   {
     is_hovereable = _is_hovereable;
     is_clickable = _is_clickable;
@@ -53,9 +54,9 @@ public:
 
   void pre_physics(Engine &) override
   {
-    if (is_cursor && option_selected != level_info.get_option_selected())
+    if (is_cursor && option_selected != game_info.get_option_selected())
     {
-      option_selected = level_info.get_option_selected();
+      option_selected = game_info.get_option_selected();
       Point3f actual_position = get_position3D();
       auto new_position = Utils::positions[option_selected].x + actual_position.x - last_position;
       last_position = Utils::positions[option_selected].x;
@@ -70,20 +71,21 @@ public:
       std::cout << "PULSADO: " << n << std::endl;
       if (is_selectable)
       {
-        level_info.set_option_selected(n);
+        game_info.set_option_selected(n);
       }
 
       if (n == Utils::HUD_ALL_EXPLODE)
       {
-        level_info.set_dead_marked(true);
+        game_info.set_spawn_ended();
+        game_info.set_dead_marked(true);
       }
       else if (n == Utils::HUD_ADD_SPAWN_VELOCITY)
       {
-        level_info.add_spawn_velocity();
+        game_info.add_spawn_velocity();
       }
       else if (n == Utils::HUD_SUB_SPAWN_VELOCITY)
       {
-        level_info.sub_spawn_velocity();
+        game_info.sub_spawn_velocity();
       }
 
       if (is_changeable)

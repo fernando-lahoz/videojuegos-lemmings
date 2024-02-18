@@ -1,17 +1,18 @@
 #pragma once
 
-#include "Text_image.hpp"
 #include <string>
+
+#include "lemmings/display/Text_image.hpp"
 
 class Dynamic_text_image : public Text_image
 {
 private:
-  std::string lastText;                               // Almacena el último texto para comparación
-  std::string (Level_info::*getTextFunction)() const; // Puntero a función miembro de Level_info que devuelve un std::string
+  std::string lastText;                              // Almacena el último texto para comparación
+  std::string (Game_info::*getTextFunction)() const; // Puntero a función miembro de Game_info que devuelve un std::string
 
 public:
-  Dynamic_text_image(Point3f position, Vector2f diagonal, Level_info &_level_info, Engine &engine, int text_type, std::string (Level_info::*_getTextFunction)() const)
-      : Text_image(position, diagonal, _level_info, engine, text_type, "", true), // "default" es el path inicial, ajusta según sea necesario
+  Dynamic_text_image(Point3f position, Vector2f diagonal, Game_info &_game_info, Engine &engine, int text_type, std::string (Game_info::*_getTextFunction)() const)
+      : Text_image(position, diagonal, _game_info, engine, text_type, "", true), // "default" es el path inicial, ajusta según sea necesario
         getTextFunction(_getTextFunction)
   {
   }
@@ -21,7 +22,7 @@ public:
     if (!is_changeable)
       return;
 
-    std::string currentText = (level_info.*getTextFunction)(); // Invoca la función de Level_info
+    std::string currentText = (game_info.*getTextFunction)(); // Invoca la función de Game_info
 
     if (currentText != lastText) // Comprueba si el texto ha cambiado
     {

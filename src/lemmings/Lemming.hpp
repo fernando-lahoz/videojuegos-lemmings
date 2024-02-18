@@ -2,15 +2,15 @@
 
 #include "engine/rigid_body.hpp"
 #include "engine/render_2D.hpp"
-#include "utils.hpp"
 
-#include "Chain.hpp"
+#include "lemmings/structure/Chain.hpp"
+#include "lemmings/utils.hpp"
 
 class Lemming : public Rigid_body
 {
   bool on_ground = false;
   Texture txt;
-  Level_info &level_info;
+  Game_info &game_info;
   Engine &engine;
   float time_frame_sprite = 0.0f; // Acumulador de tiempo para la animación del sprite
   std::string base_path;          // Base para el path de las texturas de animación
@@ -254,11 +254,11 @@ class Lemming : public Rigid_body
   }
 
 public:
-  Lemming(Point3f position, Vector2f diagonal, Engine &_engine, Level_info &_level_info)
+  Lemming(Point3f position, Vector2f diagonal, Engine &_engine, Game_info &_game_info)
       : Rigid_body(position, diagonal,
                    _engine.load_texture("assets/lemming/lemming_1_2_0.png"),
                    "Lemming", "Lemming"),
-        level_info(_level_info), engine(_engine)
+        game_info(_game_info), engine(_engine)
   {
     // gravity = 3;
     // enable_gravity();
@@ -269,6 +269,17 @@ public:
     return state;
   }
 
+  int skill_to_index(int skill)
+  {
+    int index = 0;
+    while (skill > 1)
+    {
+      skill = static_cast<Utils::Lemming_Skills>(skill >> 1);
+      ++index;
+    }
+    return index;
+  }
+
   /**
    * @brief Adds a skill to the Lemming.
    *
@@ -277,11 +288,20 @@ public:
    */
   bool add_skill(int skill)
   {
-    if (skills & skill) // The new skill cannot be added before
+    int ind = skill_to_index(skill);
+    int a = game_info.get_skill_amount(Utils::SKILL_TO_SKILLS_AMOUNT[ind]);
+
+    std::cout << "skill_amount_index = " << ind << std::endl;
+    std::cout << "skill_amount = " << a << std::endl;
+    if (a <= 0)
     {
       return false;
     }
 
+    if (skills & skill) // The new skill cannot be added before
+    {
+      return false;
+    }
     // RESTRICTIONS
     if (((is_floating() || is_falling()) && (skill >= Utils::SKILL_EGOIST)) || ((skill == Utils::CLIMB || skill == Utils::FLOAT) && (skills >= Utils::SKILL_EGOIST)) ||
         (is_escaping() || is_crashing() || is_exploding() || is_drowning()) || (skill >= Utils::SKILL_EGOIST && skills >= Utils::SKILL_EGOIST) || false)
@@ -289,7 +309,7 @@ public:
       return false;
     }
     skills = skills | skill;
-    if (skills < Utils::SKILL_EGOIST)
+    if (skills < Utils::SKILL_EGOIST) // change name type of the lemming depending on the skill
     {
       if (skills & Utils::FLOAT && skills & Utils::CLIMB)
       {
@@ -308,6 +328,7 @@ public:
         type = Utils::LEMMING_TYPE[Utils::FALLING];
       }
     }
+    game_info.sub_skill_amount(Utils::SKILL_TO_SKILLS_AMOUNT[skill_to_index(skill)]);
     return true;
   }
 
@@ -338,7 +359,7 @@ public:
         is_playing = false; // Detiene la animación si no es en bucle
         if (is_escaping())
         {
-          level_info.add_n_lemmings_in();
+          game_info.add_n_lemmings_in();
           destroy_lemming(engine);
         }
         if (is_crashing() || is_exploding() || is_drowning())
@@ -357,7 +378,7 @@ public:
 
   void pre_physics(Engine &engine) override
   {
-    level_info.check_action_possible();
+    game_info.check_action_possible();
     update_animation(engine);
   }
 
@@ -597,14 +618,14 @@ public:
   {
     if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine))
     {
-      std::cout << "LEMMING PULSADO" << std::endl;
-      int skill = Utils::HUD_TO_SKILL[level_info.get_option_selected()];
-      if (skill != Utils::NO_SKILLS && level_info.get_action_possible())
+      // std::cout << "LEMMING PULSADO" << std::endl;
+      int skill = Utils::HUD_TO_SKILL[game_info.get_option_selected()];
+      if (skill != Utils::NO_SKILLS && game_info.get_action_possible())
       {
-        bool res = add_skill(Utils::HUD_TO_SKILL[level_info.get_option_selected()]);
+        bool res = add_skill(Utils::HUD_TO_SKILL[game_info.get_option_selected()]);
         if (res)
         {
-          level_info.action_done();
+          game_info.action_done();
           std::cout << "HABILIDAD AÑADIDA" << std::endl;
         }
         else
@@ -618,36 +639,36 @@ public:
     {
       if (!is_hovered)
       {
-        level_info.set_lemming_hovered_type(type);
-        level_info.add_lemmings_hovered();
+        game_info.set_lemming_hovered_type(type);
+        game_info.add_lemmings_hovered();
         is_hovered = true;
       }
 
-      if (level_info.get_is_cursor_hover() == false)
+      if (game_info.get_is_cursor_hover() == false)
       {
-        level_info.set_cursor_txt("assets/cursor_hover.png", engine);
-        level_info.set_is_cursor_hover(true);
+        game_info.set_cursor_txt("assets/cursor_hover.png", engine);
+        game_info.set_is_cursor_hover(true);
       }
     }
   }
 
   void on_event_up([[maybe_unused]] Engine &engine, EngineIO::InputEvent event) override
   {
-    if (event == EngineIO::InputEvent::MOUSE_HOVER && level_info.get_is_cursor_hover() == true)
+    if (event == EngineIO::InputEvent::MOUSE_HOVER && game_info.get_is_cursor_hover() == true)
     {
       if (is_hovered)
       {
-        level_info.sub_lemmings_hovered();
+        game_info.sub_lemmings_hovered();
         is_hovered = false;
-        if (level_info.get_lemmings_hovered() == 0)
+        if (game_info.get_lemmings_hovered() == 0)
         {
 
-          level_info.set_lemming_hovered_type("");
+          game_info.set_lemming_hovered_type("");
         }
       }
 
-      level_info.set_cursor_txt("assets/cursor.png", engine);
-      level_info.set_is_cursor_hover(false);
+      game_info.set_cursor_txt("assets/cursor.png", engine);
+      game_info.set_is_cursor_hover(false);
     }
   }
 
@@ -655,16 +676,16 @@ public:
   {
     if (is_hovered)
     {
-      level_info.sub_lemmings_hovered();
-      if (level_info.get_lemmings_hovered() == 0)
+      game_info.sub_lemmings_hovered();
+      if (game_info.get_lemmings_hovered() == 0)
       {
-        level_info.set_lemming_hovered_type("");
+        game_info.set_lemming_hovered_type("");
       }
     }
-    level_info.set_cursor_txt("assets/cursor.png", engine);
-    level_info.set_is_cursor_hover(false);
+    game_info.set_cursor_txt("assets/cursor.png", engine);
+    game_info.set_is_cursor_hover(false);
 
-    level_info.sub_n_lemmings_out();
+    game_info.sub_n_lemmings_out();
     destroy();
   }
 };

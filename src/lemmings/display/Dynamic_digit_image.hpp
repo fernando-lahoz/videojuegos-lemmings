@@ -1,21 +1,22 @@
 #pragma once
 
-#include "Text_image.hpp"
-#include <cmath> // Para std::pow
+#include <cmath> // for std::pow
 #include <string>
+
+#include "lemmings/display/Text_image.hpp"
 
 class Dynamic_digit_image : public Text_image
 {
 private:
-  int lastDigit;                               // Almacena el último dígito relevante para comparación
-  int digitIndex;                              // Índice del dígito deseado
-  int maxDigits;                               // Número máximo de dígitos del valor
-  int (Level_info::*getValueFunction)() const; // Puntero a función miembro de Level_info
+  int lastDigit;                              // Almacena el último dígito relevante para comparación
+  int digitIndex;                             // Índice del dígito deseado
+  int maxDigits;                              // Número máximo de dígitos del valor
+  int (Game_info::*getValueFunction)() const; // Puntero a función miembro de Game_info
   bool is_static_n_digits;
 
 public:
-  Dynamic_digit_image(Point3f position, Vector2f diagonal, Level_info &_level_info, Engine &engine, int text_type, int _digitIndex, int _maxDigits, int (Level_info::*_getValueFunction)() const, bool _is_static_n_digits)
-      : Text_image(position, diagonal, _level_info, engine, text_type, "0", true), lastDigit(-1), digitIndex(_digitIndex), maxDigits(_maxDigits), getValueFunction(_getValueFunction), is_static_n_digits(_is_static_n_digits)
+  Dynamic_digit_image(Point3f position, Vector2f diagonal, Game_info &_game_info, Engine &engine, int text_type, int _digitIndex, int _maxDigits, int (Game_info::*_getValueFunction)() const, bool _is_static_n_digits)
+      : Text_image(position, diagonal, _game_info, engine, text_type, "0", true), lastDigit(-1), digitIndex(_digitIndex), maxDigits(_maxDigits), getValueFunction(_getValueFunction), is_static_n_digits(_is_static_n_digits)
   {
   }
 
@@ -24,7 +25,7 @@ public:
     if (!is_changeable)
       return;
 
-    int currentValue = (level_info.*getValueFunction)(); // Invoca la función de Level_info
+    int currentValue = (game_info.*getValueFunction)(); // Invoca la función de Game_info
     int relevantDigit = extract_relevant_digit(currentValue);
     // Decide si este y todos los dígitos superiores son cero
     bool shouldHideDigit = (!is_static_n_digits) && (relevantDigit == 0) && are_all_higher_digits_zero(currentValue);

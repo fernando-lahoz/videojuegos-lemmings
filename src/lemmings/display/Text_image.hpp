@@ -1,9 +1,10 @@
 #pragma once
 
-#include "engine/Rigid_body.hpp"
 #include <string>
 
-#include "Level_info.hpp"
+#include "engine/Rigid_body.hpp"
+
+#include "lemmings/Game_info.hpp"
 
 class Text_image : public Rigid_body
 {
@@ -11,15 +12,15 @@ protected:
   std::string base_path;
   int text_type = 0;
   bool is_changeable = false;
-  Level_info &level_info;
+  Game_info &game_info;
 
 public:
-  Text_image(Point3f position, Vector2f diagonal, Level_info &_level_info, Engine &engine, int text_type, std::string base_path, bool is_changeable = false)
+  Text_image(Point3f position, Vector2f diagonal, Game_info &_game_info, Engine &engine, int text_type, std::string base_path, bool is_changeable = false)
       : Rigid_body(position, diagonal, engine.load_texture("assets/text/text_" + std::to_string(text_type) + "_" + base_path + ".png"), "TEXT"),
         base_path(base_path),
         text_type(text_type),
         is_changeable(is_changeable),
-        level_info(_level_info)
+        game_info(_game_info)
   {
   }
 

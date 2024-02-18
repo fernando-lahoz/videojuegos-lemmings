@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "geometry/point.hpp"
 
 namespace Utils
@@ -78,16 +80,17 @@ namespace Utils
   {
     STATS_GAME = 0,
     LEMMING_COUNTDOWN = 1,
-    SKILL_COUNTER = 2
+    SKILL_COUNTER = 2,
+    MAIN_TEXT = 3
   };
 
   // LEVEL DATA
-  const int LEVEL_N_LEMMINGS[31] = {1000, 10, 10, 50, 10, 50, 50, 50, 100, 100, 20, 60, 80, 20, 80, 100, 80, 50, 70, 100, 50, 100, 100, 80, 30, 100, 2, 50, 100, 100, 60};
+  const int LEVEL_N_LEMMINGS[31] = {30, 10, 10, 50, 10, 50, 50, 50, 100, 100, 20, 60, 80, 20, 80, 100, 80, 50, 70, 100, 50, 100, 100, 80, 30, 100, 2, 50, 100, 100, 60};
   const int LEVEL_SAVE_LEMMINGS[31] = {2, 1, 1, 5, 10, 5, 10, 25, 95, 90, 10, 50, 40, 20, 60, 80, 50, 20, 50, 70, 40, 60, 80, 20, 20, 50, 2, 25, 60, 60, 40};
-  const double LEVEL_TIME_LIMIT[31] = {480.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 180.f, 360.f, 480.f, 480.f, 300.f, 300.f, 300.f, 300.f, 480.f, 300.f, 480.f, 300.f, 300.f, 300.f, 300.f, 300.f, 480.f, 300.f};
+  const double LEVEL_TIME_LIMIT[31] = {500.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 180.f, 360.f, 480.f, 480.f, 300.f, 300.f, 300.f, 300.f, 480.f, 300.f, 480.f, 300.f, 300.f, 300.f, 300.f, 300.f, 480.f, 300.f};
   const int LEVEL_SPAWN_VELOCITY[31] = {50, 50, 50, 50, 1, 50, 50, 50, 88, 99, 50, 50, 99, 1, 20, 40, 1, 99, 80, 20, 10, 50, 50, 50, 99, 99, 30, 1, 80, 90, 10};
-  const int LEVEL_SKILLS_AMOUNT[31][10] = {
-      {99, 99, 99, 99, 99, 99, 99, 99},
+  const std::vector<int> LEVEL_SKILLS_AMOUNT[31] = {
+      {1, 2, 3, 4, 5, 6, 7, 8},
       {0, 0, 0, 0, 0, 0, 0, 10},
       {0, 10, 0, 0, 0, 0, 0, 0},
       {0, 0, 0, 10, 0, 0, 0, 0},
@@ -118,5 +121,33 @@ namespace Utils
       {30, 30, 30, 30, 30, 30, 30, 30},
       {30, 30, 30, 30, 30, 30, 30, 30},
       {20, 20, 20, 20, 20, 20, 20, 20},
+  };
+  const int SKILL_TO_SKILLS_AMOUNT[8] = {0, 1, 2, 3, 4, 7, 5, 6};
+
+  // MENU CONSTANTS
+  enum MENU_TYPE
+  {
+    TITLE = 0,
+    LEVEL_SELECTOR = 1,
+    LEVEL_INTRO = 2,
+    LEVEL_OUTRO = 3
+  };
+  enum BUTTON_TYPE
+  {
+    PLAYER_SOLO = 0,
+    PLAYER_VS_IA = 1,
+    SOUND_EFFECTS = 2,
+    EXIT = 4
+  };
+  enum ACTIONS
+  {
+    NO_ACTION = 0,
+    GO_MENU = 1,
+    GO_LEVEL = 2,
+  };
+  enum STATE
+  {
+    MENU = 0,
+    GAME = 1,
   };
 }

@@ -5,27 +5,25 @@
 #include "engine/game.hpp"
 #include "engine/entity.hpp"
 
-#include "Lemmings_camera.hpp"
-#include "Lemming.hpp"
-#include "Level_info.hpp"
-#include "Cursor.hpp"
-#include "utils.hpp"
-#include "Screen_manager.hpp"
+#include "lemmings/Lemmings_camera.hpp"
+#include "lemmings/Lemming.hpp"
+#include "lemmings/Game_info.hpp"
+#include "lemmings/Cursor.hpp"
+#include "lemmings/utils.hpp"
+#include "lemmings/Screen_manager.hpp"
 
 // ASK: change_bkg() ???
-// ASK: when entity destroy() MOUSE_HOVER doesn't change
-// ASK: destroy_all_entities() with a filter for a specific _entity_name (CURSOR)
 // ASK: on_detect_border_cursor() when the cursor is moved around [0-0.05,-] and [0.95-1,-] executes a function
-// ASK: do_action_all_entities() with a filter for a specific _entity_name (Lemming)
+// cuando se intenta borrar mas de 10 entidades (en un for haciendo destroy) colapsa y se cierra el juego
 class Lemmings_game : public Game
 {
 private:
-  Level_info level_info;
+  Game_info game_info;
   Screen_manager screen;
 
 public:
   Lemmings_game()
-      : Game("Lemmings"), screen(level_info)
+      : Game("Lemmings"), screen(game_info)
   {
   }
 
@@ -37,16 +35,21 @@ public:
 
   void on_game_startup(Engine &engine) override
   {
-    level_info.set_cursor_txt("assets/cursor.png", engine);
+    game_info.set_cursor_txt("assets/cursor.png", engine);
 
-    auto cursor = std::make_shared<Cursor>(engine, level_info, 0.05);
+    auto cursor = std::make_shared<Cursor>(engine, game_info, 0.05);
     engine.get_game()->create_entity(cursor);
-    Level level(level_info);
-    screen.go_level(engine, 0);
+    screen.go_menu(engine, Utils::MENU_TYPE::TITLE, 0);
+    // screen.go_level(engine, 0);
   }
 
   void on_loop_start(Engine &engine) override
   {
     screen.update_game(engine);
   }
+  // void on_entity_destruction(Engine &engine, EntityPtr entity) override
+  // {
+  //   std::cout << "DELETED: " << entity->get_entity_name() << std::endl;
+  //   std::cout << "N_ENTITIES: " << engine.get_entities().size() << std::endl;
+  // }
 };
