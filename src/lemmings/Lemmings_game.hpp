@@ -52,6 +52,7 @@ public:
   void on_game_startup(Engine &engine) override
   {
     game_info.set_cursor_txt("assets/cursor.png", engine);
+    engine.hide_cursor();
 
     auto cursor = std::make_shared<Cursor>(engine, game_info, 0.05);
     engine.get_game().create_entity(cursor);

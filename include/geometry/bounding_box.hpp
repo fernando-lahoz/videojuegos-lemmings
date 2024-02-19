@@ -118,6 +118,7 @@ public:
 
     enum class Border { TOP, BOTTOM, RIGHT, LEFT };
     constexpr T is_near_border(const Point2<T> &p, Border border, T distance);
+    constexpr T is_past_border(const Point2<T> &p, Border border);
 
     constexpr BoundingBox2<T> expand(T delta);
 

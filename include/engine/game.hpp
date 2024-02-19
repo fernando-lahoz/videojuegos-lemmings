@@ -16,7 +16,9 @@ class Game
 protected:
 
     std::vector<EntityPtr> new_entities;
+    std::vector<std::shared_ptr<Camera2D>> new_cameras;
     std::string game_name;
+    bool replace_main_cam = false;
 
 public:
 
@@ -25,6 +27,7 @@ public:
     { }
 
     std::vector<EntityPtr> get_new_entities();
+    std::vector<std::shared_ptr<Camera2D>> get_new_cameras();
 
     std::string get_name() const;
 
@@ -32,6 +35,10 @@ public:
     //  and before deleting old entities
     void create_entity(EntityPtr entity);
 
+    void create_camera(std::shared_ptr<Camera2D> camera);
+    void replace_main_camera(std::shared_ptr<Camera2D> camera);
+
+    // Creates the initial main camera used at the begining of the game
     virtual std::shared_ptr<Camera2D> get_main_camera() const;
 
     // This is called right before event processing
@@ -53,4 +60,6 @@ public:
 
     // Called when right before an entity is destroyed
     virtual void on_entity_destruction(Engine& engine, EntityPtr entity);
+
+    friend class Engine;
 };

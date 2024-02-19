@@ -499,6 +499,24 @@ constexpr T BoundingBox2<T>::is_near_border(const Point2<T> &p, Border border, T
 }
 
 template <typename T>
+constexpr T BoundingBox2<T>::is_past_border(const Point2<T> &p, Border border)
+{
+    switch (border)
+    {
+    case Border::TOP:
+        return pMin.y > p.y;
+    case Border::BOTTOM:
+        return pMax.y < p.y;
+    case Border::RIGHT:
+        return pMin.x > p.x;
+    case Border::LEFT:
+        return pMax.x < p.x;
+    default:
+        return false;
+    }
+}
+
+template <typename T>
 constexpr BoundingBox2<T> BoundingBox2<T>::expand(T delta) 
 {
     return BoundingBox2<T>(pMin - Vector2<T>(delta, delta),

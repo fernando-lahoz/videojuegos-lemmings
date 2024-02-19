@@ -134,6 +134,7 @@ Point2f Engine::get_mouse_position()
     return renderer.raster_to_world(mouse_position, *cameras[0]);
 }
 
+// Returns mouse world-relative position
 Point2f Engine::get_mouse_position_in_camera(Camera2D& camera)
 {
     return renderer.raster_to_world(mouse_position, camera);
@@ -288,6 +289,29 @@ void Engine::process_new_entities()
     }
 }
 
+void Engine::process_cameras()
+{
+    auto new_cameras = game->get_new_cameras();
+
+    if (game->replace_main_cam) {
+        cameras[0] = new_cameras[0];
+        for (auto cam_it = new_cameras.begin() + 1; cam_it != new_cameras.end(); ++cam_it)
+            cameras.push_back(*cam_it);
+    }
+    else {
+        for (auto &camera : new_cameras)
+            cameras.push_back(camera);
+    }
+
+    std::sort(cameras.begin(), cameras.end(), [](std::shared_ptr<Camera2D> a, std::shared_ptr<Camera2D> b) -> bool
+              { return !a->is_deleted() && ((b->is_deleted()) ||
+                                            (a->get_layer() > b->get_layer())); });
+            
+    auto is_deleted = [](std::shared_ptr<Camera2D> camera) { return camera->is_deleted(); };
+    auto iterator = std::find_if(cameras.begin(), cameras.end(), is_deleted);
+    cameras.resize(std::distance(cameras.begin(), iterator));
+}
+
 Engine::Engine(std::shared_ptr<Game> &&game)
     : game{std::move(game)}
 {
@@ -311,6 +335,11 @@ Engine::Engine(Game *game)
 Game &Engine::get_game()
 {
     return *game;
+}
+
+Camera2D& Engine::get_main_camera()
+{
+    return *cameras[0];
 }
 
 // Intersect a ray with all entities in the engine
@@ -369,15 +398,14 @@ bool Engine::intesect_ray(Ray &ray,
 
 void Engine::start()
 {
-    cameras.push_back(game->get_main_camera());
     game->on_game_startup(*this);
 
     bool quit = false;
     while (!quit && !quit_event)
     {
-        
-
         update_delta_time();
+        renderer.update_resolution(*this);
+        //std::cout << "bounds: " << renderer.frame.pMin << ' ' << renderer.frame.pMax << '\n';
         update_mouse_position();
 
         game->on_loop_start(*this);
@@ -386,14 +414,16 @@ void Engine::start()
         // Update call to physics engine
         compute_physics();
 
-        game->on_loop_end(*this);
-
         // Update entitie list
         process_new_entities();
         // Sort by z buffer, dead entities go to the end
         sort_by_z_buffer();
         // Delete old entities
         delete_dead_entities();
+
+        game->on_loop_end(*this);
+
+        process_cameras();
 
         // Draw call to renderer
         renderer.draw(entities, cameras);

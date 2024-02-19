@@ -19,23 +19,37 @@ public:
 
     Lemmings_camera(Bound2f frame)
     {
-        this->src = frame;
+        this->world_frame = frame;
     }
 
     void update_position(Engine &engine) override
     {
         Float delta_time = engine.get_delta_time();
 
-        if (engine.is_a_down())
+        auto p = engine.get_mouse_position_in_camera(*this);
+        if (world_frame.is_near_border(p, Bound2f::Border::RIGHT, 0.01)
+            || world_frame.is_past_border(p, Bound2f::Border::RIGHT))
         {
-            src.pMin.x -= 0.2 * delta_time;
-            src.pMax.x -= 0.2 * delta_time;
+            world_frame.pMin.x -= 0.3 * delta_time;
+            world_frame.pMax.x -= 0.3 * delta_time;
+        }
+        else if (world_frame.is_near_border(p, Bound2f::Border::LEFT, 0.01)
+            || world_frame.is_past_border(p, Bound2f::Border::LEFT))
+        {
+            world_frame.pMin.x += 0.3 * delta_time;
+            world_frame.pMax.x += 0.3 * delta_time;
         }
 
-        if (engine.is_d_down())
-        {
-            src.pMin.x += 0.2 * delta_time;
-            src.pMax.x += 0.2 * delta_time;
-        }
+        // if (engine.is_a_down())
+        // {
+        //     world_frame.pMin.x -= 0.2 * delta_time;
+        //     world_frame.pMax.x -= 0.2 * delta_time;
+        // }
+
+        // if (engine.is_d_down())
+        // {
+        //     world_frame.pMin.x += 0.2 * delta_time;
+        //     world_frame.pMax.x += 0.2 * delta_time;
+        // }
     }
 };

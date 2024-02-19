@@ -32,6 +32,8 @@ private:
     void sort_by_z_buffer();
     void delete_dead_entities();
     void process_new_entities();
+    void process_cameras();
+
     void send_mouse_hover();
     void update_mouse_position();
     void change_input_state(EngineIO::InputEvent key, bool is_down);
@@ -75,6 +77,7 @@ public:
     double get_delta_time();
     void destroy_all_entities();
     Game& get_game();
+    Camera2D& get_main_camera();
     Point2f get_mouse_position();
     Point2f get_mouse_position_in_camera(Camera2D& camera);
     
