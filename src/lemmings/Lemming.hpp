@@ -466,6 +466,27 @@ public:
       }
       return;
     }
+    if (is_bashing())
+    {
+      if (current_frame == 0 || current_frame == 10)
+      {
+        if (!do_action_in_frame)
+        {
+          do_action_in_frame = true;
+          speed.x = 0.15;
+          speed.y = 0;
+          set_speed(speed);
+        }
+      }
+      else
+      {
+        do_action_in_frame = false;
+        speed.x = 0;
+        speed.y = 0;
+        set_speed(speed);
+      }
+      return;
+    }
   }
 
   void update_position(Engine &engine) override

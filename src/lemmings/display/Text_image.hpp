@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "engine/Rigid_body.hpp"
+#include "engine/rigid_body.hpp"
 
 #include "lemmings/Game_info.hpp"
 
