@@ -473,7 +473,7 @@ public:
         if (!do_action_in_frame)
         {
           do_action_in_frame = true;
-          speed.x = 0.15;
+          speed.x = direction * 0.15;
           speed.y = 0;
           set_speed(speed);
         }
@@ -487,6 +487,51 @@ public:
       }
       return;
     }
+    if (is_building())
+    {
+      if (current_frame == 15 )
+      {
+        if (!do_action_in_frame)
+        {
+          do_action_in_frame = true;
+          speed.y = -0.015;
+          speed.x = direction * 0.05;
+          set_speed(speed);
+        }
+      } 
+      else
+      {
+        do_action_in_frame = false;
+        speed.x = 0;
+        speed.y = 0;
+        set_speed(speed);
+      }
+      return;
+    }
+
+    /*
+    if (is_mining())
+    {
+      if (current_frame == 3)
+      {
+        if (!do_action_in_frame)
+        {
+          do_action_in_frame = true;
+          speed.x = direction * 0.15;
+          speed.y = 0.15;
+          set_speed(speed);
+        }
+      }
+      else
+      {
+        do_action_in_frame = false;
+        speed.x = 0;
+        speed.y = 0;
+        set_speed(speed);
+      }
+      return;
+    }
+    */
   }
 
   void update_position(Engine &engine) override
