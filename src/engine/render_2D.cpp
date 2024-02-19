@@ -266,7 +266,6 @@ void Render_2D::draw(std::vector<EntityPtr> &entities,
         // Render drawables
         for (auto &d : entities)
         {
-            std::cout << d->get_entity_name() << std::endl;
             FixedText *text_ptr = dynamic_cast<FixedText*>(d.get());
             if (text_ptr != nullptr) {
                 render_fixed_text(*text_ptr, *camera);

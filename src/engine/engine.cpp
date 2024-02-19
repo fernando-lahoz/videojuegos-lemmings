@@ -319,11 +319,11 @@ Engine::Engine(std::shared_ptr<Game> &&game)
         throw error::sdl_exception(ERROR_CONTEXT);
 
     cameras.push_back(this->game->get_main_camera());
-    check_point = std::chrono::steady_clock::now();
     auto [w, h] = cameras[0]->get_window_frame().diagonal();
     renderer = Render_2D(this->game->get_name(), (int)w, (int)h);
-
     physics = Physics_engine();
+
+    check_point = std::chrono::steady_clock::now();
 }
 
 Engine::Engine(Game *game)
@@ -340,6 +340,11 @@ Game &Engine::get_game()
 Camera2D& Engine::get_main_camera()
 {
     return *cameras[0];
+}
+
+SoundMixer& Engine::get_sound_mixer()
+{
+    return mixer;
 }
 
 // Intersect a ray with all entities in the engine
@@ -405,7 +410,6 @@ void Engine::start()
     {
         update_delta_time();
         renderer.update_resolution(*this);
-        //std::cout << "bounds: " << renderer.frame.pMin << ' ' << renderer.frame.pMax << '\n';
         update_mouse_position();
 
         game->on_loop_start(*this);

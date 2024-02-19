@@ -33,7 +33,7 @@ void Texture::load(const std::string& file, SDL_Renderer* renderer)
     texture = std::shared_ptr<SDL_Texture>(sdl_texture, SDL_DestroyTexture);
 
     if (SDL_QueryTexture(sdl_texture, nullptr, nullptr, &width, &height) != 0)
-        throw std::runtime_error("Can't load texture: " + file);
+        throw error::sdl_exception(ERROR_CONTEXT);
 }
 
 Texture& Texture::operator=(const Texture& other)

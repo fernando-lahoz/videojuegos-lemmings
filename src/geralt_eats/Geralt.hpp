@@ -8,6 +8,7 @@ class Geralt : public Rigid_body
 {
     bool on_ground = false;
     Texture txt_left, txt_right;
+    Sound oof;
 
 public:
 
@@ -22,6 +23,9 @@ public:
 
         txt_left = engine.load_texture("assets/geralt_left.png");
         txt_right = engine.load_texture("assets/geralt_right.png");
+
+        auto& mixer = engine.get_sound_mixer();
+        oof = mixer.load_sound("assets/music/oof.wav");
     }
 
     void update_state(Engine &engine)
@@ -76,10 +80,10 @@ public:
 
         Rigid_body::update_position(engine);
 
-        if (is_grounded(engine))
-            on_ground = true;
-        else
-            on_ground = false;
+        // if (is_grounded(engine))
+        //     on_ground = true;
+        // else
+        //     on_ground = false;
     }
 
     void on_collision(Engine& engine, EntityPtr other) override
@@ -89,14 +93,19 @@ public:
             return;
         }
 
-        //std::cout << "Geralt collided with " << other->get_type() << "\n";
         Rigid_body::on_collision(engine, other);
 
         // Ground collision
         if (closest_side(other) == 3) {
+            if (!on_ground)
+            {
+                auto& mixer = engine.get_sound_mixer();
+                mixer.pause_sound_on_channel(0);
+                mixer.play_sound_on_channel(oof, 0);
+            }
+
             on_ground = true;
         }
-
     }
 
     void look_left()

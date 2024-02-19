@@ -60,13 +60,19 @@ public:
         auto ground = std::make_shared<Rigid_body>(Point3f(0, 0.75, 0), Vector2f(1, 0.25), t2, "Ground");
         auto backgroung = std::make_shared<Rigid_body>(Point3f(-1, 0, 3), Vector2f(3, 1), t3, "Dehecho");
         
-        create_entity(backgroung);
+        //create_entity(backgroung);
         create_entity(geralt);
         create_entity(ground);
         
         create_entity(std::make_shared<FixedText>(Point3f(0, 0, -1), Vector2f(0.05, 0.05),
                     engine.load_texture("assets/font/font-purple.png"),
                     Vector2i(16, 30), lemmings_font_map, "Geralt Eats Apples!!"));
+
+        auto& mixer = engine.get_sound_mixer();
+        Music canon = mixer.load_music("assets/music/lemming_1_pachelbel.mp3");
+        mixer.set_reserved_channels(1); // channel reserved for "oof"
+        //mixer.set_free_channels(...);
+        mixer.play_music(canon);
     }
 
     void on_loop_start(Engine& engine) override

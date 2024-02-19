@@ -11,6 +11,7 @@
 #include "engine/entity.hpp"
 #include "engine/game.hpp"
 #include "engine/physics.hpp"
+#include "engine/sound_mixer.hpp"
 #include "IO.hpp"
 
 class Engine
@@ -44,6 +45,7 @@ private:
     CameraCollection cameras;
     Render_2D renderer;
     Physics_engine physics;
+    SoundMixer mixer;
 
     TimePoint check_point;
     uint64_t delta_ns = 0, total_delta_ns = 0, total_measurements = 1;
@@ -78,6 +80,7 @@ public:
     void destroy_all_entities();
     Game& get_game();
     Camera2D& get_main_camera();
+    SoundMixer& get_sound_mixer();
     Point2f get_mouse_position();
     Point2f get_mouse_position_in_camera(Camera2D& camera);
     

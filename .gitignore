@@ -6,3 +6,6 @@ bin
 build
 CMakeUserPresets.json
 .project_name
+
+assets/music
+assets/sounds
