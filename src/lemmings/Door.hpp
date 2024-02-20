@@ -33,7 +33,7 @@ public:
         auto lemming_size = Vector2f(0.08, 0.08);
         auto lemming = std::make_shared<Lemming>(calculate_spawn_position(lemming_size), lemming_size, engine);
         engine.get_game()->create_entity(lemming);
-        //std::cout << "Lemming creado\n";
+        std::cout << "Lemming creado\n";
       }
     }
   }
