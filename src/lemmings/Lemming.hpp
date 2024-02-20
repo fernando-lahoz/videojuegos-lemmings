@@ -2,6 +2,7 @@
 
 #include "engine/rigid_body.hpp"
 #include "engine/render_2D.hpp"
+#include "engine/engine.hpp"
 
 #include "lemmings/structure/Chain.hpp"
 #include "lemmings/utils.hpp"
@@ -558,45 +559,6 @@ public:
       if (distance_down(engine, other, tmin, tmax, thit) && thit < 0.005)
       {
 
-      case 0:
-        if (!(is_digging() || is_bashing() || is_mining()))
-        {
-          position.x = other->bound2f().pMax.x;
-          if (direction < 0)
-            direction *= -1;
-          speed.x = 0;
-          // std::cout << "Lemming turn right\n";
-        }
-
-        break;
-      case 1:
-        if (!(is_digging() || is_bashing() || is_mining()))
-        {
-          position.x = other->bound2f().pMin.x - diagonal.x;
-          if (direction > 0)
-            direction *= -1;
-          speed.x = 0;
-          // std::cout << "Lemming turn left\n";
-        }
-        break;
-      case 2:
-        if (!(is_digging() || is_bashing() || is_mining()))
-        {
-          position.y = other->bound2f().pMax.y;
-          direction *= -1;
-          speed.y = 0;
-        }
-        break;
-      case 3:
-        if (!(is_digging() || is_bashing() || is_mining()))
-        {
-          position.y = other->bound2f().pMin.y - diagonal.y;
-          on_ground = true;
-          if (is_floating() || is_falling())
-          {
-            go_walk();
-          }
-        }
       }
     }
 

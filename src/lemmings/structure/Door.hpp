@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lemmings/structure/Structure.hpp"
+#include "lemmings/Lemming.hpp"
 #include "lemmings/utils.hpp"
 
 class Door : public Structure

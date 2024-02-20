@@ -3,7 +3,7 @@
 #include <string>
 
 #include "engine/entity.hpp"
-
+#include "engine/engine.hpp"
 #include "lemmings/Game_info.hpp"
 
 class Structure : public Rigid_body

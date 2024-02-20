@@ -30,6 +30,7 @@ public:
 
     Texture(const Texture& other);
     Texture& operator=(const Texture& other);
+    void load(const std::string& file, SDL_Renderer* renderer);
 
     // Returns the raw SDL_Texture pointer
     SDL_Texture* get() const;

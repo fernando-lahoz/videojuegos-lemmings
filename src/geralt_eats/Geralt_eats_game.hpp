@@ -59,7 +59,7 @@ public:
         auto t3 = engine.load_texture("assets/dehecho.png");
 
 
-        auto lemm = engine.load_texture("assets/maps/bkg/1 - Just dig!.png");
+        auto lemm = engine.load_texture("assets/maps/bkg/map_0_0.png");
 
         auto geralt = std::make_shared<Geralt>(Point3f(0.4, 0.1, 0), Vector2f(0.1, 0.125), engine);
         auto ground = std::make_shared<Rigid_body>(Point3f(0, 0.45, 0), Vector2f(1, 0.25), ground_alpha, "Ground");
