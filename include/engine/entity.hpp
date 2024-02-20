@@ -18,7 +18,7 @@ class Engine;
 class Entity
 {
 private:
-    Texture active_texture;    
+    Texture active_texture;
     bool deleted_entity = false;
     int entity_id;
     bool mouse_over = false;
@@ -31,7 +31,7 @@ protected:
     std::string entity_name;
 
 public:
-    Entity(Point3f position, Vector2f diagonal, Texture texture, 
+    Entity(Point3f position, Vector2f diagonal, const Texture& texture, 
             std::string_view _entity_name, 
             std::string_view _class_name = "Entity");
 

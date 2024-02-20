@@ -5,6 +5,7 @@
 #include "engine/game.hpp"
 #include "engine/render_2D.hpp"
 #include "engine/entity.hpp"
+#include "engine/fixed_text.hpp"
 
 #include "Geralt.hpp"
 #include "Apple.hpp"
@@ -13,18 +14,40 @@
 
 class Geralt_eats_game : public Game
 {
-    private:
+private:
 
     int n_apples = 0;
     int max_apples = 1;
 
-    public:
+    static Point2i lemmings_font_map(char c) 
+    {
+        if (c >= 'A' && c <= 'M')       return {(c - 'A'), 0};
+        else if (c >= 'N' && c <= 'Z')  return {(c - 'N'), 1};
+        else if (c >= 'a' && c <= 'm')  return {(c - 'a'), 2};
+        else if (c >= 'n' && c <= 'z')  return {(c - 'n'), 3};
+        else if (c >= '0' && c <= '9')  return {(c - '0'), 4};
+        else {
+            switch (c)
+            {
+            case '.':   return {0, 5};
+            case '(':   return {1, 5};
+            case ')':   return {2, 5};
+            case '\'':  return {3, 5};
+            case '!':   return {4, 5};
+            case '%':   return {5, 5};
+            case '-':   return {6, 5};
+            default:    return {12, 5}; //white space
+            }
+        }
+    }
+
+public:
 
     Geralt_eats_game()
     : Game("Geralt_eats")
     { }
 
-    std::shared_ptr<Camera2D> get_camera() const override
+    std::shared_ptr<Camera2D> get_main_camera() const override
     {
         return std::make_shared<Geralt_camera>();
     }
@@ -33,6 +56,8 @@ class Geralt_eats_game : public Game
     {
         auto ground_alpha = engine.load_texture("assets/ground_alpha.png");
         auto t2 = engine.load_texture("assets/terrain.png");
+        auto t3 = engine.load_texture("assets/dehecho.png");
+
 
         auto lemm = engine.load_texture("assets/maps/bkg/1 - Just dig!.png");
 
@@ -50,7 +75,7 @@ class Geralt_eats_game : public Game
         create_entity(ground2);
     }
 
-    void on_loop_start([[maybe_unused]]Engine& engine) override
+    void on_loop_start(Engine& engine) override
     {
         while (n_apples < max_apples)
         {
@@ -68,6 +93,7 @@ class Geralt_eats_game : public Game
             //create_entity(apple);
             n_apples++;
         }
+        
     }
 
     void on_entity_destruction([[maybe_unused]]Engine& engine, EntityPtr entity) override

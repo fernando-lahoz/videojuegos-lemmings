@@ -11,10 +11,19 @@
 #include "engine/entity.hpp"
 #include "engine/game.hpp"
 #include "engine/physics.hpp"
+#include "engine/sound_mixer.hpp"
 #include "IO.hpp"
 
 class Engine
-{   
+{ 
+public:
+    using TimePoint = std::chrono::time_point<std::chrono::steady_clock,
+                                              std::chrono::nanoseconds>;
+
+    using EntityCollection = std::vector<std::shared_ptr<Entity>>;
+
+    using CameraCollection = std::vector<std::shared_ptr<Camera2D>>;
+
 private:
     void send_event_down(EngineIO::InputEvent key);
     void send_event_up(EngineIO::InputEvent key);
@@ -24,25 +33,30 @@ private:
     void sort_by_z_buffer();
     void delete_dead_entities();
     void process_new_entities();
+    void process_cameras();
+
     void send_mouse_hover();
+    void update_mouse_position();
     void change_input_state(EngineIO::InputEvent key, bool is_down);
 
     EngineIO::InputEvent SDL_to_input_event(SDL_KeyboardEvent key);
     EngineIO::InputEvent SDL_to_input_event(SDL_MouseButtonEvent key);
 
     std::shared_ptr<Game> game;
-    std::shared_ptr<Camera2D> camera;
+    CameraCollection cameras;
     Render_2D renderer;
     Physics_engine physics;
+    SoundMixer mixer;
 
-    using TimePoint = std::chrono::time_point<std::chrono::steady_clock,
-                                              std::chrono::nanoseconds>;
     TimePoint check_point;
     uint64_t delta_ns = 0, total_delta_ns = 0, total_measurements = 1;
     double delta_time; // Delta time in seconds
 
-    using EntityCollection = std::vector<std::shared_ptr<Entity>>;
     EntityCollection entities;
+
+    Point2f mouse_position;
+    bool quit_event = false;
+    
 
 public:
 
@@ -59,14 +73,26 @@ public:
     Engine(std::shared_ptr<Game>&& game);
 
     void start();
+    void quit();
 
     Texture load_texture(const std::string& path);
     EntityCollection& get_entities();
     double get_delta_time();
     void destroy_all_entities();
-    std::shared_ptr<Game> get_game();
+    Game& get_game();
+    Camera2D& get_main_camera();
+    SoundMixer& get_sound_mixer();
     Point2f get_mouse_position();
+    Point2f get_mouse_position_in_camera(Camera2D& camera);
     
+    void show_cursor();
+    void hide_cursor();
+    bool is_cursor_visible();
+
+    bool intesect_ray(Ray &ray, 
+            bool check_z_axis,
+            Float &hit_offset, 
+            EntityPtr &hit_entity);
 
     // Intersect a ray with all entities in the engine
     //  except for the entity with name not_this_entity

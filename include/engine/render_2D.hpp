@@ -14,20 +14,21 @@
 #include "lib/texture.hpp"
 #include "engine/entity.hpp"
 #include "engine/IO.hpp"
+#include "engine/fixed_text.hpp"
 
 class Engine;
 
 class Camera2D
 {
 protected:
-
-    Bound2f frame;
+    Bound2f world_frame, window_frame;
+    int layer = 0;
+    bool deleted = false;
 
 public:
-
     Camera2D();
 
-    Camera2D(Bound2f frame);
+    Camera2D(Bound2f world_frame, Bound2f window_frame, int layer = 0);
 
     Point2f world_to_screen(Point2f world_point);
     Vector2f world_to_screen(Vector2f world_vector);
@@ -35,14 +36,22 @@ public:
     Point2f screen_to_world(Point2f screen_point);
     Vector2f screen_to_world(Vector2f screen_vector);
 
-    Bound2f get_frame() const;
+    Bound2f get_window_frame() const;
+    Bound2f get_world_frame() const;
 
     virtual void update_position(Engine&);
 
-    bool isVisible(Entity& entity);
+    bool is_visible(const Entity& entity);
+    bool is_visible(const Bound2f& bound);
 
     virtual void on_event_down(Engine&, EngineIO::InputEvent);
     virtual void on_event_up(Engine&, EngineIO::InputEvent);
+
+    bool is_deleted() const;
+    void destroy();
+
+    void change_layer(int new_layer);
+    int get_layer();
 };
 
 class Render_2D
@@ -57,17 +66,22 @@ protected:
 
     void render_entity(Entity& entity, Camera2D& camera);
 
+    void render_fixed_text(FixedText& text, Camera2D& camera);
+
 public:
 
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
-    // TODO: This was a int2
     Vector2i resolution;
+    Bound2f frame;
 
     Render_2D() = default;
     Render_2D(std::string window_name, int width, int height);
 
     Texture load_texture(const std::string& file);
+
+    //Updates resolution and printable frame
+    void update_resolution(Engine& engine);
 
     Point2f world_to_raster(Point2f world_point, Camera2D& camera);
     Vector2f world_to_raster(Vector2f world_vector, Camera2D& camera);
@@ -75,5 +89,5 @@ public:
     Point2f raster_to_world(Point2f raster_point, Camera2D& camera);
     Vector2f raster_to_world(Vector2f raster_vector, Camera2D& camera);
 
-    void draw(std::vector<EntityPtr> &entities, Camera2D& camera);
+    void draw(std::vector<EntityPtr> &entities, std::vector<std::shared_ptr<Camera2D>>& cameras);
 };

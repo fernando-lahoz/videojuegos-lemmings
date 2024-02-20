@@ -239,7 +239,6 @@ constexpr Matrix4x4<T> Matrix4x4<T>::operator/=(T const& obj) const
     return *this;
 }
 
-//TODO: m[] devuelve puntero -> que devuelva array?
 template <typename T>
 constexpr T* Matrix4x4<T>::operator[](int i)
 {

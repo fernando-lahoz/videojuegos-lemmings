@@ -42,7 +42,6 @@ public:
 
     constexpr Matrix4x4<T> operator/=(T const& obj) const;
 
-    //TODO: m[] devuelve puntero -> que devuelva array?
     constexpr T* operator[](int i);
 
     constexpr const T* operator[](int i) const;

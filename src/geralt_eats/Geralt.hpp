@@ -8,6 +8,7 @@ class Geralt : public Rigid_body
 {
     bool on_ground = false;
     Texture txt_left, txt_right;
+    Sound oof;
 
 public:
 
@@ -22,6 +23,9 @@ public:
 
         txt_left = engine.load_texture("assets/geralt_left.png");
         txt_right = engine.load_texture("assets/geralt_right.png");
+
+        auto& mixer = engine.get_sound_mixer();
+        oof = mixer.load_sound("assets/sounds/explode.wav");
     }
 
     void update_state(Engine &engine)
@@ -95,7 +99,6 @@ public:
             return;
         }
 
-        //std::cout << "Geralt collided with " << other->get_type() << "\n";
         Rigid_body::on_collision(engine, other);
     }
 

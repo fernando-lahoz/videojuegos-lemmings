@@ -116,13 +116,17 @@ public:
     // Same as contains, but the borders are not included
     constexpr bool contains_exclusively(const Point2<T> &p);
 
+    enum class Border { TOP, BOTTOM, RIGHT, LEFT };
+    constexpr T is_near_border(const Point2<T> &p, Border border, T distance);
+    constexpr T is_past_border(const Point2<T> &p, Border border);
+
     constexpr BoundingBox2<T> expand(T delta);
 
     constexpr Vector2<T> diagonal() const;
 
-    constexpr Float width() const;
+    constexpr T width() const;
 
-    constexpr Float height() const;
+    constexpr T height() const;
 
     constexpr T area() const;
 

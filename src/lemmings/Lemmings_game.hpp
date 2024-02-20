@@ -6,39 +6,53 @@
 #include "engine/entity.hpp"
 #include "engine/rigid_body.hpp"
 
-#include "Lemmings_camera.hpp"
-#include "Lemming.hpp"
-#include "Level_manager.hpp"
-#include "Door.hpp"
-#include "Gate.hpp"
-#include "Liquid.hpp"
+#include "lemmings/Lemmings_camera.hpp"
+#include "lemmings/Lemming.hpp"
+#include "lemmings/Game_info.hpp"
+#include "lemmings/Cursor.hpp"
+#include "lemmings/utils.hpp"
+#include "lemmings/Screen_manager.hpp"
 
-// Incluir otros archivos necesarios como Lemming, LevelManager, etc.
+// ASK: change_bkg() ???
+// ASK: on_detect_border_cursor() when the cursor is moved around [0-0.05,-] and [0.95-1,-] executes a function
+
+// cuando se intenta borrar mas de 10 entidades (en un for haciendo destroy) colapsa y se cierra el juego
+
+// TODO: adapt lemming movement to alpha calculations
+// TODO: add movements to the lemming (BUILD, CLIMB, BASH, MINING, CRASHING)
+// TODO: add logic when the cursor is moved around [0-0.05,-] and [0.95-1,-] moves the camera
+// TODO: process all text assets for level info in menus
+// TODO: create animations for menus
+// TODO: add credits animations with project contributors
+// TODO: add a level selector menu
+// TODO: add level intro & outro menu
+// TODO: add player vs IA mode
+// TODO: add sound effects
+// TODO: add exit button functionality
+// TODO: add counter explosion above the lemmings
+// TODO: add 12-30 level
 
 class Lemmings_game : public Game
 {
 private:
-  int n_lemmings = 0;                   // Número actual de Lemmings en el nivel
-  int max_lemmings = 100;               // Máximo número de Lemmings permitidos en el nivel
-  float time_since_last_lemming = 0.0f; // Acumulador de tiempo
-
-  // Otros miembros privados como LevelManager, UI/HUD, etc.
+  Game_info game_info;
+  Screen_manager screen;
 
 public:
   Lemmings_game()
-      : Game("Lemmings")
+      : Game("Lemmings"), screen(game_info)
   {
-    // Inicializar otros miembros privados
   }
 
   // Sobrescribe funciones de Game
-  std::shared_ptr<Camera2D> get_camera() const override
+  std::shared_ptr<Camera2D> get_main_camera() const override
   {
     return std::make_shared<Lemmings_camera>();
   }
 
   void on_game_startup(Engine &engine) override
   {
+
     auto t2 = engine.load_texture("assets/maps/bkg/1 - Just dig!.png");
 
     auto map = std::make_shared<Rigid_body>(Point3f(0, 0.75, 1), Vector2f(1, 0.25), t2, "MAP");
@@ -56,29 +70,24 @@ public:
     create_entity(door);
     create_entity(gate);
     // create_entity(liquid);
+
+    game_info.set_cursor_txt("assets/cursor.png", engine);
+    engine.hide_cursor();
+
+    auto cursor = std::make_shared<Cursor>(engine, game_info, 0.05);
+    engine.get_game().create_entity(cursor);
+    screen.go_menu(engine, Utils::MENU_TYPE::TITLE, 0);
+    // screen.go_level(engine, 0);
   }
 
-  void on_loop_start([[maybe_unused]] Engine &engine) override
+  void on_loop_start(Engine &engine) override
   {
-    time_since_last_lemming += engine.get_delta_time(); // Acumula el tiempo transcurrido
-
-    // Comprueba si ha pasado 1 segundo y si no se ha alcanzado el máximo de Lemmings
-    if (time_since_last_lemming >= 1.0f && n_lemmings < max_lemmings)
-    {
-      auto lemming = std::make_shared<Lemming>(Point3f(0.47, 0.0, 0), Vector2f(0.08, 0.08), engine);
-      create_entity(lemming);
-      n_lemmings++;
-      time_since_last_lemming = 0.0f; // Restablece el contador después de crear un Lemming
-    }
+    screen.update_game(engine);
   }
 
-  void on_entity_destruction([[maybe_unused]] Engine &engine, EntityPtr entity) override
-  {
-    // Manejo de la destrucción de entidades, por ejemplo, reducir el contador de Lemmings si se destruye uno
-    if (entity->get_entity_name() == "Lemming")
-    {
-      n_lemmings--;
-      // Otros manejos específicos cuando se destruye un Lemming
-    }
-  }
+  // void on_entity_destruction(Engine &engine, EntityPtr entity) override
+  // {
+  //   std::cout << "DELETED: " << entity->get_entity_name() << std::endl;
+  //   std::cout << "N_ENTITIES: " << engine.get_entities().size() << std::endl;
+  // }
 };

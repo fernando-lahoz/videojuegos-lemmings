@@ -8,6 +8,8 @@
 
 #include "lib/types.hpp"
 #include "geometry/point.hpp"
+#include "lib/error.hpp"
+
 
 class Texture
 {
@@ -28,9 +30,6 @@ public:
 
     Texture(const Texture& other);
     Texture& operator=(const Texture& other);
-
-
-    void load(const std::string& file, SDL_Renderer* renderer);
 
     // Returns the raw SDL_Texture pointer
     SDL_Texture* get() const;

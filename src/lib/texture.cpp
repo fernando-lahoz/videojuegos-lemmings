@@ -30,6 +30,7 @@ Texture::Texture(const Texture& other)
         width{other.width}, height{other.height}
 { }
 
+
 Texture& Texture::operator=(const Texture& other)
 {
     this->texture = other.texture;

@@ -59,7 +59,6 @@ public:
     inline constexpr bool has_NaNs() const;
     inline constexpr bool has_Inf() const;
 
-    // TODO: why the hell would you want the norm of a spectrum? -> make it compiled instead
     Float squared_norm() const;
     Float norm() const;
 
