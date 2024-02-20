@@ -446,6 +446,31 @@ constexpr BoundingBox2<T> BoundingBox2<T>::operator-(const BoundingBox2<T> &b) c
         );
 }
 
+
+// 0: Right
+// 1: Top
+// 2: Left
+// 3: Bottom
+template <typename T>
+constexpr int BoundingBox2<T>::closest_side (Point2<T> p) const
+{
+    Float distance_right = pMax.x - p.x;
+    Float distance_top = pMax.y - p.y;
+    Float distance_left = p.x - pMin.x;
+    Float distance_bottom = p.y - pMin.y;
+
+    Float min_distance = std::min(std::min(distance_right, distance_top), std::min(distance_left, distance_bottom));
+
+    if (min_distance == distance_right)
+        return 0;
+    else if (min_distance == distance_top)
+        return 1;
+    else if (min_distance == distance_left)
+        return 2;
+    else
+        return 3;
+}
+
 template <typename T>
 constexpr BoundingBox2<T> &BoundingBox2<T>::operator-=(const Point2<T> &p) 
 {
@@ -618,6 +643,26 @@ constexpr bool BoundingBox2<T>::intersects(const Ray &ray, Float &hit_offset) co
     return tmax >= tmin && hit_offset >= 0 && hit_offset <= ray.maximum_offset;
 }
 
+template <typename T>
+constexpr bool BoundingBox2<T>::all_intersections(const Ray &ray, Float &min_offset, Float &max_offset) const
+{
+    Float tx1 = (this->pMin.x - ray.origin.x)*ray.inv_direction.x;
+    Float tx2 = (this->pMax.x - ray.origin.x)*ray.inv_direction.x;
+
+    Float tmin = std::min(tx1, tx2);
+    Float tmax = std::max(tx1, tx2);
+
+    Float ty1 = (this->pMin.y - ray.origin.y)*ray.inv_direction.y;
+    Float ty2 = (this->pMax.y - ray.origin.y)*ray.inv_direction.y;
+
+    tmin = std::max(tmin, std::min(ty1, ty2));
+    tmax = std::min(tmax, std::max(ty1, ty2));
+    
+    min_offset = tmin;
+    max_offset = tmax;
+
+    return tmax >= tmin;
+}
 
 template <typename T>
 std::ostream &operator<<(std::ostream &os, const BoundingBox2<T> &b) 

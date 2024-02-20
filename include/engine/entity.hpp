@@ -39,32 +39,34 @@ public:
     //  Ex: Main character
     std::string get_entity_name() const;
 
+    Point2f world_to_local(Point2f w_p) const;
+    Vector2f world_to_local(Vector2f w_p) const;
+
+    Point2f local_to_world(Point2f l_p) const;
+
     // Returns the type of the entity
     //  Ex: Rigid body, generic entity
     std::string get_class() const;
 
     Point2f get_position2D() const;
-
     Point3f get_position3D() const;
 
     void set_position2D(Point2f p);
-
     void set_position3D(Point3f p);
 
-    Point2f max_corner2D() const;
+    Vector2f get_diagonal() const;
 
+    Point2f max_corner2D() const;
     Point3f max_corner3D() const;
 
     int get_entity_id() const;
     void set_entity_id(int id);
 
-    Bound2f bound2f() const;
-
     Texture get_active_texture() const;
-
     void set_active_texture(Texture new_texture);
-
+    
     bool is_deleted() const;
+    Bound2f bound2f() const;
 
     void destroy();
 
@@ -73,20 +75,15 @@ public:
     void disable_mouse_hover();
 
 
-    // Returns true if this entity collides with other
+    // Returns true if this entity collides with other.
     //  uses excusive comparisons
+    bool collides(std::shared_ptr<Entity> other, Point2f &collision_point) const;
     bool collides(std::shared_ptr<Entity> other) const;
+    bool contains(Point2f point) const;
 
     // Returns true if the mouse is pointing inside the visible entity
     bool contains_the_mouse(Engine& engine) const;
     bool contains_the_mouse(Engine& engine, Point2f mouse_position) const;
-
-    // Returns the side of this entity that is closest to other
-    // 0: right
-    // 1: left
-    // 2: up
-    // 3: down
-    int closest_side(std::shared_ptr<Entity> other);
 
     // Event processing is the second thing executed, 
     //  right after game->on_loop_start()
@@ -107,7 +104,8 @@ public:
 
     // Collisions are called right after updating the positions,
     //  and before the end step
-    virtual void on_collision(Engine& engine, std::shared_ptr<Entity> other);
+    virtual void on_collision(Engine& engine, 
+            std::shared_ptr<Entity> other);
 
     // This is called after all physics have finished
     virtual void post_physics(Engine& engine);

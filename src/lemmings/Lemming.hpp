@@ -537,6 +537,7 @@ public:
   void update_position(Engine &engine) override
   {
     update_state(); // Actualiza el estado antes de calcular la nueva posición
+
     Rigid_body::update_position(engine);
   }
 
@@ -553,8 +554,10 @@ public:
           return;
       }
 
-      switch (closest_side(other))
+      Float thit, tmin, tmax;
+      if (distance_down(engine, other, tmin, tmax, thit) && thit < 0.005)
       {
+
       case 0:
         if (!(is_digging() || is_bashing() || is_mining()))
         {
@@ -594,8 +597,6 @@ public:
             go_walk();
           }
         }
-
-        break;
       }
     }
 

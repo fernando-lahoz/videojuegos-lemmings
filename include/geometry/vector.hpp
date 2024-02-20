@@ -89,6 +89,8 @@ public:
     constexpr Vector2<T> operator-(const Vector2<T> &v) const;
     constexpr Vector2<T>& operator-=(const Vector2<T> &v);
 
+    constexpr Vector2<T> operator/(const Vector2<T> &v) const;
+
     constexpr bool operator==(const Vector2<T> &v) const;
     constexpr bool operator!=(const Vector2<T> &v) const;
 

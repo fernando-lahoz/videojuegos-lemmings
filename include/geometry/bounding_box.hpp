@@ -132,6 +132,12 @@ public:
 
     constexpr int largest_axis() const;
 
+    // 0: Right
+    // 1: Top
+    // 2: Left
+    // 3: Bottom
+    constexpr int closest_side (Point2<T> p) const;
+
     constexpr Point2<T> linear_interpolation(const Point2f &t) const;
 
     constexpr Vector2<T> relative_offset(const Point2<T> &p) const;
@@ -141,6 +147,8 @@ public:
     // Algorithm based on the 2D box slab intersection 
     //  implemented branchless by Tavian Barnes
     constexpr bool intersects(const Ray &ray, Float &hit_offset) const;
+    constexpr bool all_intersections(const Ray &ray, Float &min_offset, Float &max_offset) const;
+
 
     void print() const;
 };

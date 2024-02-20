@@ -155,6 +155,61 @@ bool Engine::is_cursor_visible()
     return SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE;
 }
 
+bool Engine::ray_march_alpha_init(Ray &ray, Float &offset, 
+        Float min_offset,
+        Float max_offset, 
+        EntityPtr entity) const
+{
+    Float search_distance = max_offset - min_offset;
+
+    int n_samples = 100;
+    Float step_size = search_distance / n_samples;
+
+    for (int i = 0; i < n_samples; i++)
+    {
+        Float t = min_offset + step_size*i;
+        Point3f p3 = ray(t);
+        Point2f p = Point2f(p3.x, p3.y);
+
+        if (entity->contains(p))
+        {
+            offset = t;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+bool Engine::ray_march_alpha_end(Ray &ray, Float &offset, 
+        Float min_offset,
+        Float max_offset, 
+        EntityPtr entity) const
+{
+    Float search_distance = max_offset - min_offset;
+
+    int n_samples = 100;
+    Float step_size = search_distance / n_samples;
+
+    for (int i = 0; i < n_samples; i++)
+    {
+        Float t = max_offset - step_size*i;
+        Point3f p3 = ray(t);
+        Point2f p = Point2f(p3.x, p3.y);
+
+        if (entity->contains(p))
+        {
+            offset = t;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+
 // Returns true if the program should quit
 bool Engine::process_events()
 {
@@ -273,8 +328,10 @@ void Engine::delete_dead_entities()
     { return entity->is_deleted(); };
     auto iterator = std::find_if(entities.begin(), entities.end(), is_deleted);
 
+
     std::for_each(iterator, entities.end(), [this](EntityPtr entity)
                   { game->on_entity_destruction(*this, entity); });
+
     entities.resize(std::distance(entities.begin(), iterator));
 }
 
@@ -347,58 +404,95 @@ SoundMixer& Engine::get_sound_mixer()
     return mixer;
 }
 
-// Intersect a ray with all entities in the engine
-// If check_z_axis is true, only entities with a z coordinate == than the
-//  ray's intersection point will be considered
-//  (If the ray does not move on z axis, then only entities with
-//  z == than ray's origin will be considered)
-bool Engine::intesect_ray(Ray &ray, bool check_z_axis, Float &hit_offset, EntityPtr &hit_entity)
+bool Engine::intesect_ray(Ray &ray, 
+            int not_this_entity_id,
+            const std::string &force_class_name,
+            Float &hit_offset1, 
+            Float &hit_offset2, 
+            EntityPtr &hit_entity)
 {
-    hit_offset = INFINITY;
+    hit_offset1 = INFINITY;
 
     for (auto &entity : entities)
     {
-        if (entity->is_deleted())
+        if (entity->get_entity_id() == not_this_entity_id)
             continue;
 
         auto bounding_box = entity->bound2f();
-        Float offset;
+        Float offset, min_offset, max_offset;
+        Point2f origin;
+        bool intersects = false;
+        origin.x = ray.origin.x;
+        origin.y = ray.origin.y;
 
-        if (bounding_box.intersects(ray, offset) && (offset < hit_offset) && (!check_z_axis || (entity->get_position3D().z == ray(offset).z)))
+        intersects = bounding_box.all_intersections(ray, min_offset, max_offset);
+            
+        if (min_offset > 0)
+            offset = min_offset;
+        else
+            offset = max_offset;
+
+        if (bounding_box.contains(origin)) 
         {
-            hit_entity = entity;
-            hit_offset = offset;
+            offset = 0;
+            intersects = true;
+        }
+ 
+        if (intersects
+            && (offset < hit_offset1)
+            && (entity->get_class() == force_class_name))
+        {
+            if (ray_march_alpha_init(ray, offset, offset, max_offset, entity))
+            {
+                hit_offset1 = min_offset;
+                hit_offset2 = max_offset;
+                hit_entity = entity;
+            }
         }
     }
 
-    return hit_offset < INFINITY;
+    return hit_offset1 < INFINITY && hit_offset2 > 0;
 }
 
-bool Engine::intesect_ray(Ray &ray,
-                          bool check_z_axis,
-                          int not_this_entity_id,
-                          const std::string &force_class_name,
-                          Float &hit_offset,
-                          EntityPtr &hit_entity)
+bool Engine::intesect_ray_entity(Ray &ray, 
+            EntityPtr entity,
+            Float &hit_offset1, 
+            Float &hit_offset2)
 {
-    hit_offset = INFINITY;
+    hit_offset1 = INFINITY;
 
-    for (auto &entity : entities)
+    auto bounding_box = entity->bound2f();
+    Float offset, min_offset, max_offset;
+    Point2f origin;
+    bool intersects = false;
+    origin.x = ray.origin.x;
+    origin.y = ray.origin.y;
+
+
+    intersects = bounding_box.all_intersections(ray, min_offset, max_offset);
+    
+    if (min_offset > 0)
+        offset = min_offset;
+    else
+        offset = max_offset;
+
+    if (bounding_box.contains(origin)) 
     {
-        if (entity->is_deleted() || entity->get_entity_id() == not_this_entity_id)
-            continue;
+        offset = 0;
+        intersects = true;
+    }
+    
 
-        auto bounding_box = entity->bound2f();
-        Float offset;
-
-        if (bounding_box.intersects(ray, offset) && (offset < hit_offset) && (entity->get_class() == force_class_name) && (!check_z_axis || (entity->get_position3D().z == ray(offset).z)))
+    if (intersects && (offset < hit_offset1))
+    {
+        if (ray_march_alpha_init(ray, offset, offset, max_offset, entity))
         {
-            hit_entity = entity;
-            hit_offset = offset;
+            hit_offset1 = min_offset;
+            hit_offset2 = max_offset;
         }
     }
 
-    return hit_offset < INFINITY;
+    return hit_offset1 < INFINITY && hit_offset2 > 0;
 }
 
 void Engine::start()

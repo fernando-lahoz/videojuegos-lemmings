@@ -80,10 +80,16 @@ public:
 
         Rigid_body::update_position(engine);
 
-        // if (is_grounded(engine))
-        //     on_ground = true;
-        // else
-        //     on_ground = false;
+        if (is_grounded(engine))
+        {
+            disable_gravity();
+            on_ground = true;
+        }
+        else
+        {
+            enable_gravity();
+            on_ground = false;
+        }
     }
 
     void on_collision(Engine& engine, EntityPtr other) override
@@ -94,18 +100,6 @@ public:
         }
 
         Rigid_body::on_collision(engine, other);
-
-        // Ground collision
-        if (closest_side(other) == 3) {
-            if (!on_ground)
-            {
-                auto& mixer = engine.get_sound_mixer();
-                mixer.pause_sound_on_channel(0);
-                mixer.play_sound_on_channel(oof, 0);
-            }
-
-            on_ground = true;
-        }
     }
 
     void look_left()

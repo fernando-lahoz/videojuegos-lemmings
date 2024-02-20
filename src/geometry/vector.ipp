@@ -342,6 +342,14 @@ constexpr Vector2<T> Vector2<T>::operator/(T f) const
 }
 
 template <typename T>
+constexpr Vector2<T> Vector2<T>::operator/(const Vector2<T> &v) const
+{
+    assert(v.x != 0 && v.y != 0);
+    return Vector2<T>(x / v.x, y / v.y);
+}
+
+
+template <typename T>
 constexpr Vector2<T>& Vector2<T>::operator/=(T f) 
 {
     assert(f != 0);
@@ -357,6 +365,7 @@ template <typename T>
 constexpr Vector2<T> Vector2<T>::operator-() const { 
     return Vector2<T>(-x, -y); 
 }
+
 
 template <typename T>
 constexpr const T& Vector2<T>::operator[](int i) const 

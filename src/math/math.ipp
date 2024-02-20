@@ -66,4 +66,11 @@ inline Float next_float_down(Float x) {
     return std::nextafter(x, -INFINITY);
 }
 
+inline Float truncate(Float x, int n) 
+{
+    int k = std::pow(10, n);
+    
+    return std::trunc(x * k) / k;
+}
+
 } // namespace math
