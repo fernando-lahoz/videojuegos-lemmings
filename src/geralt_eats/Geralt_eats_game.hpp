@@ -69,7 +69,7 @@ public:
                     Vector2i(16, 30), lemmings_font_map, "Geralt Eats Apples!!"));
 
         auto& mixer = engine.get_sound_mixer();
-        Music canon = mixer.load_music("assets/music/lemming_1_pachelbel.mp3");
+        Music canon = mixer.load_music("assets/music/02_Lemming 1 (Pachebel's Canon).mp3");
         mixer.set_reserved_channels(1); // channel reserved for "oof"
         //mixer.set_free_channels(...);
         mixer.play_music(canon);

@@ -25,7 +25,7 @@ public:
         txt_right = engine.load_texture("assets/geralt_right.png");
 
         auto& mixer = engine.get_sound_mixer();
-        oof = mixer.load_sound("assets/music/oof.wav");
+        oof = mixer.load_sound("assets/sounds/explode.wav");
     }
 
     void update_state(Engine &engine)
