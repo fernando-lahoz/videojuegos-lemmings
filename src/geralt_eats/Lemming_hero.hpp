@@ -385,8 +385,7 @@ public:
           return;
       }
 
-      Float thit, tmin, tmax;
-      if (distance_down(engine, other, tmin, tmax, thit) && thit < 0.005)
+      if (is_grounded(engine))
       {
         if (is_floating() || is_falling())
         {

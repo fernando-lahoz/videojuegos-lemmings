@@ -9,8 +9,12 @@ void Rigid_body::update_speed_gravity(Float gravity, Float delta_time)
     set_speed(speed);
 }
 
-bool Rigid_body::is_grounded(Engine& engine)
+
+bool Rigid_body::is_grounded(Engine& engine) const
 {
+    return colliding_down();
+
+    /*
     // Spawn a ray from the bottom of the entity
     Point2f origin = local_to_world(down_point);
     Ray ray(origin, Vector2f(0, 1));
@@ -41,7 +45,9 @@ bool Rigid_body::is_grounded(Engine& engine)
     else {
         return false;
     }
+    */
 }
+
 
 Rigid_body::Rigid_body(Point3f position, Vector2f diagonal, Texture texture, 
     std::string _entity_name, 
@@ -126,51 +132,11 @@ void Rigid_body::set_max_speed(Float new_max_speed)
     max_speed_sqr = math::pow2(new_max_speed);
 }
 
-void Rigid_body::override_right_point(Point2f new_p)
-{
-    right_point = new_p;
-}
-
-void Rigid_body::override_left_point(Point2f new_p)
-{
-    left_point = new_p;
-}
-
-void Rigid_body::override_up_point(Point2f new_p)
-{
-    up_point = new_p;
-}
-
-void Rigid_body::override_down_point(Point2f new_p)
-{
-    down_point = new_p;
-}
-
-Point2f Rigid_body::default_right_point() const
-{
-    return Point2f(1, 0.5);
-}
-
-Point2f Rigid_body::default_left_point() const
-{
-    return Point2f(0, 0.5);
-}
-
-Point2f Rigid_body::default_up_point() const
-{
-    return Point2f(0.5, 0);
-}
-
-Point2f Rigid_body::default_down_point() const
-{
-    return Point2f(0.5, 1);
-}
-
-
 
 // Returns true if the ray intersected
 //  tmin contains the minimum hit offset
 //  and tmax contains the maximum hit offset
+/*
 bool Rigid_body::distance(Engine &engine, Ray ray, EntityPtr collided_entity, 
         Float &tmin, Float &tmax, Float &thit)
 {
@@ -242,12 +208,14 @@ bool Rigid_body::distance_right(Engine &engine, EntityPtr collided_entity, Float
     Ray ray(p, Vector2f(1, 0));
     return distance(engine, ray, collided_entity, tmin, tmax, thit);
 }
-
+*/
 
 
 void Rigid_body::on_collision([[maybe_unused]]Engine& engine, 
         EntityPtr other)
 {
+    Entity::on_collision(engine, other);
+
     // If the entity is not moving, collision will not move it
     // Only rigid bodies can collide with other rigid bodies
     if (speed.length_squared() == 0 ||
@@ -260,35 +228,25 @@ void Rigid_body::on_collision([[maybe_unused]]Engine& engine,
 
     //std::cout << "Closest side: " << closest_side << std::endl;
 
-    Float tmin, tmax, thit;
-
     // Only will collide when tmin is negative
-    if (distance_up(engine, other, tmin, tmax, thit) && 
-        thit < 0.0005)
+    if (colliding_up())
     {
         speed.y = 0;
-        position.y += -tmin;
     }
 
-    if (distance_down(engine, other, tmin, tmax, thit) && 
-        thit < 0.0005)
+    if (colliding_down())
     {
         speed.y = 0;
-        position.y -= -tmin;
     }
 
-    if (distance_left(engine, other, tmin, tmax, thit) && 
-        thit < 0.0005)
+    if (colliding_left())
     {
         speed.x = 0;
-        position.x += -tmin;
     }
 
-    if (distance_right(engine, other, tmin, tmax, thit) && 
-        thit < 0.0005)
+    if (colliding_right())
     {
         speed.x = 0;
-        position.x -= -tmin;
     }       
 
     set_speed(speed);

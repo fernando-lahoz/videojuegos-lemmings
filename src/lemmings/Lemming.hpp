@@ -555,11 +555,6 @@ public:
           return;
       }
 
-      Float thit, tmin, tmax;
-      if (distance_down(engine, other, tmin, tmax, thit) && thit < 0.005)
-      {
-
-      }
     }
 
     if (other->get_entity_name() == "Gate")

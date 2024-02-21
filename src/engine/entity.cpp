@@ -13,6 +13,7 @@ Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture,
     this->class_name = _class_name;
 }
 
+
 Point2f Entity::world_to_local(Point2f w_p) const
 {
     w_p -= get_position2D();
@@ -141,41 +142,117 @@ void Entity::disable_mouse_hover()
     mouse_over = false;
 }
 
+bool Entity::colliding_up() const
+{
+    return _collides_up;
+}
+
+bool Entity::colliding_down() const
+{
+    return _collides_down;
+}
+
+bool Entity::colliding_left() const
+{
+    return _collides_left;
+}
+
+bool Entity::colliding_right() const
+{
+    return _collides_right;
+}
+
+
 bool Entity::collides(std::shared_ptr<Entity> other, Point2f &collision_point) const
 {
-    if (bound2f().overlaps(other->bound2f()))
-    {        
-        // Get intersection
-        Bound2f intersection = bound2f() - other->bound2f();
-        auto txt = get_active_texture();
-        auto other_txt = other->get_active_texture();
-
-        Point2f n_samples = Point2f(10, 10);
-        Point2f offset = Point2f(intersection.diagonal() / n_samples.to_vector());
-
-        for (int i = 0; i < n_samples.x; i++)
-        {
-            for (int j = 0; j < n_samples.y; j++)
-            {
-                Point2f sample_point = intersection.pMin;
-                sample_point.x += i * offset.x;
-                sample_point.y += j * offset.y;
-
-
-                auto lsample = world_to_local(sample_point);
-                auto other_lsample = other->world_to_local(sample_point);
-
-                if (!txt.is_alpha_pixel(lsample) && !other_txt.is_alpha_pixel(other_lsample))
-                {
-                    collision_point = sample_point;
-                    return true;
-                }
-            }
-        }
-    }    
+    if (check_collision_right(other))
+    {
+        collision_point = right_point;
+        return true;
+    }
+    else if (check_collision_left(other))
+    {
+        collision_point = left_point;
+        return true;
+    }
+    else if (check_collision_up(other))
+    {
+        collision_point = up_point;
+        return true;
+    }
+    else if (check_collision_down(other))
+    {
+        collision_point = down_point;
+        return true;
+    }
 
     return false;
 }
+
+bool Entity::check_collision_right(std::shared_ptr<Entity> other) const
+{
+    auto p = local_to_world(right_point);
+    return other->contains(p);
+} 
+
+bool Entity::check_collision_left(std::shared_ptr<Entity> other) const
+{
+    auto p = local_to_world(left_point);
+    return other->contains(p);
+}
+
+bool Entity::check_collision_up(std::shared_ptr<Entity> other) const
+{
+    auto p = local_to_world(up_point);
+    return other->contains(p);
+}
+
+bool Entity::check_collision_down(std::shared_ptr<Entity> other) const
+{
+    auto p = local_to_world(down_point);
+    return other->contains(p);
+}
+
+void Entity::override_right_point(Point2f new_p)
+{
+    right_point = new_p;
+}
+
+void Entity::override_left_point(Point2f new_p)
+{
+    left_point = new_p;
+}
+
+void Entity::override_up_point(Point2f new_p)
+{
+    up_point = new_p;
+}
+
+void Entity::override_down_point(Point2f new_p)
+{
+    down_point = new_p;
+}
+
+Point2f Entity::default_right_point() const
+{
+    return Point2f(1, 0.5);
+}
+
+Point2f Entity::default_left_point() const
+{
+    return Point2f(0, 0.5);
+}
+
+Point2f Entity::default_up_point() const
+{
+    return Point2f(0.5, 0);
+}
+
+Point2f Entity::default_down_point() const
+{
+    return Point2f(0.5, 1);
+}
+
 
 bool Entity::collides(std::shared_ptr<Entity> other) const
 {
@@ -232,7 +309,10 @@ void Entity::on_event_up(Engine&, EngineIO::InputEvent)
 
 void Entity::pre_physics(Engine&)
 {
-    // Do nothing by default
+    _collides_up = false;
+    _collides_down = false;
+    _collides_left = false;
+    _collides_right = false;
 }
 
 void Entity::update_position(Engine&)
@@ -240,9 +320,19 @@ void Entity::update_position(Engine&)
     // Do nothing by default
 }
 
-void Entity::on_collision(Engine&, std::shared_ptr<Entity>)
+void Entity::on_collision(Engine&, std::shared_ptr<Entity> other)
 {
-    // Do nothing by default
+    if (check_collision_down(other))
+        _collides_down = true;
+
+    if (check_collision_up(other))
+        _collides_up = true;
+
+    if (check_collision_left(other))
+        _collides_left = true;
+
+    if (check_collision_right(other))
+        _collides_right = true;
 }
 
 void Entity::post_physics(Engine&)

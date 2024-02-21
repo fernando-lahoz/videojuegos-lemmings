@@ -23,9 +23,15 @@ private:
     int entity_id;
     bool mouse_over = false;
 
+    bool _collides_up = false, _collides_down = false,
+         _collides_left = false, _collides_right = false;
+
 protected:
     Point3f position;
     Vector2f diagonal;
+
+    Point2f down_point, up_point,
+            left_point, right_point;
 
     std::string class_name;
     std::string entity_name;
@@ -38,6 +44,8 @@ public:
     // Get the specific entity name
     //  Ex: Main character
     std::string get_entity_name() const;
+
+    std::shared_ptr<Entity> get_entity_ptr() const;
 
     Point2f world_to_local(Point2f w_p) const;
     Vector2f world_to_local(Vector2f w_p) const;
@@ -53,6 +61,28 @@ public:
 
     void set_position2D(Point2f p);
     void set_position3D(Point3f p);
+
+
+    bool colliding_up() const;
+    bool colliding_down() const;
+    bool colliding_left() const;
+    bool colliding_right() const;
+
+
+    bool check_collision_right(std::shared_ptr<Entity> other) const;
+    bool check_collision_left(std::shared_ptr<Entity> other) const;
+    bool check_collision_up(std::shared_ptr<Entity> other) const;
+    bool check_collision_down(std::shared_ptr<Entity> other) const;
+
+    void override_right_point(Point2f new_p);
+    void override_left_point(Point2f new_p);
+    void override_up_point(Point2f new_p);
+    void override_down_point(Point2f new_p);
+
+    Point2f default_right_point() const;
+    Point2f default_left_point() const;
+    Point2f default_up_point() const;
+    Point2f default_down_point() const;
 
     Vector2f get_diagonal() const;
 
@@ -98,12 +128,12 @@ public:
 
     // Moves the entity speed*delta_time units
     //  in the direction vector
-    // This is called right after pre_physics
-    //  and before collisions
+    // This is called after computing collisions,
+    //  and before post_physics
     virtual void update_position(Engine& engine);
 
-    // Collisions are called right after updating the positions,
-    //  and before the end step
+    // Collisions are called right after pre_physics and
+    //  before update_position
     virtual void on_collision(Engine& engine, 
             std::shared_ptr<Entity> other);
 

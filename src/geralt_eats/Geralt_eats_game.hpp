@@ -69,8 +69,8 @@ public:
 
         auto ground2 = std::make_shared<Rigid_body>(Point3f(0.7, 0, 0), Vector2f(0.3, 1), t2, "Ground");
 
-        create_entity(lemming);
-        //create_entity(geralt);
+        //create_entity(lemming);
+        create_entity(geralt);
         create_entity(ground);
         create_entity(ground2);
     }

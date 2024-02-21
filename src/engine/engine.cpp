@@ -302,10 +302,11 @@ void Engine::compute_physics()
     // Send pre-physics event to all entities
     physics.pre_physics(*this);
 
+    physics.compute_collisions(*this);
+
     for (auto& camera : cameras)
         camera->update_position(*this);
     physics.update_positions(*this);
-    physics.compute_collisions(*this);
 
     // Send post-physics event to all entities
     physics.post_physics(*this);
@@ -403,6 +404,7 @@ SoundMixer& Engine::get_sound_mixer()
 {
     return mixer;
 }
+
 
 bool Engine::intesect_ray(Ray &ray, 
             int not_this_entity_id,

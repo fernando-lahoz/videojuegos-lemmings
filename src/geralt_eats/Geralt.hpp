@@ -32,29 +32,28 @@ public:
     {
         auto speed = get_speed();
 
-        if (engine.is_up_arrow_down())
+        if (engine.is_up_arrow_down()
+            && colliding_down())
         {
-            if (on_ground)
-            {
-                speed.y = -1;
-                set_speed(speed);
-                on_ground = false;
-            }
+            speed.y = -1;
         }
 
-        if (engine.is_down_arrow_down())
+        if (engine.is_down_arrow_down()
+            && !colliding_down())
         {
             speed.y = speed.y + 1;
         }
 
 
-        if (engine.is_left_arrow_down())
+        if (engine.is_left_arrow_down()
+            && !colliding_left())
         {
             speed.x = -0.3;
             look_left();
         }
 
-        if (engine.is_right_arrow_down())
+        if (engine.is_right_arrow_down()
+            && !colliding_right())
         {
             speed.x = 0.3;
             look_right();
@@ -75,21 +74,24 @@ public:
 
     void update_position(Engine& engine) override
     {
-        update_state(engine);
         //std::cout << "State: " << state << "\n";
-
-        Rigid_body::update_position(engine);
 
         if (is_grounded(engine))
         {
+            std::cout << "gravity disabled\n";
             disable_gravity();
             on_ground = true;
         }
         else
         {
+            std::cout << "gravity enabled\n";
             enable_gravity();
             on_ground = false;
         }
+
+        update_state(engine);
+    
+        Rigid_body::update_position(engine);
     }
 
     void on_collision(Engine& engine, EntityPtr other) override
