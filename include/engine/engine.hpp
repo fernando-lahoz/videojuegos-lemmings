@@ -89,10 +89,12 @@ public:
     void hide_cursor();
     bool is_cursor_visible();
 
+    /*
     bool intesect_ray(Ray &ray, 
             bool check_z_axis,
             Float &hit_offset, 
             EntityPtr &hit_entity);
+    */
 
     // Intersect a ray with all entities in the engine
     //  except for the entity with name not_this_entity
@@ -101,17 +103,18 @@ public:
     //  (If the ray does not move on z axis, then only entities with 
     //  z == than ray's origin will be considered)
     // Class name specifies a class of entity wanted for the intersection
-    bool intesect_ray(Ray &ray, 
+    bool intersect_ray(Ray &ray, 
             int not_this_entity_id,
             const std::string &force_class_name,
-            Float &hit_offset1,
-            Float &hit_offset2, 
+            Float &hit_offset,
             EntityPtr &hit_entity);
 
+    /*
     bool intesect_ray_entity(Ray &ray, 
             EntityPtr entity,
             Float &hit_offset1, 
             Float &hit_offset2);
+    */
             
     bool ray_march_alpha_init(Ray &ray, Float &offset, 
                             Float min_offset, 

@@ -74,17 +74,22 @@ public:
 
     void update_position(Engine& engine) override
     {
-        //std::cout << "State: " << state << "\n";
+        Ray ray_down = Ray(local_to_world(down_point), Vector2f(0, 1));
+        Float hit_offset_down;
+        EntityPtr hit_entity_down;
+
+        engine.intersect_ray(ray_down, get_entity_id(), 
+                RIGID_BODY_ID, hit_offset_down, hit_entity_down);
+
+        std::cout << "Hit offset down: " << hit_offset_down << "\n";
 
         if (is_grounded(engine))
         {
-            std::cout << "gravity disabled\n";
             disable_gravity();
             on_ground = true;
         }
         else
         {
-            std::cout << "gravity enabled\n";
             enable_gravity();
             on_ground = false;
         }

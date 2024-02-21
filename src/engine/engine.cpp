@@ -406,6 +406,57 @@ SoundMixer& Engine::get_sound_mixer()
 }
 
 
+bool Engine::intersect_ray(Ray &ray, 
+            int not_this_entity_id,
+            const std::string &force_class_name,
+            Float &hit_offset, 
+            EntityPtr &hit_entity)
+{
+    hit_offset = INFINITY;
+
+    for (auto &entity : entities)
+    {
+        if (entity->get_entity_id() == not_this_entity_id)
+            continue;
+
+        auto bounding_box = entity->bound2f();
+        Float offset, min_offset, max_offset;
+        Point2f origin;
+        bool intersects = false;
+        origin.x = ray.origin.x;
+        origin.y = ray.origin.y;
+
+        intersects = bounding_box.all_intersections(ray, min_offset, max_offset);
+            
+        if (min_offset > 0)
+            offset = min_offset;
+        else
+            offset = max_offset;
+
+        if (bounding_box.contains(origin)) 
+        {
+            offset = 0;
+            intersects = true;
+        }
+ 
+        if (intersects
+            && (entity->get_class() == force_class_name))
+        {
+            if (ray_march_alpha_init(ray, offset, offset, max_offset, entity)
+                && offset < hit_offset)
+            {
+                hit_offset = offset;
+                hit_entity = entity;
+            }
+        }
+    }
+    
+}
+
+
+
+
+/*
 bool Engine::intesect_ray(Ray &ray, 
             int not_this_entity_id,
             const std::string &force_class_name,
@@ -496,6 +547,7 @@ bool Engine::intesect_ray_entity(Ray &ray,
 
     return hit_offset1 < INFINITY && hit_offset2 > 0;
 }
+*/
 
 void Engine::start()
 {

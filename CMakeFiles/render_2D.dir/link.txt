@@ -1,0 +1,2 @@
+/usr/bin/ar qc librender_2D.a CMakeFiles/render_2D.dir/src/engine/render_2D.cpp.o
+/usr/bin/ranlib librender_2D.a
