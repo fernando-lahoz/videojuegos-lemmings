@@ -1,7 +1,7 @@
 #pragma once
 
 #include "geometry/point.hpp"
-
+#include "math/math.hpp"
 
 template <typename T>
 constexpr Point3<T>::Point3(T x, T y, T z)
@@ -482,11 +482,11 @@ constexpr bool Point2<Float>::operator!=(const Point2<Float> &p) const
 template <typename T>
 Point2<T> clamp (const Point2<T> &p, const Point2<T> &min, const Point2<T> &max)
 {
-    return Point2<T>(std::clamp(p.x, min.x, max.x), std::clamp(p.y, min.y, max.y));
+    return Point2<T>(math::clamp(p.x, min.x, max.x), math::clamp(p.y, min.y, max.y));
 }
 
 template <typename T>
 Point3<T> clamp (const Point3<T> &p, const Point3<T> &min, const Point3<T> &max)
 {
-    return Point3<T>(std::clamp(p.x, min.x, max.x), std::clamp(p.y, min.y, max.y), std::clamp(p.z, min.z, max.z));
+    return Point3<T>(math::clamp(p.x, min.x, max.x), math::clamp(p.y, min.y, max.y), math::clamp(p.z, min.z, max.z));
 }

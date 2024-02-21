@@ -216,48 +216,44 @@ bool Engine::process_events()
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
-        if (event.type == SDL_QUIT)
+        switch (event.type)
         {
+        case SDL_QUIT:
             return true;
-        }
-
-        if (event.type == SDL_KEYDOWN)
+        case SDL_KEYDOWN:
         {
-            if (event.key.keysym.sym == SDLK_q)
-            {
-                return true;
-            }
-
             auto IO_event = Engine::SDL_to_input_event(event.key);
 
             Engine::change_input_state(IO_event, true);
             Engine::send_event_down(IO_event);
         }
-
-        if (event.type == SDL_KEYUP)
+        break;
+        case SDL_KEYUP:
         {
             auto IO_event = Engine::SDL_to_input_event(event.key);
 
             Engine::change_input_state(IO_event, false);
             Engine::send_event_up(IO_event);
         }
-
-        // Mouse
-        if (event.type == SDL_MOUSEBUTTONDOWN)
+        break;
+        //Mouse
+        case SDL_MOUSEBUTTONDOWN:
         {
             auto IO_event = Engine::SDL_to_input_event(event.button);
             Engine::change_input_state(IO_event, true);
             Engine::send_event_down(IO_event);
         }
-
-        if (event.type == SDL_MOUSEBUTTONUP)
+        break;
+        case SDL_MOUSEBUTTONUP:
         {
             auto IO_event = Engine::SDL_to_input_event(event.button);
             Engine::change_input_state(IO_event, false);
             Engine::send_event_up(IO_event);
+        }
+        break;
         }
     }
-
+    
     send_mouse_hover();
 
     return false;
@@ -454,7 +450,51 @@ bool Engine::intersect_ray(Ray &ray,
 }
 
 
+void Engine::set_ignored_events()
+{
+    static constexpr uint32_t ignored_events[] = {
+        SDL_AUDIODEVICEADDED,
+        SDL_AUDIODEVICEREMOVED,
+        SDL_CONTROLLERAXISMOTION,
+        SDL_CONTROLLERBUTTONDOWN,
+        SDL_CONTROLLERBUTTONUP,
+        SDL_CONTROLLERDEVICEADDED,
+        SDL_CONTROLLERDEVICEREMOVED,
+        SDL_CONTROLLERDEVICEREMAPPED,
+        SDL_DOLLARGESTURE,
+        SDL_DOLLARRECORD,
+        SDL_DROPFILE,
+        SDL_DROPTEXT,
+        SDL_DROPBEGIN,
+        SDL_DROPCOMPLETE,
+        SDL_FINGERMOTION,
+        SDL_FINGERDOWN,
+        SDL_FINGERUP,
+        //SDL_KEYDOWN,
+        //SDL_KEYUP,
+        SDL_JOYAXISMOTION,
+        SDL_JOYBALLMOTION,
+        SDL_JOYHATMOTION,
+        SDL_JOYBUTTONDOWN,
+        SDL_JOYBUTTONUP,
+        SDL_JOYDEVICEADDED,
+        SDL_JOYDEVICEREMOVED,
+        SDL_MOUSEMOTION,
+        //SDL_MOUSEBUTTONDOWN,
+        //SDL_MOUSEBUTTONUP,
+        SDL_MOUSEBUTTONUP,
+        SDL_MULTIGESTURE,
+        //SDL_QUIT,
+        SDL_SYSWMEVENT,
+        SDL_TEXTEDITING,
+        SDL_TEXTINPUT,
+        SDL_USEREVENT,
+        //SDL_WINDOWEVENT
+    };
 
+    for (auto event : ignored_events)
+        SDL_EventState(event, SDL_IGNORE);
+}
 
 /*
 bool Engine::intesect_ray(Ray &ray, 
@@ -551,12 +591,14 @@ bool Engine::intesect_ray_entity(Ray &ray,
 
 void Engine::start()
 {
+    set_ignored_events();
+
     game->on_game_startup(*this);
 
     bool quit = false;
     while (!quit && !quit_event)
     {
-        auto init = std::chrono::steady_clock::now();
+        //auto init = std::chrono::steady_clock::now();
         update_delta_time();
         renderer.update_resolution(*this);
         update_mouse_position();
@@ -578,7 +620,7 @@ void Engine::start()
 
         process_cameras();
 
-        auto end = std::chrono::steady_clock::now();
+        //auto end = std::chrono::steady_clock::now();
 
         //std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
 

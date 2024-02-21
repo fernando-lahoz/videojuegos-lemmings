@@ -38,6 +38,7 @@ private:
     void send_mouse_hover();
     void update_mouse_position();
     void change_input_state(EngineIO::InputEvent key, bool is_down);
+    void set_ignored_events();
 
     EngineIO::InputEvent SDL_to_input_event(SDL_KeyboardEvent key);
     EngineIO::InputEvent SDL_to_input_event(SDL_MouseButtonEvent key);

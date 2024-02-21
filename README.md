@@ -9,7 +9,7 @@ pacman -S mingw-w64-ucrt-x86_64-gcc \
           mingw-w64-ucrt-x86_64-make \
           mingw-w64-ucrt-x86_64-cmake \
           mingw-w64-ucrt-x86_64-ninja \ 
-          mingw-w64-ntldd
+          mingw-w64-ucrt-x86_64-ntldd
 ```
 
 4) Añadid estos directorios a las variables de entorno:
