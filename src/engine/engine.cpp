@@ -556,6 +556,7 @@ void Engine::start()
     bool quit = false;
     while (!quit && !quit_event)
     {
+        auto init = std::chrono::steady_clock::now();
         update_delta_time();
         renderer.update_resolution(*this);
         update_mouse_position();
@@ -577,8 +578,13 @@ void Engine::start()
 
         process_cameras();
 
+        auto end = std::chrono::steady_clock::now();
+
+        //std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
+
         // Draw call to renderer
         renderer.draw(entities, cameras);
+
     }
 
     game->on_game_shutdown(*this);

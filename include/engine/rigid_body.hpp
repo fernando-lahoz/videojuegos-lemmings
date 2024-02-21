@@ -24,7 +24,6 @@ protected:
 
 public:
 
-
     Rigid_body(Point3f position, Vector2f diagonal, Texture texture, 
         std::string _entity_name, 
         std::string _class_name=RIGID_BODY_ID);
@@ -62,4 +61,6 @@ public:
             EntityPtr other) override;
 
     void update_position(Engine& engine) override;
+
+    void pre_physics(Engine&) override;
 };

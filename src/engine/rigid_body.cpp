@@ -263,3 +263,9 @@ void Rigid_body::update_position(Engine& engine)
     position.x += speed.x * delta_time;
     position.y += speed.y * delta_time;
 }
+
+
+void Rigid_body::pre_physics(Engine& engine)
+{
+    Entity::pre_physics(engine);
+}

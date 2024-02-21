@@ -6,7 +6,6 @@
 
 class Geralt : public Rigid_body
 {
-    bool on_ground = false;
     Texture txt_left, txt_right;
     Sound oof;
 
@@ -86,12 +85,10 @@ public:
         if (is_grounded(engine))
         {
             disable_gravity();
-            on_ground = true;
         }
         else
         {
             enable_gravity();
-            on_ground = false;
         }
 
         update_state(engine);
