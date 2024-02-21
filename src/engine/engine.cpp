@@ -446,7 +446,8 @@ bool Engine::intersect_ray(Ray &ray,
             }
         }
     }
-    
+
+    return hit_offset < INFINITY;
 }
 
 
