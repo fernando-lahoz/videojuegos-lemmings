@@ -70,6 +70,7 @@ public:
     spawn_ended = false;
     dead_marked = false;
   }
+  int get_level() const { return level; }
 
   void set_do_action(int action) { do_action = action; }
   int get_do_action() const { return do_action; }

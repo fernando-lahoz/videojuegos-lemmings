@@ -15,10 +15,10 @@ private:
   bool change = false;
 
 public:
-  Door(Point3f position, float size, Engine &engine, int structure_type, float animation_duration, int level, Game_info &game_info, bool is_debug = false)
-      : Structure(position, Vector2f(41 * size, 25 * size), engine, "assets/door/door", structure_type, 10, animation_duration, "Door", false, false, game_info, is_debug),
+  Door(Point3f position, Engine &engine, int structure_type, float animation_duration, int level, Game_info &game_info, bool is_debug = false)
+      : Structure(position, Vector2f(82, 50), engine, "assets/door/door", structure_type, 10, animation_duration, "Door", false, false, game_info, is_debug),
         level(level),
-        lemming_size(Vector2f(20 * size, 20 * size))
+        lemming_size(Vector2f(40, 40))
   {
   }
 

@@ -46,7 +46,7 @@ namespace Utils
   const std::string LEMMING_TYPE[15] = {"", "WALKER", "FALLER", "BLOCKER", "BUILDER", "CLIMBER", "FLOATER", "", "DIGGER", "BASHER", "MINER", "", "", "", "ATHLETE"};
 
   // HUD CONSTANTS
-  const Point3f positions[12] = {Point3f(0.022, 0.8208333333, 3), Point3f(0.079, 0.8208333333, 3), Point3f(0.137, 0.8208333333, 3), Point3f(0.194, 0.8208333333, 3), Point3f(0.252, 0.8208333333, 3), Point3f(0.309, 0.8208333333, 3), Point3f(0.36666666665, 0.8208333333, 3), Point3f(0.424, 0.8208333333, 3), Point3f(0.482, 0.8208333333, 3), Point3f(0.539, 0.8208333333, 3), Point3f(0.597, 0.8208333333, 3), Point3f(-1, 0.8208333333, 3)};
+  const Point3f positions[12] = {Point3f(320, -148, 3), Point3f(32, -148, 3), Point3f(64, -148, 3), Point3f(96, -148, 3), Point3f(128, -148, 3), Point3f(160, -148, 3), Point3f(192, -148, 3), Point3f(224, -148, 3), Point3f(256, -148, 3), Point3f(288, -148, 3), Point3f(352, -148, 3)};
 
   enum HUD
   {
@@ -84,8 +84,14 @@ namespace Utils
     MAIN_TEXT = 3
   };
 
+  const std::string TEXT_RED_1[4] = {"ROCK BOTTOM! I hope for your sake", "SPOT ON. You can't get much closer", "That level seemed no problem to you on", "Superb! You rescued every lemming on"};
+  const std::string TEXT_RED_2[4] = {"that you nucked that level", "than that. Let's try the next....", "that attempt. Onto the next....", "that level. Can you do it again....?"};
+
+  const std::string TEXT_BLUE_1[2] = {"Press left button to try again", ""};
+  const std::string TEXT_BLUE_2[2] = {"Press right button for menu", "Press mouse button to continue"};
+
   // LEVEL DATA
-  const int LEVEL_N_LEMMINGS[31] = {50, 10, 10, 50, 10, 50, 50, 50, 100, 100, 20, 60, 80, 20, 80, 100, 80, 50, 70, 100, 50, 100, 100, 80, 30, 100, 2, 50, 100, 100, 60};
+  const int LEVEL_N_LEMMINGS[31] = {50, 1, 10, 50, 10, 50, 50, 50, 100, 100, 20, 60, 80, 20, 80, 100, 80, 50, 70, 100, 50, 100, 100, 80, 30, 100, 2, 50, 100, 100, 60};
   const int LEVEL_SAVE_LEMMINGS[31] = {2, 1, 1, 5, 10, 5, 10, 25, 95, 90, 10, 50, 40, 20, 60, 80, 50, 20, 50, 70, 40, 60, 80, 20, 20, 50, 2, 25, 60, 60, 40};
   const double LEVEL_TIME_LIMIT[31] = {500.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 180.f, 360.f, 480.f, 480.f, 300.f, 300.f, 300.f, 300.f, 480.f, 300.f, 480.f, 300.f, 300.f, 300.f, 300.f, 300.f, 480.f, 300.f};
   const int LEVEL_SPAWN_VELOCITY[31] = {1, 50, 50, 50, 1, 50, 50, 50, 88, 99, 50, 50, 99, 1, 20, 40, 1, 99, 80, 20, 10, 50, 50, 50, 99, 99, 30, 1, 80, 90, 10};

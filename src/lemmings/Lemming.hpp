@@ -3,6 +3,7 @@
 #include "engine/rigid_body.hpp"
 #include "engine/render_2D.hpp"
 #include "engine/engine.hpp"
+#include "geometry/point.hpp"
 
 #include "lemmings/structure/Chain.hpp"
 #include "lemmings/utils.hpp"
@@ -22,6 +23,7 @@ class Lemming : public Rigid_body
   int distance_fall = 0;
   bool do_action_in_frame = false;
   bool is_hovered = false;
+  float velocity = 100;
 
   int skills = Utils::NO_SKILLS;
 
@@ -384,6 +386,7 @@ public:
 
   void pre_physics(Engine &engine) override
   {
+    Entity::pre_physics(engine);
     game_info.check_action_possible();
     update_animation(engine);
   }
@@ -394,17 +397,48 @@ public:
 
     if (is_walking())
     {
-      speed.x = direction * 0.1;
-      speed.y = 0.1;
+      speed.x = direction * 200;
+      Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
+      Float hit_offset_down;
+      EntityPtr hit_entity_down;
+
+      engine.intersect_ray(ray_down, get_entity_id(),
+                           RIGID_BODY_ID, hit_offset_down, hit_entity_down);
+
+      std::cout << "Hit offset down: " << hit_offset_down << "\n";
+
+      if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
+      {
+        if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 20)
+        {
+          // std::cout << "sube baja altura\n";
+          speed.y = 0;
+          position.y += (hit_offset_down - diagonal.y / 4);
+        }
+      }
+      // else if (hit_offset_down > diagonal.y / 2)
+      // {
+      //   speed.y = 0;
+      //   speed.x = 0;
+      //   on_ground = false;
+      // }
       set_speed(speed);
-      on_ground = false;
       return;
     }
 
     if (is_falling())
     {
       speed.x = 0;
-      speed.y = 0.2;
+      speed.y = velocity / 2;
+      if (colliding_down())
+      {
+        std::cout << "detect down\n";
+        std::cout << on_ground << std::endl;
+
+        on_ground = true;
+        speed.y = 0;
+        go_walk();
+      }
       set_speed(speed);
       return;
     }
@@ -412,7 +446,16 @@ public:
     if (is_floating())
     {
       speed.x = 0;
-      speed.y = 0.1;
+      speed.y = velocity / 4;
+      if (colliding_down())
+      {
+        // std::cout << "detect down\n";
+        // std::cout << on_ground << std::endl;
+
+        on_ground = true;
+        speed.y = 0;
+        go_walk();
+      }
       set_speed(speed);
       return;
     }
@@ -454,7 +497,7 @@ public:
         {
           do_action_in_frame = true;
           speed.x = 0;
-          speed.y = 0.05;
+          speed.y = velocity;
           set_speed(speed);
         }
       }
@@ -474,7 +517,7 @@ public:
         if (!do_action_in_frame)
         {
           do_action_in_frame = true;
-          speed.x = direction * 0.15;
+          speed.x = direction * velocity;
           speed.y = 0;
           set_speed(speed);
         }
@@ -490,16 +533,16 @@ public:
     }
     if (is_building())
     {
-      if (current_frame == 15 )
+      if (current_frame == 15)
       {
         if (!do_action_in_frame)
         {
           do_action_in_frame = true;
-          speed.y = -0.015;
-          speed.x = direction * 0.05;
+          speed.y = -velocity;
+          speed.x = direction * velocity;
           set_speed(speed);
         }
-      } 
+      }
       else
       {
         do_action_in_frame = false;
@@ -518,8 +561,8 @@ public:
         if (!do_action_in_frame)
         {
           do_action_in_frame = true;
-          speed.x = direction * 0.15;
-          speed.y = 0.15;
+          speed.x = direction * velocity;
+          speed.y = velocity;
           set_speed(speed);
         }
       }
@@ -537,13 +580,13 @@ public:
 
   void update_position(Engine &engine) override
   {
-    update_state(); // Actualiza el estado antes de calcular la nueva posición
-
     Rigid_body::update_position(engine);
+    update_state(); // Actualiza el estado antes de calcular la nueva posición
   }
 
   void on_collision(Engine &, EntityPtr other) override
   {
+    Entity::on_collision(engine, other);
     auto speed = get_speed();
 
     if (other->get_entity_name() == "MAP" || other->get_entity_name() == "Lemming")
@@ -555,6 +598,17 @@ public:
           return;
       }
 
+      if (is_walking())
+      {
+        if ((colliding_left() || colliding_right()))
+        {
+
+          position.x -= 4 * direction;
+          direction *= -1;
+
+          std::cout << "Lemming turn left\n";
+        }
+      }
     }
 
     if (other->get_entity_name() == "Gate")

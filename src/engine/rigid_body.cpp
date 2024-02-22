@@ -10,7 +10,7 @@ void Rigid_body::update_speed_gravity(Float gravity, Float delta_time)
 }
 
 
-bool Rigid_body::is_grounded(Engine& engine) const
+bool Rigid_body::is_grounded(Engine& ) const
 {
     return colliding_down();
 

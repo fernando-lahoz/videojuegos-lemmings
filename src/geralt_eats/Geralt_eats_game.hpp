@@ -15,88 +15,99 @@
 class Geralt_eats_game : public Game
 {
 private:
-
     int n_apples = 0;
     int max_apples = 1;
 
-    static Point2i lemmings_font_map(char c) 
+    static Point2i lemmings_font_map(char c)
     {
-        if (c >= 'A' && c <= 'M')       return {(c - 'A'), 0};
-        else if (c >= 'N' && c <= 'Z')  return {(c - 'N'), 1};
-        else if (c >= 'a' && c <= 'm')  return {(c - 'a'), 2};
-        else if (c >= 'n' && c <= 'z')  return {(c - 'n'), 3};
-        else if (c >= '0' && c <= '9')  return {(c - '0'), 4};
-        else {
+        if (c >= 'A' && c <= 'M')
+            return {(c - 'A'), 0};
+        else if (c >= 'N' && c <= 'Z')
+            return {(c - 'N'), 1};
+        else if (c >= 'a' && c <= 'm')
+            return {(c - 'a'), 2};
+        else if (c >= 'n' && c <= 'z')
+            return {(c - 'n'), 3};
+        else if (c >= '0' && c <= '9')
+            return {(c - '0'), 4};
+        else
+        {
             switch (c)
             {
-            case '.':   return {0, 5};
-            case '(':   return {1, 5};
-            case ')':   return {2, 5};
-            case '\'':  return {3, 5};
-            case '!':   return {4, 5};
-            case '%':   return {5, 5};
-            case '-':   return {6, 5};
-            default:    return {12, 5}; //white space
+            case '.':
+                return {0, 5};
+            case '(':
+                return {1, 5};
+            case ')':
+                return {2, 5};
+            case '\'':
+                return {3, 5};
+            case '!':
+                return {4, 5};
+            case '%':
+                return {5, 5};
+            case '-':
+                return {6, 5};
+            default:
+                return {12, 5}; // white space
             }
         }
     }
 
 public:
-
     Geralt_eats_game()
-    : Game("Geralt_eats")
-    { }
+        : Game("Geralt_eats")
+    {
+    }
 
     std::shared_ptr<Camera2D> get_main_camera() const override
     {
         return std::make_shared<Geralt_camera>();
     }
 
-    void on_game_startup(Engine& engine) override
+    void on_game_startup(Engine &engine) override
     {
         auto ground_alpha = engine.load_texture("assets/ground_alpha.png");
         auto t2 = engine.load_texture("assets/terrain.png");
         auto t3 = engine.load_texture("assets/dehecho.png");
 
-
         auto lemm = engine.load_texture("assets/maps/bkg/map_0_0.png");
 
         auto geralt = std::make_shared<Geralt>(Point3f(0.4, 0.1, 0), Vector2f(0.1, 0.125), engine);
-        auto ground = std::make_shared<Rigid_body>(Point3f(0, 0.45, 0), Vector2f(1, 0.25), ground_alpha, "Ground");
-        //auto ground = std::make_shared<Rigid_body>(Point3f(0, 0.55, 1), Vector2f(1, 0.25), lemm, "MAP");
-        //auto lemming = std::make_shared<Lemming_hero>(Point3f(0.47, 0.4, 0), Vector2f(0.08, 0.08), engine);
+        // auto ground = std::make_shared<Rigid_body>(Point3f(0, 0.45, 0), Vector2f(1, 0.25), ground_alpha, "Ground");
+        auto ground = std::make_shared<Rigid_body>(Point3f(-0.2, 0.3, 0), Vector2f(2, 1), lemm, "MAP");
+        // auto lemming = std::make_shared<Lemming_hero>(Point3f(0.47, 0.4, 0), Vector2f(0.08, 0.08), engine);
         auto lemming = std::make_shared<Lemming_hero>(Point3f(0.47, 0.4, 0), Vector2f(0.1, 0.125), engine);
 
         auto ground2 = std::make_shared<Rigid_body>(Point3f(0.7, 0, 0), Vector2f(0.3, 1), t2, "Ground");
 
-        //create_entity(lemming);
+        create_entity(lemming);
         create_entity(geralt);
         create_entity(ground);
-        create_entity(ground2);
+        // create_entity(ground2);
     }
 
-    void on_loop_start(Engine& engine) override
+    void on_loop_start(Engine &engine) override
     {
         while (n_apples < max_apples)
         {
-            //Float x_pos = ((Float)rand() / RAND_MAX) * 0.8 + 0.1;
+            // Float x_pos = ((Float)rand() / RAND_MAX) * 0.8 + 0.1;
             Float x_pos = 0.5;
 
             auto apple = std::make_shared<Apple>(
-                    Point3f(x_pos, -0.11, 0), 
-                    Vector2f(0.09, 0.1), 
-                    engine);
+                Point3f(x_pos, -0.11, 0),
+                Vector2f(0.09, 0.1),
+                engine);
 
             apple->set_gravity(2);
             apple->enable_gravity();
-            
-            //create_entity(apple);
+
+            // create_entity(apple);
             n_apples++;
         }
-        
     }
 
-    void on_entity_destruction([[maybe_unused]]Engine& engine, EntityPtr entity) override
+    void on_entity_destruction([[maybe_unused]] Engine &engine, EntityPtr entity) override
     {
         if (entity->get_entity_name() == "Apple")
         {

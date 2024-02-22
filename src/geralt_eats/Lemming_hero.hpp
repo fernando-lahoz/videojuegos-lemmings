@@ -2,6 +2,7 @@
 
 #include "engine/rigid_body.hpp"
 #include "engine/render_2D.hpp"
+#include "geometry/point.hpp"
 
 class Lemming_hero : public Rigid_body
 {
@@ -189,6 +190,11 @@ class Lemming_hero : public Rigid_body
     return state == DIGGING_HORIZONTAL;
   }
 
+  bool is_digging_diagonal()
+  {
+    return state == DIGGING_DIAGONAL;
+  }
+
   bool is_escaping()
   {
     return state == ESCAPING;
@@ -211,6 +217,9 @@ public:
                    "Lemming", "Lemming")
   {
     override_down_point(Point2f(0.5, 0.75));
+    override_up_point(Point2f(0.5, 0.3));
+    override_left_point(Point2f(0.5, 0.45));
+    override_right_point(Point2f(0.5, 0.55));
 
     // gravity = 3;
     // enable_gravity();
@@ -263,11 +272,6 @@ public:
         return;
       }
 
-      if (direction == 0)
-      {
-        direction = 1;
-      }
-
       std::string frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
 
       Texture txt = engine.load_texture(frame_path.c_str());
@@ -277,72 +281,28 @@ public:
 
   void pre_physics(Engine &engine) override
   {
+    Rigid_body::pre_physics(engine);
     update_animation(engine);
   }
 
   void update_state(Engine &engine)
   {
-    if (is_grounded(engine))
-    {
-      on_ground = true;
-      go_walk();
-    }
-    else
-    {
-      on_ground = false;
-    }
-
-    if (is_falling())
-    {
-      speed.x = 0;
-      speed.y = 0.2;
-      set_speed(speed);
-    }
-
-    if (is_floating())
-    {
-      speed.x = 0;
-      speed.y = 0.1;
-      set_speed(speed);
-    }
-
-    if (is_walking())
-    {
-      speed.x = direction * 0.1;
-      speed.y = 0.1;
-      set_speed(speed);
-    }
-
-    if (on_ground)
-    {
-      auto speed = get_speed();
-      
-      // If going down, stop the lemming
-      if (speed.y > 0)
-      {
-        speed.y = 0;
-        set_speed(speed);
-      }
-    }
-
-
     auto speed = get_speed();
 
     if (engine.is_up_arrow_down())
     {
       if (on_ground)
       {
-          speed.y = -1;
-          set_speed(speed);
-          on_ground = false;
+        speed.y = -1;
+        set_speed(speed);
+        // on_ground = false;
       }
     }
 
     if (engine.is_down_arrow_down())
     {
-      //direction = 1;
+      // direction = 1;
     }
-
 
     if (engine.is_left_arrow_down())
     {
@@ -356,24 +316,141 @@ public:
 
     if (engine.is_right_arrow_down() && engine.is_left_arrow_down())
     {
-      direction = 0;
+      // direction = 0;
     }
 
     if (!engine.is_right_arrow_down() && !engine.is_left_arrow_down())
     {
-      direction = 0;
+      // direction = 0;
+    }
+
+    if (is_walking())
+    {
+      speed.x = direction * 0.1;
+      Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
+      Float hit_offset_down;
+      EntityPtr hit_entity_down;
+
+      engine.intersect_ray(ray_down, get_entity_id(),
+                           RIGID_BODY_ID, hit_offset_down, hit_entity_down);
+
+      // std::cout << "Hit offset down: " << hit_offset_down << "\n";
+
+      if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
+      {
+        if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 20)
+        {
+          // std::cout << "sube baja altura\n";
+          speed.y = 0;
+          position.y += (hit_offset_down - diagonal.y / 4);
+        }
+      }
+      else if (hit_offset_down > diagonal.y / 2)
+      {
+        speed.y = 0;
+        speed.x = 0;
+        on_ground = false;
+      }
+      set_speed(speed);
+      return;
+    }
+
+    if (is_falling())
+    {
+      speed.x = 0;
+      speed.y = 0.2;
+      if (colliding_down())
+      {
+        // std::cout << "detect down\n";
+        // std::cout << on_ground << std::endl;
+
+        on_ground = true;
+        speed.y = 0;
+        go_walk();
+      }
+      set_speed(speed);
+      return;
+    }
+
+    if (is_floating())
+    {
+      speed.x = 0;
+      speed.y = 0.1;
+      if (colliding_down())
+      {
+        // std::cout << "detect down\n";
+        // std::cout << on_ground << std::endl;
+
+        on_ground = true;
+        speed.y = 0;
+        go_walk();
+      }
+      set_speed(speed);
+      return;
+    }
+
+    if (is_exploding())
+    {
+      speed.x = 0;
+      speed.y = 0;
+      set_speed(speed);
+      return;
+    }
+
+    if (is_idle())
+    {
+      speed.x = 0;
+      speed.y = 0;
+      set_speed(speed);
+      return;
+    }
+
+    if (is_escaping())
+    {
+      return;
+    }
+
+    if (is_blocking())
+    {
+      speed.x = 0;
+      speed.y = 0;
+      set_speed(speed);
+      return;
+    }
+
+    if (is_digging_vertical())
+    {
+      if (current_frame == 4 || current_frame == 12)
+      {
+        if (false) //! do_action_in_frame)
+        {
+          // do_action_in_frame = true;
+          speed.x = 0;
+          speed.y = 0.05;
+          set_speed(speed);
+        }
+      }
+      else
+      {
+        // do_action_in_frame = false;
+        speed.x = 0;
+        speed.y = 0;
+        set_speed(speed);
+      }
+      return;
     }
   }
 
   void update_position(Engine &engine) override
   {
-    update_state(engine); // Actualiza el estado antes de calcular la nueva posición
-
     Rigid_body::update_position(engine);
+    update_state(engine); // Actualiza el estado antes de calcular la nueva posición
   }
 
   void on_collision(Engine &engine, EntityPtr other) override
   {
+    Entity::on_collision(engine, other);
+
     auto speed = get_speed();
 
     if (other->get_entity_name() == "MAP" || other->get_entity_name() == "Lemming")
@@ -384,12 +461,28 @@ public:
         if (lemming_ptr && lemming_ptr->get_state() != BLOCKING)
           return;
       }
-
-      if (is_grounded(engine))
+      if (is_falling() || is_floating())
       {
-        if (is_floating() || is_falling())
+        if (colliding_down())
         {
+          // std::cout << "detect down\n";
+          // std::cout << on_ground << std::endl;
+
+          on_ground = true;
+          speed.y = 0;
           go_walk();
+        }
+      }
+
+      if (is_walking())
+      {
+        if ((colliding_left() || colliding_right()))
+        {
+
+          position.x -= diagonal.x * 0.05 * direction;
+          direction *= -1;
+
+          // std::cout << "Lemming turn left\n";
         }
       }
     }
@@ -408,8 +501,6 @@ public:
       speed.y = 0;
     }
     set_speed(speed);
-
-    Rigid_body::on_collision(engine, other);
   }
 
   void post_physics(Engine &) override

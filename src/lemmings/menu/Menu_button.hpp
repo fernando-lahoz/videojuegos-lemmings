@@ -33,13 +33,13 @@ public:
   {
     if (button_type == Utils::PLAYER_SOLO)
     {
-      game_info.set_build_level(0);
+      game_info.set_build_level(1);
       game_info.set_do_action(Utils::GO_LEVEL);
     }
     else if (button_type == Utils::PLAYER_VS_IA)
     {
-      // game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_SELECTOR);
-      // game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+      game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_SELECTOR);
+      game_info.set_do_action(Utils::ACTIONS::GO_MENU);
     }
     else if (button_type == Utils::SOUND_EFFECTS)
     {

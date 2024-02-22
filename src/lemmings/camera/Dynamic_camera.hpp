@@ -9,15 +9,21 @@
 
 #include "engine/render_2D.hpp"
 
-class Lemmings_camera : public Camera2D
+class Dynamic_camera : public Camera2D
 {
 public:
-    Lemmings_camera()
+    Dynamic_camera()
         : Camera2D(Bound2f(Point2f(0, 0), Point2f(1, 1)), Bound2f(Point2f(0, 0), Point2f(800, 800)))
     {
     }
 
-    Lemmings_camera(Bound2f frame)
+    Dynamic_camera(Bound2f _world_frame, Bound2f _window_frame)
+    {
+        this->world_frame = _world_frame;
+        this->window_frame = _window_frame;
+    }
+
+    Dynamic_camera(Bound2f frame)
     {
         this->world_frame = frame;
     }
@@ -27,17 +33,15 @@ public:
         Float delta_time = engine.get_delta_time();
 
         auto p = engine.get_mouse_position_in_camera(*this);
-        if (world_frame.is_near_border(p, Bound2f::Border::RIGHT, 0.01)
-            || world_frame.is_past_border(p, Bound2f::Border::RIGHT))
+        if ((world_frame.is_near_border(p, Bound2f::Border::RIGHT, 10) || world_frame.is_past_border(p, Bound2f::Border::RIGHT)) && world_frame.pMin.x > 0)
         {
-            world_frame.pMin.x -= 0.3 * delta_time;
-            world_frame.pMax.x -= 0.3 * delta_time;
+            world_frame.pMin.x -= 100 * delta_time;
+            world_frame.pMax.x -= 100 * delta_time;
         }
-        else if (world_frame.is_near_border(p, Bound2f::Border::LEFT, 0.01)
-            || world_frame.is_past_border(p, Bound2f::Border::LEFT))
+        else if ((world_frame.is_near_border(p, Bound2f::Border::LEFT, 10) || world_frame.is_past_border(p, Bound2f::Border::LEFT)) && world_frame.pMax.x < 3168)
         {
-            world_frame.pMin.x += 0.3 * delta_time;
-            world_frame.pMax.x += 0.3 * delta_time;
+            world_frame.pMin.x += 100 * delta_time;
+            world_frame.pMax.x += 100 * delta_time;
         }
 
         // if (engine.is_a_down())
