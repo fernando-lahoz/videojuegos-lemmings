@@ -661,7 +661,7 @@ constexpr bool BoundingBox2<T>::all_intersections(const Ray &ray, Float &min_off
     min_offset = tmin;
     max_offset = tmax;
 
-    return tmax >= tmin;
+    return tmax >= tmin && tmax >= 0;
 }
 
 template <typename T>

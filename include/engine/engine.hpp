@@ -106,9 +106,10 @@ public:
     // Class name specifies a class of entity wanted for the intersection
     bool intersect_ray(Ray &ray, 
             int not_this_entity_id,
-            const std::string &force_class_name,
+            const std::string &force_entity_name,
             Float &hit_offset,
-            EntityPtr &hit_entity);
+            EntityPtr &hit_entity,
+            bool debug=false);
 
     /*
     bool intesect_ray_entity(Ray &ray, 
@@ -120,7 +121,8 @@ public:
     bool ray_march_alpha_init(Ray &ray, Float &offset, 
                             Float min_offset, 
                             Float max_offset, 
-                            EntityPtr entity) const;
+                            EntityPtr entity,
+                            bool debug) const;
 
     bool ray_march_alpha_end(Ray &ray, Float &offset, 
                             Float min_offset, 

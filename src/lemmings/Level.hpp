@@ -69,7 +69,7 @@ public:
     }
     case 1:
     {
-      auto map = std::make_shared<Entity>(Point3f(-(size_map_x / 2) + 3168 / 2, 0, 18), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
+      auto map = std::make_shared<Rigid_body>(Point3f(-(size_map_x / 2) + 3168 / 2, 0, 18), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
       auto door = std::make_shared<Door>(Point3f(1981.83, 53.4943, 21), engine, 8, 1.0f, levelNumber, game_info);
       auto gate = std::make_shared<Gate>(Point3f(2258.91, 160.251, 21), engine, 0, 0.8f, game_info);
 

@@ -158,7 +158,8 @@ bool Engine::is_cursor_visible()
 bool Engine::ray_march_alpha_init(Ray &ray, Float &offset, 
         Float min_offset,
         Float max_offset, 
-        EntityPtr entity) const
+        EntityPtr entity,
+        bool debug) const
 {
     Float search_distance = max_offset - min_offset;
 
@@ -404,16 +405,20 @@ SoundMixer& Engine::get_sound_mixer()
 
 bool Engine::intersect_ray(Ray &ray, 
             int not_this_entity_id,
-            const std::string &force_class_name,
+            const std::string &force_entity_name,
             Float &hit_offset, 
-            EntityPtr &hit_entity)
+            EntityPtr &hit_entity,
+            bool debug)
 {
     hit_offset = INFINITY;
 
     for (auto &entity : entities)
     {
-        if (entity->get_entity_id() == not_this_entity_id)
+        if (entity->get_entity_id() == not_this_entity_id
+            || entity->get_entity_name() != force_entity_name)
+        {
             continue;
+        }
 
         auto bounding_box = entity->bound2f();
         Float offset, min_offset, max_offset;
@@ -423,7 +428,7 @@ bool Engine::intersect_ray(Ray &ray,
         origin.y = ray.origin.y;
 
         intersects = bounding_box.all_intersections(ray, min_offset, max_offset);
-            
+
         if (min_offset > 0)
             offset = min_offset;
         else
@@ -434,12 +439,12 @@ bool Engine::intersect_ray(Ray &ray,
             offset = 0;
             intersects = true;
         }
- 
-        if (intersects
-            && (entity->get_class() == force_class_name))
+
+        if (intersects)
         {
-            if (ray_march_alpha_init(ray, offset, offset, max_offset, entity)
-                && offset < hit_offset)
+            intersects = ray_march_alpha_init(ray, offset, offset, max_offset, entity, debug);
+
+            if (intersects && offset < hit_offset)
             {
                 hit_offset = offset;
                 hit_entity = entity;

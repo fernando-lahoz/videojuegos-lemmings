@@ -391,9 +391,21 @@ public:
     update_animation(engine);
   }
 
+  void print_ray_down() 
+  {
+    Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
+    Float hit_offset_down;
+    EntityPtr hit_entity_down;
+
+    engine.intersect_ray(ray_down, get_entity_id(),
+                          RIGID_BODY_ID, hit_offset_down, hit_entity_down, true);
+  }
+
   void update_state()
   {
     auto speed = get_speed();
+
+    print_ray_down();
 
     if (is_walking())
     {
@@ -405,7 +417,7 @@ public:
       engine.intersect_ray(ray_down, get_entity_id(),
                            RIGID_BODY_ID, hit_offset_down, hit_entity_down);
 
-      std::cout << "Hit offset down: " << hit_offset_down << "\n";
+      //std::cout << "Hit offset down: " << hit_offset_down << "\n";
 
       if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
       {
@@ -606,7 +618,7 @@ public:
           position.x -= 4 * direction;
           direction *= -1;
 
-          std::cout << "Lemming turn left\n";
+          //std::cout << "Lemming turn left\n";
         }
       }
     }
