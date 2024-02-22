@@ -23,7 +23,7 @@ class Lemming : public Rigid_body
   int distance_fall = 0;
   bool do_action_in_frame = false;
   bool is_hovered = false;
-  float velocity = 100;
+  float velocity = 50;
 
   int skills = Utils::NO_SKILLS;
 
@@ -265,6 +265,10 @@ public:
   {
     // gravity = 3;
     // enable_gravity();
+    override_down_point(Point2f(0.5, 0.75));
+    override_up_point(Point2f(0.5, 0.3));
+    override_left_point(Point2f(0.5, 0.45));
+    override_right_point(Point2f(0.5, 0.55));
   }
 
   int get_state()
@@ -391,33 +395,20 @@ public:
     update_animation(engine);
   }
 
-  void print_ray_down() 
-  {
-    Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
-    Float hit_offset_down;
-    EntityPtr hit_entity_down;
-
-    engine.intersect_ray(ray_down, get_entity_id(),
-                          RIGID_BODY_ID, hit_offset_down, hit_entity_down, true);
-  }
 
   void update_state()
   {
     auto speed = get_speed();
 
-    print_ray_down();
-
     if (is_walking())
     {
-      speed.x = direction * 200;
+      speed.x = direction * velocity / 2;
       Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
       Float hit_offset_down;
       EntityPtr hit_entity_down;
 
       engine.intersect_ray(ray_down, get_entity_id(),
                            RIGID_BODY_ID, hit_offset_down, hit_entity_down);
-
-      //std::cout << "Hit offset down: " << hit_offset_down << "\n";
 
       if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
       {
@@ -428,12 +419,12 @@ public:
           position.y += (hit_offset_down - diagonal.y / 4);
         }
       }
-      // else if (hit_offset_down > diagonal.y / 2)
-      // {
-      //   speed.y = 0;
-      //   speed.x = 0;
-      //   on_ground = false;
-      // }
+      else if (hit_offset_down > diagonal.y / 2)
+      {
+        speed.y = 0;
+        speed.x = 0;
+        on_ground = false;
+      }
       set_speed(speed);
       return;
     }
