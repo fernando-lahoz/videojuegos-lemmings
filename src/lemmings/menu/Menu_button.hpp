@@ -38,7 +38,7 @@ public:
     }
     else if (button_type == Utils::PLAYER_VS_IA)
     {
-      game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_SELECTOR);
+      game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO);
       game_info.set_do_action(Utils::ACTIONS::GO_MENU);
     }
     else if (button_type == Utils::SOUND_EFFECTS)
