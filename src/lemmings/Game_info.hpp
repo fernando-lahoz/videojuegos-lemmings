@@ -20,6 +20,11 @@ private:
   bool level_ended = false;
   bool spawn_ended = false;
 
+  // camera settings
+  bool do_restart_camera = false;
+  bool is_camera_stopped = false;
+  float pos_camera;
+
   // hud selection
   int option_selected = Utils::NO_OPTION_SELECTED;
 
@@ -50,6 +55,8 @@ private:
 public:
   void start_game_info(int _level)
   {
+    do_restart_camera = true;
+    is_camera_stopped = false;
     level_ended = false;
     level = _level;
     option_selected = Utils::NO_OPTION_SELECTED;
@@ -75,6 +82,15 @@ public:
   void set_do_action(int action) { do_action = action; }
   int get_do_action() const { return do_action; }
 
+  void set_do_restart_camera(bool new_value) { do_restart_camera = new_value; }
+  bool get_do_restart_camera() const { return do_restart_camera; }
+
+  void set_pos_camera(float new_value) { pos_camera = new_value; }
+  float get_pos_camera() const { return pos_camera; }
+
+  void set_is_camera_stopped(bool new_value) { is_camera_stopped = new_value; }
+  bool get_is_camera_stopped() const { return is_camera_stopped; }
+
   void set_actual_state(int state) { actual_state = state; }
   int get_actual_state() const { return actual_state; }
 
@@ -84,7 +100,14 @@ public:
   void set_build_level(int _level) { build_level = _level; }
   int get_build_level() const { return build_level; }
 
-  void set_build_menu(int _menu) { build_menu = _menu; }
+  void set_build_menu(int _menu, int _level = -1)
+  {
+    build_menu = _menu;
+    if (_level != -1)
+    {
+      level = _level;
+    }
+  }
   int get_build_menu() const { return build_menu; }
 
   void set_spawn_ended() { spawn_ended = true; }

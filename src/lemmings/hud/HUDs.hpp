@@ -7,6 +7,7 @@
 #include "engine/entity.hpp"
 
 #include "lemmings/hud/HUD.hpp"
+#include "lemmings/hud/Minimap_view.hpp"
 #include "lemmings/Game_info.hpp"
 #include "lemmings/utils.hpp"
 #include "lemmings/display/Text_image.hpp"
@@ -80,6 +81,8 @@ public:
         hudElement = std::make_shared<HUD>(Point3f(384, -148, 3), Vector2f(255, 48), game_info, engine, "assets/hud/hud_minimap_", Utils::HUD_MINIMAP, false, false, false, false);
         engine.get_game().create_entity(hudElement);
 
+        engine.get_game().create_entity(std::make_shared<Minimap_view>(Point3f(412.0f + ((Utils::LEVEL_CAMERA_POS_INI[game_info.get_level()] - 320.0f) / 2528.0f) * 160.0f, -148, 2), Vector2f(48, 48), game_info, engine, 1584));
+
         // TEXT
 
         auto textElement2 = std::make_shared<Dynamic_text_image>(Point3f(0, -178, 3), Vector2f(112, 30), game_info, engine, Utils::STATS_GAME, &Game_info::get_lemming_hovered_type);
@@ -131,7 +134,7 @@ public:
             engine,                             // Instancia de Engine
             Utils::STATS_GAME,                  // text_type
             3,                                  // maxDigits
-            400,                                // startX
+            432,                                // startX
             -178,                               // startY
             16,                                 // digitWidth
             30,                                 // digitHeight
