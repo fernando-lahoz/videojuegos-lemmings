@@ -1,2 +1,0 @@
-/usr/bin/ar qc libtransform.a CMakeFiles/transform.dir/src/geometry/transform.cpp.o
-/usr/bin/ranlib libtransform.a
