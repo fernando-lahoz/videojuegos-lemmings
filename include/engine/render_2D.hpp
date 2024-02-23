@@ -62,11 +62,11 @@ protected:
 
     void clear_window(Spectrum color = Spectrum(0, 0, 0));
 
-    SDL_Rect entity_to_rect(Entity& e, Camera2D& camera);
+    SDL_Rect bound_to_rect(Bound2f bound, Camera2D& camera, Camera2D& main_camera);
 
-    void render_entity(Entity& entity, Camera2D& camera);
+    void render_entity(Entity& entity, Camera2D& camera, Camera2D& main_camera);
 
-    void render_fixed_text(FixedText& text, Camera2D& camera);
+    void render_fixed_text(FixedText& text, Camera2D& camera, Camera2D& main_camera);
 
 public:
 
@@ -83,11 +83,14 @@ public:
     //Updates resolution and printable frame
     void update_resolution(Engine& engine);
 
-    Point2f world_to_raster(Point2f world_point, Camera2D& camera);
-    Vector2f world_to_raster(Vector2f world_vector, Camera2D& camera);
+    //TODO: set window resolution
+    //TODO: set fullscreen
 
-    Point2f raster_to_world(Point2f raster_point, Camera2D& camera);
-    Vector2f raster_to_world(Vector2f raster_vector, Camera2D& camera);
+    Point2f world_to_raster(Point2f world_point, Camera2D& camera, Camera2D& main_camera);
+    Vector2f world_to_raster(Vector2f world_vector, Camera2D& camera, Camera2D& main_camera);
+
+    Point2f raster_to_world(Point2f raster_point, Camera2D& camera, Camera2D& main_camera);
+    Vector2f raster_to_world(Vector2f raster_vector, Camera2D& camera, Camera2D& main_camera);
 
     void draw(std::vector<EntityPtr> &entities, std::vector<std::shared_ptr<Camera2D>>& cameras);
 };

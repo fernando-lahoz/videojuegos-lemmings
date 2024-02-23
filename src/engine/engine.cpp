@@ -131,13 +131,14 @@ void Engine::update_mouse_position()
 
 Point2f Engine::get_mouse_position()
 {
-    return renderer.raster_to_world(mouse_position, *cameras[0]);
+    auto& main_camera = *cameras[0];
+    return renderer.raster_to_world(mouse_position, main_camera, main_camera);
 }
 
 // Returns mouse world-relative position
 Point2f Engine::get_mouse_position_in_camera(Camera2D& camera)
 {
-    return renderer.raster_to_world(mouse_position, camera);
+    return renderer.raster_to_world(mouse_position, camera, *cameras[0]);
 }
 
 void Engine::show_cursor()
@@ -152,7 +153,10 @@ void Engine::hide_cursor()
 
 bool Engine::is_cursor_visible()
 {
-    return SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE;
+    //Probably change to is_cursor_shown??
+    //return SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE;
+
+    return renderer.frame.contains(mouse_position);
 }
 
 bool Engine::ray_march_alpha_init(Ray &ray, Float &offset, 
@@ -358,7 +362,7 @@ void Engine::process_cameras()
             cameras.push_back(camera);
     }
 
-    std::sort(cameras.begin(), cameras.end(), [](std::shared_ptr<Camera2D> a, std::shared_ptr<Camera2D> b) -> bool
+    std::sort(cameras.begin() + 1, cameras.end(), [](std::shared_ptr<Camera2D> a, std::shared_ptr<Camera2D> b) -> bool
               { return !a->is_deleted() && ((b->is_deleted()) ||
                                             (a->get_layer() > b->get_layer())); });
             

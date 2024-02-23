@@ -71,6 +71,12 @@ public:
 
   void on_loop_start(Engine &engine) override
   {
+    if (engine.is_cursor_visible()) {
+      engine.hide_cursor();
+    }
+    else {
+      engine.show_cursor();
+    }
     screen.update_game(engine);
   }
 };

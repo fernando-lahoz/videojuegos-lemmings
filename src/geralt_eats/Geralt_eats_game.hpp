@@ -11,6 +11,7 @@
 #include "Apple.hpp"
 #include "Geralt_eats_camera.hpp"
 #include "Lemming_hero.hpp"
+#include "MainCamera.hpp"
 
 class Geralt_eats_game : public Game
 {
@@ -62,7 +63,8 @@ public:
 
     std::shared_ptr<Camera2D> get_main_camera() const override
     {
-        return std::make_shared<Geralt_camera>();
+        return std::make_shared<MainCamera>();
+        //return std::make_shared<Geralt_camera>();
     }
 
     void on_game_startup(Engine &engine) override
@@ -81,10 +83,18 @@ public:
 
         auto ground2 = std::make_shared<Rigid_body>(Point3f(0.7, 0, 0), Vector2f(0.3, 1), t2, "Ground");
 
+        
+
+        auto hud = std::make_shared<Rigid_body>(Point3f(100, 100.8, 0), Vector2f(1, 0.2), engine.load_texture("assets/menu/title.png"), "Ground");
+
+        create_entity(hud);
+
         create_entity(lemming);
         create_entity(geralt);
         create_entity(ground);
         // create_entity(ground2);
+
+        create_camera(std::make_shared<Geralt_camera>());
     }
 
     void on_loop_start(Engine &engine) override

@@ -2,6 +2,8 @@
 #include "engine/IO.hpp"
 #include "engine/engine.hpp"
 
+#include <ranges>
+
 Camera2D::Camera2D()
     : world_frame{Point2f(0, 0), Point2f(1, 1)}, window_frame{}
 {
@@ -109,16 +111,16 @@ void Render_2D::clear_window(Spectrum color)
     SDL_RenderClear(renderer);
 }
 
-SDL_Rect Render_2D::entity_to_rect(Entity& e, Camera2D& camera)
+SDL_Rect Render_2D::bound_to_rect(Bound2f bound, Camera2D& camera, Camera2D& main_camera)
 {
     SDL_Rect rect;
 
-    auto w_position = world_to_raster(e.get_position2D(), camera);
+    auto w_position = world_to_raster(bound.pMin, camera, main_camera);
     rect.x = (int) (w_position.x);
     rect.y = (int) (w_position.y);
 
 
-    auto w_diag = world_to_raster(e.bound2f().diagonal(), camera);
+    auto w_diag = world_to_raster(bound.diagonal(), camera, main_camera);
     rect.w = (int) (w_diag.x);
     rect.h = (int) (w_diag.y);
 
@@ -126,23 +128,39 @@ SDL_Rect Render_2D::entity_to_rect(Entity& e, Camera2D& camera)
     return rect;
 }
 
-void Render_2D::render_entity(Entity& entity, Camera2D& camera)
+void Render_2D::render_entity(Entity& entity, Camera2D& camera, Camera2D& main_camera)
 {
     if (camera.is_visible(entity))
     {
-        auto rect = entity_to_rect(entity, camera);
-
+        auto e_bound = entity.bound2f();
+        auto rect = bound_to_rect(e_bound, camera, main_camera);
+        
         auto texture = entity.get_active_texture();
+
+        // auto cam_bound = camera.get_world_frame();
+        // auto cam_rect = bound_to_rect(cam_bound, camera, main_camera);
+
+        // rect.x = std::max(cam_rect.x, rect.x);
+        // rect.y = std::max(cam_rect.y, rect.y);
+        // rect.w = std::min(rect.w, cam_rect.w - std::abs(cam_rect.x - rect.x));
+        // rect.h = std::min(rect.h, cam_rect.h - std::abs(cam_rect.y - rect.y));
+
+        // SDL_Rect clip;
+        // clip.x = (int) (((cam_bound.pMin.x - e_bound.pMin.x) * texture.get_width()) / e_bound.width());
+        // clip.y = (int) (((cam_bound.pMin.y - e_bound.pMin.y) * texture.get_height()) / e_bound.height());
+        // clip.w = (int) ((cam_bound.width() * texture.get_width()) / e_bound.width());
+        // clip.h = (int) ((cam_bound.height() * texture.get_height()) / e_bound.height());
+
         SDL_RenderCopy(renderer, texture.get(), nullptr, &rect);          
     }
 }
 
-void Render_2D::render_fixed_text(FixedText& text, Camera2D& camera)
+void Render_2D::render_fixed_text(FixedText& text, Camera2D& camera, Camera2D& main_camera)
 {
     auto bound = text.bound2f();
     auto [w_map, h_map] = text.texture_letter_size;
     auto [w_pre, h_pre] = bound.diagonal();
-    auto [w, h] = world_to_raster(bound.diagonal(), camera);
+    auto [w, h] = world_to_raster(bound.diagonal(), camera, main_camera);
 
     for (auto letter : text.entity_name)
     {
@@ -153,7 +171,7 @@ void Render_2D::render_fixed_text(FixedText& text, Camera2D& camera)
             SDL_Rect letter_in_texture = {.x = x_map * w_map, .y = y_map * h_map, .w = w_map, .h = h_map};
             Texture font_texture = text.get_active_texture();
 
-            auto [x, y] = world_to_raster(bound.pMin, camera);
+            auto [x, y] = world_to_raster(bound.pMin, camera, main_camera);
             SDL_Rect rect = {.x = (int)x, .y = (int)y, .w = (int)w, .h = (int)h};
             SDL_RenderCopy(renderer, font_texture.get(), &letter_in_texture, &rect);
         }
@@ -193,38 +211,45 @@ Texture Render_2D::load_texture(const std::string& file)
     }
 }
 
-
-Point2f Render_2D::world_to_raster(Point2f world_point, Camera2D& camera)
+Point2f bound_to_bound(Point2f p, Bound2f src, Bound2f dst)
 {
-    auto screen_p = camera.world_to_screen(world_point);
-    auto w_frame = camera.get_window_frame();
-    auto p = Point2f(((screen_p.x - w_frame.pMin.x) / w_frame.width()) * frame.width() + frame.pMin.x,
-                   ((screen_p.y - w_frame.pMin.y) / w_frame.height()) * frame.height() + frame.pMin.y);
-    return p;
+    return Point2f(((p.x - src.pMin.x) / src.width()) * dst.width() + dst.pMin.x,
+                   ((p.y - src.pMin.y) / src.height()) * dst.height() + dst.pMin.y);
 }
 
-Vector2f Render_2D::world_to_raster(Vector2f world_vector, Camera2D& camera)
+Vector2f bound_to_bound(Vector2f p, Bound2f src, Bound2f dst)
 {
-    auto screen_v = camera.world_to_screen(world_vector);
-    auto w_frame = camera.get_window_frame();
-    return Vector2f(((screen_v.x) / w_frame.width()) * frame.width(),
-                    ((screen_v.y) / w_frame.height()) * frame.height());
+    return Vector2f(((p.x) / src.width()) * dst.width(),
+                   ((p.y) / src.height()) * dst.height());
 }
 
-Point2f Render_2D::raster_to_world(Point2f raster_point, Camera2D& camera)
+
+Point2f Render_2D::world_to_raster(Point2f world_point, Camera2D& camera, Camera2D& main_camera)
 {
-    auto w_frame = camera.get_window_frame();
-    auto screen_p = Point2f(((raster_point.x - frame.pMin.x) * w_frame.width() / frame.width()) + w_frame.pMin.x,
-                            ((raster_point.y - frame.pMin.y) * w_frame.height() / frame.height()) + w_frame.pMin.y);
-    return camera.screen_to_world(screen_p);
+    auto cam_p = camera.world_to_screen(world_point);
+    auto w_frame = main_camera.get_window_frame();
+
+    return bound_to_bound(cam_p, w_frame, frame);
 }
 
-Vector2f Render_2D::raster_to_world(Vector2f raster_vector, Camera2D& camera)
+Vector2f Render_2D::world_to_raster(Vector2f world_vector, Camera2D& camera, Camera2D& main_camera)
 {
-    auto w_frame = camera.get_window_frame();
-    auto screen_v = Vector2f((raster_vector.x * w_frame.width() / frame.width()),
-                             (raster_vector.y * w_frame.height() / frame.height()));
-    return camera.screen_to_world(screen_v);
+    auto cam_p = camera.world_to_screen(world_vector);
+    auto w_frame = main_camera.get_window_frame();
+
+    return bound_to_bound(cam_p, w_frame, frame);
+}
+
+Point2f Render_2D::raster_to_world(Point2f raster_point, Camera2D& camera, Camera2D& main_camera)
+{
+    auto w_frame = main_camera.get_window_frame();
+    return camera.screen_to_world(bound_to_bound(raster_point, frame, w_frame));
+}
+
+Vector2f Render_2D::raster_to_world(Vector2f raster_vector, Camera2D& camera, Camera2D& main_camera)
+{
+    auto w_frame = main_camera.get_window_frame();
+    return camera.screen_to_world(bound_to_bound(raster_vector, frame, w_frame));
 }
 
 void Render_2D::update_resolution(Engine& engine)
@@ -261,17 +286,17 @@ void Render_2D::draw(std::vector<EntityPtr> &entities,
 {
     clear_window();
 
-    for (auto& camera : cameras)
+    for (auto& camera : cameras | std::views::reverse)
     {
         // Render drawables
         for (auto &d : entities)
         {
             FixedText *text_ptr = dynamic_cast<FixedText*>(d.get());
             if (text_ptr != nullptr) {
-                render_fixed_text(*text_ptr, *camera);
+                render_fixed_text(*text_ptr, *camera, *cameras[0]);
             }
             else {
-                render_entity(*d, *camera);
+                render_entity(*d, *camera, *cameras[0]);
             }
         }
     }
