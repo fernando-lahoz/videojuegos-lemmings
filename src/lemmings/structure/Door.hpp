@@ -52,6 +52,6 @@ public:
     // Calcula la posición central en el eje X de la estructura y ajusta en Y para que el Lemming aparezca encima
     float spawn_x = pos.x + (diagonal.x / 2) - (lemming_size.x / 2);
     float spawn_y = pos.y + (diagonal.y / 2) - (lemming_size.y / 2);
-    return Point3f(spawn_x, spawn_y, 18);
+    return Point3f(spawn_x, spawn_y, 3);
   }
 };

@@ -395,11 +395,21 @@ public:
     update_animation(engine);
   }
 
+  void print_ray_down()
+  {
+    Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
+    Float hit_offset_down;
+    EntityPtr hit_entity_down;
+
+    engine.intersect_ray(ray_down, get_entity_id(),
+                         "MAP", hit_offset_down, hit_entity_down, true);
+  }
 
   void update_state()
   {
     auto speed = get_speed();
 
+    print_ray_down();
     if (is_walking())
     {
       speed.x = direction * velocity / 2;
@@ -408,20 +418,18 @@ public:
       EntityPtr hit_entity_down;
 
       engine.intersect_ray(ray_down, get_entity_id(),
-                           RIGID_BODY_ID, hit_offset_down, hit_entity_down);
+                           "MAP", hit_offset_down, hit_entity_down);
 
       if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
       {
         if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 20)
         {
           // std::cout << "sube baja altura\n";
-          speed.y = 0;
           position.y += (hit_offset_down - diagonal.y / 4);
         }
       }
       else if (hit_offset_down > diagonal.y / 2)
       {
-        speed.y = 0;
         speed.x = 0;
         on_ground = false;
       }
@@ -433,15 +441,6 @@ public:
     {
       speed.x = 0;
       speed.y = velocity / 2;
-      if (colliding_down())
-      {
-        std::cout << "detect down\n";
-        std::cout << on_ground << std::endl;
-
-        on_ground = true;
-        speed.y = 0;
-        go_walk();
-      }
       set_speed(speed);
       return;
     }
@@ -450,15 +449,6 @@ public:
     {
       speed.x = 0;
       speed.y = velocity / 4;
-      if (colliding_down())
-      {
-        // std::cout << "detect down\n";
-        // std::cout << on_ground << std::endl;
-
-        on_ground = true;
-        speed.y = 0;
-        go_walk();
-      }
       set_speed(speed);
       return;
     }
@@ -603,13 +593,25 @@ public:
 
       if (is_walking())
       {
-        if ((colliding_left() || colliding_right()))
+        if ((check_collision_left(other) || check_collision_right(other)))
         {
 
-          position.x -= 4 * direction;
+          position.x -= 1 * direction;
           direction *= -1;
 
-          //std::cout << "Lemming turn left\n";
+          // std::cout << "Lemming turn left\n";
+        }
+      }
+      if (is_falling() || is_floating())
+      {
+        if (check_collision_down(other))
+        {
+          // std::cout << "detect down\n";
+          // std::cout << on_ground << std::endl;
+
+          on_ground = true;
+          speed.y = 0;
+          go_walk();
         }
       }
     }

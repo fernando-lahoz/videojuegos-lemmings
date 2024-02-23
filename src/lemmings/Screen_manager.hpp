@@ -29,6 +29,7 @@ public:
 
   void go_menu(Engine &engine, int type, int _level)
   {
+    game_info.set_is_camera_stopped(true);
     game_info.set_actual_state(Utils::STATE::MENU);
     game_info.set_do_action(Utils::ACTIONS::NO_ACTION);
     menu.setup_menu(engine, type, _level);
@@ -53,7 +54,7 @@ public:
     {
       clear_screen(engine);
       std::cout << "GO TO MENU" << std::endl;
-      go_menu(engine, game_info.get_build_menu(), 0);
+      go_menu(engine, game_info.get_build_menu(), game_info.get_level());
     }
     else if (game_info.get_do_action() == Utils::ACTIONS::GO_LEVEL)
     {
@@ -80,7 +81,7 @@ public:
         else
         {
           std::cout << "GAME OVER" << std::endl;
-          game_info.set_build_menu(Utils::MENU_TYPE::TITLE);
+          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_OUTRO);
           game_info.set_do_action(Utils::ACTIONS::GO_MENU);
           // game_info.set_build_level(game_info.get_build_level() + 1);
           // game_info.set_do_action(Utils::ACTIONS::GO_LEVEL);

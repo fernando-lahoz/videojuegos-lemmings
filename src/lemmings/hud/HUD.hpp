@@ -122,35 +122,6 @@ public:
       set_active_texture(txt);
     }
   }
-  // void on_key_down(SDL_KeyboardEvent &) override{};
-
-  void update_position(Engine &engine) override
-  {
-    auto speed = get_speed();
-
-    if (engine.is_a_down())
-    {
-      speed.x = -0.2;
-    }
-
-    if (engine.is_d_down())
-    {
-      speed.x = 0.2;
-    }
-
-    if (engine.is_a_down() && engine.is_d_down())
-    {
-      speed.x = 0;
-    }
-
-    if (!engine.is_a_down() && !engine.is_d_down())
-    {
-      speed.x = 0;
-    }
-
-    set_speed(speed);
-    Rigid_body::update_position(engine);
-  }
 
   void on_collision(Engine &, EntityPtr) override
   {

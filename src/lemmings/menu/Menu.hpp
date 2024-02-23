@@ -4,6 +4,7 @@
 
 #include "lemmings/Game_info.hpp"
 #include "lemmings/menu/Menu_button.hpp"
+#include "lemmings/menu/Menu_mouse_handler.hpp"
 #include "lemmings/utils.hpp"
 #include "lemmings/display/Text_displayer.hpp"
 
@@ -55,6 +56,7 @@ public:
 
   void setup_menu(Engine &engine, int type, int level)
   {
+    engine.get_game().create_entity(std::make_shared<Menu_mouse_handler>(Point3f(0, -500, 4), Vector2f(640, 400), engine, game_info, type));
 
     if (type == Utils::TITLE)
     {
@@ -85,7 +87,7 @@ public:
     {
       auto background = std::make_shared<Entity>(Point3f(0, -500, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background2.png"), "Background");
       engine.get_game().create_entity(background);
-      Texture txt = engine.load_texture("assets/maps/bkg/map_0_" + std::to_string(level) + ".png");
+      Texture txt = engine.load_texture("assets/maps/raw/map_0_" + std::to_string(level) + ".png");
 
       // mapa 0,0  640,65 : 640px 65px
       auto map = std::make_shared<Entity>(Point3f(320 - (txt.get_width() * 65 / (2 * txt.get_height())), -480, 2), Vector2f(txt.get_width() * 65 / txt.get_height(), 65), txt, "MAP");

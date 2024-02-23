@@ -17,10 +17,11 @@ public:
     {
     }
 
-    Static_camera(Bound2f _world_frame, Bound2f _window_frame)
+    Static_camera(Bound2f _world_frame, Bound2f _window_frame, int id)
     {
         this->world_frame = _world_frame;
         this->window_frame = _window_frame;
+        this->layer = id;
     }
 
     Static_camera(Bound2f frame)

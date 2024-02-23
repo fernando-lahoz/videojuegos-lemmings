@@ -88,25 +88,25 @@ public:
 
     if (engine.is_up_arrow_down())
     {
-      speed.y = -200;
+      speed.y = -50;
       change = true;
     }
 
     if (engine.is_down_arrow_down())
     {
-      speed.y = 200;
+      speed.y = 50;
       change = true;
     }
 
     if (engine.is_left_arrow_down())
     {
-      speed.x = -200;
+      speed.x = -50;
       change = true;
     }
 
     if (engine.is_right_arrow_down())
     {
-      speed.x = 200;
+      speed.x = 50;
       change = true;
     }
 
