@@ -79,6 +79,8 @@ public:
 
   void pre_physics(Engine &engine) override
   {
+    if (game_info.get_level_is_paused())
+      return;
     Structure::update_animation(engine);
   }
 
@@ -135,6 +137,8 @@ public:
 
   void update_position(Engine &engine) override
   {
+    if (game_info.get_level_is_paused())
+      return;
     if (is_debug)
       debug_mode(engine);
     // std::cout << "State: " << state << "\n";
@@ -148,6 +152,8 @@ public:
 
   void post_physics(Engine &) override
   {
+    if (game_info.get_level_is_paused())
+      return;
     if (change)
     {
       std::cout << "Position = " << get_position2D() << std::endl;

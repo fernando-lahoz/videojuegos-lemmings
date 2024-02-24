@@ -24,6 +24,8 @@ public:
 
   void pre_physics(Engine &engine) override
   {
+    if (game_info.get_level_is_paused())
+      return;
     Structure::update_animation(engine); // Actualiza la animación
 
     if (!is_playing)

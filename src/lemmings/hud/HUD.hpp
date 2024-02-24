@@ -66,7 +66,7 @@ public:
 
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override
   {
-    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && is_clickable)
+    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && is_clickable && !(game_info.get_level_is_paused() && n != Utils::HUD_PAUSE))
     {
       std::cout << "PULSADO: " << n << std::endl;
       if (is_selectable)
@@ -86,6 +86,18 @@ public:
       else if (n == Utils::HUD_SUB_SPAWN_VELOCITY)
       {
         game_info.sub_spawn_velocity();
+      }
+      else if (n == Utils::HUD_PAUSE)
+      {
+        // if (game_info.get_level_is_paused())
+        // {
+        //   std::cout << "PAUSE" << std::endl;
+        // }
+        // else
+        // {
+        //   std::cout << "PLAY" << std::endl;
+        // }
+        game_info.set_level_is_paused(!game_info.get_level_is_paused());
       }
 
       if (is_changeable)
@@ -107,7 +119,7 @@ public:
       }
     }
 
-    if (event == EngineIO::InputEvent::MOUSE_HOVER && is_hovereable)
+    if (event == EngineIO::InputEvent::MOUSE_HOVER && is_hovereable && !game_info.get_level_is_paused())
     {
       txt = engine.load_texture(path + std::to_string(n) + "_hover.png");
       set_active_texture(txt);
@@ -116,7 +128,7 @@ public:
 
   void on_event_up([[maybe_unused]] Engine &engine, EngineIO::InputEvent event) override
   {
-    if (event == EngineIO::InputEvent::MOUSE_HOVER)
+    if (event == EngineIO::InputEvent::MOUSE_HOVER && !game_info.get_level_is_paused())
     {
       txt = engine.load_texture(path + std::to_string(n) + ".png");
       set_active_texture(txt);

@@ -29,6 +29,7 @@ public:
         text(_text),
         game_info(_game_info),
         animation_duration(_animation_duration),
+        time_frame_wait(_time_wait),
         time_wait(_time_wait)
   {
     text_ptr = std::make_shared<FixedText>(position, letter_size, font_texture,
@@ -64,7 +65,7 @@ public:
       }
       game_info.set_credit_frame(newX);
       // Actualiza la posición del texto
-      text_ptr->set_position3D(Point3f(-newX, position.y, position.z));
+      text_ptr->set_position3D(Point3f(-newX + 10000, position.y, position.z));
     }
   }
 };
