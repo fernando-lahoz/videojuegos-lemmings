@@ -5,6 +5,9 @@
 #include "lemmings/Game_info.hpp"
 #include "lemmings/menu/Menu_button.hpp"
 #include "lemmings/menu/Menu_mouse_handler.hpp"
+#include "lemmings/menu/Menu_animation.hpp"
+#include "lemmings/menu/Credit_animation.hpp"
+#include "lemmings/menu/Credit_text.hpp"
 #include "lemmings/utils.hpp"
 #include "lemmings/display/Text_displayer.hpp"
 
@@ -60,32 +63,48 @@ public:
 
     if (type == Utils::TITLE)
     {
-      auto background = std::make_shared<Entity>(Point3f(0, -500, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background1.png"), "Background");
+      auto background = std::make_shared<Entity>(Point3f(0, -500, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_brown.png"), "Background");
       engine.get_game().create_entity(background);
 
       auto title = std::make_shared<Entity>(Point3f(3, -480, 2), Vector2f(633, 200), engine.load_texture("assets/menu/title.png"), "Title");
       engine.get_game().create_entity(title);
 
-      auto button1 = std::make_shared<Menu_button>(Point3f(8, -270, 2), Vector2f(150, 86.2069), engine, game_info, Utils::BUTTON_TYPE::PLAYER_SOLO);
+      auto credits = std::make_shared<Credit_text>(Point3f(0, -125, 1), Vector2f(10, 19), engine, game_info, 2.5f, 3.0f,
+                                                   engine.load_texture("assets/font/font-blue.png"),
+                                                   Vector2i(16, 30), lemmings_font_map, Utils::CREDIT_NAMES);
+      engine.get_game().create_entity(credits);
+
+      engine.get_game().create_entity(std::make_shared<Credit_animation>(Point3f(0, -131, 2), Vector2f(640, 31), game_info, engine, 0, 10));
+      engine.get_game().create_entity(std::make_shared<Credit_animation>(Point3f(-2.5, -131, 0), Vector2f(645, 31), game_info, engine, 1, 32));
+
+      engine.get_game().create_entity(std::make_shared<Menu_animation>(Point3f(34.7657, -413.842, 1), Vector2f(31.33333, 40.7767), engine, 1, 10, 0.3f, 4.0f, 8.0f, false));
+      engine.get_game().create_entity(std::make_shared<Menu_animation>(Point3f(263.222, -409.441, 1), Vector2f(29.6666667, 29.1262), engine, 2, 8, 0.3f, 6.0f, 8.0f, false));
+      engine.get_game().create_entity(std::make_shared<Menu_animation>(Point3f(496.776, -421.824, 1), Vector2f(24, 29.1262), engine, 3, 7, 0.3f, 7.0f, 8.0f, false));
+      engine.get_game().create_entity(std::make_shared<Menu_animation>(Point3f(56.5432, -276.301, 1), Vector2f(65.014367, 55.625), engine, 4, 4, 0.3f, 8.0f, 8.0f, false));
+      engine.get_game().create_entity(std::make_shared<Menu_animation>(Point3f(209.5432, -276.301, 1), Vector2f(65.014367, 55.625), engine, 5, 6, 0.3f, 7.5f, 8.0f, false));
+      engine.get_game().create_entity(std::make_shared<Menu_animation>(Point3f(361.996, -275.508, 1), Vector2f(65.014367, 55.625), engine, 6, 10, 0.3f, 9.0f, 8.0f, true));
+      engine.get_game().create_entity(std::make_shared<Menu_animation>(Point3f(515.5432, -276.301, 1), Vector2f(65.014367, 55.625), engine, 7, 10, 0.3f, 8.5f, 8.0f, false));
+
+      auto button1 = std::make_shared<Menu_button>(Point3f(28, -280, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::PLAYER_SOLO);
       engine.get_game().create_entity(button1);
 
-      auto button2 = std::make_shared<Menu_button>(Point3f(166, -270, 2), Vector2f(150, 86.2069), engine, game_info, Utils::BUTTON_TYPE::PLAYER_VS_IA);
+      auto button2 = std::make_shared<Menu_button>(Point3f(181, -280, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::PLAYER_VS_IA);
       engine.get_game().create_entity(button2);
 
-      auto button3 = std::make_shared<Menu_button>(Point3f(324, -270, 2), Vector2f(150, 86.2069), engine, game_info, Utils::BUTTON_TYPE::SOUND_EFFECTS, true);
+      auto button3 = std::make_shared<Menu_button>(Point3f(334, -280, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::SOUND_EFFECTS, true);
       engine.get_game().create_entity(button3);
 
-      auto button4 = std::make_shared<Menu_button>(Point3f(482, -270, 2), Vector2f(150, 86.2069), engine, game_info, Utils::BUTTON_TYPE::EXIT);
+      auto button4 = std::make_shared<Menu_button>(Point3f(487, -280, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::EXIT);
       engine.get_game().create_entity(button4);
     }
     else if (type == Utils::LEVEL_SELECTOR)
     {
-      auto background = std::make_shared<Entity>(Point3f(0, -500, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background1.png"), "Background");
+      auto background = std::make_shared<Entity>(Point3f(0, -500, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_brown.png"), "Background");
       engine.get_game().create_entity(background);
     }
     else if (type == Utils::LEVEL_INTRO)
     {
-      auto background = std::make_shared<Entity>(Point3f(0, -500, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background2.png"), "Background");
+      auto background = std::make_shared<Entity>(Point3f(0, -500, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_green.png"), "Background");
       engine.get_game().create_entity(background);
       Texture txt = engine.load_texture("assets/maps/raw/map_0_" + std::to_string(level) + ".png");
 
@@ -144,7 +163,7 @@ public:
     }
     else if (type == Utils::LEVEL_OUTRO)
     {
-      auto background = std::make_shared<Entity>(Point3f(0, -500, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background2.png"), "Background");
+      auto background = std::make_shared<Entity>(Point3f(0, -500, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_green.png"), "Background");
       engine.get_game().create_entity(background);
       int idx_red, idx_blue;
       auto text = std::make_shared<Text_displayer>(Point3f(320, -485, 2), Vector2f(16, 30), game_info, "center",

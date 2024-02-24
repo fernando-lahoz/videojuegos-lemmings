@@ -33,7 +33,7 @@ public:
   {
     if (button_type == Utils::PLAYER_SOLO)
     {
-      game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, 15);
+      game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, 8);
       game_info.set_do_action(Utils::ACTIONS::GO_MENU);
     }
     else if (button_type == Utils::PLAYER_VS_IA)

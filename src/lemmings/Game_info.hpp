@@ -15,6 +15,8 @@ private:
   int build_level = 0;
   int build_menu = 0;
 
+  int credit_frame = 0;
+
   // principal level settings
   int level = 0;
   bool level_ended = false;
@@ -81,6 +83,9 @@ public:
 
   void set_do_action(int action) { do_action = action; }
   int get_do_action() const { return do_action; }
+
+  void set_credit_frame(int new_value) { credit_frame = new_value; }
+  int get_credit_frame() const { return credit_frame; }
 
   void set_do_restart_camera(bool new_value) { do_restart_camera = new_value; }
   bool get_do_restart_camera() const { return do_restart_camera; }

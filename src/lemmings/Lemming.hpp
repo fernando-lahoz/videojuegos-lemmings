@@ -6,6 +6,7 @@
 #include "geometry/point.hpp"
 
 #include "lemmings/structure/Chain.hpp"
+#include "lemmings/Game_info.hpp"
 #include "lemmings/utils.hpp"
 
 class Lemming : public Rigid_body
