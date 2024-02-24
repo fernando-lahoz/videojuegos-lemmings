@@ -11,6 +11,14 @@
 #include "engine/IO.hpp"
 #include "lib/error.hpp"
 
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/avutil.h>
+#include <libswscale/swscale.h>
+}
+
 EngineIO::InputEvent Engine::SDL_to_input_event(SDL_KeyboardEvent key)
 {
     switch (key.keysym.sym)
@@ -73,7 +81,7 @@ void Engine::send_mouse_hover()
     {
         if (entity->is_deleted())
             continue;
-            
+
         if (hovered_entities.contains(entity.get()))
         {
             entity->enable_mouse_hover();
@@ -84,7 +92,7 @@ void Engine::send_mouse_hover()
             entity->disable_mouse_hover();
             entity->on_event_up(*this, EngineIO::InputEvent::MOUSE_HOVER);
         }
-    }   
+    }
 }
 
 void Engine::send_event_down(EngineIO::InputEvent event)

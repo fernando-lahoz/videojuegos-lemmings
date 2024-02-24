@@ -83,7 +83,9 @@ public:
 
         auto ground2 = std::make_shared<Rigid_body>(Point3f(0.7, 0, 0), Vector2f(0.3, 1), t2, "Ground");
 
-        
+        auto& mixer = engine.get_sound_mixer();
+        Music canon = mixer.load_music("assets/music/02_Lemming 1 (Pachebel's Canon).mp3");
+        mixer.play_music(canon, true);
 
         auto hud = std::make_shared<Rigid_body>(Point3f(100, 100.8, 0), Vector2f(1, 0.2), engine.load_texture("assets/menu/title.png"), "Ground");
 

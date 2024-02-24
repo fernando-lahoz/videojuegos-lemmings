@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(project_name LANGUAGES CXX)
+project(videojuegos-lemmings LANGUAGES CXX)
 
 #-------------------------- COMPILATION FLAGS ----------------------------------
 
@@ -27,7 +27,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${FullOutputDir}")
 include_directories(include src test)
 
 set(Executables
-   # "main"
+    "main"
     "geralt_eats/geralt_eats"
     "lemmings/lemmings"
 )
@@ -62,13 +62,22 @@ set(Modules
 
 #--------------------------- EXTERNAL LIBRARIES --------------------------------
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LIBAV REQUIRED IMPORTED_TARGET
+    libavdevice
+    libavfilter
+    libavformat
+    libavcodec
+    libswresample
+    libswscale
+    libavutil
+)
+
 set(Libraries
     SDL2
     SDL2_image
     SDL2_mixer
 )
-
-INCLUDE(FindPkgConfig)
 
 foreach(Lib IN LISTS Libraries)
     find_package(${Lib} REQUIRED)
@@ -84,6 +93,7 @@ set(Targets
     SDL2::SDL2main SDL2::SDL2
     SDL2_image::SDL2_image
     SDL2_mixer::SDL2_mixer
+    PkgConfig::LIBAV
 )
 
 #---------------------------- OBJECT COMPILATION -------------------------------
