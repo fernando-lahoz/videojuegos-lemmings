@@ -21,9 +21,11 @@ void Physics_engine::compute_collisions(Engine& engine)
     {
         for(std::size_t j = i + 1; j < entities.size(); j++)
         {
-            if (entities[i]->collides(entities[j]))
-            {
+            if (entities[i]->collides(entities[j])) {
                 entities[i]->on_collision(engine, entities[j]);
+            }
+
+            if (entities[j]->collides(entities[i])) {
                 entities[j]->on_collision(engine, entities[i]);
             }
         }

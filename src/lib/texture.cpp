@@ -91,7 +91,7 @@ bool Texture::is_alpha_pixel(Point2f lpixel) const
     Uint8 r, g, b, a;
     SDL_GetRGBA(pixel_value, surface->format, &r, &g, &b, &a);
 
-    return a == 0;
+    return a < 16;
 }
 
 // Returns the raw SDL_Texture pointer
