@@ -16,18 +16,18 @@ private:
   float size;
 
 public:
-  Cursor(Engine &engine, Game_info &_game_info, float _size) : Rigid_body(Point3f(-1, -1, 0), Vector2f(_size, _size), engine.load_texture("assets/cursor.png"), "Cursor"), game_info(_game_info), size(_size) {}
+  Cursor(Engine &engine, Game_info &_game_info, float _size) : Rigid_body(Point3f(-1, -1, -INFINITY), Vector2f(_size, _size), engine.load_texture("assets/cursor.png"), "Cursor"), game_info(_game_info), size(_size) {}
 
   void update_position(Engine &engine) override
   {
     if (game_info.get_actual_state() == Utils::STATE::GAME)
     {
       Point2f pos = engine.get_mouse_position();
-      set_position3D(Point3f(pos.x - size / 2, pos.y - size / 2, 0));
+      set_position3D(Point3f(pos.x - size / 2, pos.y - size / 2, -INFINITY));
     }
     else
     {
-      set_position3D(Point3f(0, 1000, 0));
+      set_position3D(Point3f(0, 1000, -INFINITY));
     }
 
     if (game_info.get_is_cursor_hover() != state)

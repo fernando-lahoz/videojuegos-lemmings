@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "geometry/vector.hpp"
 #include "geometry/point.hpp"
@@ -64,27 +65,36 @@ protected:
 
     SDL_Rect bound_to_rect(Bound2f bound, Camera2D& camera, Camera2D& main_camera);
 
-    void render_entity(Entity& entity, Camera2D& camera, Camera2D& main_camera);
-
+    bool render_entity(Entity& entity, Camera2D& camera, Camera2D& main_camera, bool always_visible = false);
     void render_fixed_text(FixedText& text, Camera2D& camera, Camera2D& main_camera);
 
 public:
-
+    SDL_Rect rect1, rect2;
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
     Vector2i resolution;
     Bound2f frame;
 
     Render_2D() = default;
-    Render_2D(std::string window_name, int width, int height);
+    Render_2D(const std::string& window_name, int width, int height);
 
     Texture load_texture(const std::string& file);
+    void set_window_icon(const std::string& window_icon);
 
     //Updates resolution and printable frame
     void update_resolution(Engine& engine);
 
     //TODO: set window resolution
     //TODO: set fullscreen
+    void set_fullscreen()
+    {
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    }
+    void set_windowmode()
+    {
+        SDL_SetWindowFullscreen(window, 0);
+        //SDL_SetWindowDisplayMode
+    }
 
     Point2f world_to_raster(Point2f world_point, Camera2D& camera, Camera2D& main_camera);
     Vector2f world_to_raster(Vector2f world_vector, Camera2D& camera, Camera2D& main_camera);
@@ -92,5 +102,6 @@ public:
     Point2f raster_to_world(Point2f raster_point, Camera2D& camera, Camera2D& main_camera);
     Vector2f raster_to_world(Vector2f raster_vector, Camera2D& camera, Camera2D& main_camera);
 
-    void draw(std::vector<EntityPtr> &entities, std::vector<std::shared_ptr<Camera2D>>& cameras);
+    std::unordered_set<Entity*> draw_and_return_hovered(std::vector<EntityPtr> &entities,
+            std::vector<std::shared_ptr<Camera2D>>& cameras, Point2f mouse_position);
 };

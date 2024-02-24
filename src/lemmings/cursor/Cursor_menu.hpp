@@ -16,18 +16,19 @@ private:
   float size;
 
 public:
-  Cursor_menu(Engine &engine, Game_info &_game_info, float _size) : Rigid_body(Point3f(-1, -1, 0), Vector2f(_size, _size * 1.04166666666), engine.load_texture("assets/cursor_menu.png"), "Cursor"), game_info(_game_info), size(_size) {}
+  Cursor_menu(Engine &engine, Game_info &_game_info, float _size)
+    : Rigid_body(Point3f(-1, -1, -INFINITY), Vector2f(_size, _size * 1.04166666666), engine.load_texture("assets/cursor_menu.png"), "Cursor"), game_info(_game_info), size(_size) {}
 
   void update_position(Engine &engine) override
   {
     if (game_info.get_actual_state() == Utils::STATE::MENU)
     {
       Point2f pos = engine.get_mouse_position();
-      set_position3D(Point3f(pos.x, pos.y, 0));
+      set_position3D(Point3f(pos.x, pos.y, -INFINITY));
     }
     else
     {
-      set_position3D(Point3f(0, 1000, 0));
+      set_position3D(Point3f(0, 1000, -INFINITY));
     }
   }
 };

@@ -8,9 +8,13 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
 if (WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc -static") 
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}") # -mwindows
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc -static ") #
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ") # -mwindows
 endif()
+
+#SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+#SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+#SET(CMAKE_INSTALL_RPATH "$\{ORIGIN\}/lib")
 
 #------------------------ BINARY FILES LOCATION --------------------------------
 
@@ -99,20 +103,12 @@ endforeach()
 
 #Project modules
 foreach(Mod IN LISTS Modules)
-    string(FIND ${Mod} "/" BarPos REVERSE)
-    if (${BarPos} EQUAL -1)
-        set(ModName ${Mod})
-        set(ModNames "${ModNames};${ModName}")
-    else()
-        MATH(EXPR BarPos "${BarPos} + 1")
-        string(SUBSTRING ${Mod} ${BarPos} -1 ModName)
-        set(ModNames "${ModNames};${ModName}")
-    endif()
-    add_library(${ModName} STATIC "src/${Mod}.cpp")
+    set(ModList "${ModList};src/${Mod}.cpp")
+endforeach()
 
-    foreach(Dir IN LISTS LibDirectories)
-        target_include_directories(${ModName} PUBLIC ${Dir})
-    endforeach()
+add_library(ProjectModules STATIC ${ModList})
+foreach(Dir IN LISTS LibDirectories)
+    target_include_directories(ProjectModules PUBLIC ${LibDirectories})
 endforeach()
 
 #----------------------- EXECUTABLE FILES COMPILATION --------------------------
@@ -131,16 +127,14 @@ foreach(Executable IN LISTS Executables)
 
     add_executable(${ExecutableName} "${ExecutablePath}")
 
-    foreach(Mod IN LISTS ModNames)
-        target_link_libraries(${ExecutableName} LINK_PUBLIC ${Mod}) 
-    endforeach()
+    target_link_libraries(${ExecutableName} PUBLIC ProjectModules) 
 
     foreach(Project IN LISTS SubProjects)
-        target_link_libraries(${ExecutableName} LINK_PUBLIC ${Project})
+        target_link_libraries(${ExecutableName} PUBLIC  ${Project})
     endforeach()
 
     foreach(Target IN LISTS Targets)
-        target_link_libraries(${ExecutableName} LINK_PUBLIC ${Target})
+        target_link_libraries(${ExecutableName} PUBLIC  ${Target})
     endforeach()
 
 endforeach()

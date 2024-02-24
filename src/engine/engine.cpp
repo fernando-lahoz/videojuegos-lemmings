@@ -69,12 +69,12 @@ EngineIO::InputEvent Engine::SDL_to_input_event(SDL_MouseButtonEvent button)
 
 void Engine::send_mouse_hover()
 {
-    for (auto &entity : entities)
+    for (auto& entity : entities)
     {
         if (entity->is_deleted())
             continue;
-
-        if (entity->contains_the_mouse(*this, mouse_position))
+            
+        if (hovered_entities.contains(entity.get()))
         {
             entity->enable_mouse_hover();
             entity->on_event_down(*this, EngineIO::InputEvent::MOUSE_HOVER);
@@ -84,7 +84,7 @@ void Engine::send_mouse_hover()
             entity->disable_mouse_hover();
             entity->on_event_up(*this, EngineIO::InputEvent::MOUSE_HOVER);
         }
-    }
+    }   
 }
 
 void Engine::send_event_down(EngineIO::InputEvent event)
@@ -218,6 +218,7 @@ bool Engine::ray_march_alpha_end(Ray &ray, Float &offset,
 // Returns true if the program should quit
 bool Engine::process_events()
 {
+    static bool pressedf11 = false;
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
@@ -231,10 +232,21 @@ bool Engine::process_events()
 
             Engine::change_input_state(IO_event, true);
             Engine::send_event_down(IO_event);
+
+            if (event.key.keysym.sym == SDLK_F11 && !pressedf11) {
+                static bool toggle = true;
+                if (toggle) set_fullscreen();
+                else renderer.set_windowmode();
+                toggle = !toggle;
+                pressedf11 = true;
+            }
+                
+            
         }
         break;
         case SDL_KEYUP:
         {
+            if (event.key.keysym.sym == SDLK_F11 && pressedf11) {  pressedf11 = false; }
             auto IO_event = Engine::SDL_to_input_event(event.key);
 
             Engine::change_input_state(IO_event, false);
@@ -635,8 +647,7 @@ void Engine::start()
         //std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
 
         // Draw call to renderer
-        renderer.draw(entities, cameras);
-
+        hovered_entities = renderer.draw_and_return_hovered(entities, cameras, mouse_position);
     }
 
     game->on_game_shutdown(*this);
@@ -657,6 +668,16 @@ Engine::EntityCollection &Engine::get_entities()
 Texture Engine::load_texture(const std::string &path)
 {
     return renderer.load_texture(path);
+}
+
+void Engine::set_window_icon(const std::string& path)
+{
+    renderer.set_window_icon(path);
+}
+
+void Engine::set_fullscreen()
+{
+    renderer.set_fullscreen();
 }
 
 double Engine::get_delta_time()

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/rigid_body.hpp"
+#include "engine/entity.hpp"
 #include "geometry/vector.hpp"
 
 class FixedText : public Entity

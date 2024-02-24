@@ -128,9 +128,9 @@ SDL_Rect Render_2D::bound_to_rect(Bound2f bound, Camera2D& camera, Camera2D& mai
     return rect;
 }
 
-void Render_2D::render_entity(Entity& entity, Camera2D& camera, Camera2D& main_camera)
+bool Render_2D::render_entity(Entity& entity, Camera2D& camera, Camera2D& main_camera, bool always_visible)
 {
-    if (camera.is_visible(entity))
+    if (always_visible || camera.is_visible(entity))
     {
         auto e_bound = entity.bound2f();
         auto rect = bound_to_rect(e_bound, camera, main_camera);
@@ -150,9 +150,10 @@ void Render_2D::render_entity(Entity& entity, Camera2D& camera, Camera2D& main_c
         // clip.y = (int) (((cam_bound.pMin.y - e_bound.pMin.y) * texture.get_height()) / e_bound.height());
         // clip.w = (int) ((cam_bound.width() * texture.get_width()) / e_bound.width());
         // clip.h = (int) ((cam_bound.height() * texture.get_height()) / e_bound.height());
-
-        SDL_RenderCopy(renderer, texture.get(), nullptr, &rect);          
+        SDL_RenderCopy(renderer, texture.get(), nullptr, &rect);
+        return true;  
     }
+    return false;
 }
 
 void Render_2D::render_fixed_text(FixedText& text, Camera2D& camera, Camera2D& main_camera)
@@ -180,7 +181,7 @@ void Render_2D::render_fixed_text(FixedText& text, Camera2D& camera, Camera2D& m
     }
 }
 
-Render_2D::Render_2D(std::string window_name, int width, int height)
+Render_2D::Render_2D(const std::string& window_name, int width, int height)
 {
     resolution = Vector2i(width, height);
 
@@ -188,11 +189,24 @@ Render_2D::Render_2D(std::string window_name, int width, int height)
     window = SDL_CreateWindow(window_name.c_str(),
             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
             width, height, SDL_WINDOW_RESIZABLE);
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (window == nullptr)
+        throw error::sdl_exception(ERROR_CONTEXT);
 
-   
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (renderer == nullptr)
+        throw error::sdl_exception(ERROR_CONTEXT);
+    
     // Config alpha layers
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+}
+
+void Render_2D::set_window_icon(const std::string& window_icon)
+{
+    auto icon = IMG_Load(window_icon.c_str());
+    if (icon == nullptr)
+        throw error::sdl_exception(ERROR_CONTEXT);
+    SDL_SetWindowIcon(window, icon);
+    SDL_FreeSurface(icon);
 }
 
 Texture Render_2D::load_texture(const std::string& file)
@@ -267,6 +281,11 @@ void Render_2D::update_resolution(Engine& engine)
         frame.pMin.y = blank_height / 2;
         frame.pMax.x = resolution.x;
         frame.pMax.y = resolution.y - (blank_height / 2);
+
+        // top
+        rect1 = {.x = 0, .y = 0, .w = resolution.x, .h = (int)frame.pMin.y};
+        // bottom
+        rect2 = {.x = 0, .y = (int)frame.pMax.y, .w = resolution.x, .h = (int)std::ceil(frame.pMin.y)};
     }
     else// if (aspect_ratio < window_ar) // height limits
     {
@@ -275,31 +294,78 @@ void Render_2D::update_resolution(Engine& engine)
         frame.pMin.y = 0;
         frame.pMax.x = resolution.x - (blank_width / 2);
         frame.pMax.y = resolution.y;
+
+        // left
+        rect1 = {.x = 0, .y = 0, .w = (int)frame.pMin.x, .h = resolution.y};
+        // right
+        rect2 = {.x = (int)frame.pMax.x, .y = 0, .w = (int)std::ceil(frame.pMin.x), .h = resolution.y};
     }
-    SDL_Rect rect = {.x = (int)frame.pMin.x, .y = (int)frame.pMin.y,
-                     .w = (int)frame.width(), .h = (int)frame.height()};
-    SDL_RenderSetClipRect(renderer, &rect);
+    //SDL_Rect rect = {.x = (int)frame.pMin.x, .y = (int)frame.pMin.y,
+    //                 .w = (int)frame.width(), .h = (int)frame.height()};
+    //SDL_RenderSetClipRect(renderer, &rect);
 }
 
-void Render_2D::draw(std::vector<EntityPtr> &entities,
-        std::vector<std::shared_ptr<Camera2D>>& cameras)
+// Draws and returns mouse-hovered entities
+std::unordered_set<Entity*> Render_2D::draw_and_return_hovered(std::vector<EntityPtr> &entities,
+        std::vector<std::shared_ptr<Camera2D>>& cameras, Point2f mouse_position)
 {
     clear_window();
 
+    std::unordered_set<Entity*> hovered_entities;
+    Engine::EntityCollection::iterator over_bands_begin = entities.end();
     for (auto& camera : cameras | std::views::reverse)
     {
+        auto world_mouse = raster_to_world(mouse_position, *camera, *cameras[0]);
         // Render drawables
-        for (auto &d : entities)
+        for (auto it = entities.begin(); it != entities.end(); ++it)
         {
+            auto& d = *it;
+
+            auto z = d->get_position3D().z;
+            if (std::isinf(z) && z < 0) {
+                over_bands_begin = it;
+                break;
+            }
+
             FixedText *text_ptr = dynamic_cast<FixedText*>(d.get());
             if (text_ptr != nullptr) {
                 render_fixed_text(*text_ptr, *camera, *cameras[0]);
             }
             else {
-                render_entity(*d, *camera, *cameras[0]);
+                bool visible = render_entity(*d, *camera, *cameras[0]);
+                //TODO: should it ignore alpha channel to make it smoother
+                if (visible && d->contains(world_mouse))
+                {
+                    hovered_entities.insert(d.get());
+                }
+            }
+        }
+    }
+    SDL_RenderFillRect(renderer, &rect1);
+    SDL_RenderFillRect(renderer, &rect2);
+    for (auto& camera : cameras | std::views::reverse)
+    {
+        auto world_mouse = raster_to_world(mouse_position, *camera, *cameras[0]);
+        // Render drawables
+        for (auto it = over_bands_begin; it != entities.end(); ++it)
+        {
+            auto& d = *it;
+
+            FixedText *text_ptr = dynamic_cast<FixedText*>(d.get());
+            if (text_ptr != nullptr) {
+                render_fixed_text(*text_ptr, *camera, *cameras[0]);
+            }
+            else {
+                bool visible = render_entity(*d, *camera, *cameras[0], true);
+                //TODO: should it ignore alpha channel to make it smoother
+                if (visible && d->contains(world_mouse))
+                {
+                    hovered_entities.insert(d.get());
+                }
             }
         }
     }
 
     SDL_RenderPresent(renderer);
+    return hovered_entities;
 }

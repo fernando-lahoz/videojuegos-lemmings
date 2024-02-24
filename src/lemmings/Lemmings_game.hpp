@@ -48,6 +48,8 @@ public:
 
   void on_game_startup(Engine &engine) override
   {
+    engine.set_window_icon("assets/icon.png");
+
     auto ptr = std::make_shared<Static_camera>(Bound2f(Point2f(0, -500), Point2f(640, -100)), Bound2f(Point2f(0, 0), Point2f(640, 400)), 8);
     auto ptr2 = std::make_shared<Dynamic_camera>(game_info, Bound2f(Point2f(1884, 0), Point2f(2524, 320)), Bound2f(Point2f(0, 0), Point2f(640, 320)), 7);
 
@@ -67,12 +69,6 @@ public:
 
   void on_loop_start(Engine &engine) override
   {
-    if (engine.is_cursor_visible()) {
-      engine.hide_cursor();
-    }
-    else {
-      engine.show_cursor();
-    }
     screen.update_game(engine);
   }
 };

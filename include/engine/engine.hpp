@@ -4,6 +4,7 @@
 #include <vector>
 #include <chrono>
 #include <string>
+#include <unordered_set>
 
 #include "lib/texture.hpp"
 #include "geometry/ray.hpp"
@@ -54,6 +55,7 @@ private:
     double delta_time; // Delta time in seconds
 
     EntityCollection entities;
+    std::unordered_set<Entity*> hovered_entities;
 
     Point2f mouse_position;
     bool quit_event = false;
@@ -77,6 +79,8 @@ public:
     void quit();
 
     Texture load_texture(const std::string& path);
+    void set_window_icon(const std::string& path);
+    void set_fullscreen();
     EntityCollection& get_entities();
     double get_delta_time();
     void destroy_all_entities();
