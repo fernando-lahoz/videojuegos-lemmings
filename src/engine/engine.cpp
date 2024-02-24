@@ -135,7 +135,6 @@ Point2f Engine::get_mouse_position()
     return renderer.raster_to_world(mouse_position, main_camera, main_camera);
 }
 
-// Returns mouse world-relative position
 Point2f Engine::get_mouse_position_in_camera(Camera2D& camera)
 {
     return renderer.raster_to_world(mouse_position, camera, *cameras[0]);
@@ -153,11 +152,15 @@ void Engine::hide_cursor()
 
 bool Engine::is_cursor_visible()
 {
-    //Probably change to is_cursor_shown??
-    //return SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE;
-
-    return renderer.frame.contains(mouse_position);
+    return SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE;
+    //return renderer.frame.contains(mouse_position);
 }
+
+bool Engine::is_entity_hovered(const Entity& entity)
+{
+    return hovered_entities.contains(&entity);
+}
+
 
 bool Engine::ray_march_alpha_init(Ray &ray, Float &offset, 
         Float min_offset,

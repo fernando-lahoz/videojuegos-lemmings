@@ -55,7 +55,7 @@ private:
     double delta_time; // Delta time in seconds
 
     EntityCollection entities;
-    std::unordered_set<Entity*> hovered_entities;
+    std::unordered_set<const Entity*> hovered_entities;
 
     Point2f mouse_position;
     bool quit_event = false;
@@ -87,12 +87,17 @@ public:
     Game& get_game();
     Camera2D& get_main_camera();
     SoundMixer& get_sound_mixer();
+
+    // Returns world position of mouse viewed by main camera
     Point2f get_mouse_position();
+    // Returns world position of mouse viewed by camera
     Point2f get_mouse_position_in_camera(Camera2D& camera);
     
     void show_cursor();
     void hide_cursor();
     bool is_cursor_visible();
+
+    bool is_entity_hovered(const Entity& entity);
 
     /*
     bool intesect_ray(Ray &ray, 

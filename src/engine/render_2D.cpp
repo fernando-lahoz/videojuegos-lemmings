@@ -306,12 +306,12 @@ void Render_2D::update_resolution(Engine& engine)
 }
 
 // Draws and returns mouse-hovered entities
-std::unordered_set<Entity*> Render_2D::draw_and_return_hovered(std::vector<EntityPtr> &entities,
+std::unordered_set<const Entity*> Render_2D::draw_and_return_hovered(std::vector<EntityPtr> &entities,
         std::vector<std::shared_ptr<Camera2D>>& cameras, Point2f mouse_position)
 {
     clear_window();
 
-    std::unordered_set<Entity*> hovered_entities;
+    std::unordered_set<const Entity*> hovered_entities;
     Engine::EntityCollection::iterator over_bands_begin = entities.end();
     for (auto& camera : cameras | std::views::reverse)
     {

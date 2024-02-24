@@ -113,7 +113,6 @@ public:
 
     // Returns true if the mouse is pointing inside the visible entity
     bool contains_the_mouse(Engine& engine) const;
-    bool contains_the_mouse(Engine& engine, Point2f mouse_position) const;
 
     // Event processing is the second thing executed, 
     //  right after game->on_loop_start()

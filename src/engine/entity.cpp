@@ -272,30 +272,8 @@ bool Entity::contains(Point2f point) const
 
 bool Entity::contains_the_mouse(Engine& engine) const
 {
-    auto mouse_p = engine.get_mouse_position();
-    if (bound2f().contains(mouse_p))
-    {
-        auto lmouse_p = world_to_local(mouse_p);
-        auto txt = get_active_texture();
-        return !txt.is_alpha_pixel(lmouse_p);
-    }
-
-    return false;
+    return engine.is_entity_hovered(*this);
 }
-
-bool Entity::contains_the_mouse([[maybe_unused]] Engine& engine, Point2f mouse_position) const
-{
-    if (bound2f().contains(mouse_position))
-    {
-        auto lmouse_p = world_to_local(mouse_position);
-        auto txt = get_active_texture();
-        return !txt.is_alpha_pixel(lmouse_p);
-    }
-
-    return false;
-}
-
-
 
 void Entity::on_event_down(Engine&, EngineIO::InputEvent)
 {
