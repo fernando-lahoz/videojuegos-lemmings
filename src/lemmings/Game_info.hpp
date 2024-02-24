@@ -15,12 +15,18 @@ private:
   int build_level = 0;
   int build_menu = 0;
 
+  // credits
   int credit_frame = 0;
+
+  // level selector
+  int level_selected = 0;
+  int dificulty_selected = 0;
 
   // principal level settings
   int level = 0;
   bool level_ended = false;
   bool spawn_ended = false;
+  bool level_is_paused = false;
 
   // camera settings
   bool do_restart_camera = false;
@@ -57,6 +63,8 @@ private:
 public:
   void start_game_info(int _level)
   {
+    credit_frame = 0;
+    level_is_paused = false;
     do_restart_camera = true;
     is_camera_stopped = false;
     level_ended = false;
@@ -89,6 +97,9 @@ public:
 
   void set_do_restart_camera(bool new_value) { do_restart_camera = new_value; }
   bool get_do_restart_camera() const { return do_restart_camera; }
+
+  void set_level_is_paused(bool new_value) { level_is_paused = new_value; }
+  bool get_level_is_paused() const { return level_is_paused; }
 
   void set_pos_camera(float new_value) { pos_camera = new_value; }
   float get_pos_camera() const { return pos_camera; }

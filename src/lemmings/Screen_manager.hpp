@@ -76,7 +76,10 @@ public:
 
         if (game_info.get_time_left() > 0.0f && !game_info.get_level_ended())
         {
-          game_info.set_time_left(game_info.get_time_left() - engine.get_delta_time());
+          if (!game_info.get_level_is_paused())
+          {
+            game_info.set_time_left(game_info.get_time_left() - engine.get_delta_time());
+          }
         }
         else
         {

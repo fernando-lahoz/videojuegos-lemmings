@@ -21,7 +21,8 @@ class Lemming : public Rigid_body
   bool is_loop;           // Indica si la animación es en bucle
   bool is_playing = true; // Indica si la animación está actualmente en reproducción
   int current_frame = 0;  // Frame actual de la animación
-  int distance_fall = 0;
+  float distance_fall = 0.0f;
+  float last_y = 0.0f;
   bool do_action_in_frame = false;
   bool is_hovered = false;
   float velocity = 50;
@@ -391,7 +392,10 @@ public:
 
   void pre_physics(Engine &engine) override
   {
+    if (game_info.get_level_is_paused())
+      return;
     Entity::pre_physics(engine);
+    last_y = position.y;
     game_info.check_action_possible();
     update_animation(engine);
   }
@@ -410,7 +414,6 @@ public:
   {
     auto speed = get_speed();
 
-    print_ray_down();
     if (is_walking())
     {
       speed.x = direction * velocity / 2;
@@ -441,7 +444,7 @@ public:
     if (is_falling())
     {
       speed.x = 0;
-      speed.y = velocity / 2;
+      speed.y = velocity;
       set_speed(speed);
       return;
     }
@@ -449,7 +452,7 @@ public:
     if (is_floating())
     {
       speed.x = 0;
-      speed.y = velocity / 4;
+      speed.y = velocity / 2;
       set_speed(speed);
       return;
     }
@@ -574,12 +577,16 @@ public:
 
   void update_position(Engine &engine) override
   {
+    if (game_info.get_level_is_paused())
+      return;
     Rigid_body::update_position(engine);
     update_state(); // Actualiza el estado antes de calcular la nueva posición
   }
 
   void on_collision(Engine &, EntityPtr other) override
   {
+    if (game_info.get_level_is_paused())
+      return;
     Entity::on_collision(engine, other);
     auto speed = get_speed();
 
@@ -603,7 +610,7 @@ public:
           // std::cout << "Lemming turn left\n";
         }
       }
-      if (is_falling() || is_floating())
+      if ((is_falling() || is_floating()) && other->get_entity_name() == "MAP")
       {
         if (check_collision_down(other))
         {
@@ -611,14 +618,24 @@ public:
           // std::cout << on_ground << std::endl;
 
           on_ground = true;
+          // std::cout << "Distance falling: " << distance_fall << std::endl;
+
           speed.y = 0;
-          go_walk();
+          if (distance_fall >= Utils::MAX_DISTANCE_FALL)
+          {
+            go_crash();
+          }
+          else
+          {
+            go_walk();
+          }
         }
       }
     }
 
     if (other->get_entity_name() == "Gate")
     {
+      on_ground = true;
       go_escape();
       speed.x = 0;
       speed.y = 0;
@@ -626,6 +643,7 @@ public:
 
     if (other->get_entity_name() == "Liquid")
     {
+      on_ground = true;
       go_drown();
       speed.x = 0;
       speed.y = 0;
@@ -633,6 +651,7 @@ public:
 
     if (other->get_entity_name() == "Fire")
     {
+      on_ground = true;
       go_escape();
       speed.x = 0;
       speed.y = 0;
@@ -640,6 +659,7 @@ public:
 
     if (other->get_entity_name() == "Spinner" || other->get_entity_name() == "Flamethrower")
     {
+      on_ground = true;
       speed.x = 0;
       speed.y = 0;
       destroy_lemming(engine);
@@ -647,6 +667,7 @@ public:
 
     if (other->get_entity_name() == "Chain")
     {
+      on_ground = true;
       std::shared_ptr<Chain> chain_ptr = std::dynamic_pointer_cast<Chain>(other);
       if (chain_ptr && chain_ptr->get_is_playing())
         return;
@@ -660,6 +681,17 @@ public:
 
   void post_physics(Engine &) override
   {
+    if (game_info.get_level_is_paused())
+      return;
+    if (is_falling() || is_floating())
+    {
+      distance_fall = distance_fall + (position.y - last_y);
+    }
+    else
+    {
+      distance_fall = 0.0f;
+    }
+
     if (skills & Utils::EXPLODE)
     {
       go_explode();
@@ -705,7 +737,7 @@ public:
 
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override
   {
-    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine))
+    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && !game_info.get_level_is_paused())
     {
       // std::cout << "LEMMING PULSADO" << std::endl;
       int skill = Utils::HUD_TO_SKILL[game_info.get_option_selected()];

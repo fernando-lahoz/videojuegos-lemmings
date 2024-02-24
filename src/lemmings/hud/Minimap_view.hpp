@@ -26,7 +26,7 @@ public:
     if (last_position != game_info.get_pos_camera())
     {
       last_position = game_info.get_pos_camera();
-      calculated_position = 412.0f + ((last_position - 320.0f) / 2528.0f) * 160.0f;
+      calculated_position = 10412.0f + ((last_position - 320.0f) / 2528.0f) * 160.0f;
       set_position2D(Point2f(calculated_position, -148));
     }
   }
