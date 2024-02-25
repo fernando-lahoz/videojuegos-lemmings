@@ -4,12 +4,15 @@
 
 #include "lemmings/Game_info.hpp"
 #include "lemmings/menu/Menu_button.hpp"
+#include "lemmings/menu/Menu_arrow.hpp"
 #include "lemmings/menu/Menu_mouse_handler.hpp"
 #include "lemmings/menu/Menu_animation.hpp"
 #include "lemmings/menu/Credit_animation.hpp"
 #include "lemmings/menu/Credit_text.hpp"
 #include "lemmings/utils.hpp"
 #include "lemmings/display/Text_displayer.hpp"
+#include "lemmings/display/Text_dynamic.hpp"
+#include "lemmings/display/Map_dynamic.hpp"
 
 class Menu
 {
@@ -104,14 +107,42 @@ public:
       Texture txt = engine.load_texture("assets/maps/raw/map_0_" + std::to_string(level) + ".png");
 
       // mapa 0,0  640,65 : 640px 65px
-      auto map = std::make_shared<Entity>(Point3f(10320 - (txt.get_width() * 65 / (2 * txt.get_height())), 20, 2), Vector2f(txt.get_width() * 65 / txt.get_height(), 65), txt, "MAP");
+      auto map = std::make_shared<Map_dynamic>(Point3f(10320 - (txt.get_width() * 65 / (2 * txt.get_height())), 20, 2), Vector2f(txt.get_width() * 65 / txt.get_height(), 65), engine, game_info);
       engine.get_game().create_entity(map);
 
       // Level (number) // level name
-      auto text = std::make_shared<Text_displayer>(Point3f(10000, 130, 2), Vector2f(16, 30), game_info, "left",
-                                                   engine.load_texture("assets/font/font-red.png"),
-                                                   Vector2i(16, 30), lemmings_font_map, "Level " + std::to_string(level) + "  " + Utils::LEVEL_NAME[0][level],
+
+      auto dynamic_text = std::make_shared<Text_dynamic>(Point3f(10320, 130, 2), Vector2f(16, 30), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, Utils::LEVEL_NAME[game_info.get_difficulty_selected()][game_info.get_level_selected()], 2);
+      engine.get_game().create_entity(dynamic_text);
+
+      engine.get_game().create_entity(std::make_shared<Menu_arrow>(Point3f(10405, 210, 2), Vector2f(30, 30), game_info, engine, 0));
+      engine.get_game().create_entity(std::make_shared<Menu_arrow>(Point3f(10205, 210, 2), Vector2f(30, 30), game_info, engine, 1));
+
+      dynamic_text = std::make_shared<Text_dynamic>(Point3f(10320, 225, 2), Vector2f(16, 30), engine, game_info, "center",
+                                                    engine.load_texture("assets/font/font-green.png"),
+                                                    Vector2i(16, 30), lemmings_font_map, std::to_string(game_info.get_difficulty_selected()), 0);
+      engine.get_game().create_entity(dynamic_text);
+
+      engine.get_game().create_entity(std::make_shared<Menu_arrow>(Point3f(10405, 270, 2), Vector2f(30, 30), game_info, engine, 2));
+      engine.get_game().create_entity(std::make_shared<Menu_arrow>(Point3f(10205, 270, 2), Vector2f(30, 30), game_info, engine, 3));
+
+      dynamic_text = std::make_shared<Text_dynamic>(Point3f(10320, 285, 2), Vector2f(16, 30), engine, game_info, "center",
+                                                    engine.load_texture("assets/font/font-green.png"),
+                                                    Vector2i(16, 30), lemmings_font_map, std::to_string(game_info.get_level_selected()), 1);
+      engine.get_game().create_entity(dynamic_text);
+
+      auto text = std::make_shared<Text_displayer>(Point3f(10320, 355, 2), Vector2f(16, 30), game_info, "center",
+                                                   engine.load_texture("assets/font/font-blue.png"),
+                                                   Vector2i(16, 30), lemmings_font_map, Utils::TEXT_BLUE_1[2],
                                                    "TEXT");
+      engine.get_game().create_entity(text);
+
+      text = std::make_shared<Text_displayer>(Point3f(10320, 385, 2), Vector2f(16, 30), game_info, "center",
+                                              engine.load_texture("assets/font/font-blue.png"),
+                                              Vector2i(16, 30), lemmings_font_map, Utils::TEXT_BLUE_2[2],
+                                              "TEXT");
       engine.get_game().create_entity(text);
     }
     else if (type == Utils::LEVEL_INTRO)
@@ -162,7 +193,7 @@ public:
       // Rating Fun
       text = std::make_shared<Text_displayer>(Point3f(10160, 314, 2), Vector2f(16, 30), game_info, "left",
                                               engine.load_texture("assets/font/font-purple.png"),
-                                              Vector2i(16, 30), lemmings_font_map, "Rating  " + Utils::DIFICULTY_NAME[0],
+                                              Vector2i(16, 30), lemmings_font_map, "Rating  " + Utils::DIFFICULTY_NAME[0],
                                               "TEXT");
       engine.get_game().create_entity(text);
 

@@ -44,8 +44,7 @@ public:
 
         if (rescued < needed)
         {
-          // game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO);
-          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level() + 1); // para probar niveles
+          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level());
         }
         else
         {
@@ -55,9 +54,10 @@ public:
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
-      if (menu_type == Utils::MENU_TYPE::LEVEL_SELECTOR)
+      if (menu_type == Utils::MENU_TYPE::LEVEL_SELECTOR && !game_info.get_is_arrow_hovered())
       {
-        /* code */
+        game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level_selected());
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
     }
@@ -94,7 +94,8 @@ public:
       }
       if (menu_type == Utils::MENU_TYPE::LEVEL_SELECTOR)
       {
-        /* code */
+        game_info.set_build_menu(Utils::MENU_TYPE::TITLE);
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
     }

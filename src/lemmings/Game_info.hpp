@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "lemmings/utils.hpp"
+#include "math/math.hpp"
 
 class Game_info
 {
@@ -20,7 +21,8 @@ private:
 
   // level selector
   int level_selected = 0;
-  int dificulty_selected = 0;
+  int difficulty_selected = 0;
+  bool is_arrow_hovered = false;
 
   // principal level settings
   int level = 0;
@@ -91,6 +93,26 @@ public:
 
   void set_do_action(int action) { do_action = action; }
   int get_do_action() const { return do_action; }
+
+  void add_level_selected() { level_selected = math::min(level_selected + 1, 30); }
+  void sub_level_selected() { level_selected = math::max(level_selected - 1, 0); }
+  int get_level_selected() const { return level_selected; }
+  void set_level_selected(int new_level) { level_selected = new_level; }
+
+  void add_difficulty_selected()
+  {
+    int aux = math::min(difficulty_selected + 1, 0);
+    if (aux != difficulty_selected)
+    {
+      difficulty_selected = aux;
+      set_level_selected(1);
+    }
+  }
+  void sub_difficulty_selected() { difficulty_selected = math::max(difficulty_selected - 1, 0); }
+  int get_difficulty_selected() const { return difficulty_selected; }
+
+  void set_is_arrow_hovered(bool new_value) { is_arrow_hovered = new_value; }
+  bool get_is_arrow_hovered() const { return is_arrow_hovered; }
 
   void set_credit_frame(int new_value) { credit_frame = new_value; }
   int get_credit_frame() const { return credit_frame; }

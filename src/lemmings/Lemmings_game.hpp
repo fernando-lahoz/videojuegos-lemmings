@@ -17,7 +17,6 @@
 
 // TODO: adapt lemming movement to alpha calculations
 // TODO: add movements to the lemming (BUILD, CLIMB, BASH, MINING)
-// TODO: add a level selector menu
 // TODO: add player vs IA mode
 // TODO: add sound effects
 // TODO: add counter explosion above the lemmings
