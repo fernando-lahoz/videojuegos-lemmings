@@ -15,9 +15,9 @@
 #include "lemmings/utils.hpp"
 #include "lemmings/Screen_manager.hpp"
 
-// TODO: adapt lemming movement to alpha calculations
 // TODO: add movements to the lemming (BUILD, CLIMB, BASH, MINING)
 // TODO: add player vs IA mode
+// TODO: add video intro
 // TODO: add sound effects
 // TODO: add counter explosion above the lemmings
 // TODO: add 16-30 level

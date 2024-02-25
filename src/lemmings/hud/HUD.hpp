@@ -77,7 +77,19 @@ public:
       if (n == Utils::HUD_ALL_EXPLODE)
       {
         game_info.set_spawn_ended();
-        game_info.set_dead_marked(true);
+        game_info.set_all_die(true);
+        auto &entities = engine.get_entities();
+        for (std::size_t i = 0; i < entities.size(); i++)
+        {
+          if (entities[i]->get_entity_name() == "Lemming")
+          {
+            std::shared_ptr<Lemming> lemming_ptr = std::dynamic_pointer_cast<Lemming>(entities[i]);
+            if (lemming_ptr)
+            {
+              lemming_ptr->set_dead_marked(true);
+            }
+          }
+        }
       }
       else if (n == Utils::HUD_ADD_SPAWN_VELOCITY)
       {
@@ -86,6 +98,14 @@ public:
       else if (n == Utils::HUD_SUB_SPAWN_VELOCITY)
       {
         game_info.sub_spawn_velocity();
+      }
+      else if (n == Utils::HUD::HUD_ADD_VELOCITY)
+      {
+        game_info.add_game_speed();
+      }
+      else if (n == Utils::HUD::HUD_SUB_VELOCITY)
+      {
+        game_info.sub_game_speed();
       }
       else if (n == Utils::HUD_PAUSE)
       {

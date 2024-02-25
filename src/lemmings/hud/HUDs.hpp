@@ -169,6 +169,19 @@ public:
             &Game_info::get_actual_seconds_left // Función miembro de Game_info
         );
 
+        Dynamic_value_display display_game_speed(
+            game_info,                       // Referencia a Game_info
+            engine,                          // Instancia de Engine
+            Utils::TEXT_TYPE::SKILL_COUNTER, // text_type
+            1,                               // maxDigits
+            10017,                           // startX
+            -146,                            // startY
+            7,                               // digitWidth
+            16,                              // digitHeight
+            1,                               // paddingX
+            &Game_info::get_game_speed       // Función miembro de Game_info
+        );
+
         Dynamic_value_display display_spawn_velocity(
             game_info,                       // Referencia a Game_info
             engine,                          // Instancia de Engine

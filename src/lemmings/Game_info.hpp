@@ -26,9 +26,11 @@ private:
 
   // principal level settings
   int level = 0;
+  int game_speed = 1;
   bool level_ended = false;
   bool spawn_ended = false;
   bool level_is_paused = false;
+  bool all_die = false;
 
   // camera settings
   bool do_restart_camera = false;
@@ -57,19 +59,16 @@ private:
   int actual_seconds_left = 0;
   int spawn_velocity = 1;
 
-  // Este booleano indica si un lemming es marcado para explotar
-  bool dead_marked = false;
-  // Este es el tiempo de vida que le queda al lemming si es marcado para explotar
-  double time_to_live = 5.0f;
-
 public:
   void start_game_info(int _level)
   {
     credit_frame = 0;
+    game_speed = 1;
     level_is_paused = false;
     do_restart_camera = true;
     is_camera_stopped = false;
     level_ended = false;
+    all_die = false;
     level = _level;
     option_selected = Utils::NO_OPTION_SELECTED;
     is_action_possible = false;
@@ -78,7 +77,6 @@ public:
     n_lemmings_in = 0;
     lemmings_hovered = 0;
     lemming_hovered_type = "";
-    time_to_live = 5.0f;
     percen_lemmings_in = 0;
     time_left = Utils::LEVEL_TIME_LIMIT[_level];
     spawn_velocity = Utils::LEVEL_SPAWN_VELOCITY[_level];
@@ -87,7 +85,6 @@ public:
     actual_minutes_left = 0;
     actual_seconds_left = 0;
     spawn_ended = false;
-    dead_marked = false;
   }
   int get_level() const { return level; }
 
@@ -111,6 +108,10 @@ public:
   void sub_difficulty_selected() { difficulty_selected = math::max(difficulty_selected - 1, 0); }
   int get_difficulty_selected() const { return difficulty_selected; }
 
+  void add_game_speed() { game_speed = math::min(game_speed + 1, 4); }
+  void sub_game_speed() { game_speed = math::max(game_speed - 1, 1); }
+  int get_game_speed() const { return game_speed; }
+
   void set_is_arrow_hovered(bool new_value) { is_arrow_hovered = new_value; }
   bool get_is_arrow_hovered() const { return is_arrow_hovered; }
 
@@ -122,6 +123,9 @@ public:
 
   void set_level_is_paused(bool new_value) { level_is_paused = new_value; }
   bool get_level_is_paused() const { return level_is_paused; }
+
+  void set_all_die(bool new_value) { all_die = new_value; }
+  bool get_all_die() const { return all_die; }
 
   void set_pos_camera(float new_value) { pos_camera = new_value; }
   float get_pos_camera() const { return pos_camera; }
@@ -256,34 +260,6 @@ public:
   void set_cursor_txt(std::string path, Engine &engine) { cursor_txt = engine.load_texture(path); }
   Texture get_cursor_txt() { return cursor_txt; }
 
-  void set_dead_marked(bool new_value) { dead_marked = new_value; }
-  bool get_dead_marked() { return dead_marked; }
-
   void set_lemming_hovered_type(std::string new_value) { lemming_hovered_type = new_value; }
   std::string get_lemming_hovered_type() const { return lemming_hovered_type; }
-
-  // Pre: True
-  // Post: Actualiza el tiempo de vida del lemming, de estar marcado para morir
-  // y lo hace explotar en caso de que se acabe su tiempo de vida
-  bool update_explode_countdown(Engine &engine)
-  {
-    // Si el lemming ha sido marcado para morir
-    if (dead_marked)
-    {
-      // Restamos el delta time si el tiempo de vida es mayor a cero
-      if (time_to_live > 0.0f)
-        time_to_live -= engine.get_delta_time();
-
-      // Si se acaba el tiempo explotamos
-      if (time_to_live <= 0.0f)
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    return false;
-  }
 };

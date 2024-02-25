@@ -83,27 +83,12 @@ public:
         }
         else
         {
+          std::cout << "LEMMINGS OUT: " << game_info.get_n_lemmings_out() << std::endl;
           std::cout << "GAME OVER" << std::endl;
           game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_OUTRO);
           game_info.set_do_action(Utils::ACTIONS::GO_MENU);
           // game_info.set_build_level(game_info.get_build_level() + 1);
           // game_info.set_do_action(Utils::ACTIONS::GO_LEVEL);
-        }
-
-        if (game_info.update_explode_countdown(engine))
-        {
-          auto &entities = engine.get_entities();
-          for (std::size_t i = 0; i < entities.size(); i++)
-          {
-            if (entities[i]->get_entity_name() == "Lemming")
-            {
-              std::shared_ptr<Lemming> lemming_ptr = std::dynamic_pointer_cast<Lemming>(entities[i]);
-              if (lemming_ptr)
-              {
-                lemming_ptr->add_skill_explode_all();
-              }
-            }
-          }
         }
       }
     }

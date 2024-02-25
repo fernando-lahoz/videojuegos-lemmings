@@ -7,6 +7,7 @@
 
 #include "lemmings/structure/Chain.hpp"
 #include "lemmings/Game_info.hpp"
+#include "lemmings/display/Dynamic_counter_image.hpp"
 #include "lemmings/utils.hpp"
 
 class Lemming : public Rigid_body
@@ -32,6 +33,13 @@ class Lemming : public Rigid_body
   int state = Utils::IDLE;
 
   int direction = 1; // Comienza moviéndose hacia la derecha
+
+  // Este booleano indica si un lemming es marcado para explotar
+  bool dead_marked = false;
+  // Este es el tiempo de vida que le queda al lemming si es marcado para explotar
+  double time_to_live = 5.0f;
+  int last_time_to_live = 6;
+  std::shared_ptr<Dynamic_counter_image> counter;
 
   std::string get_type()
   {
@@ -273,6 +281,9 @@ public:
     override_right_point(Point2f(0.5, 0.55));
   }
 
+  void set_dead_marked(bool new_value) { dead_marked = new_value; }
+  bool get_dead_marked() { return dead_marked; }
+
   int get_state()
   {
     return state;
@@ -322,24 +333,31 @@ public:
     {
       return false;
     }
-    skills = skills | skill;
-    if (skills < Utils::SKILL_EGOIST) // change name type of the lemming depending on the skill
+    if (skill == Utils::Lemming_Skills::EXPLODE)
     {
-      if (skills & Utils::FLOAT && skills & Utils::CLIMB)
+      set_dead_marked(true);
+    }
+    else
+    {
+      skills = skills | skill;
+      if (skills < Utils::SKILL_EGOIST) // change name type of the lemming depending on the skill
       {
-        type = Utils::LEMMING_TYPE[14]; // ATHLETE
-      }
-      else if (skills & Utils::FLOAT)
-      {
-        type = Utils::LEMMING_TYPE[Utils::FLOATING];
-      }
-      else if (skills & Utils::CLIMB)
-      {
-        type = Utils::LEMMING_TYPE[Utils::CLIMBING];
-      }
-      else
-      {
-        type = Utils::LEMMING_TYPE[Utils::FALLING];
+        if (skills & Utils::FLOAT && skills & Utils::CLIMB)
+        {
+          type = Utils::LEMMING_TYPE[14]; // ATHLETE
+        }
+        else if (skills & Utils::FLOAT)
+        {
+          type = Utils::LEMMING_TYPE[Utils::FLOATING];
+        }
+        else if (skills & Utils::CLIMB)
+        {
+          type = Utils::LEMMING_TYPE[Utils::CLIMBING];
+        }
+        else
+        {
+          type = Utils::LEMMING_TYPE[Utils::FALLING];
+        }
       }
     }
     game_info.sub_skill_amount(Utils::SKILL_TO_SKILLS_AMOUNT[skill_to_index(skill)]);
@@ -355,6 +373,41 @@ public:
   bool is_skill(int skill)
   {
     return skills & skill;
+  }
+
+  // Pre: True
+  // Post: Actualiza el tiempo de vida del lemming, de estar marcado para morir
+  // y lo hace explotar en caso de que se acabe su tiempo de vida
+  bool update_explode_countdown(Engine &engine)
+  {
+    // Si el lemming ha sido marcado para morir
+    if (dead_marked)
+    {
+      // Restamos el delta time si el tiempo de vida es mayor a cero
+      if (time_to_live > 0.0f)
+        time_to_live -= engine.get_delta_time();
+
+      // Si se acaba el tiempo explotamos
+      if (time_to_live <= 0.0f)
+        return true;
+    }
+    return false;
+  }
+
+  void update_counter(Engine &engine)
+  {
+    if (dead_marked)
+    {
+      if (!counter)
+      {
+        counter = std::make_shared<Dynamic_counter_image>(Point3f(position.x + (diagonal.x / 2), position.y - 2, position.z - 1), Vector2f(10, 10), game_info, engine, Utils::TEXT_TYPE::LEMMING_COUNTDOWN, 0, 1, last_time_to_live, true);
+        engine.get_game().create_entity(counter);
+      }
+      if (last_time_to_live != (int)(time_to_live + 0.999))
+      {
+        last_time_to_live = (int)(time_to_live + 0.999);
+      }
+    }
   }
 
   void update_animation(Engine &engine)
@@ -398,6 +451,7 @@ public:
     last_y = position.y;
     game_info.check_action_possible();
     update_animation(engine);
+    update_counter(engine);
   }
 
   void print_ray_down()
@@ -412,6 +466,16 @@ public:
 
   void update_state()
   {
+    // EXPLODING LOGIC
+    if (update_explode_countdown(engine))
+      add_skill_explode_all();
+
+    if (counter)
+    {
+      counter->set_position2D(Point2f(position.x + (diagonal.x / 2) - (counter->get_diagonal().x / 2), position.y - 2));
+    }
+
+    // STATES LOGIC
     auto speed = get_speed();
 
     if (is_walking())
