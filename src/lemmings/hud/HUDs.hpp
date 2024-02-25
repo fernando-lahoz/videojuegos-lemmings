@@ -11,6 +11,7 @@
 #include "lemmings/Game_info.hpp"
 #include "lemmings/utils.hpp"
 #include "lemmings/display/Text_image.hpp"
+#include "lemmings/display/Text_dynamic.hpp"
 #include "lemmings/display/Dynamic_value_display.hpp"
 #include "lemmings/display/Dynamic_text_image.hpp"
 
@@ -18,6 +19,42 @@ class HUDs
 {
 private:
     Game_info &game_info;
+
+    static Point2i lemmings_font_map(char c)
+    {
+        if (c >= 'A' && c <= 'M')
+            return {(c - 'A'), 0};
+        else if (c >= 'N' && c <= 'Z')
+            return {(c - 'N'), 1};
+        else if (c >= 'a' && c <= 'm')
+            return {(c - 'a'), 2};
+        else if (c >= 'n' && c <= 'z')
+            return {(c - 'n'), 3};
+        else if (c >= '0' && c <= '9')
+            return {(c - '0'), 4};
+        else
+        {
+            switch (c)
+            {
+            case '.':
+                return {0, 5};
+            case '(':
+                return {1, 5};
+            case ')':
+                return {2, 5};
+            case '\'':
+                return {3, 5};
+            case '!':
+                return {4, 5};
+            case '%':
+                return {5, 5};
+            case '-':
+                return {6, 5};
+            default:
+                return {12, 5}; // white space
+            }
+        }
+    }
 
 public:
     HUDs(Game_info &_game_info) : game_info(_game_info)
@@ -85,24 +122,27 @@ public:
         engine.get_game().create_entity(std::make_shared<Minimap_view>(Point3f(10412.0f + ((Utils::LEVEL_CAMERA_POS_INI[game_info.get_level()] - 320.0f) / 2528.0f) * 160.0f, -148, 2), Vector2f(48, 48), game_info, engine, 1584));
 
         // TEXT
+        engine.get_game().create_entity(std::make_shared<Text_dynamic>(Point3f(10000, -178, 3), Vector2f(16, 30), engine, game_info, "left",
+                                                                       engine.load_texture("assets/font/font-green.png"),
+                                                                       Vector2i(16, 30), lemmings_font_map, game_info.get_lemming_hovered_type(), 3));
 
-        auto textElement2 = std::make_shared<Dynamic_text_image>(Point3f(10000, -178, 3), Vector2f(112, 30), game_info, engine, Utils::STATS_GAME, &Game_info::get_lemming_hovered_type);
-        engine.get_game().create_entity(textElement2);
+        engine.get_game().create_entity(std::make_shared<Text_displayer>(Point3f(10224, -178, 3), Vector2f(16, 30), game_info, "left", engine.load_texture("assets/font/font-green.png"),
+                                                                         Vector2i(16, 30), lemmings_font_map, "OUT", "TEXT"));
 
-        auto textElement = std::make_shared<Text_image>(Point3f(10224, -178, 3), Vector2f(48, 30), game_info, engine, Utils::STATS_GAME, "OUT");
-        engine.get_game().create_entity(textElement);
+        engine.get_game().create_entity(std::make_shared<Text_displayer>(Point3f(10368, -178, 3), Vector2f(16, 30), game_info, "left", engine.load_texture("assets/font/font-green.png"),
+                                                                         Vector2i(16, 30), lemmings_font_map, "IN", "TEXT"));
 
-        textElement = std::make_shared<Text_image>(Point3f(10368, -178, 3), Vector2f(32, 30), game_info, engine, Utils::STATS_GAME, "IN");
-        engine.get_game().create_entity(textElement);
+        engine.get_game().create_entity(std::make_shared<Text_displayer>(Point3f(10448, -178, 3), Vector2f(16, 30), game_info, "left", engine.load_texture("assets/font/font-green.png"),
+                                                                         Vector2i(16, 30), lemmings_font_map, "%", "TEXT"));
 
-        textElement = std::make_shared<Text_image>(Point3f(10448, -178, 3), Vector2f(16, 30), game_info, engine, Utils::STATS_GAME, "%");
-        engine.get_game().create_entity(textElement);
+        engine.get_game().create_entity(std::make_shared<Text_displayer>(Point3f(10496, -178, 3), Vector2f(16, 30), game_info, "left", engine.load_texture("assets/font/font-green.png"),
+                                                                         Vector2i(16, 30), lemmings_font_map, "TIME", "TEXT"));
 
-        textElement = std::make_shared<Text_image>(Point3f(10496, -178, 3), Vector2f(64, 30), game_info, engine, Utils::STATS_GAME, "TIME");
-        engine.get_game().create_entity(textElement);
+        engine.get_game().create_entity(std::make_shared<Text_displayer>(Point3f(10592, -178, 3), Vector2f(16, 30), game_info, "left", engine.load_texture("assets/font/font-green.png"),
+                                                                         Vector2i(16, 30), lemmings_font_map, "-", "TEXT"));
 
-        textElement = std::make_shared<Text_image>(Point3f(10592, -178, 3), Vector2f(16, 30), game_info, engine, Utils::STATS_GAME, "-");
-        engine.get_game().create_entity(textElement);
+        // auto textElement = std::make_shared<Text_image>(Point3f(10592, -178, 3), Vector2f(16, 30), game_info, engine, Utils::STATS_GAME, "-");
+        // engine.get_game().create_entity(textElement);
 
         Dynamic_value_display display_lemmings_hovered(
             game_info,                        // Referencia a Game_info

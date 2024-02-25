@@ -78,7 +78,7 @@ public:
       engine.get_game().create_entity(credits);
 
       engine.get_game().create_entity(std::make_shared<Credit_animation>(Point3f(10000, 369, 2), Vector2f(640, 31), game_info, engine, 0, 10));
-      engine.get_game().create_entity(std::make_shared<Credit_animation>(Point3f(9997.5, 369, 0), Vector2f(645, 31), game_info, engine, 1, 32));
+      engine.get_game().create_entity(std::make_shared<Credit_animation>(Point3f(10000, 369, 0), Vector2f(640, 31), game_info, engine, 1, 32));
 
       engine.get_game().create_entity(std::make_shared<Menu_animation>(Point3f(10034.7657, 86.158, 1), Vector2f(31.33333, 40.7767), engine, 1, 10, 0.3f, 4.0f, 8.0f, false));
       engine.get_game().create_entity(std::make_shared<Menu_animation>(Point3f(10263.222, 90.559, 1), Vector2f(29.6666667, 29.1262), engine, 2, 8, 0.3f, 6.0f, 8.0f, false));

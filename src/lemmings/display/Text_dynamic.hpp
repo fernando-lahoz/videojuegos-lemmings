@@ -87,5 +87,16 @@ public:
       engine.get_game().create_entity(text);
       return;
     }
+    if (type == 3 && last_text != game_info.get_lemming_hovered_type())
+    {
+      last_text = game_info.get_lemming_hovered_type();
+      text->destroy();
+
+      text = std::make_shared<Text_displayer>(position, letter_size, game_info, justified, font_texture,
+                                              texture_letter_size, map, last_text,
+                                              "TEXT");
+      engine.get_game().create_entity(text);
+      return;
+    }
   }
 };
