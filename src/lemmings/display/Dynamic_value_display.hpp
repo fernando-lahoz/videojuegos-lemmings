@@ -16,10 +16,11 @@ private:
   float digit_width, digit_height, paddingX;
   int (Game_info::*getValueFunction)() const;
   bool is_static_n_digits;
+  bool hide_first_digit;
 
 public:
-  Dynamic_value_display(Game_info &_game_info, Engine &_engine, int _text_type, int _max_digits, float _startX, float _startY, float _digit_width, float _digit_height, float _paddingX, int (Game_info::*_getValueFunction)() const, bool _is_static_n_digits = true)
-      : game_info(_game_info), engine(_engine), max_digits(_max_digits), text_type(_text_type), startX(_startX), startY(_startY), digit_width(_digit_width), digit_height(_digit_height), paddingX(_paddingX), getValueFunction(_getValueFunction), is_static_n_digits(_is_static_n_digits)
+  Dynamic_value_display(Game_info &_game_info, Engine &_engine, int _text_type, int _max_digits, float _startX, float _startY, float _digit_width, float _digit_height, float _paddingX, int (Game_info::*_getValueFunction)() const, bool _is_static_n_digits = true, bool _hide_first_digit = false)
+      : game_info(_game_info), engine(_engine), max_digits(_max_digits), text_type(_text_type), startX(_startX), startY(_startY), digit_width(_digit_width), digit_height(_digit_height), paddingX(_paddingX), getValueFunction(_getValueFunction), is_static_n_digits(_is_static_n_digits), hide_first_digit(_hide_first_digit)
   {
     create_digit_images();
   }
@@ -38,7 +39,8 @@ public:
           i,
           max_digits,
           getValueFunction,
-          is_static_n_digits);
+          is_static_n_digits,
+          hide_first_digit);
       engine.get_game().create_entity(digit_image);
     }
   }

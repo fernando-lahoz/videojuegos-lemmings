@@ -36,6 +36,8 @@ public:
     game_info.start_game_info(levelNumber);
     txt = engine.load_texture(basic_path + std::to_string(levelNumber) + ".png");
     size_map_x = (0.713 / txt.get_height()) * txt.get_width();
+
+    engine.get_game().create_entity(std::make_shared<Entity>(Point3f(0, 0, 100), Vector2f(3168, 320), engine.load_texture("assets/maps/background.png"), "BACKGROUND"));
     switch (levelNumber)
     {
     case 0:

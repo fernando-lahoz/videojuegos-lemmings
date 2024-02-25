@@ -47,7 +47,7 @@ namespace Utils
     CRASHING = 13,
   };
 
-  const std::string LEMMING_TYPE[15] = {"", "WALKER", "FALLER", "BLOCKER", "BUILDER", "CLIMBER", "FLOATER", "", "DIGGER", "BASHER", "MINER", "", "", "", "ATHLETE"};
+  const std::string LEMMING_TYPE[15] = {"WALKER", "WALKER", "FALLER", "BLOCKER", "BUILDER", "CLIMBER", "FLOATER", "", "DIGGER", "BASHER", "MINER", "", "", "", "ATHLETE"};
 
   // HUD CONSTANTS
   const Point3f positions[12] = {Point3f(10320, -148, 3), Point3f(10032, -148, 3), Point3f(10064, -148, 3), Point3f(10096, -148, 3), Point3f(10128, -148, 3), Point3f(10160, -148, 3), Point3f(10192, -148, 3), Point3f(10224, -148, 3), Point3f(10256, -148, 3), Point3f(10288, -148, 3), Point3f(10352, -148, 3)};
@@ -103,7 +103,7 @@ namespace Utils
                                          {"?", "Steel Works", "The Boiler Room", "It's hero time!", "The Crossroads", "Down, along, up. In that order", "One way or another", "Poles Apart", "Last one out is a rotten egg!", "Curse of the Pharaohs", "Pillars of Hercules", "We all fall down", "The Far Side", "The Great Lemming Caper", "Pea Soup", "The Fast Food Kitchen...", "Just a Minute...", "Stepping Stones", "And then there were four....", "Time to get up!", "No added colours or Lemmings", "With a twist of lemming please", "A BeastII of a level", "Going up...", "All or Nothing", "Have a nice day!", "The Steel Mines of Kessel", "Just a Minute (Part Two)", "Mind the step.....", "Save Me", "Rendezvous at the Mountain"}};
 
   // LEVEL DATA
-  const int LEVEL_N_LEMMINGS[31] = {1, 10, 10, 50, 10, 50, 50, 50, 100, 100, 20, 60, 80, 20, 80, 100, 80, 50, 70, 100, 50, 100, 100, 80, 30, 100, 2, 50, 100, 100, 60};
+  const int LEVEL_N_LEMMINGS[31] = {120, 10, 10, 50, 10, 50, 50, 50, 100, 100, 20, 60, 80, 20, 80, 100, 80, 50, 70, 100, 50, 100, 100, 80, 30, 100, 2, 50, 100, 100, 60};
   const int LEVEL_SAVE_LEMMINGS[31] = {7, 1, 1, 5, 10, 5, 10, 25, 95, 90, 10, 50, 40, 20, 60, 80, 50, 20, 50, 70, 40, 60, 80, 20, 20, 50, 2, 25, 60, 60, 40};
   const double LEVEL_TIME_LIMIT[31] = {60.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 300.f, 180.f, 360.f, 480.f, 480.f, 300.f, 300.f, 300.f, 300.f, 480.f, 300.f, 480.f, 300.f, 300.f, 300.f, 300.f, 300.f, 480.f, 300.f};
   const int LEVEL_SPAWN_VELOCITY[31] = {1, 50, 50, 50, 1, 50, 50, 50, 88, 99, 50, 50, 99, 1, 20, 40, 1, 99, 80, 20, 10, 50, 50, 50, 99, 99, 30, 1, 80, 90, 10};

@@ -230,12 +230,12 @@ public:
   void add_n_lemmings_in()
   {
     n_lemmings_in++;
-    percen_lemmings_in = n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[level];
+    percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[level], 100);
   }
   void sub_n_lemmings_in()
   {
     n_lemmings_in--;
-    percen_lemmings_in = n_lemmings_in / Utils::LEVEL_N_LEMMINGS[level];
+    percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[level], 100);
   }
 
   int get_n_lemmings_in() const { return n_lemmings_in; }

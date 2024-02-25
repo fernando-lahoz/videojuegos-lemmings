@@ -19,7 +19,8 @@ class Lemming : public Rigid_body
   float time_frame_sprite = 0.0f; // Acumulador de tiempo para la animación del sprite
   std::string base_path;          // Base para el path de las texturas de animación
   std::string type = "WALKER";
-  bool is_loop;           // Indica si la animación es en bucle
+  bool is_loop; // Indica si la animación es en bucle
+
   bool is_playing = true; // Indica si la animación está actualmente en reproducción
   int current_frame = 0;  // Frame actual de la animación
   float distance_fall = 0.0f;
@@ -44,6 +45,13 @@ class Lemming : public Rigid_body
   std::string get_type()
   {
     return type;
+  }
+
+  void restart_animation()
+  {
+    is_playing = true;
+    current_frame = 0;
+    time_frame_sprite = 0.0f;
   }
 
   void go_idle()
@@ -685,7 +693,7 @@ public:
           // std::cout << "Distance falling: " << distance_fall << std::endl;
 
           speed.y = 0;
-          if (distance_fall >= Utils::MAX_DISTANCE_FALL)
+          if (distance_fall >= Utils::MAX_DISTANCE_FALL && !is_floating())
           {
             go_crash();
           }
@@ -697,7 +705,7 @@ public:
       }
     }
 
-    if (other->get_entity_name() == "Gate")
+    if (other->get_entity_name() == "Gate hitbox")
     {
       on_ground = true;
       go_escape();
@@ -786,15 +794,35 @@ public:
       go_build();
       return;
     }
-    if (!on_ground && !(is_floating() || is_falling() || is_digging() || is_climbing()))
+    if (is_falling() && skills & Utils::FLOAT)
     {
-      if (skills & Utils::FLOAT)
+      go_float();
+    }
+    if (!(is_floating() || is_falling() || is_digging() || is_climbing()))
+    {
+      if (!on_ground)
       {
-        go_float();
+        if (skills & Utils::FLOAT)
+        {
+          go_float();
+        }
+        else
+        {
+          go_fall();
+        }
       }
-      else
+    }
+    else
+    {
+      if (is_hovered)
       {
-        go_fall();
+        game_info.sub_lemmings_hovered();
+        is_hovered = false;
+        if (game_info.get_lemmings_hovered() == 0)
+        {
+
+          game_info.set_lemming_hovered_type("");
+        }
       }
     }
   }
@@ -822,14 +850,14 @@ public:
 
     if (event == EngineIO::InputEvent::MOUSE_HOVER)
     {
-      if (!is_hovered)
+      if (!is_hovered && !((is_escaping() || is_crashing() || is_exploding() || is_drowning())))
       {
         game_info.set_lemming_hovered_type(type);
         game_info.add_lemmings_hovered();
         is_hovered = true;
       }
 
-      if (game_info.get_is_cursor_hover() == false)
+      if (game_info.get_is_cursor_hover() == false && !((is_escaping() || is_crashing() || is_exploding() || is_drowning())))
       {
         game_info.set_cursor_txt("assets/cursor_hover.png", engine);
         game_info.set_is_cursor_hover(true);

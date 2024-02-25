@@ -115,7 +115,8 @@ public:
             30,                               // digitHeight
             0,                                // paddingX
             &Game_info::get_lemmings_hovered, // Función miembro de Game_info
-            false);
+            false,
+            true);
 
         Dynamic_value_display display_lemming_out(
             game_info,                      // Referencia a Game_info
@@ -128,6 +129,7 @@ public:
             30,                             // digitHeight
             0,                              // paddingX
             &Game_info::get_n_lemmings_out, // Función miembro de Game_info
+            false,
             false);
 
         Dynamic_value_display display_lemming_in(
@@ -141,6 +143,7 @@ public:
             30,                                 // digitHeight
             0,                                  // paddingX
             &Game_info::get_percen_lemmings_in, // Función miembro de Game_info
+            false,
             false);
 
         Dynamic_value_display display_minutes_left(

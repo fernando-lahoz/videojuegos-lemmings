@@ -19,7 +19,6 @@
 // TODO: add player vs IA mode
 // TODO: add video intro
 // TODO: add sound effects
-// TODO: add counter explosion above the lemmings
 // TODO: add 16-30 level
 
 class Lemmings_game : public Game
