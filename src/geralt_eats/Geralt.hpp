@@ -8,6 +8,7 @@ class Geralt : public Rigid_body
 {
     Texture txt_left, txt_right;
     Sound oof;
+    EntityPtr ground;
 
 public:
 
@@ -25,6 +26,7 @@ public:
 
         auto& mixer = engine.get_sound_mixer();
         oof = mixer.load_sound("assets/sounds/explode.wav");
+        disable_alpha_mouse();
     }
 
     void update_state(Engine &engine)
@@ -69,6 +71,21 @@ public:
         }
 
         set_speed(speed);
+
+
+        if (engine.is_key_down(EngineIO::ENTER)) // && is_grounded(engine))
+        {
+            Bound2f box;
+            box.pMin = local_to_world(Point2f(0, 0.95));
+            box.pMax = box.pMin + Vector2f(0.1, 0.1);
+
+            bool destroyed = ground->destroy_box_alpha(engine, box);
+            
+            if (!destroyed)
+            {
+                std::cout << "Nothing destroyed\n";
+            }
+        }
     }
 
     void update_position(Engine& engine) override
@@ -79,8 +96,6 @@ public:
 
         engine.intersect_ray(ray_down, get_entity_id(), 
                 RIGID_BODY_ID, hit_offset_down, hit_entity_down);
-
-        std::cout << "Hit offset down: " << hit_offset_down << "\n";
 
         if (is_grounded(engine))
         {
@@ -101,6 +116,11 @@ public:
         if (other->get_entity_name() == "Apple")
         {
             return;
+        }
+
+        if (check_collision_down(other))
+        {
+            ground = other;
         }
 
         Rigid_body::on_collision(engine, other);

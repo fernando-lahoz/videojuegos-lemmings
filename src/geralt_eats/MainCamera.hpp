@@ -22,7 +22,7 @@ public:
         this->world_frame = frame;
     }
 
-    void update_position(Engine& engine) override
+    void update_position([[maybe_unused]]Engine& engine) override
     {
         /* Float delta_time = engine.get_delta_time();
 

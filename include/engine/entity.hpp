@@ -25,6 +25,8 @@ private:
 
     bool _collides_up = false, _collides_down = false,
          _collides_left = false, _collides_right = false;
+        
+    bool alpha_collision = true, alpha_mouse = true;
 
 protected:
     Point3f position;
@@ -49,6 +51,8 @@ public:
 
     Point2f world_to_local(Point2f w_p) const;
     Vector2f world_to_local(Vector2f w_p) const;
+    Bound2f world_to_local(Bound2f box) const;
+
 
     Point2f local_to_world(Point2f l_p) const;
 
@@ -104,12 +108,16 @@ public:
     void enable_mouse_hover();
     void disable_mouse_hover();
 
+    void enable_alpha_collision();
+    void disable_alpha_collision();
+    void enable_alpha_mouse();
+    void disable_alpha_mouse(); 
 
     // Returns true if this entity collides with other.
     //  uses excusive comparisons
     bool collides(std::shared_ptr<Entity> other, Point2f &collision_point) const;
     bool collides(std::shared_ptr<Entity> other) const;
-    bool contains(Point2f point) const;
+    bool contains(Point2f point, bool is_mouse=false) const;
 
     // Returns true if the mouse is pointing inside the visible entity
     bool contains_the_mouse(Engine& engine) const;
@@ -121,6 +129,8 @@ public:
     // Event processing is the second thing executed, 
     //  right after game->on_loop_start()
     virtual void on_event_up(Engine& engine, EngineIO::InputEvent event);
+
+    bool destroy_box_alpha(Engine &engine, Bound2f box);
 
     // This is called right before the physics are computed
     virtual void pre_physics(Engine& engine);

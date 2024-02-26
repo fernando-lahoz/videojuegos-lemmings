@@ -469,7 +469,7 @@ public:
     EntityPtr hit_entity_down;
 
     engine.intersect_ray(ray_down, get_entity_id(),
-                         "MAP", hit_offset_down, hit_entity_down, true);
+                         "MAP", hit_offset_down, hit_entity_down);
   }
 
   void update_state()

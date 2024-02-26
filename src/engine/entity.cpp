@@ -34,6 +34,11 @@ Vector2f Entity::world_to_local(Vector2f w_p) const
     return w_p;
 }
 
+Bound2f Entity::world_to_local(Bound2f box) const
+{
+    return Bound2f(world_to_local(box.pMin), world_to_local(box.pMax));
+}
+
 Point2f Entity::local_to_world(Point2f l_p) const
 {
     auto d = get_diagonal();
@@ -89,6 +94,26 @@ int Entity::get_entity_id() const
 void Entity::set_entity_id(int id)
 {
     entity_id = id;
+}
+
+void Entity::enable_alpha_collision()
+{
+    alpha_collision = true;
+}
+
+void Entity::disable_alpha_collision()
+{
+    alpha_collision = false;
+}
+
+void Entity::enable_alpha_mouse()
+{
+    alpha_mouse = true;
+}
+
+void Entity::disable_alpha_mouse()
+{
+    alpha_mouse = false;
 }
 
 Point2f Entity::max_corner2D() const
@@ -192,25 +217,25 @@ bool Entity::collides(std::shared_ptr<Entity> other, Point2f &collision_point) c
 bool Entity::check_collision_right(std::shared_ptr<Entity> other) const
 {
     auto p = local_to_world(right_point);
-    return other->contains(p);
+    return other->contains(p, false);
 } 
 
 bool Entity::check_collision_left(std::shared_ptr<Entity> other) const
 {
     auto p = local_to_world(left_point);
-    return other->contains(p);
+    return other->contains(p, false);
 }
 
 bool Entity::check_collision_up(std::shared_ptr<Entity> other) const
 {
     auto p = local_to_world(up_point);
-    return other->contains(p);
+    return other->contains(p, false);
 }
 
 bool Entity::check_collision_down(std::shared_ptr<Entity> other) const
 {
     auto p = local_to_world(down_point);
-    return other->contains(p);
+    return other->contains(p, false);
 }
 
 void Entity::override_right_point(Point2f new_p)
@@ -260,14 +285,27 @@ bool Entity::collides(std::shared_ptr<Entity> other) const
     return collides(other, collision_point);
 }
 
-bool Entity::contains(Point2f point) const
+bool Entity::contains(Point2f point, bool is_mouse) const
 {
     if (bound2f().contains(point))
     {
-        return !get_active_texture().is_alpha_pixel(world_to_local(point));
+        if (is_mouse && alpha_mouse)
+            return !get_active_texture().is_alpha_pixel(world_to_local(point));
+        else if (is_mouse)
+            return true;
+
+        if (!is_mouse && alpha_collision)
+            return !get_active_texture().is_alpha_pixel(world_to_local(point));
+        else if (!is_mouse)
+            return true;
     }
 
     return false;
+}
+
+bool Entity::destroy_box_alpha(Engine &engine, Bound2f box)
+{
+    return active_texture.set_alpha_box(world_to_local(box), 0, engine.get_renderer());
 }
 
 bool Entity::contains_the_mouse(Engine& engine) const

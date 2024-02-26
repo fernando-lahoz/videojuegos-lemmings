@@ -87,6 +87,7 @@ public:
     Game& get_game();
     Camera2D& get_main_camera();
     SoundMixer& get_sound_mixer();
+    SDL_Renderer *get_renderer();
 
     // Returns world position of mouse viewed by main camera
     Point2f get_mouse_position();
@@ -117,8 +118,7 @@ public:
             int not_this_entity_id,
             const std::string &force_entity_name,
             Float &hit_offset,
-            EntityPtr &hit_entity,
-            bool debug=false);
+            EntityPtr &hit_entity);
 
     /*
     bool intesect_ray_entity(Ray &ray, 
@@ -130,8 +130,7 @@ public:
     bool ray_march_alpha_init(Ray &ray, Float &offset, 
                             Float min_offset, 
                             Float max_offset, 
-                            EntityPtr entity,
-                            bool debug) const;
+                            EntityPtr entity) const;
 
     bool ray_march_alpha_end(Ray &ray, Float &offset, 
                             Float min_offset, 

@@ -169,12 +169,15 @@ bool Engine::is_entity_hovered(const Entity& entity)
     return hovered_entities.contains(&entity);
 }
 
+SDL_Renderer* Engine::get_renderer()
+{
+    return renderer.get_sdl_renderer();
+}
 
 bool Engine::ray_march_alpha_init(Ray &ray, Float &offset, 
         Float min_offset,
         Float max_offset, 
-        EntityPtr entity,
-        bool debug) const
+        EntityPtr entity) const
 {
     Float search_distance = max_offset - min_offset;
 
@@ -434,8 +437,7 @@ bool Engine::intersect_ray(Ray &ray,
             int not_this_entity_id,
             const std::string &force_entity_name,
             Float &hit_offset, 
-            EntityPtr &hit_entity,
-            bool debug)
+            EntityPtr &hit_entity)
 {
     hit_offset = INFINITY;
 
@@ -469,7 +471,7 @@ bool Engine::intersect_ray(Ray &ray,
 
         if (intersects)
         {
-            intersects = ray_march_alpha_init(ray, offset, offset, max_offset, entity, debug);
+            intersects = ray_march_alpha_init(ray, offset, offset, max_offset, entity);
 
             if (intersects && offset < hit_offset)
             {
@@ -529,98 +531,6 @@ void Engine::set_ignored_events()
         SDL_EventState(event, SDL_IGNORE);
 }
 
-/*
-bool Engine::intesect_ray(Ray &ray, 
-            int not_this_entity_id,
-            const std::string &force_class_name,
-            Float &hit_offset1, 
-            Float &hit_offset2, 
-            EntityPtr &hit_entity)
-{
-    hit_offset1 = INFINITY;
-
-    for (auto &entity : entities)
-    {
-        if (entity->get_entity_id() == not_this_entity_id)
-            continue;
-
-        auto bounding_box = entity->bound2f();
-        Float offset, min_offset, max_offset;
-        Point2f origin;
-        bool intersects = false;
-        origin.x = ray.origin.x;
-        origin.y = ray.origin.y;
-
-        intersects = bounding_box.all_intersections(ray, min_offset, max_offset);
-            
-        if (min_offset > 0)
-            offset = min_offset;
-        else
-            offset = max_offset;
-
-        if (bounding_box.contains(origin)) 
-        {
-            offset = 0;
-            intersects = true;
-        }
- 
-        if (intersects
-            && (offset < hit_offset1)
-            && (entity->get_class() == force_class_name))
-        {
-            if (ray_march_alpha_init(ray, offset, offset, max_offset, entity))
-            {
-                hit_offset1 = min_offset;
-                hit_offset2 = max_offset;
-                hit_entity = entity;
-            }
-        }
-    }
-
-    return hit_offset1 < INFINITY && hit_offset2 > 0;
-}
-
-bool Engine::intesect_ray_entity(Ray &ray, 
-            EntityPtr entity,
-            Float &hit_offset1, 
-            Float &hit_offset2)
-{
-    hit_offset1 = INFINITY;
-
-    auto bounding_box = entity->bound2f();
-    Float offset, min_offset, max_offset;
-    Point2f origin;
-    bool intersects = false;
-    origin.x = ray.origin.x;
-    origin.y = ray.origin.y;
-
-
-    intersects = bounding_box.all_intersections(ray, min_offset, max_offset);
-    
-    if (min_offset > 0)
-        offset = min_offset;
-    else
-        offset = max_offset;
-
-    if (bounding_box.contains(origin)) 
-    {
-        offset = 0;
-        intersects = true;
-    }
-    
-
-    if (intersects && (offset < hit_offset1))
-    {
-        if (ray_march_alpha_init(ray, offset, offset, max_offset, entity))
-        {
-            hit_offset1 = min_offset;
-            hit_offset2 = max_offset;
-        }
-    }
-
-    return hit_offset1 < INFINITY && hit_offset2 > 0;
-}
-*/
 
 void Engine::start()
 {

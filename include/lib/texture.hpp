@@ -9,6 +9,7 @@
 #include "lib/types.hpp"
 #include "geometry/point.hpp"
 #include "lib/error.hpp"
+#include "geometry/bounding_box.hpp"
 
 
 class Texture
@@ -18,6 +19,7 @@ private:
     std::shared_ptr<SDL_Surface> surface {nullptr, SDL_FreeSurface};
     int width {};
     int height {};
+    bool modified = false;
 
     void load_image(const std::string& file, SDL_Renderer* renderer);
 
@@ -38,6 +40,11 @@ public:
 
     // Returns true if the pixel has an alpha value > 128
     bool is_alpha_pixel(Point2f pixel) const;
+
+    void change_pixel(Point2f pixel, u_int8_t rgb[3]);
+    bool set_alpha_pixel(Point2f pixel, u_int8_t alpha, SDL_Renderer *renderer);
+    bool set_alpha_box(Bound2f box, u_int8_t alpha, SDL_Renderer *renderer);
+
 
     int get_width() const;
     int get_height() const;

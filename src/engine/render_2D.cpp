@@ -181,6 +181,11 @@ void Render_2D::render_fixed_text(FixedText& text, Camera2D& camera, Camera2D& m
     }
 }
 
+SDL_Renderer *Render_2D::get_sdl_renderer()
+{
+    return renderer;
+}
+
 Render_2D::Render_2D(const std::string& window_name, int width, int height)
 {
     resolution = Vector2i(width, height);
@@ -334,7 +339,7 @@ std::unordered_set<const Entity*> Render_2D::draw_and_return_hovered(std::vector
             else {
                 bool visible = render_entity(*d, *camera, *cameras[0]);
                 //TODO: should it ignore alpha channel to make it smoother
-                if (visible && d->contains(world_mouse))
+                if (visible && d->contains(world_mouse, true))
                 {
                     hovered_entities.insert(d.get());
                 }
@@ -358,7 +363,7 @@ std::unordered_set<const Entity*> Render_2D::draw_and_return_hovered(std::vector
             else {
                 bool visible = render_entity(*d, *camera, *cameras[0], true);
                 //TODO: should it ignore alpha channel to make it smoother
-                if (visible && d->contains(world_mouse))
+                if (visible && d->contains(world_mouse, true))
                 {
                     hovered_entities.insert(d.get());
                 }

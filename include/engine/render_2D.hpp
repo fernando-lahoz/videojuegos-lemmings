@@ -84,6 +84,8 @@ public:
     //Updates resolution and printable frame
     void update_resolution(Engine& engine);
 
+    SDL_Renderer *get_sdl_renderer();
+
     //TODO: set window resolution
     //TODO: set fullscreen
     void set_fullscreen()
