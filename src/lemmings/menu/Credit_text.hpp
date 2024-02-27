@@ -8,10 +8,10 @@
 class Credit_text : public Rigid_body
 {
 private:
-  std::string text;               // Texto prefijado
-  Game_info &game_info;           // Referencia a Game_info para acceder a la variable que controla la posición
-  int lateral_movement_extent;    // Extensión del movimiento lateral [0, x]
-  float time_frame_credit = 0.0f; // Acumulador de tiempo para la animación del sprite
+  std::string text;                // Texto prefijado
+  Game_info &game_info;            // Referencia a Game_info para acceder a la variable que controla la posición
+  int lateral_movement_extent = 0; // Extensión del movimiento lateral [0, x]
+  float time_frame_credit = 0.0f;  // Acumulador de tiempo para la animación del sprite
 
   int acumulator_frame_passed = 0;
 

@@ -17,7 +17,7 @@ class Dynamic_camera : public Camera2D
 
 public:
     Dynamic_camera(Game_info &_game_info)
-        : Camera2D(Bound2f(Point2f(0, 0), Point2f(1, 1)), Bound2f(Point2f(0, 0), Point2f(800, 800))), game_info(_game_info)
+        : Camera2D(Bound2f(Point2f(1884, 0), Point2f(2524, 320)), Bound2f(Point2f(0, 0), Point2f(640, 320))), game_info(_game_info)
     {
     }
 
