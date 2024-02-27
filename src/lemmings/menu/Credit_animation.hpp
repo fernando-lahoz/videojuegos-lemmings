@@ -24,6 +24,7 @@ public:
         type(_type), frames_credits(_frames_credits), game_info(_game_info)
   {
     txt = engine.load_texture("assets/menu/credit_animation_" + std::to_string(_type) + "_0.png");
+    disable_collisions();
   }
 
   void update_animation(Engine &engine)

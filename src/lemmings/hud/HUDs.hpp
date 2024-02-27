@@ -141,9 +141,6 @@ public:
         engine.get_game().create_entity(std::make_shared<Text_displayer>(Point3f(10592, -178, 3), Vector2f(16, 30), game_info, "left", engine.load_texture("assets/font/font-green.png"),
                                                                          Vector2i(16, 30), lemmings_font_map, "-", "TEXT"));
 
-        // auto textElement = std::make_shared<Text_image>(Point3f(10592, -178, 3), Vector2f(16, 30), game_info, engine, Utils::STATS_GAME, "-");
-        // engine.get_game().create_entity(textElement);
-
         Dynamic_value_display display_lemmings_hovered(
             game_info,                        // Referencia a Game_info
             engine,                           // Instancia de Engine

@@ -20,6 +20,7 @@ public:
         game_info(_game_info),
         menu_type(_menu_type)
   {
+    disable_collisions();
   }
   void on_event_down(Engine &, EngineIO::InputEvent event) override
   {

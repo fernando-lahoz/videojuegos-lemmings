@@ -36,6 +36,7 @@ public:
                                            texture_letter_size, map, _text, "TEXT");
     engine.get_game().create_entity(text_ptr);
     lateral_movement_extent = text.size() * letter_size.x;
+    disable_collisions();
   }
 
   void update_position(Engine &engine) override

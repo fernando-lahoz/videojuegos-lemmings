@@ -286,7 +286,8 @@ public:
     override_down_point(Point2f(0.5, 0.75));
     override_up_point(Point2f(0.5, 0.3));
     override_left_point(Point2f(0.5, 0.45));
-    override_right_point(Point2f(0.5, 0.55));
+    override_right_point(Point2f(0.5, 0.45));
+    disable_alpha_mouse();
   }
 
   void set_dead_marked(bool new_value) { dead_marked = new_value; }
@@ -372,6 +373,11 @@ public:
     return true;
   }
 
+  void remove_skill(int skill)
+  {
+    skills = skills & ~skill;
+  }
+
   /**
    * @brief Checks if the Lemming have a skill.
    *
@@ -429,6 +435,38 @@ public:
       time_frame_sprite = 0.0f;
       current_frame = (current_frame + 1) % Utils::STATE_N_FRAMES[get_state()];
 
+      if (counter)
+      {
+        counter->set_position2D(Point2f(position.x + (diagonal.x / 2) - (counter->get_diagonal().x / 2), position.y - 2));
+      }
+
+      if (is_walking())
+      {
+        if (is_walking())
+        {
+          position.x += 2 * direction;
+          Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
+          Float hit_offset_down;
+          EntityPtr hit_entity_down;
+
+          engine.intersect_ray(ray_down, get_entity_id(),
+                               "MAP", hit_offset_down, hit_entity_down);
+
+          if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
+          {
+            if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 20)
+            {
+              // std::cout << "sube baja altura\n";
+              position.y += (hit_offset_down - diagonal.y / 4);
+            }
+          }
+          else if (hit_offset_down > diagonal.y / 2)
+          {
+            on_ground = false;
+          }
+        }
+      }
+
       if (!Utils::STATE_IS_LOOP_ANIMATION[get_state()] && current_frame == 0)
       {
         is_playing = false; // Detiene la animación si no es en bucle
@@ -478,37 +516,32 @@ public:
     if (update_explode_countdown(engine))
       add_skill_explode_all();
 
-    if (counter)
-    {
-      counter->set_position2D(Point2f(position.x + (diagonal.x / 2) - (counter->get_diagonal().x / 2), position.y - 2));
-    }
-
     // STATES LOGIC
     auto speed = get_speed();
 
     if (is_walking())
     {
-      speed.x = direction * velocity / 2;
-      Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
-      Float hit_offset_down;
-      EntityPtr hit_entity_down;
+      // speed.x = direction * velocity / 2;
+      // Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
+      // Float hit_offset_down;
+      // EntityPtr hit_entity_down;
 
-      engine.intersect_ray(ray_down, get_entity_id(),
-                           "MAP", hit_offset_down, hit_entity_down);
+      // engine.intersect_ray(ray_down, get_entity_id(),
+      //                      "MAP", hit_offset_down, hit_entity_down);
 
-      if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
-      {
-        if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 20)
-        {
-          // std::cout << "sube baja altura\n";
-          position.y += (hit_offset_down - diagonal.y / 4);
-        }
-      }
-      else if (hit_offset_down > diagonal.y / 2)
-      {
-        speed.x = 0;
-        on_ground = false;
-      }
+      // if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
+      // {
+      //   if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 20)
+      //   {
+      //     // std::cout << "sube baja altura\n";
+      //     position.y += (hit_offset_down - diagonal.y / 4);
+      //   }
+      // }
+      // else if (hit_offset_down > diagonal.y / 2)
+      // {
+      //   speed.x = 0;
+      //   on_ground = false;
+      // }
       set_speed(speed);
       return;
     }
@@ -564,6 +597,30 @@ public:
       {
         if (!do_action_in_frame)
         {
+
+          Bound2f box;
+          box.pMin = local_to_world(Point2f(0.25, 0.75));
+          box.pMax = box.pMin + Vector2f(18, 4);
+
+          bool destroyed = false;
+          auto &entities = engine.get_entities();
+          for (auto &entity : entities)
+          {
+            if (entity->get_entity_name() == "MAP")
+            {
+              if (entity->destroy_box_alpha(engine, box))
+              {
+                // std::cout << "HE CAVADO" << std::endl;
+                destroyed = true;
+              }
+            }
+          }
+          if (!destroyed)
+          {
+            remove_skill(Utils::Lemming_Skills::DIG);
+            on_ground = false;
+          }
+
           do_action_in_frame = true;
           speed.x = 0;
           speed.y = velocity;
@@ -673,10 +730,10 @@ public:
 
       if (is_walking())
       {
-        if ((check_collision_left(other) || check_collision_right(other)))
+        if ((check_collision_left(other) && direction == -1) || (check_collision_right(other) && direction == 1))
         {
 
-          position.x -= 1 * direction;
+          position.x -= 3 * direction;
           direction *= -1;
 
           // std::cout << "Lemming turn left\n";
@@ -798,18 +855,11 @@ public:
     {
       go_float();
     }
-    if (!(is_floating() || is_falling() || is_digging() || is_climbing()))
+    if (is_falling() && distance_fall > Utils::MAX_DISTANCE_FALL / 4 && skills & Utils::FLOAT)
     {
       if (!on_ground)
       {
-        if (skills & Utils::FLOAT)
-        {
-          go_float();
-        }
-        else
-        {
-          go_fall();
-        }
+        go_fall();
       }
     }
     else
@@ -906,7 +956,7 @@ public:
   {
     Rigid_body::on_creation(engine);
 
-    // Change type after rigid body creation 
+    // Change type after rigid body creation
     //  (sets by default it to STRUCTURE)
     change_collision_type(engine, Collision_type::CHARACTER);
   }

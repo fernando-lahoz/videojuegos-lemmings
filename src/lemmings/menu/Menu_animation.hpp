@@ -29,6 +29,7 @@ public:
   {
     txt = engine.load_texture("assets/menu/menu_animation_" + std::to_string(_type) + "_0.png");
     time_frame_wait = time_wait;
+    disable_collisions();
   }
 
   void update_animation(Engine &engine)

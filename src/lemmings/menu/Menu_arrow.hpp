@@ -21,6 +21,7 @@ public:
   {
     n = _n;
     txt = engine.load_texture("assets/menu/menu_arrow_" + std::to_string(_n % 2) + ".png");
+    disable_collisions();
   }
 
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override

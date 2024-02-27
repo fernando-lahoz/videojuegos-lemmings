@@ -28,6 +28,7 @@ public:
     }
     is_pressed = !_game_info.get_sound_effects();
     is_changeable = _is_changeable;
+    disable_collisions();
   }
 
   void button_handler(int button_type)

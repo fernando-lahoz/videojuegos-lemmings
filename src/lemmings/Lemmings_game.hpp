@@ -68,6 +68,7 @@ public:
 
   void on_loop_start(Engine &engine) override
   {
+    std::cout << engine.get_delta_time() << std::endl;
     screen.update_game(engine);
   }
 };
