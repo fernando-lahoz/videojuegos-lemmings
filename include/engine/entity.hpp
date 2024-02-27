@@ -17,6 +17,15 @@ class Engine;
 
 class Entity
 {
+
+public:
+
+    enum Collision_type {HUD, STRUCTURE, CHARACTER};
+
+private:
+    Collision_type collision_type = HUD;
+
+
 private:
     Texture active_texture;
     bool deleted_entity = false;
@@ -41,6 +50,8 @@ protected:
     std::string entity_name;
 
 public:
+
+
     Entity(Point3f position, Vector2f diagonal, const Texture& texture, 
             std::string_view _entity_name, 
             std::string_view _class_name = "Entity");
@@ -49,7 +60,8 @@ public:
     //  Ex: Main character
     std::string get_entity_name() const;
 
-    std::shared_ptr<Entity> get_entity_ptr() const;
+    Collision_type get_collision_type() const;
+    void change_collision_type(Engine& engine, Collision_type new_type);
 
     Point2f world_to_local(Point2f w_p) const;
     Vector2f world_to_local(Vector2f w_p) const;
@@ -67,6 +79,7 @@ public:
 
     void set_position2D(Point2f p);
     void set_position3D(Point3f p);
+
 
 
     bool colliding_up() const;
@@ -153,6 +166,9 @@ public:
 
     // This is called after all physics have finished
     virtual void post_physics(Engine& engine);
+
+    // This is called right before the entity is inserted into the engine runtime
+    virtual void on_creation(Engine& engine);
 };
 
 //TODO: custom names for pointers should not be equal for shared and raw

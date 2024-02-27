@@ -6,7 +6,7 @@
 
 #include "lemmings/Game_info.hpp"
 
-class Text_image : public Rigid_body
+class Text_image : public Entity
 {
 protected:
   std::string base_path;
@@ -16,7 +16,8 @@ protected:
 
 public:
   Text_image(Point3f position, Vector2f diagonal, Game_info &_game_info, Engine &engine, int text_type, std::string base_path, bool is_changeable = false)
-      : Rigid_body(position, diagonal, engine.load_texture("assets/text/text_" + std::to_string(text_type) + "_" + base_path + ".png"), "TEXT"),
+      //: Rigid_body(position, diagonal, engine.load_texture("assets/text/text_" + std::to_string(text_type) + "_" + base_path + ".png"), "TEXT"),
+        : Entity(position, diagonal, engine.load_texture("assets/text/text_" + std::to_string(text_type) + "_" + base_path + ".png"), "TEXT"),
         base_path(base_path),
         text_type(text_type),
         is_changeable(is_changeable),

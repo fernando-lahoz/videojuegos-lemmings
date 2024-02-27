@@ -901,4 +901,13 @@ public:
     game_info.sub_n_lemmings_out();
     destroy();
   }
+
+  void on_creation(Engine &engine) override
+  {
+    Rigid_body::on_creation(engine);
+
+    // Change type after rigid body creation 
+    //  (sets by default it to STRUCTURE)
+    change_collision_type(engine, Collision_type::CHARACTER);
+  }
 };

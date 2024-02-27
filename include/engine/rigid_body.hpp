@@ -63,4 +63,5 @@ public:
     void update_position(Engine& engine) override;
 
     void pre_physics(Engine&) override;
+    void on_creation(Engine&) override;
 };

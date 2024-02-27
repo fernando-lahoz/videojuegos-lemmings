@@ -43,9 +43,9 @@ public:
     case 0:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(0, 160, 2), Vector2f(3168, 160), txt, "MAP");
-      auto map1 = std::make_shared<Entity>(Point3f(0, 80, 2), Vector2f(40, 80), txt, "MAP");
-      auto map2 = std::make_shared<Entity>(Point3f(400, 80, 2), Vector2f(40, 80), txt, "MAP");
-      auto map3 = std::make_shared<Entity>(Point3f(800, 80, 2), Vector2f(40, 80), txt, "MAP");
+      auto map1 = std::make_shared<Rigid_body>(Point3f(0, 80, 2), Vector2f(40, 80), txt, "MAP");
+      auto map2 = std::make_shared<Rigid_body>(Point3f(400, 80, 2), Vector2f(40, 80), txt, "MAP");
+      auto map3 = std::make_shared<Rigid_body>(Point3f(800, 80, 2), Vector2f(40, 80), txt, "MAP");
       auto door = std::make_shared<Door>(Point3f(420, 20, 4), engine, 1, 1.0f, levelNumber, game_info);
       // auto gate = std::make_shared<Gate>(Point3f(0.8, 0.25, 21), (0.713f / txt.get_height()) / 2, engine, 1, 0.8f, game_info);
 

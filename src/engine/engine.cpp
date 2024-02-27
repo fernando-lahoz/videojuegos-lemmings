@@ -371,6 +371,8 @@ void Engine::process_new_entities()
     {
         entity->set_entity_id(entities.size());
         entities.push_back(entity);
+
+        entity->on_creation(*this);
     }
 }
 
@@ -431,6 +433,55 @@ SoundMixer& Engine::get_sound_mixer()
 {
     return mixer;
 }
+
+void Engine::change_collision_type(int entity_id, Entity::Collision_type type)
+{
+    auto old_type = entities[entity_id]->get_collision_type();
+
+    // Erase from the old entities set
+    if (old_type == Entity::Collision_type::CHARACTER)
+    {
+        character_entities.erase(entity_id);
+    }
+    else if (old_type == Entity::Collision_type::STRUCTURE)
+    {
+        structure_entities.erase(entity_id);
+    }
+    else if (old_type == Entity::Collision_type::HUD)
+    {
+        hud_entities.erase(entity_id);
+    }
+
+    // Insert into the new entities set
+    if (type == Entity::Collision_type::CHARACTER)
+    {
+        character_entities.insert(entity_id);
+    }
+    else if (type == Entity::Collision_type::STRUCTURE)
+    {
+        structure_entities.insert(entity_id);
+    }
+    else if (type == Entity::Collision_type::HUD)
+    {
+        hud_entities.insert(entity_id);
+    }
+}
+
+std::unordered_set<int>& Engine::get_character_entities()
+{
+    return character_entities;
+}
+
+std::unordered_set<int>& Engine::get_structure_entities()
+{
+    return structure_entities;
+}
+
+std::unordered_set<int>& Engine::get_hud_entities()
+{
+    return hud_entities;
+}
+
 
 
 bool Engine::intersect_ray(Ray &ray, 
@@ -541,7 +592,7 @@ void Engine::start()
     bool quit = false;
     while (!quit && !quit_event)
     {
-        //auto init = std::chrono::steady_clock::now();
+        auto init = std::chrono::steady_clock::now();
         update_delta_time();
         renderer.update_resolution(*this);
         update_mouse_position();
@@ -563,9 +614,9 @@ void Engine::start()
 
         process_cameras();
 
-        //auto end = std::chrono::steady_clock::now();
+        auto end = std::chrono::steady_clock::now();
 
-        //std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
+        std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
 
         // Draw call to renderer
         hovered_entities = renderer.draw_and_return_hovered(entities, cameras, mouse_position);

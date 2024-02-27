@@ -13,6 +13,19 @@ Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture,
     this->class_name = _class_name;
 }
 
+Entity::Collision_type Entity::get_collision_type() const
+{
+    return collision_type;
+}
+
+void Entity::change_collision_type(Engine& engine, Collision_type new_type)
+{
+    engine.change_collision_type(get_entity_id(), new_type);
+
+    // Change type after the engine has been notified
+    //  so it sees the old type
+    collision_type = new_type;
+}
 
 Point2f Entity::world_to_local(Point2f w_p) const
 {
@@ -365,6 +378,13 @@ void Entity::on_collision(Engine&, std::shared_ptr<Entity> other)
 }
 
 void Entity::post_physics(Engine&)
+{
+    // Do nothing by default
+}
+
+// Called right after the entity has been inserted
+//  into the engine runtime
+void Entity::on_creation(Engine&)
 {
     // Do nothing by default
 }

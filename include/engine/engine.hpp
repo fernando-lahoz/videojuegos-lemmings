@@ -55,6 +55,9 @@ private:
     double delta_time; // Delta time in seconds
 
     EntityCollection entities;
+    std::unordered_set<int> hud_entities;
+    std::unordered_set<int> structure_entities;
+    std::unordered_set<int> character_entities;
     std::unordered_set<const Entity*> hovered_entities;
 
     Point2f mouse_position;
@@ -99,6 +102,10 @@ public:
     bool is_cursor_visible();
 
     bool is_entity_hovered(const Entity& entity);
+    void change_collision_type(int id, Entity::Collision_type type);
+    std::unordered_set<int>& get_hud_entities();
+    std::unordered_set<int>& get_structure_entities();
+    std::unordered_set<int>& get_character_entities();
 
     /*
     bool intesect_ray(Ray &ray, 

@@ -269,3 +269,12 @@ void Rigid_body::pre_physics(Engine& engine)
 {
     Entity::pre_physics(engine);
 }
+
+void Rigid_body::on_creation(Engine& engine)
+{
+    Entity::on_creation(engine);
+
+    // Must be called after the entity on creation, 
+    //  as it sets the collision type by default to HUD
+    change_collision_type(engine, Entity::Collision_type::STRUCTURE);
+}
