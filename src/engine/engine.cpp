@@ -573,10 +573,8 @@ void Engine::start()
 
         //std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
 
-        auto &l_entities = get_IO_suscriptions();
-
         // Draw call to renderer
-        hovered_entities = renderer.draw_and_return_hovered(l_entities, cameras, mouse_position);
+        hovered_entities = renderer.draw_and_return_hovered(entities, cameras, mouse_position);
     }
 
     game->on_game_shutdown(*this);
