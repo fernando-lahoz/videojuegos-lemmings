@@ -12,7 +12,7 @@ namespace Utils
   // LEMMINGS CONSTANTS
   const int STATE_IS_LOOP_ANIMATION[14] = {false, true, true, true, true, true, true, false, true, true, true, false, false, false}; // indicates if the animation is loop
   const int STATE_N_FRAMES[14] = {8, 9, 4, 16, 16, 16, 8, 30, 16, 32, 24, 8, 16, 16};                                                // number of frames of each animation
-  const float STATE_ANIMATION_DURATION[14] = {1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};   // duration of each animation in seconds
+  const float STATE_ANIMATION_DURATION[14] = {1.0f, 0.8f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};   // duration of each animation in seconds
   const float MAX_DISTANCE_FALL = 130.0f;
 
   enum Lemming_Skills

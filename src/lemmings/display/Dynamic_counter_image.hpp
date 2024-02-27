@@ -25,42 +25,14 @@ public:
     if (!is_changeable)
       return;
 
-    int currentValue = observedValue; // Usa la referencia al valor observado
-    int relevantDigit = extract_relevant_digit(currentValue);
-    // Decide si este y todos los dígitos superiores son cero
-    bool shouldHideDigit = (!is_static_n_digits) && (relevantDigit == 0) && are_all_higher_digits_zero(currentValue);
-
-    if (relevantDigit != lastDigit && (relevantDigit != 0 && relevantDigit != 6 && relevantDigit != -1))
+    if (observedValue != lastDigit && (observedValue > 0 && observedValue < 6))
     {
-      std::string newPath;
-      if (shouldHideDigit)
-      {
-        newPath = "assets/text/text_0_.png";
-      }
-      else
-      {
-        newPath = "assets/text/text_" + std::to_string(text_type) + "_" + std::to_string(relevantDigit) + ".png";
-      }
-
-      set_active_texture(engine.load_texture(newPath));
-      lastDigit = relevantDigit;
+      set_active_texture(engine.load_texture("assets/text/text_" + std::to_string(text_type) + "_" + std::to_string(observedValue) + ".png"));
+      lastDigit = observedValue;
     }
-    else if (relevantDigit == 0)
+    else if (observedValue == 0)
     {
       destroy();
     }
-  }
-
-private:
-  bool are_all_higher_digits_zero(int value)
-  {
-    int higherValue = value / std::pow(10, maxDigits - digitIndex);
-    return higherValue == 0;
-  }
-
-  int extract_relevant_digit(int value)
-  {
-    int divisor = std::pow(10, maxDigits - digitIndex - 1);
-    return (value / divisor) % 10;
   }
 };
