@@ -14,7 +14,7 @@ void Physics_engine::update_positions(Engine& engine)
 
 void Physics_engine::compute_collisions(Engine& engine)
 {
-    auto &entities = engine.get_collision_suscriptions();
+    auto &entities = engine.get_entities();
 
     // Should vectorize automatically
     for(std::size_t i = 0; i < entities.size(); i++)

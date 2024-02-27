@@ -77,14 +77,12 @@ EngineIO::InputEvent Engine::SDL_to_input_event(SDL_MouseButtonEvent button)
 
 void Engine::send_mouse_hover()
 {
-    auto l_entities = get_IO_suscriptions();
-
-    for (auto& entity : l_entities)
+    for (auto& entity : entities)
     {
         if (entity->is_deleted())
             continue;
 
-        if (hovered_entities.contains(entity))
+        if (hovered_entities.contains(entity.get()))
         {
             entity->enable_mouse_hover();
             entity->on_event_down(*this, EngineIO::InputEvent::MOUSE_HOVER);
@@ -103,9 +101,7 @@ void Engine::send_event_down(EngineIO::InputEvent event)
     for (auto& camera : cameras)
         camera->on_event_down(*this, event);
 
-    auto l_entities = get_IO_suscriptions();
-
-    for (auto &entity : l_entities)
+    for (auto &entity : entities)
     {
         if (!entity->is_deleted())
             entity->on_event_down(*this, event);
@@ -118,9 +114,7 @@ void Engine::send_event_up(EngineIO::InputEvent event)
     for (auto& camera : cameras)
         camera->on_event_up(*this, event);
 
-    auto l_entities = get_IO_suscriptions();
-
-    for (auto &entity : l_entities)
+    for (auto &entity : entities)
     {
         if (!entity->is_deleted())
             entity->on_event_up(*this, event);
@@ -172,7 +166,7 @@ bool Engine::is_cursor_visible()
 
 bool Engine::is_entity_hovered(const Entity& entity)
 {
-    return hovered_entities.contains(entity.get_entity_ptr());
+    return hovered_entities.contains(&entity);
 }
 
 SDL_Renderer* Engine::get_renderer()
@@ -590,26 +584,6 @@ void Engine::quit()
 Engine::EntityCollection &Engine::get_entities()
 {
     return entities;
-}
-
-void Engine::subscribe_to_collision(EntityPtr entity)
-{
-    collision_suscriptions.push_back(entity);
-}
-
-void Engine::subscribe_to_IO(EntityPtr entity)
-{
-    IO_suscriptions.push_back(entity);
-}
-
-std::vector<EntityPtr> &Engine::get_collision_suscriptions()
-{
-    return collision_suscriptions;
-}
-
-std::vector<EntityPtr> &Engine::get_IO_suscriptions()
-{
-    return IO_suscriptions;
 }
 
 Texture Engine::load_texture(const std::string &path)

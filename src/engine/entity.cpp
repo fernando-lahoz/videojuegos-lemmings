@@ -75,11 +75,6 @@ Vector2f Entity::get_diagonal() const
     return diagonal;
 }
 
-std::shared_ptr<Entity> Entity::get_entity_ptr() const
-{
-    return std::make_shared<Entity>(*this);
-}
-
 void Entity::set_position2D(Point2f p)
 {
     position.x = p.x;
