@@ -107,7 +107,7 @@ void Texture::change_pixel(Point2f fpixel, Uint8 rgba[4])
     modified = true;
 }
 
-bool Texture::set_alpha_pixel(Point2f pixel, uint8_t alpha, SDL_Renderer *renderer)
+bool Texture::set_alpha_pixel(Point2f pixel, u_int8_t alpha, SDL_Renderer *renderer)
 {
     Point2i ipixel;
     ipixel.x = pixel.x * get_width();
@@ -194,7 +194,7 @@ bool Texture::set_alpha_pixel(Point2f pixel, uint8_t alpha, SDL_Renderer *render
 }
 
 
-bool Texture::set_alpha_box(Bound2f box, uint8_t alpha, SDL_Renderer *renderer)
+bool Texture::set_alpha_box(Bound2f box, u_int8_t alpha, SDL_Renderer *renderer)
 {
     box.pMin = clamp(box.pMin, Point2f(0, 0), Point2f(1, 1));
     box.pMax = clamp(box.pMax, Point2f(0, 0), Point2f(1, 1));

@@ -12,8 +12,8 @@ class Minimap_view : public Entity
 {
 private:
   Game_info &game_info;
-  float last_position = 0.0f;
-  float calculated_position = 0.0f;
+  float last_position;
+  float calculated_position;
 
 public:
   Minimap_view(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, float _last_position)

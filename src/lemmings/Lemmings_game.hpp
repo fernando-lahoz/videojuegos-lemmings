@@ -20,7 +20,6 @@
 // TODO: add video intro
 // TODO: add sound effects
 // TODO: add 16-30 level
-// TODO: add scene transition
 
 class Lemmings_game : public Game
 {
@@ -64,6 +63,7 @@ public:
     create_entity(cursor);
     create_entity(std::make_shared<Cursor_menu>(engine, game_info, 24));
     screen.go_menu(engine, Utils::MENU_TYPE::TITLE, 0);
+    // screen.go_level(engine, 1);
   }
 
   void on_loop_start(Engine &engine) override
