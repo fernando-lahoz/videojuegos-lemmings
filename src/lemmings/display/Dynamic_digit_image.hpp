@@ -19,6 +19,7 @@ public:
   Dynamic_digit_image(Point3f position, Vector2f diagonal, Game_info &_game_info, Engine &engine, int text_type, int _digitIndex, int _maxDigits, int (Game_info::*_getValueFunction)() const, bool _is_static_n_digits, bool _hide_first_digit = false)
       : Text_image(position, diagonal, _game_info, engine, text_type, "0", true), lastDigit(-1), digitIndex(_digitIndex), maxDigits(_maxDigits), getValueFunction(_getValueFunction), is_static_n_digits(_is_static_n_digits), hide_first_digit(_hide_first_digit)
   {
+    disable_collisions(); 
   }
 
   void update_texture(Engine &engine) override

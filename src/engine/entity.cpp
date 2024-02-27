@@ -281,8 +281,21 @@ Point2f Entity::default_down_point() const
 
 bool Entity::collides(std::shared_ptr<Entity> other) const
 {
+    if (!collisions_active)
+        return false;
+
     Point2f collision_point;
     return collides(other, collision_point);
+}
+
+void Entity::enable_collisions()
+{
+    collisions_active = true;
+}
+
+void Entity::disable_collisions()
+{
+    collisions_active = false;
 }
 
 bool Entity::contains(Point2f point, bool is_mouse) const

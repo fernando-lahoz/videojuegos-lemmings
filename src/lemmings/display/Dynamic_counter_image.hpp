@@ -18,6 +18,7 @@ public:
   Dynamic_counter_image(Point3f position, Vector2f diagonal, Game_info &_game_info, Engine &engine, int text_type, int _digitIndex, int _maxDigits, const int &_observedValue, bool _is_static_n_digits)
       : Text_image(position, diagonal, _game_info, engine, text_type, "5", true), lastDigit(-1), digitIndex(_digitIndex), maxDigits(_maxDigits), observedValue(_observedValue), is_static_n_digits(_is_static_n_digits)
   {
+    disable_collisions();
   }
 
   void update_texture(Engine &engine) override

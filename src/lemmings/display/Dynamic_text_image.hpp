@@ -15,6 +15,7 @@ public:
       : Text_image(position, diagonal, _game_info, engine, text_type, "", true), // "default" es el path inicial, ajusta según sea necesario
         getTextFunction(_getTextFunction)
   {
+    disable_collisions();
   }
 
   void update_texture(Engine &engine) override

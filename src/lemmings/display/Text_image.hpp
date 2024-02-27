@@ -22,6 +22,7 @@ public:
         is_changeable(is_changeable),
         game_info(_game_info)
   {
+    disable_collisions();
   }
 
   virtual void update_texture(Engine &) {}

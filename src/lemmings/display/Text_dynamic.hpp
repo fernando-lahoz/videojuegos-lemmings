@@ -45,6 +45,7 @@ public:
                                             texture_letter_size, map, _text,
                                             "TEXT");
     engine.get_game().create_entity(text);
+    disable_collisions();
   }
 
   ~Text_dynamic()

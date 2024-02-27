@@ -21,5 +21,6 @@ public:
         justified(_justified),
         game_info(_game_info)
   {
+    disable_collisions();
   }
 };

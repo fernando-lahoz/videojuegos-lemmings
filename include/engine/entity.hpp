@@ -28,6 +28,8 @@ private:
         
     bool alpha_collision = true, alpha_mouse = true;
 
+    bool collisions_active = true;
+
 protected:
     Point3f position;
     Vector2f diagonal;
@@ -71,6 +73,9 @@ public:
     bool colliding_down() const;
     bool colliding_left() const;
     bool colliding_right() const;
+
+    void enable_collisions();
+    void disable_collisions();
 
 
     bool check_collision_right(std::shared_ptr<Entity> other) const;
