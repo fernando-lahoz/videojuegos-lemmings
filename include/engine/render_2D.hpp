@@ -104,6 +104,6 @@ public:
     Point2f raster_to_world(Point2f raster_point, Camera2D& camera, Camera2D& main_camera);
     Vector2f raster_to_world(Vector2f raster_vector, Camera2D& camera, Camera2D& main_camera);
 
-    std::unordered_set<const Entity*> draw_and_return_hovered(std::vector<EntityPtr> &entities,
+    std::unordered_set<EntityPtr> draw_and_return_hovered(std::vector<EntityPtr> &entities,
             std::vector<std::shared_ptr<Camera2D>>& cameras, Point2f mouse_position);
 };

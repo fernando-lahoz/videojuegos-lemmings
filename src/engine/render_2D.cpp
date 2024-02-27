@@ -311,12 +311,12 @@ void Render_2D::update_resolution(Engine& engine)
 }
 
 // Draws and returns mouse-hovered entities
-std::unordered_set<const Entity*> Render_2D::draw_and_return_hovered(std::vector<EntityPtr> &entities,
+std::unordered_set<EntityPtr> Render_2D::draw_and_return_hovered(std::vector<EntityPtr> &entities,
         std::vector<std::shared_ptr<Camera2D>>& cameras, Point2f mouse_position)
 {
     clear_window();
 
-    std::unordered_set<const Entity*> hovered_entities;
+    std::unordered_set<EntityPtr> hovered_entities;
     Engine::EntityCollection::iterator over_bands_begin = entities.end();
     for (auto& camera : cameras | std::views::reverse)
     {
@@ -341,7 +341,7 @@ std::unordered_set<const Entity*> Render_2D::draw_and_return_hovered(std::vector
                 //TODO: should it ignore alpha channel to make it smoother
                 if (visible && d->contains(world_mouse, true))
                 {
-                    hovered_entities.insert(d.get());
+                    hovered_entities.insert(d);
                 }
             }
         }
@@ -365,7 +365,7 @@ std::unordered_set<const Entity*> Render_2D::draw_and_return_hovered(std::vector
                 //TODO: should it ignore alpha channel to make it smoother
                 if (visible && d->contains(world_mouse, true))
                 {
-                    hovered_entities.insert(d.get());
+                    hovered_entities.insert(d);
                 }
             }
         }

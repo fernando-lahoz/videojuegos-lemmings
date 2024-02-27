@@ -55,7 +55,9 @@ private:
     double delta_time; // Delta time in seconds
 
     EntityCollection entities;
-    std::unordered_set<const Entity*> hovered_entities;
+    std::unordered_set<EntityPtr> hovered_entities;
+    std::vector<EntityPtr> collision_suscriptions;
+    std::vector<EntityPtr> IO_suscriptions;
 
     Point2f mouse_position;
     bool quit_event = false;
@@ -82,12 +84,18 @@ public:
     void set_window_icon(const std::string& path);
     void set_fullscreen();
     EntityCollection& get_entities();
+    std::vector<EntityPtr>& get_collision_suscriptions();
+    std::vector<EntityPtr>& get_IO_suscriptions();
+    
     double get_delta_time();
     void destroy_all_entities();
     Game& get_game();
     Camera2D& get_main_camera();
     SoundMixer& get_sound_mixer();
     SDL_Renderer *get_renderer();
+
+    void subscribe_to_collision(EntityPtr entity);
+    void subscribe_to_IO(EntityPtr entity);
 
     // Returns world position of mouse viewed by main camera
     Point2f get_mouse_position();
@@ -163,5 +171,4 @@ public:
     bool is_esc_down() const;
     bool is_tab_down() const;
     bool is_backspace_down() const;
-
 };
