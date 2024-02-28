@@ -137,19 +137,6 @@ bool Render_2D::render_entity(Entity& entity, Camera2D& camera, Camera2D& main_c
         
         auto texture = entity.get_active_texture();
 
-        // auto cam_bound = camera.get_world_frame();
-        // auto cam_rect = bound_to_rect(cam_bound, camera, main_camera);
-
-        // rect.x = std::max(cam_rect.x, rect.x);
-        // rect.y = std::max(cam_rect.y, rect.y);
-        // rect.w = std::min(rect.w, cam_rect.w - std::abs(cam_rect.x - rect.x));
-        // rect.h = std::min(rect.h, cam_rect.h - std::abs(cam_rect.y - rect.y));
-
-        // SDL_Rect clip;
-        // clip.x = (int) (((cam_bound.pMin.x - e_bound.pMin.x) * texture.get_width()) / e_bound.width());
-        // clip.y = (int) (((cam_bound.pMin.y - e_bound.pMin.y) * texture.get_height()) / e_bound.height());
-        // clip.w = (int) ((cam_bound.width() * texture.get_width()) / e_bound.width());
-        // clip.h = (int) ((cam_bound.height() * texture.get_height()) / e_bound.height());
         SDL_RenderCopy(renderer, texture.get(), nullptr, &rect);
         return true;  
     }
