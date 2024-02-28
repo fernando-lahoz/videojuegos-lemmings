@@ -4,12 +4,14 @@
 #include "lemmings/Game_info.hpp"
 #include "lemmings/Level.hpp"
 #include "lemmings/menu/Menu.hpp"
+#include "lemmings/screen/Transition.hpp"
 
 class Screen_manager
 {
 private:
   Level level;
   Menu menu;
+  std::shared_ptr<Transition> transition;
 
   Game_info &game_info;
 
@@ -50,19 +52,21 @@ public:
 
   void update_game(Engine &engine)
   {
-    if (game_info.get_do_action() == Utils::ACTIONS::GO_MENU)
+    if (game_info.get_do_action() == Utils::ACTIONS::GO_MENU && game_info.get_is_transition_done())
     {
+      game_info.set_is_transition_done(false);
       clear_screen(engine);
       std::cout << "GO TO MENU" << std::endl;
       go_menu(engine, game_info.get_build_menu(), game_info.get_level());
     }
-    else if (game_info.get_do_action() == Utils::ACTIONS::GO_LEVEL)
+    else if (game_info.get_do_action() == Utils::ACTIONS::GO_LEVEL && game_info.get_is_transition_done())
     {
+      game_info.set_is_transition_done(false);
       clear_screen(engine);
       std::cout << "GO TO LEVEL" << std::endl;
       go_level(engine, game_info.get_build_level());
     }
-    else // Utils::ACTIONS::NO_ACTION
+    else if (game_info.get_do_action() == Utils::ACTIONS::NO_ACTION)
     {
       if (game_info.get_actual_state() == Utils::STATE::GAME)
       {
@@ -76,20 +80,30 @@ public:
 
         if (game_info.get_time_left() > 0.0f && !game_info.get_level_ended())
         {
+
           if (!game_info.get_level_is_paused())
           {
-            game_info.set_time_left(game_info.get_time_left() - engine.get_delta_time());
+            game_info.set_time_left(game_info.get_time_left() - engine.get_delta_time() * game_info.get_game_speed());
           }
         }
         else
         {
           std::cout << "LEMMINGS OUT: " << game_info.get_n_lemmings_out() << std::endl;
           std::cout << "GAME OVER" << std::endl;
+          game_info.set_do_transition(true);
           game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_OUTRO);
           game_info.set_do_action(Utils::ACTIONS::GO_MENU);
           // game_info.set_build_level(game_info.get_build_level() + 1);
           // game_info.set_do_action(Utils::ACTIONS::GO_LEVEL);
         }
+      }
+    }
+    else
+    {
+      if (game_info.get_do_transition())
+      {
+        game_info.set_do_transition(false);
+        engine.get_game().create_entity(std::make_shared<Transition>(engine, game_info, 0.5f));
       }
     }
   }

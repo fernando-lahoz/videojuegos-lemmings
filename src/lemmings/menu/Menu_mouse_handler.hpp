@@ -29,11 +29,11 @@ public:
       std::cout << "MENU HANDLER: Left mouse pressed" << std::endl;
       if (menu_type == Utils::MENU_TYPE::TITLE)
       {
-        /* code */
         return;
       }
       if (menu_type == Utils::MENU_TYPE::LEVEL_INTRO)
       {
+        game_info.set_do_transition(true);
         game_info.set_build_level(game_info.get_level());
         game_info.set_do_action(Utils::ACTIONS::GO_LEVEL);
         return;
@@ -52,11 +52,13 @@ public:
           game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level() + 1);
         }
 
+        game_info.set_do_transition(true);
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
       if (menu_type == Utils::MENU_TYPE::LEVEL_SELECTOR && !game_info.get_is_arrow_hovered())
       {
+        game_info.set_do_transition(true);
         game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level_selected());
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
@@ -73,6 +75,7 @@ public:
       }
       if (menu_type == Utils::MENU_TYPE::LEVEL_INTRO)
       {
+        game_info.set_do_transition(true);
         game_info.set_build_level(game_info.get_level());
         game_info.set_do_action(Utils::ACTIONS::GO_LEVEL);
         return;
@@ -90,6 +93,7 @@ public:
         {
           game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level() + 1);
         }
+        game_info.set_do_transition(true);
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
@@ -97,6 +101,7 @@ public:
       {
         game_info.set_build_menu(Utils::MENU_TYPE::TITLE);
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        game_info.set_do_transition(true);
         return;
       }
     }

@@ -47,7 +47,7 @@ public:
     if (!is_playing)
       return;
 
-    time_frame_sprite += engine.get_delta_time();
+    time_frame_sprite += engine.get_delta_time() * game_info.get_game_speed();
     if (time_frame_sprite >= animation_duration / max_frames)
     {
       time_frame_sprite = 0.0f;

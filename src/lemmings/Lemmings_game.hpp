@@ -13,7 +13,7 @@
 #include "lemmings/cursor/Cursor.hpp"
 #include "lemmings/cursor/Cursor_menu.hpp"
 #include "lemmings/utils.hpp"
-#include "lemmings/Screen_manager.hpp"
+#include "lemmings/screen/Screen_manager.hpp"
 
 // TODO: add movements to the lemming (BUILD, CLIMB, BASH, MINING)
 // TODO: add player vs IA mode
@@ -63,7 +63,6 @@ public:
     create_entity(cursor);
     create_entity(std::make_shared<Cursor_menu>(engine, game_info, 24));
     screen.go_menu(engine, Utils::MENU_TYPE::TITLE, 0);
-    // screen.go_level(engine, 1);
   }
 
   void on_loop_start(Engine &engine) override

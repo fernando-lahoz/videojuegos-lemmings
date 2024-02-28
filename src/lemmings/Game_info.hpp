@@ -10,11 +10,13 @@ class Game_info
 {
 private:
   // global settings
-  int do_action = Utils::NO_ACTION;
+  int do_action = Utils::ACTIONS::NO_ACTION;
   int actual_state = Utils::MENU;
   bool sound_effects = true;
   int build_level = 0;
   int build_menu = 0;
+  bool is_transition_done = false;
+  bool do_transition = false;
 
   // credits
   int credit_frame = 0;
@@ -90,6 +92,12 @@ public:
 
   void set_do_action(int action) { do_action = action; }
   int get_do_action() const { return do_action; }
+
+  void set_is_transition_done(bool new_value) { is_transition_done = new_value; }
+  bool get_is_transition_done() const { return is_transition_done; }
+
+  void set_do_transition(bool new_value) { do_transition = new_value; }
+  bool get_do_transition() const { return do_transition; }
 
   void add_level_selected() { level_selected = math::min(level_selected + 1, 30); }
   void sub_level_selected() { level_selected = math::max(level_selected - 1, 0); }

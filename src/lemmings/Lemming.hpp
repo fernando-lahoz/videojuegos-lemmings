@@ -407,7 +407,7 @@ public:
     {
       // Restamos el delta time si el tiempo de vida es mayor a cero
       if (time_to_live > 0.0f)
-        time_to_live -= engine.get_delta_time();
+        time_to_live -= engine.get_delta_time() * game_info.get_game_speed();
 
       // Si se acaba el tiempo explotamos
       if (time_to_live <= 0.0f)
@@ -437,7 +437,7 @@ public:
     if (!is_playing)
       return;
 
-    time_frame_sprite += engine.get_delta_time();
+    time_frame_sprite += engine.get_delta_time() * game_info.get_game_speed();
     if (time_frame_sprite >= Utils::STATE_ANIMATION_DURATION[get_state()] / Utils::STATE_N_FRAMES[get_state()])
     {
       time_frame_sprite = 0.0f;

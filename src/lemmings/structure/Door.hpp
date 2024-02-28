@@ -30,7 +30,7 @@ public:
 
     if (!is_playing)
     { // Espera a que la animación termine para comenzar a invocar
-      spawn_timer += engine.get_delta_time();
+      spawn_timer += engine.get_delta_time() * game_info.get_game_speed();
       if (spawn_timer >= 0.1 + (game_info.get_spawn_velocity() / 50.0f) && spawned_lemmings < Utils::LEVEL_N_LEMMINGS[level] && !game_info.get_all_die())
       {
         // Lógica para invocar Lemmings

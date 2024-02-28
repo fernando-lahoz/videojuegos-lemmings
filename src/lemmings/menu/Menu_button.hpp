@@ -35,11 +35,13 @@ public:
   {
     if (button_type == Utils::PLAYER_SOLO)
     {
+      game_info.set_do_transition(true);
       game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_SELECTOR, 0);
       game_info.set_do_action(Utils::ACTIONS::GO_MENU);
     }
     else if (button_type == Utils::PLAYER_VS_IA)
     {
+      game_info.set_do_transition(true);
       game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, 0);
       game_info.set_do_action(Utils::ACTIONS::GO_MENU);
     }
