@@ -64,6 +64,7 @@ Rigid_body::Rigid_body(Point3f position, Vector2f diagonal, Texture texture,
     down_point = default_down_point();
 
     disable_gravity();
+    constructor_set_collision_type(Collision_type::STRUCTURE);
 }
 
 void Rigid_body::set_gravity(Float new_gravity)
@@ -273,8 +274,4 @@ void Rigid_body::pre_physics(Engine& engine)
 void Rigid_body::on_creation(Engine& engine)
 {
     Entity::on_creation(engine);
-
-    // Must be called after the entity on creation, 
-    //  as it sets the collision type by default to HUD
-    change_collision_type(engine, Entity::Collision_type::STRUCTURE);
 }

@@ -40,6 +40,9 @@ private:
     void update_mouse_position();
     void change_input_state(EngineIO::InputEvent key, bool is_down);
     void set_ignored_events();
+    
+    void set_collision_type(Entity* entity, Entity::Collision_type type);
+    void erase_collision_type(Entity* entity, Entity::Collision_type type);
 
     EngineIO::InputEvent SDL_to_input_event(SDL_KeyboardEvent key);
     EngineIO::InputEvent SDL_to_input_event(SDL_MouseButtonEvent key);
@@ -55,10 +58,10 @@ private:
     double delta_time; // Delta time in seconds
 
     EntityCollection entities;
-    std::unordered_set<int> hud_entities;
-    std::unordered_set<int> structure_entities;
-    std::unordered_set<int> character_entities;
-    std::unordered_set<const Entity*> hovered_entities;
+    std::unordered_set<Entity*> hud_entities;
+    std::unordered_set<Entity*> structure_entities;
+    std::unordered_set<Entity*> character_entities;
+    std::unordered_set<Entity*> hovered_entities;
 
     Point2f mouse_position;
     bool quit_event = false;
@@ -101,11 +104,12 @@ public:
     void hide_cursor();
     bool is_cursor_visible();
 
-    bool is_entity_hovered(const Entity& entity);
-    void change_collision_type(int id, Entity::Collision_type type);
-    std::unordered_set<int>& get_hud_entities();
-    std::unordered_set<int>& get_structure_entities();
-    std::unordered_set<int>& get_character_entities();
+    bool is_entity_hovered(Entity& entity);
+    void change_collision_type(Entity* entity, Entity::Collision_type new_type);
+
+    std::unordered_set<Entity*>& get_hud_entities();
+    std::unordered_set<Entity*>& get_structure_entities();
+    std::unordered_set<Entity*>& get_character_entities();
 
     /*
     bool intesect_ray(Ray &ray, 

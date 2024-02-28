@@ -61,7 +61,11 @@ public:
     std::string get_entity_name() const;
 
     Collision_type get_collision_type() const;
-    void change_collision_type(Engine& engine, Collision_type new_type);
+
+    void constructor_set_collision_type(Collision_type new_type);
+
+    // This must only be used in the constructor of the entity 
+    void change_collision_type(Engine &engine, Collision_type new_type);
 
     Point2f world_to_local(Point2f w_p) const;
     Vector2f world_to_local(Vector2f w_p) const;
@@ -138,7 +142,7 @@ public:
     bool contains(Point2f point, bool is_mouse=false) const;
 
     // Returns true if the mouse is pointing inside the visible entity
-    bool contains_the_mouse(Engine& engine) const;
+    bool contains_the_mouse(Engine& engine);
 
     // Event processing is the second thing executed, 
     //  right after game->on_loop_start()
@@ -167,7 +171,7 @@ public:
     // This is called after all physics have finished
     virtual void post_physics(Engine& engine);
 
-    // This is called right before the entity is inserted into the engine runtime
+    // This is called right after the entity is inserted into the engine runtime
     virtual void on_creation(Engine& engine);
 };
 

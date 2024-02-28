@@ -14,28 +14,27 @@ void Physics_engine::update_positions(Engine& engine)
 
 void Physics_engine::compute_collisions(Engine& engine)
 {
-    auto &entities = engine.get_entities();
-    auto &huds = engine.get_hud_entities();
+    //auto &huds = engine.get_hud_entities();
     auto &structures = engine.get_structure_entities();
     auto &characters = engine.get_character_entities();
 
 
-    for (auto &structure_id : structures)
+    for (auto &structure : structures)
     {
-        auto structure = entities[structure_id];
+        auto shared_structure = std::make_shared<Entity>(*structure);
 
-        for (auto &character_id : characters)
+        for (auto &character : characters)
         {
-            auto character = entities[character_id];
+            auto shared_character = std::make_shared<Entity>(*character);
 
-            if (structure->collides(character))
+            if (structure->collides(shared_character))
             {
-                structure->on_collision(engine, character);
+                structure->on_collision(engine, shared_character);
             }
 
-            if (character->collides(structure))
+            if (character->collides(shared_structure))
             {
-                character->on_collision(engine, structure);
+                character->on_collision(engine, shared_structure);
             }
         }
     }

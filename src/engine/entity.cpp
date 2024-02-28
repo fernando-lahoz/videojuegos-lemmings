@@ -18,9 +18,14 @@ Entity::Collision_type Entity::get_collision_type() const
     return collision_type;
 }
 
-void Entity::change_collision_type(Engine& engine, Collision_type new_type)
+void Entity::constructor_set_collision_type(Collision_type new_type)
 {
-    engine.change_collision_type(get_entity_id(), new_type);
+    collision_type = new_type;
+}
+
+void Entity::change_collision_type(Engine &engine, Collision_type new_type)
+{
+    engine.change_collision_type(this, new_type);
 
     // Change type after the engine has been notified
     //  so it sees the old type
@@ -334,7 +339,7 @@ bool Entity::destroy_box_alpha(Engine &engine, Bound2f box)
     return active_texture.set_alpha_box(world_to_local(box), 0, engine.get_renderer());
 }
 
-bool Entity::contains_the_mouse(Engine& engine) const
+bool Entity::contains_the_mouse(Engine& engine)
 {
     return engine.is_entity_hovered(*this);
 }

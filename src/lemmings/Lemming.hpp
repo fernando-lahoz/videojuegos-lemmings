@@ -31,7 +31,7 @@ class Lemming : public Rigid_body
 
   int skills = Utils::NO_SKILLS;
 
-  int state = Utils::IDLE;
+  int state = Utils::FALLING;
 
   int direction = 1; // Comienza moviéndose hacia la derecha
 
@@ -281,6 +281,8 @@ public:
                    "Lemming", "Lemming"),
         game_info(_game_info), engine(_engine)
   {
+    constructor_set_collision_type(Collision_type::CHARACTER);
+
     // gravity = 3;
     // enable_gravity();
     override_down_point(Point2f(0.5, 0.75));
