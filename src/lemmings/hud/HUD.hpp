@@ -79,10 +79,12 @@ public:
         game_info.set_spawn_ended();
         game_info.set_all_die(true);
         auto &entities = engine.get_entities();
+        int j = 0;
         for (std::size_t i = 0; i < entities.size(); i++)
         {
           if (entities[i]->get_entity_name() == "Lemming")
           {
+            j++;
             std::shared_ptr<Lemming> lemming_ptr = std::dynamic_pointer_cast<Lemming>(entities[i]);
             if (lemming_ptr)
             {
@@ -90,6 +92,8 @@ public:
             }
           }
         }
+        if (j == 0)
+          game_info.set_level_ended();
       }
       else if (n == Utils::HUD_ADD_SPAWN_VELOCITY)
       {

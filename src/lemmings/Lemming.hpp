@@ -109,6 +109,7 @@ class Lemming : public Rigid_body
   {
     state = Utils::BLOCKING;
     type = Utils::LEMMING_TYPE[Utils::BLOCKING];
+
     // std::cout << "GO BLOCKING\n";
   }
 
@@ -290,6 +291,11 @@ public:
     override_left_point(Point2f(0.5, 0.45));
     override_right_point(Point2f(0.5, 0.45));
     disable_alpha_mouse();
+  }
+  ~Lemming()
+  {
+    if (counter)
+      counter->destroy();
   }
 
   void set_dead_marked(bool new_value) { dead_marked = new_value; }
@@ -723,12 +729,12 @@ public:
 
     if (other->get_entity_name() == "MAP" || other->get_entity_name() == "Lemming")
     {
-      if (other->get_entity_name() == "Lemming")
-      {
-        std::shared_ptr<Lemming> lemming_ptr = std::dynamic_pointer_cast<Lemming>(other);
-        if (lemming_ptr && lemming_ptr->get_state() != Utils::BLOCKING)
-          return;
-      }
+      // if (other->get_entity_name() == "Lemming")
+      // {
+      //   std::shared_ptr<Lemming> lemming_ptr = std::dynamic_pointer_cast<Lemming>(other);
+      //   if (lemming_ptr && lemming_ptr->get_state() != Utils::BLOCKING)
+      //     return;
+      // }
 
       if (is_walking())
       {
@@ -831,6 +837,7 @@ public:
     if (skills & Utils::BLOCK)
     {
       go_block();
+      change_collision_type(engine, Entity::Collision_type::STRUCTURE);
       return;
     }
     if (skills & Utils::DIG)
@@ -853,11 +860,11 @@ public:
       go_build();
       return;
     }
-    if (is_falling() && skills & Utils::FLOAT)
+    if (is_falling() && distance_fall > Utils::MAX_DISTANCE_FALL / 4 && skills & Utils::FLOAT)
     {
       go_float();
     }
-    if (is_falling() && distance_fall > Utils::MAX_DISTANCE_FALL / 4 && skills & Utils::FLOAT)
+    if (!(is_floating() || is_falling() || is_climbing()))
     {
       if (!on_ground)
       {

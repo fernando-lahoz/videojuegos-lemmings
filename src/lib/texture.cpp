@@ -1,11 +1,11 @@
 #include "lib/texture.hpp"
 
 // Load a texture from a file
-void Texture::load_image(const std::string& file, SDL_Renderer* renderer)
+void Texture::load_image(const std::string &file, SDL_Renderer *renderer)
 {
     SDL_Surface *sdl_surface = nullptr;
     SDL_Texture *sdl_texture = nullptr;
-    
+
     sdl_surface = IMG_Load(file.c_str());
     if (sdl_surface == nullptr)
         throw std::runtime_error("Failed to load image \"" + file + "\"");
@@ -18,20 +18,19 @@ void Texture::load_image(const std::string& file, SDL_Renderer* renderer)
     texture = std::shared_ptr<SDL_Texture>(sdl_texture, SDL_DestroyTexture);
 }
 
-Texture::Texture(SDL_Texture* sdl_texture)
+Texture::Texture(SDL_Texture *sdl_texture)
     : texture{sdl_texture, SDL_DestroyTexture}
 {
     SDL_QueryTexture(sdl_texture, nullptr, nullptr, &width, &height);
 }
 
+Texture::Texture(const Texture &other)
+    : texture{other.texture}, surface{other.surface},
+      width{other.width}, height{other.height}
+{
+}
 
-Texture::Texture(const Texture& other)
-    : texture{other.texture}, surface{other.surface}, 
-        width{other.width}, height{other.height}
-{ }
-
-
-Texture& Texture::operator=(const Texture& other)
+Texture &Texture::operator=(const Texture &other)
 {
     this->texture = other.texture;
     this->surface = other.surface;
@@ -41,9 +40,7 @@ Texture& Texture::operator=(const Texture& other)
     return *this;
 }
 
-
-
-void Texture::load(const std::string& file, SDL_Renderer* renderer)
+void Texture::load(const std::string &file, SDL_Renderer *renderer)
 {
     load_image(file, renderer);
     SDL_QueryTexture(texture.get(), nullptr, nullptr, &width, &height);
@@ -61,7 +58,6 @@ void Texture::change_pixel(Point2f fpixel, Uint8 rgba[4])
     pixel.x = fpixel.x * get_width();
     pixel.y = fpixel.y * get_height();
 
-
     if (!modified)
     {
         // Copy the surface to a new one
@@ -72,19 +68,20 @@ void Texture::change_pixel(Point2f fpixel, Uint8 rgba[4])
     }
 
     int bpp = surface->format->BytesPerPixel;
-    Uint8* p = (Uint8*)surface->pixels + pixel.y * surface->pitch + pixel.x * bpp;
+    Uint8 *p = (Uint8 *)surface->pixels + pixel.y * surface->pitch + pixel.x * bpp;
 
     Uint32 new_pixel_value = SDL_MapRGBA(surface->format, rgba[0], rgba[1], rgba[2], rgba[3]);
 
-    switch(bpp) {
+    switch (bpp)
+    {
     case 1:
         *p = new_pixel_value;
         break;
     case 2:
-        *(Uint16*)p = new_pixel_value;
+        *(Uint16 *)p = new_pixel_value;
         break;
     case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
         {
             p[0] = (new_pixel_value >> 16) & 0xff;
             p[1] = (new_pixel_value >> 8) & 0xff;
@@ -98,7 +95,7 @@ void Texture::change_pixel(Point2f fpixel, Uint8 rgba[4])
         }
         break;
     case 4:
-        *(Uint32*)p = new_pixel_value;
+        *(Uint32 *)p = new_pixel_value;
         break;
     default:
         throw std::runtime_error("Unknown pixel format");
@@ -107,7 +104,7 @@ void Texture::change_pixel(Point2f fpixel, Uint8 rgba[4])
     modified = true;
 }
 
-bool Texture::set_alpha_pixel(Point2f pixel, u_int8_t alpha, SDL_Renderer *renderer)
+bool Texture::set_alpha_pixel(Point2f pixel, uint8_t alpha, SDL_Renderer *renderer)
 {
     Point2i ipixel;
     ipixel.x = pixel.x * get_width();
@@ -126,30 +123,30 @@ bool Texture::set_alpha_pixel(Point2f pixel, u_int8_t alpha, SDL_Renderer *rende
     }
 
     int bpp = surface->format->BytesPerPixel;
-    Uint8* p = (Uint8*)surface->pixels + ipixel.y * surface->pitch + ipixel.x * bpp;
+    Uint8 *p = (Uint8 *)surface->pixels + ipixel.y * surface->pitch + ipixel.x * bpp;
 
     Uint32 pixel_value;
-    switch(bpp) {
+    switch (bpp)
+    {
     case 1:
         pixel_value = *p;
         break;
     case 2:
-        pixel_value = *(Uint16*)p;
+        pixel_value = *(Uint16 *)p;
         break;
     case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
             pixel_value = p[0] << 16 | p[1] << 8 | p[2];
         else
             pixel_value = p[0] | p[1] << 8 | p[2] << 16;
         break;
     case 4:
-        pixel_value = *(Uint32*)p;
+        pixel_value = *(Uint32 *)p;
         break;
     default:
         throw std::runtime_error("Unknown pixel format");
     }
 
-    
     Uint8 r, g, b, a;
     SDL_GetRGBA(pixel_value, surface->format, &r, &g, &b, &a);
 
@@ -158,15 +155,16 @@ bool Texture::set_alpha_pixel(Point2f pixel, u_int8_t alpha, SDL_Renderer *rende
 
     Uint32 new_pixel_value = SDL_MapRGBA(surface->format, r, g, b, alpha);
 
-    switch(bpp) {
+    switch (bpp)
+    {
     case 1:
         *p = new_pixel_value;
         break;
     case 2:
-        *(Uint16*)p = new_pixel_value;
+        *(Uint16 *)p = new_pixel_value;
         break;
     case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
         {
             p[0] = (new_pixel_value >> 16) & 0xff;
             p[1] = (new_pixel_value >> 8) & 0xff;
@@ -180,7 +178,7 @@ bool Texture::set_alpha_pixel(Point2f pixel, u_int8_t alpha, SDL_Renderer *rende
         }
         break;
     case 4:
-        *(Uint32*)p = new_pixel_value;
+        *(Uint32 *)p = new_pixel_value;
         break;
     default:
         throw std::runtime_error("Unknown pixel format");
@@ -193,8 +191,7 @@ bool Texture::set_alpha_pixel(Point2f pixel, u_int8_t alpha, SDL_Renderer *rende
     return true;
 }
 
-
-bool Texture::set_alpha_box(Bound2f box, u_int8_t alpha, SDL_Renderer *renderer)
+bool Texture::set_alpha_box(Bound2f box, uint8_t alpha, SDL_Renderer *renderer)
 {
     box.pMin = clamp(box.pMin, Point2f(0, 0), Point2f(1, 1));
     box.pMax = clamp(box.pMax, Point2f(0, 0), Point2f(1, 1));
@@ -216,12 +213,9 @@ bool Texture::set_alpha_box(Bound2f box, u_int8_t alpha, SDL_Renderer *renderer)
         }
     }
 
-    modified = true;    
-    return destroyed_anything;        
+    modified = true;
+    return destroyed_anything;
 }
-
-
-
 
 bool Texture::is_alpha_pixel(Point2f lpixel) const
 {
@@ -238,24 +232,25 @@ bool Texture::is_alpha_pixel(Point2f lpixel) const
         throw std::out_of_range("Pixel coordinates out of range on alpha check, lpixel: " + std::to_string(lpixel.x) + ", " + std::to_string(lpixel.y));
 
     int bpp = surface->format->BytesPerPixel;
-    Uint8* p = (Uint8*)surface->pixels + pixel.y * surface->pitch + pixel.x * bpp;
+    Uint8 *p = (Uint8 *)surface->pixels + pixel.y * surface->pitch + pixel.x * bpp;
 
     Uint32 pixel_value;
-    switch(bpp) {
+    switch (bpp)
+    {
     case 1:
         pixel_value = *p;
         break;
     case 2:
-        pixel_value = *(Uint16*)p;
+        pixel_value = *(Uint16 *)p;
         break;
     case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
             pixel_value = p[0] << 16 | p[1] << 8 | p[2];
         else
             pixel_value = p[0] | p[1] << 8 | p[2] << 16;
         break;
     case 4:
-        pixel_value = *(Uint32*)p;
+        pixel_value = *(Uint32 *)p;
         break;
     default:
         throw std::runtime_error("Unknown pixel format");
@@ -268,12 +263,12 @@ bool Texture::is_alpha_pixel(Point2f lpixel) const
 }
 
 // Returns the raw SDL_Texture pointer
-SDL_Texture* Texture::get() const
+SDL_Texture *Texture::get() const
 {
     return texture.get();
 }
 
-SDL_Surface* Texture::get_surface() const
+SDL_Surface *Texture::get_surface() const
 {
     return surface.get();
 }

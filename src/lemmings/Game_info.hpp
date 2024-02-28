@@ -179,6 +179,7 @@ public:
   bool get_action_possible() const { return is_action_possible; }
 
   bool get_level_ended() const { return level_ended; }
+  void set_level_ended() { level_ended = true; }
 
   void add_lemmings_hovered() { lemmings_hovered++; }
   void sub_lemmings_hovered() { lemmings_hovered--; }
