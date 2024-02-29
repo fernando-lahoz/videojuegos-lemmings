@@ -646,14 +646,43 @@ public:
     }
     if (is_bashing())
     {
-      if (current_frame == 0 || current_frame == 10)
+      if (current_frame == 3 || current_frame == 19)
       {
         if (!do_action_in_frame)
         {
+          Bound2f box;
+          if (direction > 0){
+            box.pMin = local_to_world(Point2f(0.75, 0.25)); //ubicación del lemming
+            box.pMax = box.pMin + Vector2f(5, 18);
+          }
+          else{
+            box.pMin = local_to_world(Point2f(-0.15, 0.25)); //ubicación del lemming
+            box.pMax = box.pMin + Vector2f(5, 18);
+          }
+          //std::cout << box << std::endl;
+          //std::cout << local_to_world(Point2f(0, 0)) << " - " << local_to_world(Point2f(1, 1)) << std::endl;
+          bool destroyed = false;
+          auto &entities = engine.get_entities();
+          for (auto &entity : entities)
+          {
+            if (entity->get_entity_name() == "MAP")
+            {
+              if (entity->destroy_box_alpha(engine, box))
+              {
+                std::cout << "Cavando..." << std::endl;
+                destroyed = true;
+              }
+            }
+          }
           do_action_in_frame = true;
           speed.x = direction * velocity;
           speed.y = 0;
           set_speed(speed);
+          if (!destroyed)
+          {
+            remove_skill(Utils::Lemming_Skills::BASH);
+            go_walk();
+          }
         }
       }
       else
