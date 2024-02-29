@@ -333,8 +333,8 @@ public:
     int ind = skill_to_index(skill);
     int a = game_info.get_skill_amount(Utils::SKILL_TO_SKILLS_AMOUNT[ind]);
 
-    std::cout << "skill_amount_index = " << ind << std::endl;
-    std::cout << "skill_amount = " << a << std::endl;
+    // std::cout << "skill_amount_index = " << ind << std::endl;
+    // std::cout << "skill_amount = " << a << std::endl;
     if (a <= 0)
     {
       return false;
@@ -485,28 +485,44 @@ public:
         }
         if (is_exploding())
         {
-          // Bound2f box;
-          // box.pMin = local_to_world(Point2f(0.25, 0.75));
-          // box.pMax = box.pMin + Vector2f(18, 4);
+          Bound2f box;
+          box.pMin = Point2f(local_to_world(Point2f(0.35, 0)));
+          box.pMax = Point2f(local_to_world(Point2f(0.65, 1)));
+          Bound2f box2;
+          box2.pMin = Point2f(local_to_world(Point2f(0.65, 0)));
+          box2.pMax = Point2f(local_to_world(Point2f(0.35, 1)));
+          Bound2f box3;
+          box3.pMin = Point2f(local_to_world(Point2f(0.2, 0.05)));
+          box3.pMax = Point2f(local_to_world(Point2f(0.8, 0.95)));
+          Bound2f box4;
+          box4.pMin = Point2f(local_to_world(Point2f(0.05, 0.2)));
+          box4.pMax = Point2f(local_to_world(Point2f(0.95, 0.8)));
+          Bound2f box5;
+          box5.pMin = Point2f(local_to_world(Point2f(0.15, 0.15)));
+          box5.pMax = Point2f(local_to_world(Point2f(0.85, 0.85)));
 
-          // bool destroyed = false;
-          // auto &entities = engine.get_entities();
-          // for (auto &entity : entities)
-          // {
-          //   if (entity->get_entity_name() == "MAP")
-          //   {
-          //     if (entity->destroy_box_alpha(engine, box))
-          //     {
-          //       // std::cout << "HE CAVADO" << std::endl;
-          //       destroyed = true;
-          //     }
-          //   }
-          // }
-          // if (!destroyed)
-          // {
-          //   remove_skill(Utils::Lemming_Skills::DIG);
-          //   on_ground = false;
-          // }
+          bool destroyed = false;
+          auto &entities = engine.get_entities();
+          for (auto &entity : entities)
+          {
+            if (entity->get_entity_name() == "MAP")
+            {
+              if (entity->destroy_box_alpha(engine, box))
+                destroyed = true;
+              if (entity->destroy_box_alpha(engine, box2))
+                destroyed = true;
+              if (entity->destroy_box_alpha(engine, box3))
+                destroyed = true;
+              if (entity->destroy_box_alpha(engine, box4))
+                destroyed = true;
+              if (entity->destroy_box_alpha(engine, box5))
+                destroyed = true;
+            }
+          }
+          if (!destroyed)
+          {
+            // std::cout << "NO EXPLOTE EN NADA" << std::endl;
+          }
 
           destroy_lemming(engine);
           return;

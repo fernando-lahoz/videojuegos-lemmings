@@ -49,7 +49,7 @@ public:
     if (time_frame_sprite >= animation_duration / n_frames)
     {
       int times = time_frame_sprite / (animation_duration / n_frames);
-      time_frame_sprite = 0.0f;
+      time_frame_sprite = time_frame_sprite - (animation_duration / n_frames) * times;
 
       if (state == AnimationState::Forward || state == AnimationState::Backward)
       {

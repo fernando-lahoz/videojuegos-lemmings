@@ -35,7 +35,7 @@ public:
   {
     txt = engine.load_texture("assets/intro/intro_0.webp");
     disable_collisions();
-    time_frame_wait = 3.0f;
+    time_frame_wait = 5.0f;
     animation_duration = 37.0f;
 
     auto &mixer = engine.get_sound_mixer();

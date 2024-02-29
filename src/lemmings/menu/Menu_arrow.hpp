@@ -32,22 +32,22 @@ public:
       if (n == 0)
       {
         game_info.add_difficulty_selected();
-        std::cout << "DIFFICULTY: " << game_info.get_difficulty_selected() << std::endl;
+        // std::cout << "DIFFICULTY: " << game_info.get_difficulty_selected() << std::endl;
       }
       else if (n == 1)
       {
         game_info.sub_difficulty_selected();
-        std::cout << "DIFFICULTY: " << game_info.get_difficulty_selected() << std::endl;
+        // std::cout << "DIFFICULTY: " << game_info.get_difficulty_selected() << std::endl;
       }
       else if (n == 2)
       {
         game_info.add_level_selected();
-        std::cout << "LEVEL: " << game_info.get_level_selected() << std::endl;
+        // std::cout << "LEVEL: " << game_info.get_level_selected() << std::endl;
       }
       else if (n == 3)
       {
         game_info.sub_level_selected();
-        std::cout << "LEVEL: " << game_info.get_level_selected() << std::endl;
+        // std::cout << "LEVEL: " << game_info.get_level_selected() << std::endl;
       }
     }
 

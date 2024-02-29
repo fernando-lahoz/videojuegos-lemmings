@@ -26,7 +26,7 @@ public:
   {
     if (event == EngineIO::InputEvent::MOUSE_LEFT)
     {
-      std::cout << "MENU HANDLER: Left mouse pressed" << std::endl;
+      // std::cout << "MENU HANDLER: Left mouse pressed" << std::endl;
       if (menu_type == Utils::MENU_TYPE::TITLE)
       {
         return;
@@ -74,7 +74,7 @@ public:
 
     if (event == EngineIO::InputEvent::MOUSE_RIGHT)
     {
-      std::cout << "MENU HANDLER: Right mouse pressed" << std::endl;
+      // std::cout << "MENU HANDLER: Right mouse pressed" << std::endl;
       if (menu_type == Utils::MENU_TYPE::TITLE)
       {
         /* code */

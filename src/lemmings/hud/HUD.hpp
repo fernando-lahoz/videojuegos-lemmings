@@ -68,7 +68,7 @@ public:
   {
     if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && is_clickable && !(game_info.get_level_is_paused() && n != Utils::HUD_PAUSE))
     {
-      std::cout << "PULSADO: " << n << std::endl;
+      // std::cout << "PULSADO: " << n << std::endl;
       if (is_selectable)
       {
         game_info.set_option_selected(n);
