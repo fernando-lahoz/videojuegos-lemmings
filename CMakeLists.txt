@@ -57,6 +57,7 @@ set(Modules
     "engine/physics"
     "engine/game"
     "engine/rigid_body"
+    "engine/trigger"
     "engine/fixed_text"
 )
 

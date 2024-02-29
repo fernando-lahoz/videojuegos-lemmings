@@ -6,12 +6,14 @@
 #include "engine/render_2D.hpp"
 #include "engine/entity.hpp"
 #include "engine/fixed_text.hpp"
+#include "engine/trigger.hpp"
 
 #include "Geralt.hpp"
 #include "Apple.hpp"
 #include "Geralt_eats_camera.hpp"
 #include "Lemming_hero.hpp"
 #include "MainCamera.hpp"
+
 
 class Geralt_eats_game : public Game
 {
@@ -89,11 +91,16 @@ public:
 
         auto hud = std::make_shared<Rigid_body>(Point3f(100, 100.8, 0), Vector2f(1, 0.2), engine.load_texture("assets/menu/title.png"), "Ground");
 
+        auto trigger = std::make_shared<Trigger>(Point3f(0.05, 0.2, 0), Vector2f(0.3, 0.8), "Trigger");
+        trigger->add_asociated_entity(geralt);
+        trigger->set_active_texture(engine.load_texture("assets/dehecho.png"));
+
         create_entity(hud);
 
         create_entity(lemming);
         create_entity(geralt);
         create_entity(ground);
+        create_entity(trigger);
         // create_entity(ground2);
 
         create_camera(std::make_shared<Geralt_camera>());

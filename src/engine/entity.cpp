@@ -302,6 +302,11 @@ bool Entity::collides(std::shared_ptr<Entity> other) const
     if (!collisions_active)
         return false;
 
+    if (!alpha_collision)
+    {
+        return bound2f().overlaps(other->bound2f());
+    }
+
     Point2f collision_point;
     return collides(other, collision_point);
 }
@@ -390,6 +395,16 @@ void Entity::post_physics(Engine&)
 // Called right after the entity has been inserted
 //  into the engine runtime
 void Entity::on_creation(Engine&)
+{
+    // Do nothing by default
+}
+
+void Entity::on_trigger_collision_event(Engine&, Entity*, EntityPtr)
+{
+    // Do nothing by default
+}
+
+void Entity::on_trigger_IO_event(Engine&, Entity*, EngineIO::InputEvent)
 {
     // Do nothing by default
 }

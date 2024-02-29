@@ -173,6 +173,9 @@ public:
 
     // This is called right after the entity is inserted into the engine runtime
     virtual void on_creation(Engine& engine);
+
+    virtual void on_trigger_collision_event(Engine& engine, Entity *trigger, std::shared_ptr<Entity> other);
+    virtual void on_trigger_IO_event(Engine& engine, Entity *trigger, EngineIO::InputEvent event);
 };
 
 //TODO: custom names for pointers should not be equal for shared and raw

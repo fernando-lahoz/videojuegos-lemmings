@@ -130,7 +130,8 @@ SDL_Rect Render_2D::bound_to_rect(Bound2f bound, Camera2D& camera, Camera2D& mai
 
 bool Render_2D::render_entity(Entity& entity, Camera2D& camera, Camera2D& main_camera, bool always_visible)
 {
-    if (always_visible || camera.is_visible(entity))
+    if (entity.get_active_texture().get_surface() != nullptr &&
+        (always_visible || camera.is_visible(entity)))
     {
         auto e_bound = entity.bound2f();
         auto rect = bound_to_rect(e_bound, camera, main_camera);

@@ -27,6 +27,7 @@ public:
         auto& mixer = engine.get_sound_mixer();
         oof = mixer.load_sound("assets/sounds/explode.wav");
         disable_alpha_mouse();
+        constructor_set_collision_type(Collision_type::CHARACTER);
     }
 
     void update_state(Engine &engine)
@@ -135,4 +136,12 @@ public:
     {
         set_active_texture(txt_right);
     }
+
+    void on_trigger_collision_event([[maybe_unused]]Engine& engine, 
+        [[maybe_unused]]Entity *trigger, 
+        [[maybe_unused]]std::shared_ptr<Entity> other) override
+    {
+        std::cout << "Geralt recieved trigger collision event with "+other->get_entity_name()+"\n";
+    }
+
 };
