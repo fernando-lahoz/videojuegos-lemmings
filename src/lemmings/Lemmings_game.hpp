@@ -18,7 +18,6 @@
 // TODO: add movements to the lemming (BUILD, CLIMB, BASH, MINING)
 // TODO: add player vs IA mode
 // TODO: add sound effects
-// TODO: add 16-30 level
 
 class Lemmings_game : public Game
 {
@@ -62,7 +61,7 @@ public:
     create_entity(cursor);
     create_entity(std::make_shared<Cursor_menu>(engine, game_info, 24));
     screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0);
-    // screen.go_level(engine, 28);
+    // screen.go_level(engine, 30);
   }
 
   void on_loop_start(Engine &engine) override
