@@ -27,6 +27,9 @@ class Trigger : public Entity
 
     void pre_physics(Engine&) override;
     void on_creation(Engine&) override;
+    
+    void on_event_down(Engine&, EngineIO::InputEvent) override;
+    void on_event_up(Engine&, EngineIO::InputEvent) override;
 
     void trigger_collision_event(Engine& engine, EntityPtr other);
     void trigger_IO_event(Engine& engine, EngineIO::InputEvent event);

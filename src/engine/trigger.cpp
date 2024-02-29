@@ -43,6 +43,17 @@ void Trigger::on_creation([[maybe_unused]]Engine& engine)
     // Do nothing
 }
 
+
+void Trigger::on_event_down(Engine& engine, EngineIO::InputEvent event)
+{
+    trigger_IO_event(engine, event);
+}
+
+void Trigger::on_event_up(Engine& engine, EngineIO::InputEvent event)
+{
+    trigger_IO_event(engine, event);
+}
+
 void Trigger::trigger_collision_event(Engine& engine, EntityPtr other)
 {
     for (auto asociated_entity : asociated_entities)
