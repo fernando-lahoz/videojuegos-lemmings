@@ -20,7 +20,7 @@ private:
   Texture txt;
 
   float time_frame_sprite = 0.0f; // Acumulador de tiempo para la animación del sprite
-  int current_frame = 256;        // Frame actual de la animación
+  int current_frame = 255;        // Frame actual de la animación
 
   Game_info &game_info;
 
@@ -28,7 +28,7 @@ private:
 
 public:
   Transition(Engine &engine, Game_info &_game_info, float _animation_duration)
-      : Entity(Point3f(10000, -0, -15), Vector2f(640, 400), engine.load_texture("assets/transition/transition_255.png"), "Transition"),
+      : Entity(Point3f(10000, -0, -100), Vector2f(640, 400), engine.load_texture("assets/transition/transition_255.png"), "Transition"),
         animation_duration(_animation_duration), game_info(_game_info)
   {
     txt = engine.load_texture("assets/transition/transition_255.png");
@@ -51,8 +51,6 @@ public:
       int times = time_frame_sprite / (animation_duration / n_frames);
       time_frame_sprite = 0.0f;
 
-      std::cout << "current_frame: " << current_frame << std::endl;
-
       if (state == AnimationState::Forward || state == AnimationState::Backward)
       {
         // Actualizar el frame de animación según el estado
@@ -61,7 +59,6 @@ public:
           current_frame = std::max(0, current_frame - times);
           if (current_frame == 0)
           {
-            current_frame = 1;
             state = AnimationState::Action;
           }
         }

@@ -22,7 +22,7 @@ private:
   int credit_frame = 0;
 
   // level selector
-  int level_selected = 0;
+  int level_selected = 1;
   int difficulty_selected = 0;
   bool is_arrow_hovered = false;
 
@@ -100,7 +100,7 @@ public:
   bool get_do_transition() const { return do_transition; }
 
   void add_level_selected() { level_selected = math::min(level_selected + 1, 30); }
-  void sub_level_selected() { level_selected = math::max(level_selected - 1, 0); }
+  void sub_level_selected() { level_selected = math::max(level_selected - 1, 1); }
   int get_level_selected() const { return level_selected; }
   void set_level_selected(int new_level) { level_selected = new_level; }
 

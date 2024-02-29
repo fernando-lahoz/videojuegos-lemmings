@@ -17,7 +17,6 @@
 
 // TODO: add movements to the lemming (BUILD, CLIMB, BASH, MINING)
 // TODO: add player vs IA mode
-// TODO: add video intro
 // TODO: add sound effects
 // TODO: add 16-30 level
 
@@ -62,12 +61,12 @@ public:
     auto cursor = std::make_shared<Cursor>(engine, game_info, 25);
     create_entity(cursor);
     create_entity(std::make_shared<Cursor_menu>(engine, game_info, 24));
-    screen.go_menu(engine, Utils::MENU_TYPE::TITLE, 0);
+    screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0);
   }
 
   void on_loop_start(Engine &engine) override
   {
-    //std::cout << engine.get_delta_time() << std::endl;
+    // std::cout << engine.get_delta_time() << std::endl;
     screen.update_game(engine);
   }
 };

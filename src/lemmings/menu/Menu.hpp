@@ -3,6 +3,7 @@
 #include "engine/engine.hpp"
 
 #include "lemmings/Game_info.hpp"
+#include "lemmings/menu/Intro.hpp"
 #include "lemmings/menu/Menu_button.hpp"
 #include "lemmings/menu/Menu_arrow.hpp"
 #include "lemmings/menu/Menu_mouse_handler.hpp"
@@ -66,6 +67,7 @@ public:
 
     if (type == Utils::TITLE)
     {
+      game_info.set_credit_frame(0);
       auto background = std::make_shared<Entity>(Point3f(10000, -0, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_brown.png"), "Background");
       engine.get_game().create_entity(background);
 
@@ -274,6 +276,10 @@ public:
                                               Vector2i(16, 30), lemmings_font_map, Utils::TEXT_BLUE_2[idx_blue],
                                               "TEXT");
       engine.get_game().create_entity(text);
+    }
+    else if (type == Utils::MENU_TYPE::INTRO)
+    {
+      engine.get_game().create_entity(std::make_shared<Intro>(engine, game_info));
     }
   }
 };

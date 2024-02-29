@@ -55,7 +55,7 @@ public:
     {
       int times = time_frame_credit / (animation_duration / 640);
       acumulator_frame_passed += times;
-      time_frame_credit = 0.0f;
+      time_frame_credit = time_frame_credit - (animation_duration / 640) * times;
 
       // Calcula la nueva posición en X basada en la variable de game_info
       int newX = ((game_info.get_credit_frame() + times) % lateral_movement_extent);

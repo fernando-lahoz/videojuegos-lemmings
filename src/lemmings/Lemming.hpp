@@ -440,8 +440,10 @@ public:
     time_frame_sprite += engine.get_delta_time() * game_info.get_game_speed();
     if (time_frame_sprite >= Utils::STATE_ANIMATION_DURATION[get_state()] / Utils::STATE_N_FRAMES[get_state()])
     {
-      time_frame_sprite = 0.0f;
-      current_frame = (current_frame + 1) % Utils::STATE_N_FRAMES[get_state()];
+
+      int times = time_frame_sprite / (Utils::STATE_ANIMATION_DURATION[get_state()] / Utils::STATE_N_FRAMES[get_state()]);
+      time_frame_sprite = time_frame_sprite - (Utils::STATE_ANIMATION_DURATION[get_state()] / Utils::STATE_N_FRAMES[get_state()]) * times;
+      current_frame = (current_frame + times) % Utils::STATE_N_FRAMES[get_state()];
 
       if (counter)
       {
@@ -456,7 +458,7 @@ public:
         EntityPtr hit_entity_down;
 
         engine.intersect_ray(ray_down, get_entity_id(),
-                              "MAP", hit_offset_down, hit_entity_down);
+                             "MAP", hit_offset_down, hit_entity_down);
 
         if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
         {
@@ -479,10 +481,40 @@ public:
         {
           game_info.add_n_lemmings_in();
           destroy_lemming(engine);
+          return;
         }
-        if (is_crashing() || is_exploding() || is_drowning())
+        if (is_exploding())
+        {
+          // Bound2f box;
+          // box.pMin = local_to_world(Point2f(0.25, 0.75));
+          // box.pMax = box.pMin + Vector2f(18, 4);
+
+          // bool destroyed = false;
+          // auto &entities = engine.get_entities();
+          // for (auto &entity : entities)
+          // {
+          //   if (entity->get_entity_name() == "MAP")
+          //   {
+          //     if (entity->destroy_box_alpha(engine, box))
+          //     {
+          //       // std::cout << "HE CAVADO" << std::endl;
+          //       destroyed = true;
+          //     }
+          //   }
+          // }
+          // if (!destroyed)
+          // {
+          //   remove_skill(Utils::Lemming_Skills::DIG);
+          //   on_ground = false;
+          // }
+
+          destroy_lemming(engine);
+          return;
+        }
+        if (is_crashing() || is_drowning())
         {
           destroy_lemming(engine);
+          return;
         }
         return;
       }
@@ -648,16 +680,18 @@ public:
         if (!do_action_in_frame)
         {
           Bound2f box;
-          if (direction > 0){
-            box.pMin = local_to_world(Point2f(0.75, 0.25)); //ubicación del lemming
+          if (direction > 0)
+          {
+            box.pMin = local_to_world(Point2f(0.75, 0.25)); // ubicación del lemming
             box.pMax = box.pMin + Vector2f(4, 18);
           }
-          else{
-            box.pMin = local_to_world(Point2f(-0.25, 0.25)); //ubicación del lemming
+          else
+          {
+            box.pMin = local_to_world(Point2f(-0.25, 0.25)); // ubicación del lemming
             box.pMax = box.pMin + Vector2f(4, 18);
           }
-          //std::cout << box << std::endl;
-          //std::cout << local_to_world(Point2f(0, 0)) << " - " << local_to_world(Point2f(1, 1)) << std::endl;
+          // std::cout << box << std::endl;
+          // std::cout << local_to_world(Point2f(0, 0)) << " - " << local_to_world(Point2f(1, 1)) << std::endl;
           bool destroyed = false;
           auto &entities = engine.get_entities();
           for (auto &entity : entities)
@@ -791,6 +825,7 @@ public:
           }
           else
           {
+            distance_fall = 0.0f;
             go_walk();
           }
         }

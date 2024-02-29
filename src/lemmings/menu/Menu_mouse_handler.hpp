@@ -63,6 +63,13 @@ public:
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
+      if (menu_type == Utils::MENU_TYPE::INTRO)
+      {
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0);
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        return;
+      }
     }
 
     if (event == EngineIO::InputEvent::MOUSE_RIGHT)
@@ -102,6 +109,13 @@ public:
         game_info.set_build_menu(Utils::MENU_TYPE::TITLE);
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         game_info.set_do_transition(true);
+        return;
+      }
+      if (menu_type == Utils::MENU_TYPE::INTRO)
+      {
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0);
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
     }

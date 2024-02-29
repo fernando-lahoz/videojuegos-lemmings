@@ -157,7 +157,8 @@ namespace Utils
     TITLE = 0,
     LEVEL_SELECTOR = 1,
     LEVEL_INTRO = 2,
-    LEVEL_OUTRO = 3
+    LEVEL_OUTRO = 3,
+    INTRO = 4
   };
   enum BUTTON_TYPE
   {
