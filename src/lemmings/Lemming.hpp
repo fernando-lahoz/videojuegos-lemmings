@@ -450,28 +450,25 @@ public:
 
       if (is_walking())
       {
-        if (is_walking())
+        position.x += 2 * direction;
+        Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
+        Float hit_offset_down;
+        EntityPtr hit_entity_down;
+
+        engine.intersect_ray(ray_down, get_entity_id(),
+                              "MAP", hit_offset_down, hit_entity_down);
+
+        if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
         {
-          position.x += 2 * direction;
-          Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
-          Float hit_offset_down;
-          EntityPtr hit_entity_down;
-
-          engine.intersect_ray(ray_down, get_entity_id(),
-                               "MAP", hit_offset_down, hit_entity_down);
-
-          if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
+          if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 20)
           {
-            if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 20)
-            {
-              // std::cout << "sube baja altura\n";
-              position.y += (hit_offset_down - diagonal.y / 4);
-            }
+            // std::cout << "sube baja altura\n";
+            position.y += (hit_offset_down - diagonal.y / 4);
           }
-          else if (hit_offset_down > diagonal.y / 2)
-          {
-            on_ground = false;
-          }
+        }
+        else if (hit_offset_down > diagonal.y / 2)
+        {
+          on_ground = false;
         }
       }
 
@@ -653,11 +650,11 @@ public:
           Bound2f box;
           if (direction > 0){
             box.pMin = local_to_world(Point2f(0.75, 0.25)); //ubicación del lemming
-            box.pMax = box.pMin + Vector2f(5, 18);
+            box.pMax = box.pMin + Vector2f(4, 18);
           }
           else{
-            box.pMin = local_to_world(Point2f(-0.15, 0.25)); //ubicación del lemming
-            box.pMax = box.pMin + Vector2f(5, 18);
+            box.pMin = local_to_world(Point2f(-0.25, 0.25)); //ubicación del lemming
+            box.pMax = box.pMin + Vector2f(4, 18);
           }
           //std::cout << box << std::endl;
           //std::cout << local_to_world(Point2f(0, 0)) << " - " << local_to_world(Point2f(1, 1)) << std::endl;
@@ -682,6 +679,7 @@ public:
           {
             remove_skill(Utils::Lemming_Skills::BASH);
             go_walk();
+            std::cout << "Termina de cavar..." << std::endl;
           }
         }
       }
