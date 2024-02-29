@@ -157,7 +157,7 @@ public:
       engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1776, 260.04, 2), 1, engine, 3, 0.4f, game_info));
       engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1904, 260.04, 2), 1, engine, 3, 0.4f, game_info));
       engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2032, 260.04, 2), 1, engine, 3, 0.4f, game_info));
-      engine.get_game().create_entity(std::make_shared<Flamethrower>(Point3f(1383, 42.5304, 2), engine, false, 0.5f, game_info, true));
+      engine.get_game().create_entity(std::make_shared<Flamethrower>(Point3f(1383, 42.5304, 2), engine, false, 0.5f, game_info));
       break;
     }
     case 7:
@@ -222,8 +222,7 @@ public:
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
       engine.get_game().create_entity(gate);
-      // auto spinner = ;
-      engine.get_game().create_entity(std::make_shared<Spinner>(Point3f(1364.93, 216.646, 4), engine, 0.8f, game_info, true));
+      engine.get_game().create_entity(std::make_shared<Spinner>(Point3f(1364.93, 216.646, 4), engine, 0.8f, game_info));
       engine.get_game().create_entity(std::make_shared<Spinner>(Point3f(1554.78, 96.8136, 4), engine, 0.8f, game_info));
       engine.get_game().create_entity(std::make_shared<Spinner>(Point3f(1780.91, 216.646, 4), engine, 0.8f, game_info));
 
@@ -369,19 +368,37 @@ public:
     case 16:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 3, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 4, 0.3f, game_info);
+      auto door = std::make_shared<Door>(Point3f(1203.84, 192.863, 4), engine, 3, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(1873.84, 32.5396, 4), engine, 4, 0.3f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
       engine.get_game().create_entity(gate);
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(880, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1008, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1136, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1264, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1392, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1520, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1648, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1776, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1904, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2032, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2160, 260.04, 3), 1, engine, 3, 0.4f, game_info));
       break;
     }
     case 17:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 4, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 3, 0.8f, game_info);
+      auto door = std::make_shared<Door>(Point3f(1632.93, 71.9481, 4), engine, 4, 1.0f, levelNumber, game_info);
+      engine.get_game().create_entity(door);
+      door = std::make_shared<Door>(Point3f(1503.39, 71.9481, 4), engine, 4, 1.0f, levelNumber, game_info);
+      engine.get_game().create_entity(door);
+      door = std::make_shared<Door>(Point3f(1375.35, 71.9481, 4), engine, 4, 1.0f, levelNumber, game_info);
+      engine.get_game().create_entity(door);
+      door = std::make_shared<Door>(Point3f(1248.95, 71.9481, 4), engine, 4, 1.0f, levelNumber, game_info);
+
+      auto gate = std::make_shared<Gate>(Point3f(1890.52, 167.937, 4), engine, 3, 0.8f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
@@ -391,19 +408,26 @@ public:
     case 18:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 3, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 4, 0.3f, game_info);
+      auto door = std::make_shared<Door>(Point3f(1087.03, 2.41112, 4), engine, 3, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(2014.15, 174.778, 4), engine, 4, 0.3f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
       engine.get_game().create_entity(gate);
+      engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1339.32, 72.5155, 1), engine, 0.8f, game_info));
+      engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1595.02, 72.5155, 1), engine, 0.8f, game_info));
+      engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1404.91, 128.087, 1), engine, 0.8f, game_info));
+      engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1633.2, 168.015, 1), engine, 0.8f, game_info));
+      engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1403.21, 207.771, 1), engine, 0.8f, game_info));
+      engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1595.22, 255.926, 1), engine, 0.8f, game_info));
+
       break;
     }
     case 19:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 4, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 3, 0.8f, game_info);
+      auto door = std::make_shared<Door>(Point3f(941.84, 154.104, 4), engine, 4, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(2860.95, 64.5198, 4), engine, 3, 0.8f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
@@ -413,30 +437,47 @@ public:
     case 20:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 4, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 3, 0.8f, game_info);
+      auto door = std::make_shared<Door>(Point3f(1275.41, 65.2479, 4), engine, 4, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(1953.04, 105.043, 4), engine, 3, 0.8f, game_info);
+
+      engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 0), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(levelNumber) + "_2.png"), "MAP"));
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
       engine.get_game().create_entity(gate);
+      engine.get_game().create_entity(std::make_shared<Spinner>(Point3f(1239.94, 201.736, 4), engine, 0.8f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(751, 250.847, 1), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(942, 250.847, 1), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1133, 250.847, 1), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1324, 250.847, 1), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1515, 250.847, 1), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1706, 250.847, 1), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1897, 250.847, 1), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2088, 250.847, 1), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2279, 250.847, 1), 1.5, engine, 2, 0.4f, game_info));
       break;
     }
     case 21:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 8, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 0, 0.8f, game_info);
+      auto door = std::make_shared<Door>(Point3f(549.387, 85.5787, 4), engine, 8, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(2537.51, 170.078, 4), engine, 0, 0.8f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
       engine.get_game().create_entity(gate);
+
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(578.884, 263.607, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1025.9, 263.607, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2335.95, 263.607, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2463.9, 263.607, 3), 1, engine, 1, 0.4f, game_info, true));
       break;
     }
     case 22:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 8, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 0, 0.8f, game_info);
+      auto door = std::make_shared<Door>(Point3f(696.153, 160.226, 4), engine, 8, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(2171.01, 34.7064, 4), engine, 0, 0.8f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
@@ -446,30 +487,36 @@ public:
     case 23:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 3, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 4, 0.3f, game_info);
+      auto door = std::make_shared<Door>(Point3f(1254.74, 134.628, 4), engine, 3, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(0.0158057, 8.93832, 4), engine, 4, 0.3f, game_info);
+      engine.get_game().create_entity(gate);
+      gate = std::make_shared<Gate>(Point3f(0.0158057, 184.844, 4), engine, 4, 0.3f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
       engine.get_game().create_entity(gate);
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1521.51, 260.04, 3), 1, engine, 3, 0.4f, game_info));
       break;
     }
     case 24:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 4, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 3, 0.8f, game_info);
+      auto door = std::make_shared<Door>(Point3f(1275.02, 4.23079, 4), engine, 4, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(1822.42, 184.225, 4), engine, 3, 0.8f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
       engine.get_game().create_entity(gate);
+      // CHOF
+      // MURO
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1604.28, 100.703, 3), 1.5, engine, 2, 0.4f, game_info, true));
       break;
     }
     case 25:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 2, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 2, 0.8f, game_info);
+      auto door = std::make_shared<Door>(Point3f(1176.41, 200.15, 4), engine, 2, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(1874.37, 206.627, 1), engine, 1, 0.8f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
@@ -479,41 +526,87 @@ public:
     case 26:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 5, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 1, 0.8f, game_info);
+      auto door = std::make_shared<Door>(Point3f(1628.52, 18.1654, 4), engine, 5, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(2167.66, 90.55, 4), engine, 1, 0.8f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
       engine.get_game().create_entity(gate);
+
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(0, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(127.5, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(255, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(382.5, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(510, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(637.5, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(765, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(892.5, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1020, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1147.5, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1275, 261, 3), 1, engine, 1, 0.4f, game_info));
+
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2197.5, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2325, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2452.5, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2580, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2707.5, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2835, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2952.5, 261, 3), 1, engine, 1, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(3090, 261, 3), 1, engine, 1, 0.4f, game_info));
+
+      engine.get_game().create_entity(std::make_shared<Chain>(Point3f(2352.1, 90.7265, 1), engine, 0.8f, game_info, true));
+
       break;
     }
     case 27:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 4, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 3, 0.8f, game_info);
+      auto door = std::make_shared<Door>(Point3f(1302.33, 72.6464, 4), engine, 4, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(1657.57, 200.037, 4), engine, 3, 0.8f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
       engine.get_game().create_entity(gate);
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(-13, 250.847, 3), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(178, 250.847, 3), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(369, 250.847, 3), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(560, 250.847, 3), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(751, 250.847, 3), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(942, 250.847, 3), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1133, 250.847, 3), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1967, 250.847, 3), 1.5, engine, 2, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2158, 250.847, 3), 1.5, engine, 2, 0.4f, game_info));
       break;
     }
     case 28:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 3, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 4, 0.3f, game_info);
+      auto door = std::make_shared<Door>(Point3f(1732.57, 6.88284, 4), engine, 3, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(1122.54, 24.2606, 4), engine, 4, 0.3f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
       engine.get_game().create_entity(gate);
+      engine.get_game().create_entity(std::make_shared<Flamethrower>(Point3f(1303, 98, 2), engine, false, 0.5f, game_info));
+      engine.get_game().create_entity(std::make_shared<Flamethrower>(Point3f(1536, 98, 2), engine, true, 0.5f, game_info));
+
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(768, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(896, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1024, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1859, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1987, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2115, 260.04, 3), 1, engine, 3, 0.4f, game_info));
+
+      engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1408.5, 176, 1), engine, 0.8f, game_info));
+      engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1504.5, 176, 1), engine, 0.8f, game_info));
       break;
     }
     case 29:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 5, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 1, 0.8f, game_info);
+      auto door = std::make_shared<Door>(Point3f(1976.31, 117.534, 4), engine, 5, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(859.625, 20.6917, 4), engine, 1, 0.8f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
@@ -523,17 +616,15 @@ public:
     case 30:
     {
       auto map = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 2), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, "MAP");
-      auto door = std::make_shared<Door>(Point3f(1745, 19.8764, 4), engine, 3, 1.0f, levelNumber, game_info, true);
-      auto gate = std::make_shared<Gate>(Point3f(1745, 300, 4), engine, 4, 0.3f, game_info);
+      auto door = std::make_shared<Door>(Point3f(1533.2, 23.0913, 4), engine, 3, 1.0f, levelNumber, game_info);
+      auto gate = std::make_shared<Gate>(Point3f(1430.89, 192.7, 4), engine, 4, 0.3f, game_info);
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
       engine.get_game().create_entity(gate);
       break;
     }
-    // Agregar casos para otros niveles
     default:
-      // Manejar nivel desconocido o cargar un nivel por defecto
       break;
     }
   }

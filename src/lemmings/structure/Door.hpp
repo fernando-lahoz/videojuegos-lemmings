@@ -8,7 +8,6 @@ class Door : public Structure
 {
 private:
   float spawn_timer = 0.0f;
-  int spawned_lemmings = 0;
   int level;
   Vector2f lemming_size;
   bool is_debug;
@@ -31,16 +30,16 @@ public:
     if (!is_playing)
     { // Espera a que la animación termine para comenzar a invocar
       spawn_timer += engine.get_delta_time() * game_info.get_game_speed();
-      if (spawn_timer >= 0.1 + (game_info.get_spawn_velocity() / 50.0f) && spawned_lemmings < Utils::LEVEL_N_LEMMINGS[level] && !game_info.get_all_die())
+      if (spawn_timer >= 0.1 + (game_info.get_spawn_velocity() / 50.0f) && game_info.get_spawned_lemmings() < Utils::LEVEL_N_LEMMINGS[level] && !game_info.get_all_die())
       {
         // Lógica para invocar Lemmings
         spawn_timer = 0.0f;
-        spawned_lemmings++;
+        game_info.add_spawned_lemmings();
         game_info.add_n_lemmings_out();
         // Asume que hay una función para crear e inicializar un Lemming
         auto lemming = std::make_shared<Lemming>(calculate_spawn_position(lemming_size), lemming_size, engine, game_info);
         engine.get_game().create_entity(lemming);
-        if (spawned_lemmings == Utils::LEVEL_N_LEMMINGS[level])
+        if (game_info.get_spawned_lemmings() == Utils::LEVEL_N_LEMMINGS[level])
         {
           game_info.set_spawn_ended();
         }

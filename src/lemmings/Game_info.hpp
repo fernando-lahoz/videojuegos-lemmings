@@ -55,6 +55,7 @@ private:
   std::vector<int> skill_amount;
   int n_lemmings_out = 0;
   int n_lemmings_in = 0;
+  int spawned_lemmings = 0;
   int percen_lemmings_in = 0;
   double time_left = 0.0f;
   int actual_minutes_left = 0;
@@ -79,6 +80,7 @@ public:
     n_lemmings_in = 0;
     lemmings_hovered = 0;
     lemming_hovered_type = "";
+    spawned_lemmings = 0;
     percen_lemmings_in = 0;
     time_left = Utils::LEVEL_TIME_LIMIT[_level];
     spawn_velocity = Utils::LEVEL_SPAWN_VELOCITY[_level];
@@ -119,6 +121,10 @@ public:
   void add_game_speed() { game_speed = math::min(game_speed + 1, 4); }
   void sub_game_speed() { game_speed = math::max(game_speed - 1, 1); }
   int get_game_speed() const { return game_speed; }
+
+    void add_spawned_lemmings() { spawned_lemmings++; }
+  void set_spawned_lemmings(int new_value) { spawned_lemmings = new_value; }
+  int get_spawned_lemmings() const { return spawned_lemmings; }
 
   void set_is_arrow_hovered(bool new_value) { is_arrow_hovered = new_value; }
   bool get_is_arrow_hovered() const { return is_arrow_hovered; }
