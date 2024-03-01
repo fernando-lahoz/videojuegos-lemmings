@@ -27,7 +27,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${FullOutputDir}")
 include_directories(include src test)
 
 set(Executables
-    "main"
     "geralt_eats/geralt_eats"
     "lemmings/lemmings"
 )
@@ -63,17 +62,6 @@ set(Modules
 
 #--------------------------- EXTERNAL LIBRARIES --------------------------------
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBAV REQUIRED IMPORTED_TARGET
-    libavdevice
-    libavfilter
-    libavformat
-    libavcodec
-    libswresample
-    libswscale
-    libavutil
-)
-
 set(Libraries
     SDL2
     SDL2_image
@@ -94,7 +82,6 @@ set(Targets
     SDL2::SDL2main SDL2::SDL2
     SDL2_image::SDL2_image
     SDL2_mixer::SDL2_mixer
-    PkgConfig::LIBAV
 )
 
 #---------------------------- OBJECT COMPILATION -------------------------------
