@@ -694,20 +694,21 @@ public:
       if (current_frame == 3 || current_frame == 19)
       {
         if (!do_action_in_frame)
+        std::cout << current_frame << std::endl;
         {
           Bound2f box;
           if (direction > 0)
           {
-            box.pMin = local_to_world(Point2f(0.75, 0.25)); // ubicación del lemming
-            box.pMax = box.pMin + Vector2f(4, 18);
+            box.pMin = local_to_world(Point2f(0.50, 0.25)); // ubicación del lemming
+            box.pMax = box.pMin + Vector2f(15, 18);
           }
           else
           {
             box.pMin = local_to_world(Point2f(-0.25, 0.25)); // ubicación del lemming
             box.pMax = box.pMin + Vector2f(4, 18);
           }
-          // std::cout << box << std::endl;
-          // std::cout << local_to_world(Point2f(0, 0)) << " - " << local_to_world(Point2f(1, 1)) << std::endl;
+          std::cout << box << std::endl;
+          std::cout << local_to_world(Point2f(0, 0)) << " - " << local_to_world(Point2f(1, 1)) << std::endl;
           bool destroyed = false;
           auto &entities = engine.get_entities();
           for (auto &entity : entities)
@@ -716,20 +717,21 @@ public:
             {
               if (entity->destroy_box_alpha(engine, box))
               {
-                std::cout << "Cavando..." << std::endl;
+                std::cout << "Cavando..." << current_frame << std::endl;
                 destroyed = true;
               }
             }
           }
-          do_action_in_frame = true;
-          speed.x = direction * velocity;
-          speed.y = 0;
-          set_speed(speed);
-          if (!destroyed)
-          {
+          if (!destroyed){
             remove_skill(Utils::Lemming_Skills::BASH);
             go_walk();
             std::cout << "Termina de cavar..." << std::endl;
+          } 
+          else{
+            do_action_in_frame = true;
+            speed.x = direction * velocity;
+            speed.y = 0;
+            set_speed(speed);
           }
         }
       }
