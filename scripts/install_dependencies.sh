@@ -13,7 +13,7 @@ wget https://github.com/libsdl-org/SDL/archive/refs/tags/release-2.30.0.zip
 unzip release-2.30.0.zip
 cd SDL-release-2.30.0
 
-sudo ./configure; sudo make; sudo make install
+./configure; make; make install
 
 cd ..
 rm release-2.30.0.zip
@@ -26,11 +26,13 @@ wget https://github.com/libsdl-org/SDL_image/archive/refs/tags/release-2.8.2.zip
 unzip release-2.8.2.zip
 cd SDL_image-release-2.8.2
 
-sudo ./configure; sudo make; sudo make install
+./external/download.sh #support for jpeg, webp...
+mv external/libwebp/ external/webp
+./configure --enable-jpg --enable-webp; make; make install
 
 cd ..
 rm release-2.8.2.zip
-sudo rm -r SDL_image-release-2.8.2
+rm -r SDL_image-release-2.8.2
 
 ##--- SDL_mixer --------------------------------------------------------------##
 
@@ -38,8 +40,8 @@ wget https://github.com/libsdl-org/SDL_mixer/archive/refs/tags/release-2.8.0.zip
 unzip release-2.8.0.zip
 cd SDL_mixer-release-2.8.0
 
-sudo ./configure; sudo make; sudo make install
+./configure; make; make install
 
 cd ..
 rm release-2.8.0.zip
-sudo rm -r SDL_mixer-release-2.8.0
+rm -r SDL_mixer-release-2.8.0

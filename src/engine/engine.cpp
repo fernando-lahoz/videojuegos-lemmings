@@ -11,14 +11,6 @@
 #include "engine/IO.hpp"
 #include "lib/error.hpp"
 
-extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/avutil.h>
-#include <libswscale/swscale.h>
-}
-
 EngineIO::InputEvent Engine::SDL_to_input_event(SDL_KeyboardEvent key)
 {
     switch (key.keysym.sym)
