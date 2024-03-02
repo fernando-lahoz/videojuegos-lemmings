@@ -12,6 +12,8 @@
 #include "lemmings/structure/Flamethrower.hpp"
 #include "lemmings/structure/Spinner.hpp"
 #include "lemmings/structure/Chain.hpp"
+#include "lemmings/structure/Brick.hpp"
+#include "lemmings/structure/Directional_wall.hpp"
 #include "lemmings/hud/HUDs.hpp"
 
 #include "lemmings/Game_info.hpp"
@@ -276,7 +278,7 @@ public:
       auto door = std::make_shared<Door>(Point3f(1307.35, 146.715, 4), engine, 4, 1.0f, levelNumber, game_info);
       auto gate = std::make_shared<Gate>(Point3f(1790.87, 168.578, 4), engine, 3, 0.8f, game_info);
 
-      // MURO
+      engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(1416.76, 112.478, 3), Vector2f(192, 160), engine, 0, game_info, true));
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
@@ -402,7 +404,7 @@ public:
 
       auto gate = std::make_shared<Gate>(Point3f(1890.52, 167.937, 4), engine, 3, 0.8f, game_info);
 
-      //CHOF
+      // CHOF
 
       engine.get_game().create_entity(map);
       engine.get_game().create_entity(door);
@@ -512,8 +514,8 @@ public:
       engine.get_game().create_entity(door);
       engine.get_game().create_entity(gate);
       // CHOF
-      // MURO
-      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1604.28, 100.703, 3), 1.5, engine, 2, 0.4f, game_info, true));
+      engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(1462.52, 92, 3), Vector2f(64, 52), engine, 1, game_info));
+      engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1653.98, 114.874, 3), 1, engine, 2, 0.4f, game_info));
       break;
     }
     case 25:

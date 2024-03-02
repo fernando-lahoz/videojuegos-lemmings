@@ -6,6 +6,7 @@
 #include "geometry/point.hpp"
 
 #include "lemmings/structure/Chain.hpp"
+#include "lemmings/structure/Directional_wall.hpp"
 #include "lemmings/Game_info.hpp"
 #include "lemmings/display/Dynamic_counter_image.hpp"
 #include "lemmings/utils.hpp"
@@ -518,6 +519,21 @@ public:
               if (entity->destroy_box_alpha(engine, box5))
                 destroyed = true;
             }
+            else if (entity->get_entity_name() == "DIRECTIONAL WALL")
+            {
+              std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
+
+              if (dir_wall_ptr->destroy_box_alpha(engine, box, 0))
+                destroyed = true;
+              if (dir_wall_ptr->destroy_box_alpha(engine, box2, 0))
+                destroyed = true;
+              if (dir_wall_ptr->destroy_box_alpha(engine, box3, 0))
+                destroyed = true;
+              if (dir_wall_ptr->destroy_box_alpha(engine, box4, 0))
+                destroyed = true;
+              if (dir_wall_ptr->destroy_box_alpha(engine, box5, 0))
+                destroyed = true;
+            }
           }
           if (!destroyed)
           {
@@ -661,11 +677,18 @@ public:
           {
             if (entity->get_entity_name() == "MAP")
             {
+
               if (entity->destroy_box_alpha(engine, box))
               {
                 // std::cout << "HE CAVADO" << std::endl;
                 destroyed = true;
               }
+            }
+            else if (entity->get_entity_name() == "DIRECTIONAL WALL")
+            {
+              std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
+              if (dir_wall_ptr->destroy_box_alpha(engine, box, 0))
+                destroyed = true;
             }
           }
           if (!destroyed)
@@ -694,7 +717,7 @@ public:
       if (current_frame == 3 || current_frame == 19)
       {
         if (!do_action_in_frame)
-        std::cout << current_frame << std::endl;
+          std::cout << current_frame << std::endl;
         {
           Bound2f box;
           if (direction > 0)
@@ -722,12 +745,14 @@ public:
               }
             }
           }
-          if (!destroyed){
+          if (!destroyed)
+          {
             remove_skill(Utils::Lemming_Skills::BASH);
             go_walk();
             std::cout << "Termina de cavar..." << std::endl;
-          } 
-          else{
+          }
+          else
+          {
             do_action_in_frame = true;
             speed.x = direction * velocity;
             speed.y = 0;
@@ -806,7 +831,7 @@ public:
     Entity::on_collision(engine, other);
     auto speed = get_speed();
 
-    if (other->get_entity_name() == "MAP" || other->get_entity_name() == "Lemming")
+    if (other->get_entity_name() == "MAP" || other->get_entity_name() == "DIRECTIONAL WALL" || other->get_entity_name() == "Lemming")
     {
       // if (other->get_entity_name() == "Lemming")
       // {
@@ -826,7 +851,7 @@ public:
           // std::cout << "Lemming turn left\n";
         }
       }
-      if ((is_falling() || is_floating()) && other->get_entity_name() == "MAP")
+      if ((is_falling() || is_floating()) && !(other->get_entity_name() == "Lemming"))
       {
         if (check_collision_down(other))
         {

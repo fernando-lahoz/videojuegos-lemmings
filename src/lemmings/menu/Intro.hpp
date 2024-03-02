@@ -30,10 +30,10 @@ private:
 
 public:
   Intro(Engine &engine, Game_info &_game_info)
-      : Entity(Point3f(10000, -0, -50), Vector2f(640, 400), engine.load_texture("assets/intro/intro_0.webp"), "Intro"),
+      : Entity(Point3f(10000, -0, -50), Vector2f(640, 400), engine.load_texture("assets/intro/intro_0.jpg"), "Intro"),
         game_info(_game_info)
   {
-    txt = engine.load_texture("assets/intro/intro_0.webp");
+    txt = engine.load_texture("assets/intro/intro_0.jpg");
     disable_collisions();
     time_frame_wait = 3.0f;
     animation_duration = 36.0f;
@@ -87,7 +87,7 @@ public:
           }
         }
 
-        std::string frame_path = "assets/intro/intro_" + std::to_string(current_frame) + ".webp";
+        std::string frame_path = "assets/intro/intro_" + std::to_string(current_frame) + ".jpg";
         Texture txt = engine.load_texture(frame_path.c_str());
         set_active_texture(txt);
       }

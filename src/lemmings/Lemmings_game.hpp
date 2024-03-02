@@ -18,6 +18,12 @@
 // TODO: add movements to the lemming (BUILD, CLIMB, BASH, MINING)
 // TODO: add player vs IA mode
 // TODO: add sound effects
+// TODO: add more dificulties
+// TODO: fix lemming animations
+// TODO: fix float animation
+// TODO: change assets more similar to original amiga
+// TODO: change update_position logic to update_animation
+// TODO: add trigger entities to work as liquids
 
 class Lemmings_game : public Game
 {
