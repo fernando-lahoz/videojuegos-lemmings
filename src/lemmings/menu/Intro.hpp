@@ -69,7 +69,7 @@ public:
         // time_frame_wait = 0.8f;
         std::cout << "INTRO ENDED" << std::endl;
         game_info.set_do_transition(true);
-        game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0);
+        game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
       }
 

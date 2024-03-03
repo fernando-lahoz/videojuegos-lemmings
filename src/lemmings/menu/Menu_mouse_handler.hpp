@@ -35,21 +35,22 @@ public:
       {
         game_info.set_do_transition(true);
         game_info.set_build_level(game_info.get_level());
+        game_info.set_build_difficulty(game_info.get_difficulty());
         game_info.set_do_action(Utils::ACTIONS::GO_LEVEL);
         return;
       }
       if (menu_type == Utils::MENU_TYPE::LEVEL_OUTRO)
       {
         int rescued = game_info.get_percen_lemmings_in();
-        int needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_level()];
+        int needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_difficulty()][game_info.get_level()];
 
         if (rescued < needed)
         {
-          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level());
+          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level(), game_info.get_difficulty());
         }
         else
         {
-          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level() + 1);
+          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level() + 1, game_info.get_difficulty());
         }
 
         game_info.set_do_transition(true);
@@ -59,14 +60,14 @@ public:
       if (menu_type == Utils::MENU_TYPE::LEVEL_SELECTOR && !game_info.get_is_arrow_hovered())
       {
         game_info.set_do_transition(true);
-        game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level_selected());
+        game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level_selected(), game_info.get_difficulty_selected());
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
       if (menu_type == Utils::MENU_TYPE::INTRO)
       {
         game_info.set_do_transition(true);
-        game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0);
+        game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
@@ -84,13 +85,14 @@ public:
       {
         game_info.set_do_transition(true);
         game_info.set_build_level(game_info.get_level());
+        game_info.set_build_difficulty(game_info.get_difficulty());
         game_info.set_do_action(Utils::ACTIONS::GO_LEVEL);
         return;
       }
       if (menu_type == Utils::MENU_TYPE::LEVEL_OUTRO)
       {
         int rescued = game_info.get_percen_lemmings_in();
-        int needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_level()];
+        int needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_difficulty()][game_info.get_level()];
 
         if (rescued < needed)
         {
@@ -98,7 +100,7 @@ public:
         }
         else
         {
-          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level() + 1);
+          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level() + 1, game_info.get_difficulty());
         }
         game_info.set_do_transition(true);
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
@@ -114,7 +116,7 @@ public:
       if (menu_type == Utils::MENU_TYPE::INTRO)
       {
         game_info.set_do_transition(true);
-        game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0);
+        game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }

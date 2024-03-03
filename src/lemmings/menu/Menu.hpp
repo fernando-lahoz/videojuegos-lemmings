@@ -61,7 +61,7 @@ public:
   {
   }
 
-  void setup_menu(Engine &engine, int type, int level)
+  void setup_menu(Engine &engine, int type, int level, int difficulty)
   {
     engine.get_game().create_entity(std::make_shared<Menu_mouse_handler>(Point3f(10000, 0, 4), Vector2f(640, 400), engine, game_info, type));
 
@@ -151,7 +151,7 @@ public:
     {
       auto background = std::make_shared<Entity>(Point3f(10000, 0, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_green.png"), "Background");
       engine.get_game().create_entity(background);
-      Texture txt = engine.load_texture("assets/maps/raw/map_0_" + std::to_string(level) + ".png");
+      Texture txt = engine.load_texture("assets/maps/raw/map_" + std::to_string(difficulty) + "_" + std::to_string(level) + ".png");
 
       // mapa 0,0  640,65 : 640px 65px
       auto map = std::make_shared<Entity>(Point3f(10320 - (txt.get_width() * 65 / (2 * txt.get_height())), 20, 2), Vector2f(txt.get_width() * 65 / txt.get_height(), 65), txt, "MAP");
@@ -167,35 +167,35 @@ public:
       // Number of Lemmings (number)
       text = std::make_shared<Text_displayer>(Point3f(10160, 190, 2), Vector2f(16, 30), game_info, "left",
                                               engine.load_texture("assets/font/font-blue.png"),
-                                              Vector2i(16, 30), lemmings_font_map, "Number of Lemmings " + std::to_string(Utils::LEVEL_N_LEMMINGS[level]),
+                                              Vector2i(16, 30), lemmings_font_map, "Number of Lemmings " + std::to_string(Utils::LEVEL_N_LEMMINGS[difficulty][level]),
                                               "TEXT");
       engine.get_game().create_entity(text);
 
       // (number) % To Be Saved
       text = std::make_shared<Text_displayer>(Point3f(10160, 221, 2), Vector2f(16, 30), game_info, "left",
                                               engine.load_texture("assets/font/font-green.png"),
-                                              Vector2i(16, 30), lemmings_font_map, std::to_string(Utils::LEVEL_SAVE_LEMMINGS[level] / Utils::LEVEL_N_LEMMINGS[level]) + "% To Be Saved",
+                                              Vector2i(16, 30), lemmings_font_map, std::to_string(Utils::LEVEL_SAVE_LEMMINGS[difficulty][level] / Utils::LEVEL_N_LEMMINGS[difficulty][level]) + "% To Be Saved",
                                               "TEXT");
       engine.get_game().create_entity(text);
 
       // Release Rate (number)
       text = std::make_shared<Text_displayer>(Point3f(10160, 252, 2), Vector2f(16, 30), game_info, "left",
                                               engine.load_texture("assets/font/font-brown.png"),
-                                              Vector2i(16, 30), lemmings_font_map, "Release Rate " + std::to_string(Utils::LEVEL_SPAWN_VELOCITY[level]),
+                                              Vector2i(16, 30), lemmings_font_map, "Release Rate " + std::to_string(Utils::LEVEL_SPAWN_VELOCITY[difficulty][level]),
                                               "TEXT");
       engine.get_game().create_entity(text);
 
       // Time // (number) Minutes
       text = std::make_shared<Text_displayer>(Point3f(10160, 283, 2), Vector2f(16, 30), game_info, "left",
                                               engine.load_texture("assets/font/font-cyan.png"),
-                                              Vector2i(16, 30), lemmings_font_map, "Time    " + std::to_string((int)(Utils::LEVEL_TIME_LIMIT[level] / 60)) + " Minutes",
+                                              Vector2i(16, 30), lemmings_font_map, "Time    " + std::to_string((int)(Utils::LEVEL_TIME_LIMIT[difficulty][level] / 60)) + " Minutes",
                                               "TEXT");
       engine.get_game().create_entity(text);
 
       // Rating Fun
       text = std::make_shared<Text_displayer>(Point3f(10160, 314, 2), Vector2f(16, 30), game_info, "left",
                                               engine.load_texture("assets/font/font-purple.png"),
-                                              Vector2i(16, 30), lemmings_font_map, "Rating  " + Utils::DIFFICULTY_NAME[0],
+                                              Vector2i(16, 30), lemmings_font_map, "Rating  " + Utils::DIFFICULTY_NAME[difficulty],
                                               "TEXT");
       engine.get_game().create_entity(text);
 
@@ -218,7 +218,7 @@ public:
       engine.get_game().create_entity(text);
 
       int rescued = game_info.get_percen_lemmings_in();
-      int needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_level()];
+      int needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_difficulty()][game_info.get_level()];
 
       text = std::make_shared<Text_displayer>(Point3f(10320, 75, 2), Vector2f(16, 30), game_info, "center",
                                               engine.load_texture("assets/font/font-purple.png"),

@@ -14,6 +14,7 @@ private:
   int actual_state = Utils::MENU;
   bool sound_effects = true;
   int build_level = 0;
+  int build_difficulty = 0;
   int build_menu = 0;
   bool is_transition_done = false;
   bool do_transition = false;
@@ -28,6 +29,7 @@ private:
 
   // principal level settings
   int level = 0;
+  int difficulty = 0;
   int game_speed = 1;
   bool level_ended = false;
   bool spawn_ended = false;
@@ -63,7 +65,7 @@ private:
   int spawn_velocity = 1;
 
 public:
-  void start_game_info(int _level)
+  void start_game_info(int _level, int _difficulty)
   {
     credit_frame = 0;
     game_speed = 1;
@@ -73,6 +75,7 @@ public:
     level_ended = false;
     all_die = false;
     level = _level;
+    difficulty = _difficulty;
     option_selected = Utils::NO_OPTION_SELECTED;
     is_action_possible = false;
     is_cursor_hover = false;
@@ -82,15 +85,16 @@ public:
     lemming_hovered_type = "";
     spawned_lemmings = 0;
     percen_lemmings_in = 0;
-    time_left = Utils::LEVEL_TIME_LIMIT[_level];
-    spawn_velocity = Utils::LEVEL_SPAWN_VELOCITY[_level];
+    time_left = Utils::LEVEL_TIME_LIMIT[_difficulty][_level];
+    spawn_velocity = Utils::LEVEL_SPAWN_VELOCITY[_difficulty][_level];
     skill_amount.clear();
-    skill_amount = Utils::LEVEL_SKILLS_AMOUNT[_level];
+    skill_amount = Utils::LEVEL_SKILLS_AMOUNT[_difficulty][_level];
     actual_minutes_left = 0;
     actual_seconds_left = 0;
     spawn_ended = false;
   }
   int get_level() const { return level; }
+  int get_difficulty() const { return difficulty; }
 
   void set_do_action(int action) { do_action = action; }
   int get_do_action() const { return do_action; }
@@ -108,21 +112,29 @@ public:
 
   void add_difficulty_selected()
   {
-    int aux = math::min(difficulty_selected + 1, 0);
+    int aux = math::min(difficulty_selected + 1, 3);
     if (aux != difficulty_selected)
     {
       difficulty_selected = aux;
       set_level_selected(1);
     }
   }
-  void sub_difficulty_selected() { difficulty_selected = math::max(difficulty_selected - 1, 0); }
+  void sub_difficulty_selected()
+  {
+    int aux = math::max(difficulty_selected - 1, 0);
+    if (aux != difficulty_selected)
+    {
+      difficulty_selected = aux;
+      set_level_selected(1);
+    }
+  }
   int get_difficulty_selected() const { return difficulty_selected; }
 
   void add_game_speed() { game_speed = math::min(game_speed + 1, 4); }
   void sub_game_speed() { game_speed = math::max(game_speed - 1, 1); }
   int get_game_speed() const { return game_speed; }
 
-    void add_spawned_lemmings() { spawned_lemmings++; }
+  void add_spawned_lemmings() { spawned_lemmings++; }
   void set_spawned_lemmings(int new_value) { spawned_lemmings = new_value; }
   int get_spawned_lemmings() const { return spawned_lemmings; }
 
@@ -156,12 +168,16 @@ public:
   void set_build_level(int _level) { build_level = _level; }
   int get_build_level() const { return build_level; }
 
-  void set_build_menu(int _menu, int _level = -1)
+  void set_build_difficulty(int _difficulty) { build_difficulty = _difficulty; }
+  int get_build_difficulty() const { return build_difficulty; }
+
+  void set_build_menu(int _menu, int _level = -1, int _difficulty = -1)
   {
     build_menu = _menu;
-    if (_level != -1)
+    if (_level != -1 && _difficulty != -1)
     {
       level = _level;
+      difficulty = _difficulty;
     }
   }
   int get_build_menu() const { return build_menu; }
@@ -245,12 +261,12 @@ public:
   void add_n_lemmings_in()
   {
     n_lemmings_in++;
-    percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[level], 100);
+    percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level], 100);
   }
   void sub_n_lemmings_in()
   {
     n_lemmings_in--;
-    percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[level], 100);
+    percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level], 100);
   }
 
   int get_n_lemmings_in() const { return n_lemmings_in; }

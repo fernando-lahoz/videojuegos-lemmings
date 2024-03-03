@@ -119,7 +119,7 @@ public:
         hudElement = std::make_shared<HUD>(Point3f(10384, -148, 3), Vector2f(255, 48), game_info, engine, "assets/hud/hud_minimap_", Utils::HUD_MINIMAP, false, false, false, false);
         engine.get_game().create_entity(hudElement);
 
-        engine.get_game().create_entity(std::make_shared<Minimap_view>(Point3f(10412.0f + ((Utils::LEVEL_CAMERA_POS_INI[game_info.get_level()] - 320.0f) / 2528.0f) * 160.0f, -148, 2), Vector2f(48, 48), game_info, engine, 1584));
+        engine.get_game().create_entity(std::make_shared<Minimap_view>(Point3f(10412.0f + ((Utils::LEVEL_CAMERA_POS_INI[game_info.get_difficulty()][game_info.get_level()] - 320.0f) / 2528.0f) * 160.0f, -148, 2), Vector2f(48, 48), game_info, engine, 1584));
 
         // TEXT
         engine.get_game().create_entity(std::make_shared<Text_dynamic>(Point3f(10000, -178, 3), Vector2f(16, 30), engine, game_info, "left",

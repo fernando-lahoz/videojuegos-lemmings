@@ -88,8 +88,8 @@ public:
         if (game_info.get_do_restart_camera())
         {
             game_info.set_do_restart_camera(false);
-            set_position(Utils::LEVEL_CAMERA_POS_INI[game_info.get_level()]);
-            game_info.set_pos_camera(Utils::LEVEL_CAMERA_POS_INI[game_info.get_level()]);
+            set_position(Utils::LEVEL_CAMERA_POS_INI[game_info.get_difficulty()][game_info.get_level()]);
+            game_info.set_pos_camera(Utils::LEVEL_CAMERA_POS_INI[game_info.get_difficulty()][game_info.get_level()]);
         }
     }
 };

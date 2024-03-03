@@ -22,19 +22,19 @@ public:
   {
   }
 
-  void go_level(Engine &engine, int _level)
+  void go_level(Engine &engine, int _level, int _difficulty)
   {
     game_info.set_actual_state(Utils::STATE::GAME);
     game_info.set_do_action(Utils::ACTIONS::NO_ACTION);
-    level.setup_level(engine, _level);
+    level.setup_level(engine, _level, _difficulty);
   }
 
-  void go_menu(Engine &engine, int type, int _level)
+  void go_menu(Engine &engine, int type, int _level, int _difficulty)
   {
     game_info.set_is_camera_stopped(true);
     game_info.set_actual_state(Utils::STATE::MENU);
     game_info.set_do_action(Utils::ACTIONS::NO_ACTION);
-    menu.setup_menu(engine, type, _level);
+    menu.setup_menu(engine, type, _level, _difficulty);
   }
 
   void clear_screen(Engine &engine)
@@ -58,7 +58,7 @@ public:
       clear_screen(engine);
       std::cout << "GO TO MENU" << std::endl;
       engine.get_sound_mixer().pause_all_sounds(); // TODO: this should be clear_sound_mixer but do not exist yet
-      go_menu(engine, game_info.get_build_menu(), game_info.get_level());
+      go_menu(engine, game_info.get_build_menu(), game_info.get_level(), game_info.get_difficulty());
     }
     else if (game_info.get_do_action() == Utils::ACTIONS::GO_LEVEL && game_info.get_is_transition_done())
     {
@@ -66,7 +66,7 @@ public:
       clear_screen(engine);
       std::cout << "GO TO LEVEL" << std::endl;
       engine.get_sound_mixer().pause_all_sounds(); // TODO: this should be clear_sound_mixer but do not exist yet
-      go_level(engine, game_info.get_build_level());
+      go_level(engine, game_info.get_build_level(), game_info.get_build_difficulty());
     }
     else if (game_info.get_do_action() == Utils::ACTIONS::NO_ACTION)
     {
