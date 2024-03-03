@@ -130,6 +130,12 @@ public:
             const std::string &force_entity_name,
             Float &hit_offset,
             EntityPtr &hit_entity);
+    
+    bool intersect_ray(Ray &ray, 
+            int not_this_entity_id,
+            const std::vector<std::string> &force_entity_names,
+            Float &hit_offset,
+            EntityPtr &hit_entity);
 
     /*
     bool intesect_ray_entity(Ray &ray, 

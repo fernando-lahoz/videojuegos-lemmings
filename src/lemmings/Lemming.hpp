@@ -458,8 +458,10 @@ public:
         Float hit_offset_down;
         EntityPtr hit_entity_down;
 
+        std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
+
         engine.intersect_ray(ray_down, get_entity_id(),
-                             "MAP", hit_offset_down, hit_entity_down);
+                             force_entity_names, hit_offset_down, hit_entity_down);
 
         if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
         {
@@ -569,16 +571,6 @@ public:
     update_counter(engine);
   }
 
-  void print_ray_down()
-  {
-    Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
-    Float hit_offset_down;
-    EntityPtr hit_entity_down;
-
-    engine.intersect_ray(ray_down, get_entity_id(),
-                         "MAP", hit_offset_down, hit_entity_down);
-  }
-
   void update_state()
   {
     // EXPLODING LOGIC
@@ -590,27 +582,6 @@ public:
 
     if (is_walking())
     {
-      // speed.x = direction * velocity / 2;
-      // Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
-      // Float hit_offset_down;
-      // EntityPtr hit_entity_down;
-
-      // engine.intersect_ray(ray_down, get_entity_id(),
-      //                      "MAP", hit_offset_down, hit_entity_down);
-
-      // if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
-      // {
-      //   if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 20)
-      //   {
-      //     // std::cout << "sube baja altura\n";
-      //     position.y += (hit_offset_down - diagonal.y / 4);
-      //   }
-      // }
-      // else if (hit_offset_down > diagonal.y / 2)
-      // {
-      //   speed.x = 0;
-      //   on_ground = false;
-      // }
       set_speed(speed);
       return;
     }
@@ -831,7 +802,7 @@ public:
     Entity::on_collision(engine, other);
     auto speed = get_speed();
 
-    if (other->get_entity_name() == "MAP" || other->get_entity_name() == "DIRECTIONAL WALL" || other->get_entity_name() == "Lemming")
+    if (other->get_entity_name() == "MAP" || other->get_entity_name() == "DIRECTIONAL WALL" || other->get_entity_name() == "METAL" || other->get_entity_name() == "Lemming")
     {
       // if (other->get_entity_name() == "Lemming")
       // {
@@ -883,7 +854,7 @@ public:
       speed.y = 0;
     }
 
-    if (other->get_entity_name() == "Liquid")
+    if (other->get_entity_name() == "LIQUID TRIGGER")
     {
       on_ground = true;
       go_drown();

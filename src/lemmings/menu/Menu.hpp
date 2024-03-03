@@ -160,7 +160,7 @@ public:
       // Level (number) // level name
       auto text = std::make_shared<Text_displayer>(Point3f(10000, 130, 2), Vector2f(16, 30), game_info, "left",
                                                    engine.load_texture("assets/font/font-red.png"),
-                                                   Vector2i(16, 30), lemmings_font_map, "Level " + std::to_string(level) + "  " + Utils::LEVEL_NAME[0][level],
+                                                   Vector2i(16, 30), lemmings_font_map, "Level " + std::to_string(level) + "  " + Utils::LEVEL_NAME[difficulty][level],
                                                    "TEXT");
       engine.get_game().create_entity(text);
 

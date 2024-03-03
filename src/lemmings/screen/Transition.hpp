@@ -83,6 +83,8 @@ public:
         // time_frame_wait = 0.8f;
         std::cout << "TRANSITION HALF" << std::endl;
         game_info.set_is_transition_done(true);
+        engine.get_sound_mixer().pause_all_sounds();
+        engine.get_sound_mixer().pause_music();
         state = AnimationState::Backward;
       }
     }

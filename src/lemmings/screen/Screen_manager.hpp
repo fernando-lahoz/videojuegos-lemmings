@@ -57,7 +57,6 @@ public:
       game_info.set_is_transition_done(false);
       clear_screen(engine);
       std::cout << "GO TO MENU" << std::endl;
-      engine.get_sound_mixer().pause_all_sounds(); // TODO: this should be clear_sound_mixer but do not exist yet
       go_menu(engine, game_info.get_build_menu(), game_info.get_level(), game_info.get_difficulty());
     }
     else if (game_info.get_do_action() == Utils::ACTIONS::GO_LEVEL && game_info.get_is_transition_done())
@@ -65,7 +64,6 @@ public:
       game_info.set_is_transition_done(false);
       clear_screen(engine);
       std::cout << "GO TO LEVEL" << std::endl;
-      engine.get_sound_mixer().pause_all_sounds(); // TODO: this should be clear_sound_mixer but do not exist yet
       go_level(engine, game_info.get_build_level(), game_info.get_build_difficulty());
     }
     else if (game_info.get_do_action() == Utils::ACTIONS::NO_ACTION)

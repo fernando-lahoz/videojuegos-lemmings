@@ -55,7 +55,7 @@ public:
             auto p = engine.get_mouse_position_in_camera(*this);
             if ((world_frame.is_near_border(p, Bound2f::Border::RIGHT, 10) || world_frame.is_past_border(p, Bound2f::Border::RIGHT)))
             {
-                if (world_frame.pMin.x - 100 * delta_time < 0)
+                if (world_frame.pMin.x - 200 * delta_time < 0)
                 {
                     world_frame.pMin.x = 0;
                     world_frame.pMax.x -= world_frame.pMin.x;
@@ -63,14 +63,14 @@ public:
                 }
                 else
                 {
-                    world_frame.pMin.x -= 100 * delta_time;
-                    world_frame.pMax.x -= 100 * delta_time;
-                    game_info.set_pos_camera(game_info.get_pos_camera() - 100 * delta_time);
+                    world_frame.pMin.x -= 200 * delta_time;
+                    world_frame.pMax.x -= 200 * delta_time;
+                    game_info.set_pos_camera(game_info.get_pos_camera() - 200 * delta_time);
                 }
             }
             else if ((world_frame.is_near_border(p, Bound2f::Border::LEFT, 10) || world_frame.is_past_border(p, Bound2f::Border::LEFT)))
             {
-                if (world_frame.pMax.x + 100 * delta_time > 3168)
+                if (world_frame.pMax.x + 200 * delta_time > 3168)
                 {
                     world_frame.pMin.x = 3168 - (world_frame.pMax.x - world_frame.pMin.x);
                     world_frame.pMax.x = 3168;
@@ -78,9 +78,9 @@ public:
                 }
                 else
                 {
-                    world_frame.pMin.x += 100 * delta_time;
-                    world_frame.pMax.x += 100 * delta_time;
-                    game_info.set_pos_camera(game_info.get_pos_camera() + 100 * delta_time);
+                    world_frame.pMin.x += 200 * delta_time;
+                    world_frame.pMax.x += 200 * delta_time;
+                    game_info.set_pos_camera(game_info.get_pos_camera() + 200 * delta_time);
                 }
             }
         }

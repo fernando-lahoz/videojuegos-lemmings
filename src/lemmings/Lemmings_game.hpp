@@ -15,15 +15,15 @@
 #include "lemmings/utils.hpp"
 #include "lemmings/screen/Screen_manager.hpp"
 
+// ASK: change _collides_up from bool to EntityPtr
+
 // TODO: add movements to the lemming (BUILD, CLIMB, BASH, MINING)
 // TODO: add player vs IA mode
 // TODO: add sound effects
-// TODO: add more dificulties
 // TODO: fix lemming animations
 // TODO: fix float animation
 // TODO: change assets more similar to original amiga
 // TODO: change update_position logic to update_animation
-// TODO: add trigger entities to work as liquids
 
 class Lemmings_game : public Game
 {
@@ -67,7 +67,7 @@ public:
     create_entity(cursor);
     create_entity(std::make_shared<Cursor_menu>(engine, game_info, 24));
     screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
-    // screen.go_level(engine, 30);
+    // screen.go_level(engine, 30, 0);
   }
 
   void on_loop_start(Engine &engine) override

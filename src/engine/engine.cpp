@@ -69,7 +69,7 @@ EngineIO::InputEvent Engine::SDL_to_input_event(SDL_MouseButtonEvent button)
 
 void Engine::send_mouse_hover()
 {
-    for (auto& entity : entities)
+    for (auto &entity : entities)
     {
         if (entity->is_deleted())
             continue;
@@ -90,7 +90,7 @@ void Engine::send_mouse_hover()
 void Engine::send_event_down(EngineIO::InputEvent event)
 {
     game->on_event_down(*this, event);
-    for (auto& camera : cameras)
+    for (auto &camera : cameras)
         camera->on_event_down(*this, event);
 
     for (auto &entity : entities)
@@ -103,7 +103,7 @@ void Engine::send_event_down(EngineIO::InputEvent event)
 void Engine::send_event_up(EngineIO::InputEvent event)
 {
     game->on_event_up(*this, event);
-    for (auto& camera : cameras)
+    for (auto &camera : cameras)
         camera->on_event_up(*this, event);
 
     for (auto &entity : entities)
@@ -125,17 +125,17 @@ void Engine::update_mouse_position()
 {
     int x, y;
     SDL_GetMouseState(&x, &y);
-    mouse_position.x = (Float) x;
-    mouse_position.y = (Float) y;
+    mouse_position.x = (Float)x;
+    mouse_position.y = (Float)y;
 }
 
 Point2f Engine::get_mouse_position()
 {
-    auto& main_camera = *cameras[0];
+    auto &main_camera = *cameras[0];
     return renderer.raster_to_world(mouse_position, main_camera, main_camera);
 }
 
-Point2f Engine::get_mouse_position_in_camera(Camera2D& camera)
+Point2f Engine::get_mouse_position_in_camera(Camera2D &camera)
 {
     return renderer.raster_to_world(mouse_position, camera, *cameras[0]);
 }
@@ -153,23 +153,23 @@ void Engine::hide_cursor()
 bool Engine::is_cursor_visible()
 {
     return SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE;
-    //return renderer.frame.contains(mouse_position);
+    // return renderer.frame.contains(mouse_position);
 }
 
-bool Engine::is_entity_hovered(Entity& entity)
+bool Engine::is_entity_hovered(Entity &entity)
 {
     return hovered_entities.contains(&entity);
 }
 
-SDL_Renderer* Engine::get_renderer()
+SDL_Renderer *Engine::get_renderer()
 {
     return renderer.get_sdl_renderer();
 }
 
-bool Engine::ray_march_alpha_init(Ray &ray, Float &offset, 
-        Float min_offset,
-        Float max_offset, 
-        EntityPtr entity) const
+bool Engine::ray_march_alpha_init(Ray &ray, Float &offset,
+                                  Float min_offset,
+                                  Float max_offset,
+                                  EntityPtr entity) const
 {
     Float search_distance = max_offset - min_offset;
 
@@ -178,7 +178,7 @@ bool Engine::ray_march_alpha_init(Ray &ray, Float &offset,
 
     for (int i = 0; i < n_samples; i++)
     {
-        Float t = min_offset + step_size*i;
+        Float t = min_offset + step_size * i;
         Point3f p3 = ray(t);
         Point2f p = Point2f(p3.x, p3.y);
 
@@ -192,11 +192,10 @@ bool Engine::ray_march_alpha_init(Ray &ray, Float &offset,
     return false;
 }
 
-
-bool Engine::ray_march_alpha_end(Ray &ray, Float &offset, 
-        Float min_offset,
-        Float max_offset, 
-        EntityPtr entity) const
+bool Engine::ray_march_alpha_end(Ray &ray, Float &offset,
+                                 Float min_offset,
+                                 Float max_offset,
+                                 EntityPtr entity) const
 {
     Float search_distance = max_offset - min_offset;
 
@@ -205,7 +204,7 @@ bool Engine::ray_march_alpha_end(Ray &ray, Float &offset,
 
     for (int i = 0; i < n_samples; i++)
     {
-        Float t = max_offset - step_size*i;
+        Float t = max_offset - step_size * i;
         Point3f p3 = ray(t);
         Point2f p = Point2f(p3.x, p3.y);
 
@@ -218,8 +217,6 @@ bool Engine::ray_march_alpha_end(Ray &ray, Float &offset,
 
     return false;
 }
-
-
 
 // Returns true if the program should quit
 bool Engine::process_events()
@@ -239,27 +236,31 @@ bool Engine::process_events()
             Engine::change_input_state(IO_event, true);
             Engine::send_event_down(IO_event);
 
-            if (event.key.keysym.sym == SDLK_F11 && !pressedf11) {
+            if (event.key.keysym.sym == SDLK_F11 && !pressedf11)
+            {
                 static bool toggle = true;
-                if (toggle) set_fullscreen();
-                else renderer.set_windowmode();
+                if (toggle)
+                    set_fullscreen();
+                else
+                    renderer.set_windowmode();
                 toggle = !toggle;
                 pressedf11 = true;
             }
-                
-            
         }
         break;
         case SDL_KEYUP:
         {
-            if (event.key.keysym.sym == SDLK_F11 && pressedf11) {  pressedf11 = false; }
+            if (event.key.keysym.sym == SDLK_F11 && pressedf11)
+            {
+                pressedf11 = false;
+            }
             auto IO_event = Engine::SDL_to_input_event(event.key);
 
             Engine::change_input_state(IO_event, false);
             Engine::send_event_up(IO_event);
         }
         break;
-        //Mouse
+        // Mouse
         case SDL_MOUSEBUTTONDOWN:
         {
             auto IO_event = Engine::SDL_to_input_event(event.button);
@@ -276,7 +277,7 @@ bool Engine::process_events()
         break;
         }
     }
-    
+
     send_mouse_hover();
 
     return false;
@@ -323,7 +324,7 @@ void Engine::compute_physics()
 
     physics.compute_collisions(*this);
 
-    for (auto& camera : cameras)
+    for (auto &camera : cameras)
         camera->update_position(*this);
     physics.update_positions(*this);
 
@@ -348,13 +349,10 @@ void Engine::delete_dead_entities()
     { return entity->is_deleted(); };
     auto iterator = std::find_if(entities.begin(), entities.end(), is_deleted);
 
-
     std::for_each(iterator, entities.end(), [this](EntityPtr entity)
                   { 
                     game->on_entity_destruction(*this, entity); 
-                    erase_collision_type(entity.get(), entity->get_collision_type());
-                    });
-    
+                    erase_collision_type(entity.get(), entity->get_collision_type()); });
 
     entities.resize(std::distance(entities.begin(), iterator));
 }
@@ -377,12 +375,14 @@ void Engine::process_cameras()
 {
     auto new_cameras = game->get_new_cameras();
 
-    if (game->replace_main_cam) {
+    if (game->replace_main_cam)
+    {
         cameras[0] = new_cameras[0];
         for (auto cam_it = new_cameras.begin() + 1; cam_it != new_cameras.end(); ++cam_it)
             cameras.push_back(*cam_it);
     }
-    else {
+    else
+    {
         for (auto &camera : new_cameras)
             cameras.push_back(camera);
     }
@@ -390,8 +390,9 @@ void Engine::process_cameras()
     std::sort(cameras.begin() + 1, cameras.end(), [](std::shared_ptr<Camera2D> a, std::shared_ptr<Camera2D> b) -> bool
               { return !a->is_deleted() && ((b->is_deleted()) ||
                                             (a->get_layer() > b->get_layer())); });
-            
-    auto is_deleted = [](std::shared_ptr<Camera2D> camera) { return camera->is_deleted(); };
+
+    auto is_deleted = [](std::shared_ptr<Camera2D> camera)
+    { return camera->is_deleted(); };
     auto iterator = std::find_if(cameras.begin(), cameras.end(), is_deleted);
     cameras.resize(std::distance(cameras.begin(), iterator));
 }
@@ -413,7 +414,6 @@ Engine::Engine(std::shared_ptr<Game> &&game)
 Engine::Engine(Game *game)
     : Engine{std::shared_ptr<Game>(game)}
 {
-
 }
 
 Game &Engine::get_game()
@@ -421,12 +421,12 @@ Game &Engine::get_game()
     return *game;
 }
 
-Camera2D& Engine::get_main_camera()
+Camera2D &Engine::get_main_camera()
 {
     return *cameras[0];
 }
 
-SoundMixer& Engine::get_sound_mixer()
+SoundMixer &Engine::get_sound_mixer()
 {
     return mixer;
 }
@@ -470,35 +470,32 @@ void Engine::change_collision_type(Entity *entity, Entity::Collision_type new_ty
     set_collision_type(entity, new_type);
 }
 
-std::unordered_set<Entity*>& Engine::get_character_entities()
+std::unordered_set<Entity *> &Engine::get_character_entities()
 {
     return character_entities;
 }
 
-std::unordered_set<Entity*>& Engine::get_structure_entities()
+std::unordered_set<Entity *> &Engine::get_structure_entities()
 {
     return structure_entities;
 }
 
-std::unordered_set<Entity*>& Engine::get_hud_entities()
+std::unordered_set<Entity *> &Engine::get_hud_entities()
 {
     return hud_entities;
 }
 
-
-
-bool Engine::intersect_ray(Ray &ray, 
-            int not_this_entity_id,
-            const std::string &force_entity_name,
-            Float &hit_offset, 
-            EntityPtr &hit_entity)
+bool Engine::intersect_ray(Ray &ray,
+                           int not_this_entity_id,
+                           const std::string &force_entity_name,
+                           Float &hit_offset,
+                           EntityPtr &hit_entity)
 {
     hit_offset = INFINITY;
 
     for (auto &entity : entities)
     {
-        if (entity->get_entity_id() == not_this_entity_id
-            || entity->get_entity_name() != force_entity_name)
+        if (entity->get_entity_id() == not_this_entity_id || entity->get_entity_name() != force_entity_name)
         {
             continue;
         }
@@ -517,7 +514,7 @@ bool Engine::intersect_ray(Ray &ray,
         else
             offset = max_offset;
 
-        if (bounding_box.contains(origin)) 
+        if (bounding_box.contains(origin))
         {
             offset = 0;
             intersects = true;
@@ -538,6 +535,63 @@ bool Engine::intersect_ray(Ray &ray,
     return hit_offset < INFINITY;
 }
 
+bool Engine::intersect_ray(Ray &ray,
+                           int not_this_entity_id,
+                           const std::vector<std::string> &force_entity_names,
+                           Float &hit_offset,
+                           EntityPtr &hit_entity)
+{
+    hit_offset = INFINITY;
+
+    for (auto &entity : entities)
+    {
+        if (entity->get_entity_id() == not_this_entity_id)
+        {
+            continue;
+        }
+        bool continued = true;
+        for (auto force_entity_name : force_entity_names)
+        {
+            if (entity->get_entity_name() == force_entity_name)
+                continued = false;
+        }
+        if (continued)
+            continue;
+
+        auto bounding_box = entity->bound2f();
+        Float offset, min_offset, max_offset;
+        Point2f origin;
+        bool intersects = false;
+        origin.x = ray.origin.x;
+        origin.y = ray.origin.y;
+
+        intersects = bounding_box.all_intersections(ray, min_offset, max_offset);
+
+        if (min_offset > 0)
+            offset = min_offset;
+        else
+            offset = max_offset;
+
+        if (bounding_box.contains(origin))
+        {
+            offset = 0;
+            intersects = true;
+        }
+
+        if (intersects)
+        {
+            intersects = ray_march_alpha_init(ray, offset, offset, max_offset, entity);
+
+            if (intersects && offset < hit_offset)
+            {
+                hit_offset = offset;
+                hit_entity = entity;
+            }
+        }
+    }
+
+    return hit_offset < INFINITY;
+}
 
 void Engine::set_ignored_events()
 {
@@ -559,8 +613,8 @@ void Engine::set_ignored_events()
         SDL_FINGERMOTION,
         SDL_FINGERDOWN,
         SDL_FINGERUP,
-        //SDL_KEYDOWN,
-        //SDL_KEYUP,
+        // SDL_KEYDOWN,
+        // SDL_KEYUP,
         SDL_JOYAXISMOTION,
         SDL_JOYBALLMOTION,
         SDL_JOYHATMOTION,
@@ -569,22 +623,21 @@ void Engine::set_ignored_events()
         SDL_JOYDEVICEADDED,
         SDL_JOYDEVICEREMOVED,
         SDL_MOUSEMOTION,
-        //SDL_MOUSEBUTTONDOWN,
-        //SDL_MOUSEBUTTONUP,
+        // SDL_MOUSEBUTTONDOWN,
+        // SDL_MOUSEBUTTONUP,
         SDL_MOUSEBUTTONUP,
         SDL_MULTIGESTURE,
-        //SDL_QUIT,
+        // SDL_QUIT,
         SDL_SYSWMEVENT,
         SDL_TEXTEDITING,
         SDL_TEXTINPUT,
         SDL_USEREVENT,
-        //SDL_WINDOWEVENT
+        // SDL_WINDOWEVENT
     };
 
     for (auto event : ignored_events)
         SDL_EventState(event, SDL_IGNORE);
 }
-
 
 void Engine::start()
 {
@@ -595,7 +648,7 @@ void Engine::start()
     bool quit = false;
     while (!quit && !quit_event)
     {
-        //auto init = std::chrono::steady_clock::now();
+        // auto init = std::chrono::steady_clock::now();
         update_delta_time();
         renderer.update_resolution(*this);
         update_mouse_position();
@@ -617,9 +670,9 @@ void Engine::start()
 
         process_cameras();
 
-        //auto end = std::chrono::steady_clock::now();
+        // auto end = std::chrono::steady_clock::now();
 
-        //std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
+        // std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
 
         // Draw call to renderer
         hovered_entities = renderer.draw_and_return_hovered(entities, cameras, mouse_position);
@@ -645,7 +698,7 @@ Texture Engine::load_texture(const std::string &path)
     return renderer.load_texture(path);
 }
 
-void Engine::set_window_icon(const std::string& path)
+void Engine::set_window_icon(const std::string &path)
 {
     renderer.set_window_icon(path);
 }
