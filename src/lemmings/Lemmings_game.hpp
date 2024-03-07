@@ -67,7 +67,7 @@ public:
     create_entity(cursor);
     create_entity(std::make_shared<Cursor_menu>(engine, game_info, 24));
     screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
-    // screen.go_level(engine, 30, 0);
+    // screen.go_level(engine, 25, 1);
   }
 
   void on_loop_start(Engine &engine) override
