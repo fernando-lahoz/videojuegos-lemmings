@@ -24,6 +24,8 @@
 // TODO: fix float animation
 // TODO: change assets more similar to original amiga
 // TODO: change update_position logic to update_animation
+// TODO: hud more friendly
+// TODO: add some structures to levels (CHOF, WALL, ICE, ELECT, TONS WEIGHT)
 
 class Lemmings_game : public Game
 {
@@ -66,8 +68,8 @@ public:
     auto cursor = std::make_shared<Cursor>(engine, game_info, 25);
     create_entity(cursor);
     create_entity(std::make_shared<Cursor_menu>(engine, game_info, 24));
-    // screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
-    screen.go_level(engine, 28, 2);
+    screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
+    // screen.go_level(engine, 30, 3);
   }
 
   void on_loop_start(Engine &engine) override
