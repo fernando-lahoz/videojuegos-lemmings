@@ -725,9 +725,7 @@ public:
           else
           {
             do_action_in_frame = true;
-            speed.x = direction * velocity;
-            speed.y = 0;
-            set_speed(speed);
+            position.x += 2 * direction;
           }
         }
       }
