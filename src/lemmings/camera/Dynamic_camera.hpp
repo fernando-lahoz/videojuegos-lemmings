@@ -83,6 +83,7 @@ public:
                     game_info.set_pos_camera(game_info.get_pos_camera() + 200 * delta_time);
                 }
             }
+            std::cout << "Camera Position:" << game_info.get_pos_camera() << std::endl;
         }
 
         if (game_info.get_do_restart_camera())
