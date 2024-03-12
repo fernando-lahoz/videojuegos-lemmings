@@ -46,17 +46,13 @@ void Texture::load(const std::string &file, SDL_Renderer *renderer)
     SDL_QueryTexture(texture.get(), nullptr, nullptr, &width, &height);
 }
 
-void Texture::change_pixel(Point2f fpixel, Uint8 rgba[4])
+void Texture::change_pixel(Point2i pixel, Uint8 rgba[4])
 {
     if (!surface)
         throw std::runtime_error("No surface loaded");
 
-    if (fpixel.x < 0 || fpixel.y < 0 || fpixel.x >= surface->w || fpixel.y >= surface->h)
-        throw std::out_of_range("Pixel coordinates out of range on pixel change, pixel: " + std::to_string(fpixel.x) + ", " + std::to_string(fpixel.y));
-
-    Point2i pixel;
-    pixel.x = fpixel.x * get_width();
-    pixel.y = fpixel.y * get_height();
+    if (pixel.x < 0 || pixel.y < 0 || pixel.x >= surface->w || pixel.y >= surface->h)
+        throw std::out_of_range("Pixel coordinates out of range on pixel change, pixel: " + std::to_string(pixel.x) + ", " + std::to_string(pixel.y));
 
     if (!modified)
     {
@@ -104,12 +100,8 @@ void Texture::change_pixel(Point2f fpixel, Uint8 rgba[4])
     modified = true;
 }
 
-bool Texture::set_alpha_pixel(Point2f pixel, uint8_t alpha, SDL_Renderer *renderer)
+bool Texture::set_alpha_pixel(Point2i ipixel, uint8_t alpha, SDL_Renderer *renderer)
 {
-    Point2i ipixel;
-    ipixel.x = pixel.x * get_width();
-    ipixel.y = pixel.y * get_height();
-
     if (ipixel.x < 0 || ipixel.y < 0 || ipixel.x >= surface->w || ipixel.y >= surface->h)
         throw std::out_of_range("Pixel coordinates out of range on alpha change, pixel: " + std::to_string(ipixel.x) + ", " + std::to_string(ipixel.y));
 
@@ -196,7 +188,7 @@ bool Texture::set_alpha_box(Bound2f box, uint8_t alpha, SDL_Renderer *renderer)
     box.pMin = clamp(box.pMin, Point2f(0, 0), Point2f(1, 1));
     box.pMax = clamp(box.pMax, Point2f(0, 0), Point2f(1, 1));
 
-    if (box.area() < 0.0001)
+    if (box.area() < 0.000001)
         return false;
 
     bool destroyed_anything = false;
@@ -206,7 +198,7 @@ bool Texture::set_alpha_box(Bound2f box, uint8_t alpha, SDL_Renderer *renderer)
         for (int y = box.pMin.y * get_height(); y < box.pMax.y * get_height(); y++)
         {
             // Call to set alpha pixel
-            if (set_alpha_pixel(Point2f(Float(x) / get_width(), Float(y) / get_height()), alpha, renderer))
+            if (set_alpha_pixel(Point2i(x, y), alpha, renderer))
             {
                 destroyed_anything = true;
             }
