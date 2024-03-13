@@ -772,17 +772,93 @@ public:
       return;
     }
 
-    /*
+
     if (is_mining())
     {
-      if (current_frame == 3)
+      if (current_frame == 0)
       {
         if (!do_action_in_frame)
-        {
+        {//Hay que mover la posición 0 a la altura de la 23 para que no se teletransporte
+
           do_action_in_frame = true;
-          speed.x = direction * velocity;
-          speed.y = velocity;
-          set_speed(speed);
+          //Actualizamos la posivion del Lemming
+          position.x += direction*8.0;//Dirección indica el sentido de avance del Lemming
+          position.y += 5.0;
+        }
+      }
+      else if(current_frame == 1)
+      {
+        if (do_action_in_frame)
+        {//Destruimos el cubo de mapa
+
+          Bound2f box;
+          box.pMin = local_to_world(Point2f(0.65, 0.80));
+          box.pMax = box.pMin + Vector2f(14, -17);
+
+          Bound2f box2;//Destruimos un cubo más a medio camino del movimineto de excabación
+          position.x -= direction*4.0;
+          position.y -= 2.5;
+
+          box2.pMin = local_to_world(Point2f(0.65, 0.80));
+          box2.pMax = box2.pMin + Vector2f(14, -17);
+
+          position.x += direction*4.0;//Volvemos a poner el Lemming donde estaba
+          position.y += 2.5;
+
+          auto &entities = engine.get_entities();
+
+          for (auto &entity : entities)
+          {
+            if (entity->get_entity_name() == "MAP")
+            {
+
+              entity->destroy_box_alpha(engine, box);
+              entity->destroy_box_alpha(engine, box2);
+            }
+            else if (entity->get_entity_name() == "DIRECTIONAL WALL")
+            {
+              std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
+              dir_wall_ptr->destroy_box_alpha(engine, box, 0);
+              dir_wall_ptr->destroy_box_alpha(engine, box2, 0);
+            }
+          }
+          do_action_in_frame = false;
+        }
+
+      }
+      else if(current_frame == 3)
+      {//Clava el pico del todo
+        //Comprobamos que hay suelo
+        Ray ray_down = Ray(local_to_world(Point2f(0.7, 0.5)), Vector2f(0, 1));
+        Float hit_offset_down;
+        EntityPtr hit_entity_down;
+
+        std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
+
+        engine.intersect_ray(ray_down, get_entity_id(),
+                            force_entity_names, hit_offset_down, hit_entity_down);
+
+        if (hit_offset_down > (diagonal.y / 2))//Detectamos que no hay suelo
+        {
+          remove_skill(Utils::Lemming_Skills::MINE);
+          on_ground = false;
+        }
+      }
+      else if(current_frame == 16)
+      {//Da un pasito para delante en la animación
+        Ray ray_down = Ray(local_to_world(Point2f(0.7, 0.5)), Vector2f(0, 1));
+        Float hit_offset_down;
+        EntityPtr hit_entity_down;
+
+        std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
+
+        engine.intersect_ray(ray_down, get_entity_id(),
+                             force_entity_names, hit_offset_down, hit_entity_down);
+
+        if (hit_offset_down > (diagonal.y / 2))//Detectamos que no hay suelo
+        {
+          remove_skill(Utils::Lemming_Skills::MINE);
+          on_ground = false;
         }
       }
       else
@@ -794,7 +870,7 @@ public:
       }
       return;
     }
-    */
+
   }
 
   void update_position(Engine &engine) override
