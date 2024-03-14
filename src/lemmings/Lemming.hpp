@@ -685,7 +685,7 @@ public:
     }
     if (is_bashing())
     {
-      if (current_frame == 3 || current_frame == 19)
+      /*if (current_frame == 3 || current_frame == 19)
       {
         if (!do_action_in_frame)
         {
@@ -728,10 +728,112 @@ public:
           do_action_in_frame = true;
         }
       }
-      else if (current_frame == 9|| current_frame == 22)
+      */
+      if (current_frame == 3 || current_frame == 19)
       {
         if (!do_action_in_frame)
         {
+          std::cout << current_frame << " " << do_action_in_frame << std::endl;
+          Bound2f box, box1, box2;
+          if (direction > 0)
+          {
+            box.pMin = local_to_world(Point2f(0.50, 0.30)); 
+            box.pMax = box.pMin + Vector2f(9, 4);
+            box2.pMin = local_to_world(Point2f(0.50, 0.35)); 
+            box2.pMax = box2.pMin + Vector2f(11, 4);
+            box1.pMin = local_to_world(Point2f(0.50, 0.40)); 
+            box1.pMax = box1.pMin + Vector2f(13, 4);
+            if (current_frame == 3){
+              box.pMax = box.pMin + Vector2f(7, 4);
+              box2.pMax = box2.pMin + Vector2f(9, 4);
+              box1.pMax = box1.pMin + Vector2f(11, 4);
+            }
+          }
+          else
+          {
+            box.pMin = local_to_world(Point2f(-0.25, 0.25)); 
+            box.pMax = box.pMin + Vector2f(4, 18);
+            box1.pMin = local_to_world(Point2f(0.50, 0.40)); 
+            box1.pMax = box1.pMin + Vector2f(15, 5);
+          }
+          std::cout << current_frame << " " << box << box1  <<  std::endl;
+          bool destroyed = false;
+          auto &entities = engine.get_entities();
+          for (auto &entity : entities)
+          {
+            if (entity->get_entity_name() == "MAP")
+            {
+              if (entity->destroy_box_alpha(engine, box)) {destroyed = true;}
+              if (entity->destroy_box_alpha(engine, box1)) {destroyed = true;}
+              if (entity->destroy_box_alpha(engine, box2)) {destroyed = true;}
+            }
+          }
+          if (!destroyed)
+          {
+            remove_skill(Utils::Lemming_Skills::BASH);
+            go_walk();
+            std::cout << "Termina de cavar...: " << destroyed  << std::endl;
+          }
+          do_action_in_frame = true;
+        }
+      }
+      else if (current_frame == 5 || current_frame == 21)
+      {
+        if (!do_action_in_frame)
+        {
+          std::cout << current_frame << " " << do_action_in_frame << std::endl;
+          Bound2f box, box1, box2, box3;
+          if (direction > 0)
+          {
+            box3.pMin = local_to_world(Point2f(0.45, 0.45)); 
+            box3.pMax = box3.pMin + Vector2f(14, 3);
+            box.pMin = local_to_world(Point2f(0.50, 0.50)); 
+            box.pMax = box.pMin + Vector2f(13, 4);
+            box2.pMin = local_to_world(Point2f(0.50, 0.55)); 
+            box2.pMax = box2.pMin + Vector2f(11, 4);
+            box1.pMin = local_to_world(Point2f(0.50, 0.60)); 
+            box1.pMax = box1.pMin + Vector2f(9, 5);
+            if (current_frame == 5){
+              box3.pMax = box3.pMin + Vector2f(12, 3);
+              box.pMax = box.pMin + Vector2f(11, 4);
+              box2.pMax = box2.pMin + Vector2f(9, 4);
+              box1.pMax = box1.pMin + Vector2f(7, 4);
+            }
+          }
+          else
+          {
+            box.pMin = local_to_world(Point2f(-0.25, 0.25)); 
+            box.pMax = box.pMin + Vector2f(4, 18);
+            box1.pMin = local_to_world(Point2f(0.50, 0.60)); 
+            box1.pMax = box1.pMin + Vector2f(15, 5);
+          }
+          std::cout << current_frame << " " << box << box1  <<  std::endl;
+          bool destroyed = false;
+          auto &entities = engine.get_entities();
+          for (auto &entity : entities)
+          {
+            if (entity->get_entity_name() == "MAP")
+            {
+              if (entity->destroy_box_alpha(engine, box)) {destroyed = true;}
+              if (entity->destroy_box_alpha(engine, box1)) {destroyed = true;}
+              if (entity->destroy_box_alpha(engine, box2)) {destroyed = true;}
+              if (entity->destroy_box_alpha(engine, box3)) {destroyed = true;}
+            }
+          }
+          if (!destroyed)
+          {
+            remove_skill(Utils::Lemming_Skills::BASH);
+            go_walk();
+            std::cout << "Termina de cavar...: " << destroyed  << std::endl;
+          }
+          do_action_in_frame = true;
+        }
+      }
+      else if (current_frame == 9|| current_frame == 25)
+      {
+        if (!do_action_in_frame)
+        {
+          std::cout << current_frame << " " << do_action_in_frame << std::endl;
           do_action_in_frame = true;
           position.x += 2 * direction;
         }
@@ -744,10 +846,7 @@ public:
           position.x += 5 * direction;
         }
       }
-      else
-      {
-        do_action_in_frame = false;
-      }
+      else {do_action_in_frame = false;}
       return;
     }
     if (is_building())
