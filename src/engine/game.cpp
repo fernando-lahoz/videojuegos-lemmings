@@ -69,3 +69,5 @@ void Game::on_game_startup(Engine&) {}
 void Game::on_game_shutdown(Engine&) {}
 
 void Game::on_entity_destruction(Engine&, EntityPtr) {}
+
+void Game::on_preload_finished(Engine&, int) {}

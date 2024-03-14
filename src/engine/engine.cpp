@@ -676,6 +676,8 @@ void Engine::start()
 
         // Draw call to renderer
         hovered_entities = renderer.draw_and_return_hovered(entities, cameras, mouse_position);
+
+        destroy_finished_preloaders();
     }
 
     game->on_game_shutdown(*this);
@@ -696,6 +698,50 @@ Engine::EntityCollection &Engine::get_entities()
 Texture Engine::load_texture(const std::string &path)
 {
     return renderer.load_texture(path);
+}
+
+void Engine::send_preload_finished_event(int batch_id, int thread_id)
+{
+    game->on_preload_finished(*this, batch_id);
+
+    std::unique_lock<std::mutex> lock(preloaders_mutex);
+    finished_preloaders.push_back(thread_id);
+}
+
+void Engine::th_preload_textures(const std::vector<std::string> &paths, int batch_id, int thread_id)
+{
+    for (auto &path : paths)
+    {
+        renderer.load_texture(path);
+    }
+
+    send_preload_finished_event(batch_id, thread_id);
+}
+
+void Engine::destroy_finished_preloaders()
+{
+    std::unique_lock<std::mutex> lock(preloaders_mutex);
+
+    for (auto &thread_id : finished_preloaders)
+    {
+        auto &th = preload_threads[thread_id];
+        th.join();
+    }
+
+    finished_preloaders.clear();
+}
+
+int Engine::preload_textures(const std::vector<std::string> &paths)
+{
+    std::unique_lock<std::mutex> lock(preloaders_mutex);
+    int id = preload_id;
+
+    // Launch thread
+    preload_threads.push_back(std::thread(&Engine::th_preload_textures, this, paths, id, preload_threads.size()));
+
+    preload_id++;
+
+    return id;
 }
 
 void Engine::set_window_icon(const std::string &path)

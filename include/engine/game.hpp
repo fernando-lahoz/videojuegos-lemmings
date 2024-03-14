@@ -61,5 +61,7 @@ public:
     // Called when right before an entity is destroyed
     virtual void on_entity_destruction(Engine& engine, EntityPtr entity);
 
+    virtual void on_preload_finished(Engine& engine, int batch_id);
+
     friend class Engine;
 };

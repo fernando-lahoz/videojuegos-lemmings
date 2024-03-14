@@ -5,6 +5,8 @@
 #include <chrono>
 #include <string>
 #include <unordered_set>
+#include <thread>
+#include <mutex>
 
 #include "lib/texture.hpp"
 #include "geometry/ray.hpp"
@@ -36,6 +38,10 @@ private:
     void process_new_entities();
     void process_cameras();
 
+    void th_preload_textures(const std::vector<std::string>& paths, int batch_id, int thread_id);
+    void send_preload_finished_event(int batch_id, int thread_id);
+    void destroy_finished_preloaders();
+
     void send_mouse_hover();
     void update_mouse_position();
     void change_input_state(EngineIO::InputEvent key, bool is_down);
@@ -56,6 +62,11 @@ private:
     TimePoint check_point;
     uint64_t delta_ns = 0, total_delta_ns = 0, total_measurements = 1;
     double delta_time; // Delta time in seconds
+
+    int preload_id = 0;
+    std::mutex preloaders_mutex;
+    std::vector<std::thread> preload_threads;
+    std::vector<int> finished_preloaders;
 
     EntityCollection entities;
     std::unordered_set<Entity*> hud_entities;
@@ -85,6 +96,11 @@ public:
     void quit();
 
     Texture load_texture(const std::string& path);
+    
+    // Returns the id of the batch loading
+    // The event will be sent with this id
+    int preload_textures(const std::vector<std::string>& paths);
+
     void set_window_icon(const std::string& path);
     void set_fullscreen();
     EntityCollection& get_entities();
