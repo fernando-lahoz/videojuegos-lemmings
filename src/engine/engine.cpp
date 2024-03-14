@@ -132,12 +132,12 @@ void Engine::update_mouse_position()
 Point2f Engine::get_mouse_position()
 {
     auto &main_camera = *cameras[0];
-    return renderer.raster_to_world(mouse_position, main_camera, main_camera);
+    return renderer->raster_to_world(mouse_position, main_camera, main_camera);
 }
 
 Point2f Engine::get_mouse_position_in_camera(Camera2D &camera)
 {
-    return renderer.raster_to_world(mouse_position, camera, *cameras[0]);
+    return renderer->raster_to_world(mouse_position, camera, *cameras[0]);
 }
 
 void Engine::show_cursor()
@@ -153,7 +153,7 @@ void Engine::hide_cursor()
 bool Engine::is_cursor_visible()
 {
     return SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE;
-    // return renderer.frame.contains(mouse_position);
+    // return renderer->frame.contains(mouse_position);
 }
 
 bool Engine::is_entity_hovered(Entity &entity)
@@ -163,7 +163,7 @@ bool Engine::is_entity_hovered(Entity &entity)
 
 SDL_Renderer *Engine::get_renderer()
 {
-    return renderer.get_sdl_renderer();
+    return renderer->get_sdl_renderer();
 }
 
 bool Engine::ray_march_alpha_init(Ray &ray, Float &offset,
@@ -242,7 +242,7 @@ bool Engine::process_events()
                 if (toggle)
                     set_fullscreen();
                 else
-                    renderer.set_windowmode();
+                    renderer->set_windowmode();
                 toggle = !toggle;
                 pressedf11 = true;
             }
@@ -405,7 +405,8 @@ Engine::Engine(std::shared_ptr<Game> &&game)
 
     cameras.push_back(this->game->get_main_camera());
     auto [w, h] = cameras[0]->get_window_frame().diagonal();
-    renderer = Render_2D(this->game->get_name(), (int)w, (int)h);
+
+    renderer = std::make_shared<Render_2D>(this->game->get_name(), (int)w, (int)h);
     physics = Physics_engine();
 
     check_point = std::chrono::steady_clock::now();
@@ -650,7 +651,7 @@ void Engine::start()
     {
         // auto init = std::chrono::steady_clock::now();
         update_delta_time();
-        renderer.update_resolution(*this);
+        renderer->update_resolution(*this);
         update_mouse_position();
 
         game->on_loop_start(*this);
@@ -675,7 +676,7 @@ void Engine::start()
         // std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
 
         // Draw call to renderer
-        hovered_entities = renderer.draw_and_return_hovered(entities, cameras, mouse_position);
+        hovered_entities = renderer->draw_and_return_hovered(entities, cameras, mouse_position);
 
         destroy_finished_preloaders();
     }
@@ -697,47 +698,46 @@ Engine::EntityCollection &Engine::get_entities()
 
 Texture Engine::load_texture(const std::string &path)
 {
-    return renderer.load_texture(path);
+    return renderer->load_texture(path);
 }
 
-void Engine::send_preload_finished_event(int batch_id, int thread_id)
+void Engine::send_preload_finished_event(int batch_id)
 {
     game->on_preload_finished(*this, batch_id);
-
-    std::unique_lock<std::mutex> lock(preloaders_mutex);
-    finished_preloaders.push_back(thread_id);
 }
 
-void Engine::th_preload_textures(const std::vector<std::string> &paths, int batch_id, int thread_id)
+void Engine::th_preload_textures(const std::vector<std::string> &paths, int batch_id)
 {
     for (auto &path : paths)
     {
-        renderer.load_texture(path);
+        renderer->load_texture(path);
     }
 
-    send_preload_finished_event(batch_id, thread_id);
+    send_preload_finished_event(batch_id);
 }
 
 void Engine::destroy_finished_preloaders()
 {
     std::unique_lock<std::mutex> lock(preloaders_mutex);
 
-    for (auto &thread_id : finished_preloaders)
-    {
-        auto &th = preload_threads[thread_id];
-        th.join();
-    }
+    if (preload_threads.empty())
+        return;
 
-    finished_preloaders.clear();
+    while (preload_threads.front().joinable())
+    {
+        preload_threads.front().join();
+        preload_threads.pop();
+    }
 }
 
 int Engine::preload_textures(const std::vector<std::string> &paths)
 {
     std::unique_lock<std::mutex> lock(preloaders_mutex);
+    
     int id = preload_id;
 
     // Launch thread
-    preload_threads.push_back(std::thread(&Engine::th_preload_textures, this, paths, id, preload_threads.size()));
+    preload_threads.push(std::thread(&Engine::th_preload_textures, this, paths, id));
 
     preload_id++;
 
@@ -746,12 +746,12 @@ int Engine::preload_textures(const std::vector<std::string> &paths)
 
 void Engine::set_window_icon(const std::string &path)
 {
-    renderer.set_window_icon(path);
+    renderer->set_window_icon(path);
 }
 
 void Engine::set_fullscreen()
 {
-    renderer.set_fullscreen();
+    renderer->set_fullscreen();
 }
 
 double Engine::get_delta_time()

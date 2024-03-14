@@ -59,6 +59,8 @@ class Render_2D
 {
 protected:
 
+    std::mutex texture_mtx;
+
     std::unordered_map<std::string, Texture> textures;
 
     void clear_window(Spectrum color = Spectrum(0, 0, 0));

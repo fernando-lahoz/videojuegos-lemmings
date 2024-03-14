@@ -2,6 +2,11 @@
 #include "engine/IO.hpp"
 #include "engine/engine.hpp"
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+
+#include <vector>
+#include <algorithm>
 #include <ranges>
 
 Camera2D::Camera2D()
@@ -204,14 +209,20 @@ void Render_2D::set_window_icon(const std::string& window_icon)
 
 Texture Render_2D::load_texture(const std::string& file)
 {
+    std::unique_lock lock(texture_mtx);
+
     if (textures.find(file) != textures.end())
     {
         return textures[file];
     }
     else
     {
+        lock.unlock();
+
         Texture texture;
         texture.load(file, renderer);
+        
+        lock.lock();
         textures[file] = texture;
 
         return texture;

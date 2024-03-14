@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <queue>
 #include <chrono>
 #include <string>
 #include <unordered_set>
@@ -38,8 +39,8 @@ private:
     void process_new_entities();
     void process_cameras();
 
-    void th_preload_textures(const std::vector<std::string>& paths, int batch_id, int thread_id);
-    void send_preload_finished_event(int batch_id, int thread_id);
+    void th_preload_textures(const std::vector<std::string>& paths, int batch_id);
+    void send_preload_finished_event(int batch_id);
     void destroy_finished_preloaders();
 
     void send_mouse_hover();
@@ -55,7 +56,7 @@ private:
 
     std::shared_ptr<Game> game;
     CameraCollection cameras;
-    Render_2D renderer;
+    std::shared_ptr<Render_2D> renderer;
     Physics_engine physics;
     SoundMixer mixer;
 
@@ -65,8 +66,7 @@ private:
 
     int preload_id = 0;
     std::mutex preloaders_mutex;
-    std::vector<std::thread> preload_threads;
-    std::vector<int> finished_preloaders;
+    std::queue<std::thread> preload_threads;
 
     EntityCollection entities;
     std::unordered_set<Entity*> hud_entities;
