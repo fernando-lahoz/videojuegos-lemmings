@@ -1387,6 +1387,12 @@ public:
       case 2:
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), "METAL"));
         engine.get_game().create_entity(std::make_shared<Flamethrower>(Point3f(1425.35, 106.158, 299), engine, true, 0.5f, game_info));
+
+        engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1713, 287.781, 301), engine, 0.8f, game_info));
+        engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1778.91, 287.781, 301), engine, 0.8f, game_info));
+        engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1842.3, 287.781, 301), engine, 0.8f, game_info));
+        engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1905.61, 287.781, 301), engine, 0.8f, game_info));
+        engine.get_game().create_entity(std::make_shared<Fire>(Point3f(1968.86, 287.781, 301), engine, 0.8f, game_info));
         break;
       case 3:
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), "METAL"));
