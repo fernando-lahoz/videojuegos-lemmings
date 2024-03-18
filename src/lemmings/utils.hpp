@@ -12,7 +12,7 @@ namespace Utils
   // LEMMINGS CONSTANTS
   const int STATE_IS_LOOP_ANIMATION[14] = {false, true, true, true, true, true, true, false, true, true, true, false, false, false}; // indicates if the animation is loop
   const int STATE_N_FRAMES[14] = {8, 9, 4, 16, 16, 16, 8, 30, 16, 32, 24, 8, 16, 16};                                                // number of frames of each animation
-  const float STATE_ANIMATION_DURATION[14] = {1.0f, 0.8f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.5f, 1.0f, 1.5f, 1.0f, 1.0f, 1.0f};   // duration of each animation in seconds
+  const float STATE_ANIMATION_DURATION[14] = {1.0f, 0.7f, 0.2f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 1.3f, 1.0f, 1.5f, 1.0f, 1.0f, 1.0f};   // duration of each animation in seconds
   const float MAX_DISTANCE_FALL = 130.0f;
 
   enum Lemming_Skills
@@ -307,6 +307,16 @@ namespace Utils
                                         {B_FOREST, B_FOREST, B_HELL, B_FOREST, B_FOREST, B_SHAFT, B_HELL, B_DESSERT, B_HELL, B_FOREST, B_HELL, B_SHAFT, B_SHAFT, B_DESSERT, B_HELL, B_FOREST, B_SHAFT, B_HELL, B_DESSERT, B_SHAFT, B_HELL, B_HELL, B_DESSERT, B_DESSERT, B_SHAFT, B_DESSERT, B_SHAFT, B_FOREST, B_FOREST, B_SHAFT, B_DESSERT},
                                         {B_FOREST, B_DESSERT, B_FOREST, B_HELL, B_DESSERT, B_HELL, B_SHAFT, B_FOREST, B_SHAFT, B_DESSERT, B_HELL, B_DESSERT, B_HELL, B_FOREST, B_FOREST, B_HELL, B_HELL, B_HELL, B_SHAFT, B_HELL, B_SHAFT, B_HELL, B_SHAFT, B_HELL, B_HELL, B_SHAFT, B_HELL, B_DESSERT, B_SHAFT, B_FOREST, B_HELL},
                                         {B_FOREST, B_FOREST, B_HELL, B_SHAFT, B_SHAFT, B_HELL, B_FOREST, B_SHAFT, B_HELL, B_DESSERT, B_SHAFT, B_HELL, B_FOREST, B_DESSERT, B_SHAFT, B_HELL, B_SHAFT, B_SHAFT, B_FOREST, B_SHAFT, B_SHAFT, B_SHAFT, B_FOREST, B_SHAFT, B_HELL, B_DESSERT, B_FOREST, B_SHAFT, B_SHAFT, B_DESSERT, B_FOREST}};
+
+  enum BACKGROUND_TYPE
+  {
+    BLUE = 0,
+    BLACK = 1
+  };
+  const int LEVEL_BACKGROUND_TYPE[4][31] = {{BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLACK, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE},
+                                            {BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLACK, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE},
+                                            {BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLACK, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE},
+                                            {BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLACK, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE}};
 
   // MENU CONSTANTS
 

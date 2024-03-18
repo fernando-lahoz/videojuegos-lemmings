@@ -451,6 +451,16 @@ public:
         counter->set_position2D(Point2f(position.x + (diagonal.x / 2) - (counter->get_diagonal().x / 2), position.y - 2));
       }
 
+      if (is_falling())
+      {
+        position.y += 2;
+      }
+
+      if (is_floating())
+      {
+        position.y += 1;
+      }
+
       if (is_walking())
       {
         position.x += 2 * direction;
@@ -581,26 +591,13 @@ public:
     auto speed = get_speed();
 
     if (is_walking())
-    {
-      set_speed(speed);
       return;
-    }
 
     if (is_falling())
-    {
-      speed.x = 0;
-      speed.y = velocity;
-      set_speed(speed);
       return;
-    }
 
     if (is_floating())
-    {
-      speed.x = 0;
-      speed.y = velocity / 2;
-      set_speed(speed);
       return;
-    }
 
     if (is_exploding())
     {
@@ -619,9 +616,7 @@ public:
     }
 
     if (is_escaping())
-    {
       return;
-    }
 
     if (is_blocking())
     {
@@ -639,8 +634,8 @@ public:
         {
 
           Bound2f box;
-          box.pMin = local_to_world(Point2f(0.25, 0.75));
-          box.pMax = box.pMin + Vector2f(18, 4);
+          box.pMin = local_to_world(Point2f(0.25, 0.65));
+          box.pMax = box.pMin + Vector2f(18, 8);
 
           bool destroyed = false;
           auto &entities = engine.get_entities();
@@ -692,18 +687,18 @@ public:
           Bound2f box, box1, box2, box3;
           if (direction > 0)
           {
-            box.pMin = local_to_world(Point2f(0.50, 0.40)); 
+            box.pMin = local_to_world(Point2f(0.50, 0.40));
             box.pMax = box.pMin + Vector2f(15, 9);
-            box1.pMin = local_to_world(Point2f(0.50, 0.35)); 
+            box1.pMin = local_to_world(Point2f(0.50, 0.35));
             box1.pMax = box1.pMin + Vector2f(13, 12);
-            box2.pMin = local_to_world(Point2f(0.50, 0.3)); 
+            box2.pMin = local_to_world(Point2f(0.50, 0.3));
             box2.pMax = box2.pMin + Vector2f(11, 15);
-            box3.pMin = local_to_world(Point2f(0.50, 0.25)); 
+            box3.pMin = local_to_world(Point2f(0.50, 0.25));
             box3.pMax = box3.pMin + Vector2f(9, 18);
           }
           else
           {
-            box.pMin = local_to_world(Point2f(-0.25, 0.25)); 
+            box.pMin = local_to_world(Point2f(-0.25, 0.25));
             box.pMax = box.pMin + Vector2f(4, 18);
           }
           // std::cout << box << box1 << std::endl;
@@ -737,13 +732,14 @@ public:
           Bound2f box, box1, box2;
           if (direction > 0)
           {
-            box.pMin = local_to_world(Point2f(0.50, 0.30)); 
+            box.pMin = local_to_world(Point2f(0.50, 0.30));
             box.pMax = box.pMin + Vector2f(9, 4);
-            box2.pMin = local_to_world(Point2f(0.50, 0.35)); 
+            box2.pMin = local_to_world(Point2f(0.50, 0.35));
             box2.pMax = box2.pMin + Vector2f(11, 4);
-            box1.pMin = local_to_world(Point2f(0.50, 0.40)); 
+            box1.pMin = local_to_world(Point2f(0.50, 0.40));
             box1.pMax = box1.pMin + Vector2f(13, 4);
-            if (current_frame == 3){
+            if (current_frame == 3)
+            {
               box.pMax = box.pMin + Vector2f(7, 4);
               box2.pMax = box2.pMin + Vector2f(9, 4);
               box1.pMax = box1.pMin + Vector2f(11, 4);
@@ -751,28 +747,37 @@ public:
           }
           else
           {
-            box.pMin = local_to_world(Point2f(-0.25, 0.25)); 
+            box.pMin = local_to_world(Point2f(-0.25, 0.25));
             box.pMax = box.pMin + Vector2f(4, 18);
-            box1.pMin = local_to_world(Point2f(0.50, 0.40)); 
+            box1.pMin = local_to_world(Point2f(0.50, 0.40));
             box1.pMax = box1.pMin + Vector2f(15, 5);
           }
-          std::cout << current_frame << " " << box << box1  <<  std::endl;
+          std::cout << current_frame << " " << box << box1 << std::endl;
           bool destroyed = false;
           auto &entities = engine.get_entities();
           for (auto &entity : entities)
           {
             if (entity->get_entity_name() == "MAP")
             {
-              if (entity->destroy_box_alpha(engine, box)) {destroyed = true;}
-              if (entity->destroy_box_alpha(engine, box1)) {destroyed = true;}
-              if (entity->destroy_box_alpha(engine, box2)) {destroyed = true;}
+              if (entity->destroy_box_alpha(engine, box))
+              {
+                destroyed = true;
+              }
+              if (entity->destroy_box_alpha(engine, box1))
+              {
+                destroyed = true;
+              }
+              if (entity->destroy_box_alpha(engine, box2))
+              {
+                destroyed = true;
+              }
             }
           }
           if (!destroyed)
           {
             remove_skill(Utils::Lemming_Skills::BASH);
             go_walk();
-            std::cout << "Termina de cavar...: " << destroyed  << std::endl;
+            std::cout << "Termina de cavar...: " << destroyed << std::endl;
           }
           do_action_in_frame = true;
         }
@@ -785,15 +790,16 @@ public:
           Bound2f box, box1, box2, box3;
           if (direction > 0)
           {
-            box3.pMin = local_to_world(Point2f(0.45, 0.45)); 
+            box3.pMin = local_to_world(Point2f(0.45, 0.45));
             box3.pMax = box3.pMin + Vector2f(14, 3);
-            box.pMin = local_to_world(Point2f(0.50, 0.50)); 
+            box.pMin = local_to_world(Point2f(0.50, 0.50));
             box.pMax = box.pMin + Vector2f(13, 4);
-            box2.pMin = local_to_world(Point2f(0.50, 0.55)); 
+            box2.pMin = local_to_world(Point2f(0.50, 0.55));
             box2.pMax = box2.pMin + Vector2f(11, 4);
-            box1.pMin = local_to_world(Point2f(0.50, 0.60)); 
+            box1.pMin = local_to_world(Point2f(0.50, 0.60));
             box1.pMax = box1.pMin + Vector2f(9, 5);
-            if (current_frame == 5){
+            if (current_frame == 5)
+            {
               box3.pMax = box3.pMin + Vector2f(12, 3);
               box.pMax = box.pMin + Vector2f(11, 4);
               box2.pMax = box2.pMin + Vector2f(9, 4);
@@ -802,34 +808,46 @@ public:
           }
           else
           {
-            box.pMin = local_to_world(Point2f(-0.25, 0.25)); 
+            box.pMin = local_to_world(Point2f(-0.25, 0.25));
             box.pMax = box.pMin + Vector2f(4, 18);
-            box1.pMin = local_to_world(Point2f(0.50, 0.60)); 
+            box1.pMin = local_to_world(Point2f(0.50, 0.60));
             box1.pMax = box1.pMin + Vector2f(15, 5);
           }
-          std::cout << current_frame << " " << box << box1  <<  std::endl;
+          std::cout << current_frame << " " << box << box1 << std::endl;
           bool destroyed = false;
           auto &entities = engine.get_entities();
           for (auto &entity : entities)
           {
             if (entity->get_entity_name() == "MAP")
             {
-              if (entity->destroy_box_alpha(engine, box)) {destroyed = true;}
-              if (entity->destroy_box_alpha(engine, box1)) {destroyed = true;}
-              if (entity->destroy_box_alpha(engine, box2)) {destroyed = true;}
-              if (entity->destroy_box_alpha(engine, box3)) {destroyed = true;}
+              if (entity->destroy_box_alpha(engine, box))
+              {
+                destroyed = true;
+              }
+              if (entity->destroy_box_alpha(engine, box1))
+              {
+                destroyed = true;
+              }
+              if (entity->destroy_box_alpha(engine, box2))
+              {
+                destroyed = true;
+              }
+              if (entity->destroy_box_alpha(engine, box3))
+              {
+                destroyed = true;
+              }
             }
           }
           if (!destroyed)
           {
             remove_skill(Utils::Lemming_Skills::BASH);
             go_walk();
-            std::cout << "Termina de cavar...: " << destroyed  << std::endl;
+            std::cout << "Termina de cavar...: " << destroyed << std::endl;
           }
           do_action_in_frame = true;
         }
       }
-      else if (current_frame == 9|| current_frame == 25)
+      else if (current_frame == 9 || current_frame == 25)
       {
         if (!do_action_in_frame)
         {
@@ -846,7 +864,10 @@ public:
           position.x += 5 * direction;
         }
       }
-      else {do_action_in_frame = false;}
+      else
+      {
+        do_action_in_frame = false;
+      }
       return;
     }
     if (is_building())
@@ -871,37 +892,36 @@ public:
       return;
     }
 
-
     if (is_mining())
     {
       if (current_frame == 0)
       {
         if (!do_action_in_frame)
-        {//Hay que mover la posición 0 a la altura de la 23 para que no se teletransporte
+        { // Hay que mover la posición 0 a la altura de la 23 para que no se teletransporte
 
           do_action_in_frame = true;
-          //Actualizamos la posivion del Lemming
-          position.x += direction*8.0;//Dirección indica el sentido de avance del Lemming
+          // Actualizamos la posivion del Lemming
+          position.x += direction * 8.0; // Dirección indica el sentido de avance del Lemming
           position.y += 5.0;
         }
       }
-      else if(current_frame == 1)
+      else if (current_frame == 1)
       {
         if (do_action_in_frame)
-        {//Destruimos el cubo de mapa
+        { // Destruimos el cubo de mapa
 
           Bound2f box;
           box.pMin = local_to_world(Point2f(0.65, 0.80));
           box.pMax = box.pMin + Vector2f(14, -17);
 
-          Bound2f box2;//Destruimos un cubo más a medio camino del movimineto de excabación
-          position.x -= direction*4.0;
+          Bound2f box2; // Destruimos un cubo más a medio camino del movimineto de excabación
+          position.x -= direction * 4.0;
           position.y -= 2.5;
 
           box2.pMin = local_to_world(Point2f(0.65, 0.80));
           box2.pMax = box2.pMin + Vector2f(14, -17);
 
-          position.x += direction*4.0;//Volvemos a poner el Lemming donde estaba
+          position.x += direction * 4.0; // Volvemos a poner el Lemming donde estaba
           position.y += 2.5;
 
           auto &entities = engine.get_entities();
@@ -923,28 +943,10 @@ public:
           }
           do_action_in_frame = false;
         }
-
       }
-      else if(current_frame == 3)
-      {//Clava el pico del todo
-        //Comprobamos que hay suelo
-        Ray ray_down = Ray(local_to_world(Point2f(0.7, 0.5)), Vector2f(0, 1));
-        Float hit_offset_down;
-        EntityPtr hit_entity_down;
-
-        std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
-
-        engine.intersect_ray(ray_down, get_entity_id(),
-                            force_entity_names, hit_offset_down, hit_entity_down);
-
-        if (hit_offset_down > (diagonal.y / 2))//Detectamos que no hay suelo
-        {
-          remove_skill(Utils::Lemming_Skills::MINE);
-          on_ground = false;
-        }
-      }
-      else if(current_frame == 16)
-      {//Da un pasito para delante en la animación
+      else if (current_frame == 3)
+      { // Clava el pico del todo
+        // Comprobamos que hay suelo
         Ray ray_down = Ray(local_to_world(Point2f(0.7, 0.5)), Vector2f(0, 1));
         Float hit_offset_down;
         EntityPtr hit_entity_down;
@@ -954,7 +956,24 @@ public:
         engine.intersect_ray(ray_down, get_entity_id(),
                              force_entity_names, hit_offset_down, hit_entity_down);
 
-        if (hit_offset_down > (diagonal.y / 2))//Detectamos que no hay suelo
+        if (hit_offset_down > (diagonal.y / 2)) // Detectamos que no hay suelo
+        {
+          remove_skill(Utils::Lemming_Skills::MINE);
+          on_ground = false;
+        }
+      }
+      else if (current_frame == 16)
+      { // Da un pasito para delante en la animación
+        Ray ray_down = Ray(local_to_world(Point2f(0.7, 0.5)), Vector2f(0, 1));
+        Float hit_offset_down;
+        EntityPtr hit_entity_down;
+
+        std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
+
+        engine.intersect_ray(ray_down, get_entity_id(),
+                             force_entity_names, hit_offset_down, hit_entity_down);
+
+        if (hit_offset_down > (diagonal.y / 2)) // Detectamos que no hay suelo
         {
           remove_skill(Utils::Lemming_Skills::MINE);
           on_ground = false;
@@ -969,7 +988,6 @@ public:
       }
       return;
     }
-
   }
 
   void update_position(Engine &engine) override
@@ -1050,7 +1068,7 @@ public:
     if (other->get_entity_name() == "Fire")
     {
       on_ground = true;
-      go_escape();
+      go_crash();
       speed.x = 0;
       speed.y = 0;
     }
