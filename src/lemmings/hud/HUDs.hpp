@@ -66,7 +66,7 @@ public:
         auto hudElement = std::make_shared<HUD>(Point3f(10320, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_PAUSE, false, true, false, false);
         engine.get_game().create_entity(hudElement);
 
-        engine.get_game().create_entity(std::make_shared<Entity>(Point3f(9998, -180, 4), Vector2f(644, 32), engine.load_texture("assets/hud/hud_background.png"), "HUD BACKGROUND"));
+        engine.get_game().create_entity(std::make_shared<Entity>(Point3f(9998, -180, 4), Vector2f(644, 32), engine.load_texture("assets/hud/hud_background.png"), engine, "HUD BACKGROUND"));
 
         hudElement = std::make_shared<HUD>(Point3f(10000, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_VELOCITY, false, false, false, false);
         engine.get_game().create_entity(hudElement);
@@ -127,19 +127,19 @@ public:
                                                                        Vector2i(16, 30), lemmings_font_map, game_info.get_lemming_hovered_type(), 3));
 
         engine.get_game().create_entity(std::make_shared<Text_displayer>(Point3f(10224, -178, 3), Vector2f(16, 30), game_info, "left", engine.load_texture("assets/font/font-green.png"),
-                                                                         Vector2i(16, 30), lemmings_font_map, "OUT", "TEXT"));
+                                                                         Vector2i(16, 30), lemmings_font_map, "OUT", engine, "TEXT"));
 
         engine.get_game().create_entity(std::make_shared<Text_displayer>(Point3f(10368, -178, 3), Vector2f(16, 30), game_info, "left", engine.load_texture("assets/font/font-green.png"),
-                                                                         Vector2i(16, 30), lemmings_font_map, "IN", "TEXT"));
+                                                                         Vector2i(16, 30), lemmings_font_map, "IN", engine, "TEXT"));
 
         engine.get_game().create_entity(std::make_shared<Text_displayer>(Point3f(10448, -178, 3), Vector2f(16, 30), game_info, "left", engine.load_texture("assets/font/font-green.png"),
-                                                                         Vector2i(16, 30), lemmings_font_map, "%", "TEXT"));
+                                                                         Vector2i(16, 30), lemmings_font_map, "%", engine, "TEXT"));
 
         engine.get_game().create_entity(std::make_shared<Text_displayer>(Point3f(10496, -178, 3), Vector2f(16, 30), game_info, "left", engine.load_texture("assets/font/font-green.png"),
-                                                                         Vector2i(16, 30), lemmings_font_map, "TIME", "TEXT"));
+                                                                         Vector2i(16, 30), lemmings_font_map, "TIME", engine, "TEXT"));
 
         engine.get_game().create_entity(std::make_shared<Text_displayer>(Point3f(10592, -178, 3), Vector2f(16, 30), game_info, "left", engine.load_texture("assets/font/font-green.png"),
-                                                                         Vector2i(16, 30), lemmings_font_map, "-", "TEXT"));
+                                                                         Vector2i(16, 30), lemmings_font_map, "-", engine, "TEXT"));
 
         Dynamic_value_display display_lemmings_hovered(
             game_info,                        // Referencia a Game_info

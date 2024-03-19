@@ -27,6 +27,9 @@
 // TODO: hud more friendly
 // TODO: add some structures to levels (CHOF, WALL, ICE, ELECT, TONS WEIGHT)
 
+// TODO: add logic don't build inside wall
+// TODO: add logic preload bricks sprite for destroy alpha
+
 class Lemmings_game : public Game
 {
 private:
@@ -69,7 +72,7 @@ public:
     create_entity(cursor);
     create_entity(std::make_shared<Cursor_menu>(engine, game_info, 24));
     screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
-    // screen.go_level(engine, 30, 3);
+    // screen.go_level(engine, 7, 0);
   }
 
   void on_loop_start(Engine &engine) override

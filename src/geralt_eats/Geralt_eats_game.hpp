@@ -14,7 +14,6 @@
 #include "Lemming_hero.hpp"
 #include "MainCamera.hpp"
 
-
 class Geralt_eats_game : public Game
 {
 private:
@@ -66,7 +65,7 @@ public:
     std::shared_ptr<Camera2D> get_main_camera() const override
     {
         return std::make_shared<MainCamera>();
-        //return std::make_shared<Geralt_camera>();
+        // return std::make_shared<Geralt_camera>();
     }
 
     void on_game_startup(Engine &engine) override
@@ -79,19 +78,19 @@ public:
 
         auto geralt = std::make_shared<Geralt>(Point3f(0.4, 0.1, 0), Vector2f(0.1, 0.125), engine);
         // auto ground = std::make_shared<Rigid_body>(Point3f(0, 0.45, 0), Vector2f(1, 0.25), ground_alpha, "Ground");
-        auto ground = std::make_shared<Rigid_body>(Point3f(-0.2, 0.3, 0), Vector2f(2, 1), lemm, "MAP");
+        auto ground = std::make_shared<Rigid_body>(Point3f(-0.2, 0.3, 0), Vector2f(2, 1), lemm, engine, "MAP");
         // auto lemming = std::make_shared<Lemming_hero>(Point3f(0.47, 0.4, 0), Vector2f(0.08, 0.08), engine);
         auto lemming = std::make_shared<Lemming_hero>(Point3f(0.47, 0.4, 0), Vector2f(0.1, 0.125), engine);
 
-        auto ground2 = std::make_shared<Rigid_body>(Point3f(0.7, 0, 0), Vector2f(0.3, 1), t2, "Ground");
+        auto ground2 = std::make_shared<Rigid_body>(Point3f(0.7, 0, 0), Vector2f(0.3, 1), t2, engine, "Ground");
 
-        auto& mixer = engine.get_sound_mixer();
+        auto &mixer = engine.get_sound_mixer();
         Music canon = mixer.load_music("assets/music/02_Lemming 1 (Pachebel's Canon).mp3");
         mixer.play_music(canon, true);
 
-        auto hud = std::make_shared<Rigid_body>(Point3f(100, 100.8, 0), Vector2f(1, 0.2), engine.load_texture("assets/menu/title.png"), "Ground");
+        auto hud = std::make_shared<Rigid_body>(Point3f(100, 100.8, 0), Vector2f(1, 0.2), engine.load_texture("assets/menu/title.png"), engine, "Ground");
 
-        auto trigger = std::make_shared<Trigger>(Point3f(0.05, 0.2, 0), Vector2f(0.3, 0.8), "Trigger");
+        auto trigger = std::make_shared<Trigger>(Point3f(0.05, 0.2, 0), Vector2f(0.3, 0.8), engine, "Trigger");
         trigger->add_asociated_entity(geralt);
         trigger->set_active_texture(engine.load_texture("assets/dehecho.png"));
 
