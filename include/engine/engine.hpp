@@ -76,7 +76,7 @@ private:
     std::set<Entity*> structure_entities;
     std::set<Entity*> character_entities;
     std::unordered_set<Entity*> hovered_entities;
-    std::vector<Entity*> event_entities;
+    std::set<Entity*> event_entities;
 
     Point2f mouse_position;
     bool quit_event = false;

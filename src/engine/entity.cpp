@@ -2,7 +2,7 @@
 #include "engine/engine.hpp"
 
 Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture, 
-            Engine &engine,
+            [[maybe_unused]]Engine &engine,
             std::string_view _entity_name, 
             std::string_view _class_name)
     :
@@ -16,7 +16,7 @@ Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture,
     this->entity_name = _entity_name;
     this->class_name = _class_name;
 
-    engine.subscribe_to_events(this);
+    //engine.subscribe_to_events(this);
 }
 
 Entity::Collision_type Entity::get_collision_type() const

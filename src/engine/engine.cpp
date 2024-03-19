@@ -93,6 +93,7 @@ void Engine::send_event_down(EngineIO::InputEvent event)
     game->on_event_down(*this, event);
     for (auto &camera : cameras)
         camera->on_event_down(*this, event);
+    std::cout << event_entities.size() << std::endl;
 
     for (auto &entity : event_entities)
     {
@@ -162,7 +163,7 @@ void Engine::update_entities_state()
 
 void Engine::subscribe_to_events(Entity *entity)
 {
-    event_entities.push_back(entity);
+    event_entities.insert(entity);
 }
 
 bool Engine::is_cursor_visible()
@@ -368,9 +369,11 @@ void Engine::delete_dead_entities()
     auto iterator = std::find_if(entities.begin(), entities.end(), is_deleted);
 
     std::for_each(iterator, entities.end(), [this](EntityPtr entity)
-                  { 
+                { 
                     game->on_entity_destruction(*this, entity); 
-                    erase_collision_type(entity.get(), entity->get_collision_type()); });
+                    erase_collision_type(entity.get(), entity->get_collision_type());
+                    event_entities.erase(entity.get());
+                });
 
     entities.resize(std::distance(entities.begin(), iterator));
 }
@@ -386,6 +389,7 @@ void Engine::process_new_entities()
         entity->on_creation(*this);
 
         set_collision_type(entity.get(), entity->get_collision_type());
+        subscribe_to_events(entity.get());
     }
 }
 
