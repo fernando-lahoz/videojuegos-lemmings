@@ -581,8 +581,15 @@ public:
     update_counter(engine);
   }
 
-  void update_state()
+
+  void update_state(Engine &engine) override
   {
+    if (game_info.get_level_is_paused())
+      return;
+      
+    Rigid_body::update_state(engine);
+
+
     // EXPLODING LOGIC
     if (update_explode_countdown(engine))
       add_skill_explode_all();
@@ -988,14 +995,6 @@ public:
       }
       return;
     }
-  }
-
-  void update_position(Engine &engine) override
-  {
-    if (game_info.get_level_is_paused())
-      return;
-    Rigid_body::update_position(engine);
-    update_state(); // Actualiza el estado antes de calcular la nueva posición
   }
 
   void on_collision(Engine &, EntityPtr other) override

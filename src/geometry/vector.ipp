@@ -556,3 +556,46 @@ constexpr T max_component(Vector3<T> v)
 {
     return max(v.x, max(v.y, v.z));
 }
+
+
+namespace math {
+
+template <typename T>
+constexpr Vector3<T> clamp(const Vector3<T> &v, const Vector3<T> &low, const Vector3<T> &high)
+{
+    return Vector3<T>(math::clamp(v.x, low.x, high.x), 
+                        math::clamp(v.y, low.y, high.y), 
+                        math::clamp(v.z, low.z, high.z));
+}
+
+template <typename T>
+constexpr Vector3<T> min(const Vector3<T> &v1, const Vector3<T> &v2)
+{
+    return Vector3<T>(min(v1.x, v2.x), min(v1.y, v2.y), min(v1.z, v2.z));
+}
+
+template <typename T>
+constexpr Vector3<T> max(const Vector3<T> &v1, const Vector3<T> &v2)
+{
+    return Vector3<T>(max(v1.x, v2.x), max(v1.y, v2.y), max(v1.z, v2.z));
+}
+
+template <typename T>
+constexpr Vector2<T> clamp(const Vector2<T> &v, const Vector2<T> &low, const Vector2<T> &high)
+{
+    return Vector2<T>(std::clamp(v.x, low.x, high.x), std::clamp(v.y, low.y, high.y));
+}
+
+template <typename T>
+constexpr Vector2<T> min(const Vector2<T> &v1, const Vector2<T> &v2)
+{
+    return Vector2<T>(min(v1.x, v2.x), min(v1.y, v2.y));
+}
+
+template <typename T>
+constexpr Vector2<T> max(const Vector2<T> &v1, const Vector2<T> &v2)
+{
+    return Vector2<T>(max(v1.x, v2.x), max(v1.y, v2.y));
+}
+
+}

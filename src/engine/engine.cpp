@@ -1,5 +1,6 @@
 #include <vector>
 #include <chrono>
+#include <unordered_set>
 
 #include <SDL2/SDL.h>
 
@@ -74,7 +75,7 @@ void Engine::send_mouse_hover()
         if (entity->is_deleted())
             continue;
 
-        if (hovered_entities.contains(entity.get()))
+        if (hovered_entities.find(entity.get()) != hovered_entities.end())
         {
             entity->enable_mouse_hover();
             entity->on_event_down(*this, EngineIO::InputEvent::MOUSE_HOVER);
@@ -150,6 +151,15 @@ void Engine::hide_cursor()
     SDL_ShowCursor(SDL_DISABLE);
 }
 
+void Engine::update_entities_state()
+{
+    for (auto &entity : entities)
+    {
+        if (!entity->is_deleted())
+            entity->update_state(*this);
+    }
+}
+
 bool Engine::is_cursor_visible()
 {
     return SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE;
@@ -158,7 +168,7 @@ bool Engine::is_cursor_visible()
 
 bool Engine::is_entity_hovered(Entity &entity)
 {
-    return hovered_entities.contains(&entity);
+    return hovered_entities.find(&entity) != hovered_entities.end();
 }
 
 SDL_Renderer *Engine::get_renderer()
@@ -327,6 +337,8 @@ void Engine::compute_physics()
     for (auto &camera : cameras)
         camera->update_position(*this);
     physics.update_positions(*this);
+
+    update_entities_state();
 
     // Send post-physics event to all entities
     physics.post_physics(*this);
@@ -649,7 +661,7 @@ void Engine::start()
     bool quit = false;
     while (!quit && !quit_event)
     {
-        // auto init = std::chrono::steady_clock::now();
+        auto init = std::chrono::steady_clock::now();
         update_delta_time();
         renderer->update_resolution(*this);
         update_mouse_position();
@@ -671,9 +683,10 @@ void Engine::start()
 
         process_cameras();
 
-        // auto end = std::chrono::steady_clock::now();
+        auto end = std::chrono::steady_clock::now();
 
-        // std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
+
+        std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
 
         // Draw call to renderer
         hovered_entities = renderer->draw_and_return_hovered(entities, cameras, mouse_position);

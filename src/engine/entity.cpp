@@ -4,6 +4,9 @@
 Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture, 
             std::string_view _entity_name, 
             std::string_view _class_name)
+    :
+    speed(Vector2f(0, 0)),
+    max_speed(Vector2f(INFINITY, INFINITY))
 {
     this->position = position;
     this->diagonal = diagonal;
@@ -367,7 +370,7 @@ void Entity::pre_physics(Engine&)
     _collides_right = false;
 }
 
-void Entity::update_position(Engine&)
+void Entity::update_state(Engine&)
 {
     // Do nothing by default
 }

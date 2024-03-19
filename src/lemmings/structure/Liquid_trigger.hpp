@@ -15,7 +15,7 @@ public:
     is_debug = debug;
   }
 
-  void update_position(Engine &engine) override
+  void update_state(Engine &engine) override
   {
     if (!is_debug)
       return;
@@ -73,7 +73,7 @@ public:
       change = true;
     }
 
-    Entity::update_position(engine);
+    Trigger::update_state(engine);
   }
 
   void post_physics(Engine &) override

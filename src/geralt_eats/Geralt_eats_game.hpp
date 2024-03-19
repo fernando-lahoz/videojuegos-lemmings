@@ -119,7 +119,6 @@ public:
                 engine);
 
             apple->set_gravity(2);
-            apple->enable_gravity();
 
             // create_entity(apple);
             n_apples++;

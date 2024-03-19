@@ -135,7 +135,7 @@ public:
     set_speed(speed);
   }
 
-  void update_position(Engine &engine) override
+  void update_state(Engine &engine) override
   {
     if (game_info.get_level_is_paused())
       return;
@@ -143,7 +143,7 @@ public:
       debug_mode(engine);
     // std::cout << "State: " << state << "\n";
 
-    Rigid_body::update_position(engine);
+    Rigid_body::update_state(engine);
   }
 
   void on_collision([[maybe_unused]] Engine &, EntityPtr) override

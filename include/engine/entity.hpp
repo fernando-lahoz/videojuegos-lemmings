@@ -49,6 +49,12 @@ protected:
     std::string class_name;
     std::string entity_name;
 
+
+    Vector2f speed;
+    Vector2f max_speed;
+
+    Float gravity = 0;
+
 public:
 
 
@@ -85,6 +91,63 @@ public:
     void set_position3D(Point3f p);
 
 
+    void set_gravity(Float new_gravity)
+    {
+        this->gravity = new_gravity;
+    }
+
+    void disable_gravity()
+    {
+        set_gravity(0);
+    }
+
+    bool has_gravity() const
+    {
+        return gravity > 0;
+    }
+
+
+    Vector2f get_speed() const
+    {
+        return speed;
+    }
+
+    void set_speed(Vector2f new_speed)
+    {
+        speed = math::clamp(new_speed, -max_speed, max_speed);
+    }
+
+    void set_speedX(Float new_x_speed)
+    {
+        speed.x = math::clamp(new_x_speed, -max_speed.x, max_speed.x);
+    }
+
+    void set_speedY(Float new_y_speed)
+    {
+        speed.y = math::clamp(new_y_speed, -max_speed.y, max_speed.y);
+    }
+
+    Vector2f get_max_speed() const
+    {
+        return max_speed;
+    }
+
+    void set_max_speed(Vector2f new_max_speed)
+    {
+        max_speed = new_max_speed;
+    }
+
+    inline void update_gravity(Float delta_time)
+    {
+        speed.y = math::clamp(speed.y + gravity*delta_time, -max_speed.y, max_speed.y);
+    }
+
+    inline void update_position(Float delta_time)
+    {
+        position.x += speed.x * delta_time;
+        position.y += speed.y * delta_time;
+    }
+
 
     bool colliding_up() const;
     bool colliding_down() const;
@@ -93,6 +156,12 @@ public:
 
     void enable_collisions();
     void disable_collisions();
+
+    inline bool hitbox_collides(std::shared_ptr<Entity> other) const
+    {
+        return collisions_active && bound2f().overlaps(other->bound2f());
+    }
+
 
 
     bool check_collision_right(std::shared_ptr<Entity> other) const;
@@ -157,11 +226,8 @@ public:
     // This is called right before the physics are computed
     virtual void pre_physics(Engine& engine);
 
-    // Moves the entity speed*delta_time units
-    //  in the direction vector
-    // This is called after computing collisions,
-    //  and before post_physics
-    virtual void update_position(Engine& engine);
+    // This is called at the end of physics, just before post_physics
+    virtual void update_state(Engine& engine);
 
     // Collisions are called right after pre_physics and
     //  before update_position

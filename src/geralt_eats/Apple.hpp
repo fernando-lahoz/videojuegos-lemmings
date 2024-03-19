@@ -22,9 +22,8 @@ class Apple : public Rigid_body
         black_apple = engine.load_texture("assets/apple.png");
         red_apple = engine.load_texture("assets/red_apple.png");
 
-        set_max_speed(1.5);
+        set_max_speed(Vector2f(1.5, 1.5));
         set_gravity(0.3);
-        enable_gravity();
     }
 
     void on_collision(Engine& engine, EntityPtr other) override
@@ -37,14 +36,14 @@ class Apple : public Rigid_body
         Rigid_body::on_collision(engine, other);
     }
 
-    void update_position (Engine& engine) override
+    void update_state (Engine& engine) override
     {
         if (get_position3D().y > 1)
         {
             destroy();
         }
 
-        Rigid_body::update_position(engine);
+        Rigid_body::update_state(engine);
     }
 
     void on_event_down(Engine& engine, EngineIO::InputEvent event) override

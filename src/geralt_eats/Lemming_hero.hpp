@@ -285,8 +285,10 @@ public:
     update_animation(engine);
   }
 
-  void update_state(Engine &engine)
+  void update_state(Engine &engine) override
   {
+    Rigid_body::update_state(engine);
+
     auto speed = get_speed();
 
     if (engine.is_up_arrow_down())
@@ -439,12 +441,6 @@ public:
       }
       return;
     }
-  }
-
-  void update_position(Engine &engine) override
-  {
-    Rigid_body::update_position(engine);
-    update_state(engine); // Actualiza el estado antes de calcular la nueva posición
   }
 
   void on_collision(Engine &engine, EntityPtr other) override

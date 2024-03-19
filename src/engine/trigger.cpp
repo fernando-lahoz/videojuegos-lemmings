@@ -28,7 +28,7 @@ void Trigger::on_collision([[maybe_unused]]Engine& engine,
     trigger_collision_event(engine, other);
 }
 
-void Trigger::update_position([[maybe_unused]]Engine& engine)
+void Trigger::update_state([[maybe_unused]]Engine& engine)
 {
     // Do nothing
 }

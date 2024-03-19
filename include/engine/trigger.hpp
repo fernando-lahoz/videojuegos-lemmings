@@ -23,7 +23,7 @@ class Trigger : public Entity
     void on_collision([[maybe_unused]]Engine& engine, 
             EntityPtr other) override;
 
-    void update_position(Engine& engine) override;
+    void update_state(Engine& engine) override;
 
     void pre_physics(Engine&) override;
     void on_creation(Engine&) override;

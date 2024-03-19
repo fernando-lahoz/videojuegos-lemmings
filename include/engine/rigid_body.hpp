@@ -6,13 +6,6 @@ class Rigid_body : public Entity
 {
 protected:
 
-    Vector2f speed;
-    Float max_speed_sqr;
-    Float max_speed = -1;
-
-    bool _has_gravity;
-    Float gravity = 0;
-
     enum Sides {RIGHT=1, UP=2, LEFT=4, DOWN=8};
 
     static constexpr char RIGID_BODY_ID[] = "Rigid_body";
@@ -27,21 +20,6 @@ public:
     Rigid_body(Point3f position, Vector2f diagonal, Texture texture, 
         std::string _entity_name, 
         std::string _class_name=RIGID_BODY_ID);
-
-    void set_gravity(Float new_gravity);
-    void enable_gravity();
-    void disable_gravity();
-
-    bool has_gravity() const;
-    Vector2f get_speed() const;
-
-    void set_speed(Vector2f new_speed);
-    void set_speedX(Float new_x_speed);
-    void set_speedY(Float new_y_speed);
-
-    Float get_max_speed_sqr() const;
-    Float get_max_speed() const;
-    void set_max_speed(Float new_max_speed);
 
     // Returns true if the ray intersected
     //  tmin contains the minimum hit offset
@@ -60,7 +38,7 @@ public:
     void on_collision([[maybe_unused]]Engine& engine, 
             EntityPtr other) override;
 
-    void update_position(Engine& engine) override;
+    void update_state(Engine& engine) override;
 
     void pre_physics(Engine&) override;
     void on_creation(Engine&) override;

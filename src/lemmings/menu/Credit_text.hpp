@@ -39,7 +39,7 @@ public:
     disable_collisions();
   }
 
-  void update_position(Engine &engine) override
+  void update_state(Engine &engine) override
   {
     float delta_time = engine.get_delta_time();
 

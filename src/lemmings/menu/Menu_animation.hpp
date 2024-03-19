@@ -114,13 +114,13 @@ public:
     set_speed(speed);
   }
 
-  void update_position(Engine &engine) override
+  void update_state(Engine &engine) override
   {
     if (is_debug)
       debug_mode(engine);
     // std::cout << "State: " << state << "\n";
 
-    Rigid_body::update_position(engine);
+    Rigid_body::update_state(engine);
   }
 
   void post_physics(Engine &) override

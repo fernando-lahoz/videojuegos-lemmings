@@ -38,6 +38,7 @@ private:
     void delete_dead_entities();
     void process_new_entities();
     void process_cameras();
+    void update_entities_state();
 
     void th_preload_textures(const std::vector<std::string>& paths, int batch_id);
     void send_preload_finished_event(int batch_id);
@@ -69,6 +70,7 @@ private:
     std::queue<std::thread> preload_threads;
 
     EntityCollection entities;
+
     std::unordered_set<Entity*> hud_entities;
     std::unordered_set<Entity*> structure_entities;
     std::unordered_set<Entity*> character_entities;

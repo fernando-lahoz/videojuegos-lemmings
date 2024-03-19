@@ -9,6 +9,7 @@ class Geralt : public Rigid_body
     Texture txt_left, txt_right;
     Sound oof;
     EntityPtr ground;
+    Float default_gravity = 3;
 
 public:
 
@@ -17,9 +18,8 @@ public:
         engine.load_texture("assets/geralt_right.png"),
         "Geralt")
     {
-        set_max_speed(1.5);
-        gravity = 3;
-        enable_gravity();
+        set_max_speed(Vector2f(1.5, 1.5));
+        gravity = default_gravity;
 
         txt_left = engine.load_texture("assets/geralt_left.png");
         txt_right = engine.load_texture("assets/geralt_right.png");
@@ -30,8 +30,18 @@ public:
         constructor_set_collision_type(Collision_type::CHARACTER);
     }
 
-    void update_state(Engine &engine)
+
+    void update_state(Engine& engine) override
     {
+        if (is_grounded(engine))
+        {
+            disable_gravity();
+        }
+        else
+        {
+            set_gravity(default_gravity);
+        }
+
         auto speed = get_speed();
 
         if (engine.is_up_arrow_down()
@@ -87,29 +97,8 @@ public:
                 std::cout << "Nothing destroyed\n";
             }
         }
-    }
 
-    void update_position(Engine& engine) override
-    {
-        Ray ray_down = Ray(local_to_world(down_point), Vector2f(0, 1));
-        Float hit_offset_down;
-        EntityPtr hit_entity_down;
-
-        engine.intersect_ray(ray_down, get_entity_id(), 
-                RIGID_BODY_ID, hit_offset_down, hit_entity_down);
-
-        if (is_grounded(engine))
-        {
-            disable_gravity();
-        }
-        else
-        {
-            enable_gravity();
-        }
-
-        update_state(engine);
-    
-        Rigid_body::update_position(engine);
+        Rigid_body::update_state(engine);
     }
 
     void on_collision(Engine& engine, EntityPtr other) override

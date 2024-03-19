@@ -4,11 +4,16 @@
 void Physics_engine::update_positions(Engine& engine)
 {
     auto &entities = engine.get_entities();
+    auto delta_time = engine.get_delta_time();
 
-    // Should vectorize automatically
     for (auto& entity : entities)
     {
-        entity->update_position(engine);
+        entity->update_gravity(delta_time);
+    }
+
+    for (auto& entity : entities)
+    {
+        entity->update_position(delta_time);
     }
 }
 
@@ -27,33 +32,19 @@ void Physics_engine::compute_collisions(Engine& engine)
         {
             auto shared_character = std::make_shared<Entity>(*character);
 
-            if (structure->collides(shared_character))
+            if (structure->hitbox_collides(shared_character) &&
+                structure->collides(shared_character))
             {
                 structure->on_collision(engine, shared_character);
             }
 
-            if (character->collides(shared_structure))
+            if (structure->hitbox_collides(shared_character) &&
+                character->collides(shared_structure))
             {
                 character->on_collision(engine, shared_structure);
             }
         }
     }
-
-    /*
-    for(std::size_t i = 0; i < entities.size(); i++)
-    {
-        for(std::size_t j = i + 1; j < entities.size(); j++)
-        {
-            if (entities[i]->collides(entities[j])) {
-                entities[i]->on_collision(engine, entities[j]);
-            }
-
-            if (entities[j]->collides(entities[i])) {
-                entities[j]->on_collision(engine, entities[i]);
-            }
-        }
-    }
-    */
 }
 
 void Physics_engine::pre_physics(Engine& engine)
