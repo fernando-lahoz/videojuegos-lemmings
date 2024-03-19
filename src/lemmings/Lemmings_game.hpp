@@ -21,9 +21,7 @@
 // TODO: add player vs IA mode
 // TODO: add sound effects
 // TODO: fix lemming animations
-// TODO: fix float animation
 // TODO: change assets more similar to original amiga
-// TODO: change update_position logic to update_animation
 // TODO: hud more friendly
 // TODO: add some structures to levels (CHOF, WALL, ICE, ELECT, TONS WEIGHT)
 

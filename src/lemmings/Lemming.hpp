@@ -7,6 +7,7 @@
 
 #include "lemmings/structure/Chain.hpp"
 #include "lemmings/structure/Directional_wall.hpp"
+#include "lemmings/structure/Brick.hpp"
 #include "lemmings/Game_info.hpp"
 #include "lemmings/display/Dynamic_counter_image.hpp"
 #include "lemmings/utils.hpp"
@@ -42,6 +43,8 @@ class Lemming : public Rigid_body
   double time_to_live = 5.0f;
   int last_time_to_live = 6;
   std::shared_ptr<Dynamic_counter_image> counter;
+
+  std::shared_ptr<Brick> brick_ptr;
 
   std::string get_type()
   {
@@ -280,8 +283,7 @@ public:
   Lemming(Point3f position, Vector2f diagonal, Engine &_engine, Game_info &_game_info)
       : Rigid_body(position, diagonal,
                    _engine.load_texture("assets/lemming/lemming_1_2_0.png"),
-                   engine,
-                   "Lemming", "Lemming"),
+                   engine, "Lemming", "Lemming"),
         game_info(_game_info), engine(_engine)
   {
     constructor_set_collision_type(Collision_type::CHARACTER);
@@ -465,26 +467,34 @@ public:
       if (is_walking())
       {
         position.x += 2 * direction;
-        Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, 1));
+        Ray ray_down = Ray(local_to_world(Point2f(0.45, 0.5)), Vector2f(0, 1));
         Float hit_offset_down;
         EntityPtr hit_entity_down;
 
-        std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
+        std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"};
 
         engine.intersect_ray(ray_down, get_entity_id(),
                              force_entity_names, hit_offset_down, hit_entity_down);
-
-        if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
+        bool cond = true;
+        if (hit_entity_down && hit_entity_down->get_entity_name() == "BRICKS")
         {
-          if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 20)
-          {
-            // std::cout << "sube baja altura\n";
-            position.y += (hit_offset_down - diagonal.y / 4);
-          }
+          std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(hit_entity_down);
+          cond = bricks_ptr->get_direction() == direction;
         }
-        else if (hit_offset_down > diagonal.y / 2)
+        if (cond)
         {
-          on_ground = false;
+          if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
+          {
+            if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 20)
+            {
+              // std::cout << "sube baja altura\n";
+              position.y += (hit_offset_down - diagonal.y / 4);
+            }
+          }
+          else if (hit_offset_down > diagonal.y / 2)
+          {
+            on_ground = false;
+          }
         }
       }
 
@@ -561,7 +571,41 @@ public:
           destroy_lemming(engine);
           return;
         }
+        if (is_idle())
+        {
+          is_playing = true;
+          go_walk();
+          return;
+        }
         return;
+      }
+
+      if (is_building())
+      {
+        if (current_frame == 9)
+        {
+          if (!brick_ptr)
+          {
+            auto point = direction == -1 ? local_to_world(Point2f(-0.85, 0.15)) : local_to_world(Point2f(0.45, 0.15));
+            brick_ptr = std::make_shared<Brick>(Point3f(point.x, point.y, 250), engine, game_info, direction);
+            engine.get_game().create_entity(brick_ptr);
+          }
+          else
+          {
+            brick_ptr->add_brick(engine);
+          }
+        }
+        else if (current_frame == 0)
+        {
+          position.y -= 2;
+          position.x += 4 * direction;
+          if (!brick_ptr->check_bricks())
+          {
+            brick_ptr = NULL;
+            remove_skill(Utils::Lemming_Skills::BUILD);
+            go_idle();
+          }
+        }
       }
 
       std::string frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
@@ -582,14 +626,12 @@ public:
     update_counter(engine);
   }
 
-
   void update_state(Engine &engine) override
   {
     if (game_info.get_level_is_paused())
       return;
 
     Rigid_body::update_state(engine);
-
 
     // EXPLODING LOGIC
     if (update_explode_countdown(engine))
@@ -878,27 +920,6 @@ public:
       }
       return;
     }
-    if (is_building())
-    {
-      if (current_frame == 15)
-      {
-        if (!do_action_in_frame)
-        {
-          do_action_in_frame = true;
-          speed.y = -velocity;
-          speed.x = direction * velocity;
-          set_speed(speed);
-        }
-      }
-      else
-      {
-        do_action_in_frame = false;
-        speed.x = 0;
-        speed.y = 0;
-        set_speed(speed);
-      }
-      return;
-    }
 
     if (is_mining())
     {
@@ -1042,6 +1063,7 @@ public:
           }
           else
           {
+            position.y -= 1;
             distance_fall = 0.0f;
             go_walk();
           }

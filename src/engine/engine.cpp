@@ -310,7 +310,7 @@ void Engine::update_delta_time()
 
     check_point = new_check_point;
 
-    if (total_delta_ns > 0 && 
+    if (total_delta_ns > 0 &&
         new_delta > 4 * total_delta_ns / total_measurements)
     {
         // Invalid delta time (game freezed) -> replace by mean delta time
@@ -369,11 +369,10 @@ void Engine::delete_dead_entities()
     auto iterator = std::find_if(entities.begin(), entities.end(), is_deleted);
 
     std::for_each(iterator, entities.end(), [this](EntityPtr entity)
-                { 
+                  { 
                     game->on_entity_destruction(*this, entity); 
                     erase_collision_type(entity.get(), entity->get_collision_type());
-                    event_entities.erase(entity.get());
-                });
+                    event_entities.erase(entity.get()); });
 
     entities.resize(std::distance(entities.begin(), iterator));
 }
@@ -582,7 +581,7 @@ bool Engine::intersect_ray(Ray &ray,
             continue;
 
         auto bounding_box = entity->bound2f();
-        Float offset, min_offset, max_offset;
+        Float offset, min_offset, max_offset = INFINITY;
         Point2f origin;
         bool intersects = false;
         origin.x = ray.origin.x;
@@ -603,6 +602,10 @@ bool Engine::intersect_ray(Ray &ray,
 
         if (intersects)
         {
+            if (std::isnan(max_offset) || abs(max_offset) == INFINITY)
+                max_offset = 0;
+            if (std::isnan(min_offset))
+                max_offset = 0;
             intersects = ray_march_alpha_init(ray, offset, offset, max_offset, entity);
 
             if (intersects && offset < hit_offset)
@@ -695,8 +698,7 @@ void Engine::start()
 
         auto end = std::chrono::steady_clock::now();
 
-
-        std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
+        // std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
 
         // Draw call to renderer
         hovered_entities = renderer->draw_and_return_hovered(entities, cameras, mouse_position);
@@ -756,7 +758,7 @@ void Engine::destroy_finished_preloaders()
 int Engine::preload_textures(const std::vector<std::string> &paths)
 {
     std::unique_lock<std::mutex> lock(preloaders_mutex);
-    
+
     int id = preload_id;
 
     // Launch thread
