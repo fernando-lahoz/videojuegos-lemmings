@@ -70,12 +70,12 @@ EngineIO::InputEvent Engine::SDL_to_input_event(SDL_MouseButtonEvent button)
 
 void Engine::send_mouse_hover()
 {
-    for (auto &entity : entities)
+    for (auto &entity : event_entities)
     {
         if (entity->is_deleted())
             continue;
 
-        if (hovered_entities.find(entity.get()) != hovered_entities.end())
+        if (hovered_entities.find(entity) != hovered_entities.end())
         {
             entity->enable_mouse_hover();
             entity->on_event_down(*this, EngineIO::InputEvent::MOUSE_HOVER);
@@ -94,7 +94,7 @@ void Engine::send_event_down(EngineIO::InputEvent event)
     for (auto &camera : cameras)
         camera->on_event_down(*this, event);
 
-    for (auto &entity : entities)
+    for (auto &entity : event_entities)
     {
         if (!entity->is_deleted())
             entity->on_event_down(*this, event);
@@ -107,7 +107,7 @@ void Engine::send_event_up(EngineIO::InputEvent event)
     for (auto &camera : cameras)
         camera->on_event_up(*this, event);
 
-    for (auto &entity : entities)
+    for (auto &entity : event_entities)
     {
         if (!entity->is_deleted())
             entity->on_event_up(*this, event);
@@ -158,6 +158,11 @@ void Engine::update_entities_state()
         if (!entity->is_deleted())
             entity->update_state(*this);
     }
+}
+
+void Engine::subscribe_to_events(Entity *entity)
+{
+    event_entities.push_back(entity);
 }
 
 bool Engine::is_cursor_visible()
@@ -304,7 +309,8 @@ void Engine::update_delta_time()
 
     check_point = new_check_point;
 
-    if (total_delta_ns > 0 && new_delta > 4 * total_delta_ns / total_measurements)
+    if (total_delta_ns > 0 && 
+        new_delta > 4 * total_delta_ns / total_measurements)
     {
         // Invalid delta time (game freezed) -> replace by mean delta time
         delta_ns = total_delta_ns / total_measurements;
@@ -483,17 +489,17 @@ void Engine::change_collision_type(Entity *entity, Entity::Collision_type new_ty
     set_collision_type(entity, new_type);
 }
 
-std::unordered_set<Entity *> &Engine::get_character_entities()
+std::set<Entity *> &Engine::get_character_entities()
 {
     return character_entities;
 }
 
-std::unordered_set<Entity *> &Engine::get_structure_entities()
+std::set<Entity *> &Engine::get_structure_entities()
 {
     return structure_entities;
 }
 
-std::unordered_set<Entity *> &Engine::get_hud_entities()
+std::set<Entity *> &Engine::get_hud_entities()
 {
     return hud_entities;
 }

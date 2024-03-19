@@ -24,7 +24,7 @@ private:
 
 public:
   Menu_animation(Point3f position, Vector2f size, Engine &engine, int _type, int _n_frames, float _animation_duration, float _time_wait = 0.0f, float _random_time_max = 0.0f, bool _is_debug = false)
-      : Rigid_body(position, size, engine.load_texture("assets/menu/menu_animation_" + std::to_string(_type) + "_0.png"), "Menu Animation"),
+      : Rigid_body(position, size, engine.load_texture("assets/menu/menu_animation_" + std::to_string(_type) + "_0.png"), engine, "Menu Animation"),
         type(_type), n_frames(_n_frames), time_wait(_time_wait), random_time_max(_random_time_max), animation_duration(_animation_duration), is_debug(_is_debug)
   {
     txt = engine.load_texture("assets/menu/menu_animation_" + std::to_string(_type) + "_0.png");

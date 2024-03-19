@@ -30,7 +30,7 @@ private:
 
 public:
   Intro(Engine &engine, Game_info &_game_info)
-      : Entity(Point3f(10000, -0, -50), Vector2f(640, 400), engine.load_texture("assets/intro/intro_0.jpg"), "Intro"),
+      : Entity(Point3f(10000, -0, -50), Vector2f(640, 400), engine.load_texture("assets/intro/intro_0.jpg"), engine, "Intro"),
         game_info(_game_info)
   {
     txt = engine.load_texture("assets/intro/intro_0.jpg");

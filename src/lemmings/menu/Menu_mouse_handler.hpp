@@ -16,6 +16,7 @@ public:
   Menu_mouse_handler(Point3f position, Vector2f diagonal, Engine &_engine, Game_info &_game_info, int _menu_type)
       : Entity(position, diagonal,
                _engine.load_texture("assets/menu/transparent.png"),
+               _engine,
                "Menu Handler", "Menu Handler"),
         game_info(_game_info),
         menu_type(_menu_type)

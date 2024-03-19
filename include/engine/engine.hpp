@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include <thread>
 #include <mutex>
+#include <set>
 
 #include "lib/texture.hpp"
 #include "geometry/ray.hpp"
@@ -71,10 +72,11 @@ private:
 
     EntityCollection entities;
 
-    std::unordered_set<Entity*> hud_entities;
-    std::unordered_set<Entity*> structure_entities;
-    std::unordered_set<Entity*> character_entities;
+    std::set<Entity*> hud_entities;
+    std::set<Entity*> structure_entities;
+    std::set<Entity*> character_entities;
     std::unordered_set<Entity*> hovered_entities;
+    std::vector<Entity*> event_entities;
 
     Point2f mouse_position;
     bool quit_event = false;
@@ -124,10 +126,11 @@ public:
 
     bool is_entity_hovered(Entity& entity);
     void change_collision_type(Entity* entity, Entity::Collision_type new_type);
+    void subscribe_to_events(Entity* entity);
 
-    std::unordered_set<Entity*>& get_hud_entities();
-    std::unordered_set<Entity*>& get_structure_entities();
-    std::unordered_set<Entity*>& get_character_entities();
+    std::set<Entity*>& get_hud_entities();
+    std::set<Entity*>& get_structure_entities();
+    std::set<Entity*>& get_character_entities();
 
     /*
     bool intesect_ray(Ray &ray, 

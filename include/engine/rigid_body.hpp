@@ -17,7 +17,8 @@ protected:
 
 public:
 
-    Rigid_body(Point3f position, Vector2f diagonal, Texture texture, 
+    Rigid_body(Point3f position, Vector2f diagonal, Texture texture,
+        Engine& engine, 
         std::string _entity_name, 
         std::string _class_name=RIGID_BODY_ID);
 

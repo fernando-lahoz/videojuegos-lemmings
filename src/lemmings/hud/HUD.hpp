@@ -26,7 +26,7 @@ private:
 
 public:
   HUD(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, std::string _path, int _n, bool _is_hovereable = false, bool _is_clickable = true, bool _is_changeable = false, bool _is_selectable = true)
-      : Rigid_body(position, size, engine.load_texture(_path + std::to_string(_n) + ".png"), "HUD"), game_info(_game_info) //, HUDs &_huds
+      : Rigid_body(position, size, engine.load_texture(_path + std::to_string(_n) + ".png"), engine, "HUD"), game_info(_game_info) //, HUDs &_huds
   {
     is_hovereable = _is_hovereable;
     is_clickable = _is_clickable;
@@ -39,7 +39,7 @@ public:
   }
 
   HUD(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, std::string _path, int _n, bool _is_hovereable, bool _is_clickable, bool _is_changeable, bool _is_selectable, bool _is_cursor)
-      : Rigid_body(position, size, engine.load_texture(_path + std::to_string(_n) + ".png"), "HUD"), game_info(_game_info) //, HUDs &_huds
+      : Rigid_body(position, size, engine.load_texture(_path + std::to_string(_n) + ".png"), engine, "HUD"), game_info(_game_info) //, HUDs &_huds
   {
     is_hovereable = _is_hovereable;
     is_clickable = _is_clickable;

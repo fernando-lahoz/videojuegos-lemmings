@@ -25,7 +25,7 @@ private:
 public:
   Credit_text(Point3f position, Vector2f letter_size, Engine &engine, Game_info &_game_info, float _animation_duration, float _time_wait, const Texture &font_texture,
               Vector2i texture_letter_size, MappingFunction map, std::string _text)
-      : Rigid_body(position, letter_size, engine.load_texture("assets/menu/transparent.png"), "Credits Handler"),
+      : Rigid_body(position, letter_size, engine.load_texture("assets/menu/transparent.png"), engine, "Credits Handler"),
         text(_text),
         game_info(_game_info),
         animation_duration(_animation_duration),

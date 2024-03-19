@@ -18,7 +18,7 @@ private:
 
 public:
   Menu_button(Point3f position, Vector2f size, Engine &_engine, Game_info &_game_info, int _type, bool _is_changeable = false)
-      : Rigid_body(position, size, !_game_info.get_sound_effects() && _is_changeable ? _engine.load_texture("assets/menu/menu_button_" + std::to_string(_type + 1) + ".png") : _engine.load_texture("assets/menu/menu_button_" + std::to_string(_type) + ".png"), "Menu Button"),
+      : Rigid_body(position, size, !_game_info.get_sound_effects() && _is_changeable ? _engine.load_texture("assets/menu/menu_button_" + std::to_string(_type + 1) + ".png") : _engine.load_texture("assets/menu/menu_button_" + std::to_string(_type) + ".png"), engine, "Menu Button"),
         type(_type), game_info(_game_info), engine(_engine)
   {
     txt_on = engine.load_texture("assets/menu/menu_button_" + std::to_string(_type) + ".png");

@@ -42,9 +42,11 @@ bool Rigid_body::is_grounded(Engine& ) const
 
 
 Rigid_body::Rigid_body(Point3f position, Vector2f diagonal, Texture texture, 
+    Engine& engine,
     std::string _entity_name, 
     std::string _class_name)
     : Entity(position, diagonal, texture, 
+            engine,
             _entity_name, _class_name)
 {
     speed = Vector2f(0, 0);

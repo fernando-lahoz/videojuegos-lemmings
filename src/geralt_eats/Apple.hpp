@@ -17,6 +17,7 @@ class Apple : public Rigid_body
 
     Apple(Point3f position, Vector2f size, Engine& engine) 
     : Rigid_body(position, size, engine.load_texture("assets/apple.png"),
+        engine,
         "Apple")
     {
         black_apple = engine.load_texture("assets/apple.png");

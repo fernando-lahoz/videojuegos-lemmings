@@ -59,6 +59,7 @@ public:
 
 
     Entity(Point3f position, Vector2f diagonal, const Texture& texture, 
+            Engine &engine,
             std::string_view _entity_name, 
             std::string_view _class_name = "Entity");
 

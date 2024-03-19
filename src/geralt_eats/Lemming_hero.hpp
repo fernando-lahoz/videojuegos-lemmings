@@ -214,6 +214,7 @@ public:
   Lemming_hero(Point3f position, Vector2f diagonal, Engine &engine)
       : Rigid_body(position, diagonal,
                    engine.load_texture("assets/lemming/lemming_1_2_0.png"),
+                   engine,
                    "Lemming", "Lemming")
   {
     override_down_point(Point2f(0.5, 0.75));

@@ -22,6 +22,7 @@ public:
   Map_dynamic(Point3f _position, Vector2f _diagonal, Engine &engine, Game_info &_game_info)
       : Entity(_position, _diagonal,
                engine.load_texture("assets/menu/transparent.png"),
+               engine,
                "Dynamic MAP", "Dynamic MAP"),
         position(_position),
         diagonal(_diagonal),

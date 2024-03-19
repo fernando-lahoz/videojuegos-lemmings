@@ -3,7 +3,7 @@ project(videojuegos-lemmings LANGUAGES CXX)
 
 #-------------------------- COMPILATION FLAGS ----------------------------------
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++20 -save-temps")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++20 -save-temps -ftree-vectorizer-verbose=6")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 

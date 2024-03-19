@@ -13,6 +13,7 @@ class Trigger : public Entity
     public:
 
     Trigger(Point3f position, Vector2f diagonal,
+            Engine& engine,
             std::string _entity_name, 
             std::string _class_name="Trigger");
 

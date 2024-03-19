@@ -17,7 +17,8 @@ private:
 
 public:
   Cursor_menu(Engine &engine, Game_info &_game_info, float _size)
-      : Rigid_body(Point3f(-1, -1, -30), Vector2f(_size, _size * 1.04166666666), engine.load_texture("assets/cursor_menu.png"), "Cursor"), game_info(_game_info), size(_size) {}
+      : Rigid_body(Point3f(-1, -1, -30), Vector2f(_size, _size * 1.04166666666), engine.load_texture("assets/cursor_menu.png"), 
+        engine, "Cursor"), game_info(_game_info), size(_size) {}
 
   void update_state(Engine &engine) override
   {

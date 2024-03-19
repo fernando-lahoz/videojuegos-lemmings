@@ -17,7 +17,7 @@ private:
 
 public:
   Minimap_view(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, float _last_position)
-      : Entity(position, size, engine.load_texture("assets/hud/hud_minimap_view.png"), "HUD"), game_info(_game_info), last_position(_last_position)
+      : Entity(position, size, engine.load_texture("assets/hud/hud_minimap_view.png"), engine, "HUD"), game_info(_game_info), last_position(_last_position)
   {
   }
 

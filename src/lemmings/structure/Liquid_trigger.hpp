@@ -9,7 +9,7 @@ class Liquid_trigger : public Trigger
   bool is_debug = false;
 
 public:
-  Liquid_trigger(Point3f position, Vector2f diagonal, bool debug = false) : Trigger(position, diagonal, "LIQUID TRIGGER")
+  Liquid_trigger(Point3f position, Vector2f diagonal, Engine &engine, bool debug = false) : Trigger(position, diagonal, engine, "LIQUID TRIGGER")
   {
     init = !debug;
     is_debug = debug;

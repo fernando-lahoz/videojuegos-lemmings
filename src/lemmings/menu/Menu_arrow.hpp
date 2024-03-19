@@ -17,7 +17,7 @@ private:
 
 public:
   Menu_arrow(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, int _n)
-      : Rigid_body(position, size, engine.load_texture("assets/menu/menu_arrow_" + std::to_string(_n % 2) + ".png"), "HUD"), game_info(_game_info)
+      : Rigid_body(position, size, engine.load_texture("assets/menu/menu_arrow_" + std::to_string(_n % 2) + ".png"), engine, "HUD"), game_info(_game_info)
   {
     n = _n;
     txt = engine.load_texture("assets/menu/menu_arrow_" + std::to_string(_n % 2) + ".png");

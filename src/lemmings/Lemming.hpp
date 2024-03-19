@@ -280,6 +280,7 @@ public:
   Lemming(Point3f position, Vector2f diagonal, Engine &_engine, Game_info &_game_info)
       : Rigid_body(position, diagonal,
                    _engine.load_texture("assets/lemming/lemming_1_2_0.png"),
+                   engine,
                    "Lemming", "Lemming"),
         game_info(_game_info), engine(_engine)
   {
@@ -586,7 +587,7 @@ public:
   {
     if (game_info.get_level_is_paused())
       return;
-      
+
     Rigid_body::update_state(engine);
 
 

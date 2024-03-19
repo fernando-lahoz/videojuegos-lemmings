@@ -16,6 +16,7 @@ public:
     Geralt(Point3f position, Vector2f diagonal, Engine& engine)
         : Rigid_body(position, diagonal, 
         engine.load_texture("assets/geralt_right.png"),
+        engine,
         "Geralt")
     {
         set_max_speed(Vector2f(1.5, 1.5));

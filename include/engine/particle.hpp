@@ -11,10 +11,11 @@ public:
     Particle(Point3f position, Vector2f diagonal,
             Float time_to_live, // in seconds
             const Texture& texture, 
+            Engine& engine,
             std::string_view _entity_name, 
             std::string_view _class_name="Particle")
         :
-        Entity(position, diagonal, texture, _entity_name, _class_name)
+        Entity(position, diagonal, texture, engine, _entity_name, _class_name)
     {
         this->time_to_live = time_to_live;
         constructor_set_collision_type(Entity::Collision_type::HUD);

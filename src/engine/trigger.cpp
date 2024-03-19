@@ -3,9 +3,10 @@
 
 
 Trigger::Trigger(Point3f position, Vector2f diagonal,
+        Engine& engine,
         std::string _entity_name, 
         std::string _class_name)
-    : Entity(position, diagonal, Texture(), _entity_name, _class_name)
+    : Entity(position, diagonal, Texture(), engine, _entity_name, _class_name)
 {
     disable_alpha_collision();
     disable_alpha_mouse();

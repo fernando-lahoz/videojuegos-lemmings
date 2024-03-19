@@ -30,6 +30,7 @@ public:
                Vector2i _texture_letter_size, MappingFunction _map, std::string_view _text, int _type)
       : Entity(_position, _letter_size,
                engine.load_texture("assets/menu/transparent.png"),
+               engine, 
                "Dynamic TEXT", "Dynamic TEXT"),
         position(_position),
         letter_size(_letter_size),

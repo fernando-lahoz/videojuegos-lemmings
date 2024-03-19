@@ -20,7 +20,7 @@ private:
 
 public:
   Credit_animation(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, int _type, int _frames_credits)
-      : Rigid_body(position, size, engine.load_texture("assets/menu/credit_animation_" + std::to_string(_type) + "_0.png"), "Credit Animation"),
+      : Rigid_body(position, size, engine.load_texture("assets/menu/credit_animation_" + std::to_string(_type) + "_0.png"), engine, "Credit Animation"),
         type(_type), frames_credits(_frames_credits), game_info(_game_info)
   {
     txt = engine.load_texture("assets/menu/credit_animation_" + std::to_string(_type) + "_0.png");
