@@ -25,8 +25,7 @@
 // TODO: hud more friendly
 // TODO: add some structures to levels (CHOF, WALL, ICE, ELECT, TONS WEIGHT)
 
-// TODO: add logic don't build inside wall
-// TODO: add logic preload bricks sprite for destroy alpha
+// TODO: add particles when lemming die
 
 class Lemmings_game : public Game
 {

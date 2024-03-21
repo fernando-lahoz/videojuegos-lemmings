@@ -35,7 +35,7 @@ public:
   {
     txt = engine.load_texture("assets/intro/intro_0.jpg");
     disable_collisions();
-    time_frame_wait = 3.0f;
+    time_frame_wait = 0.0f;
     animation_duration = 36.0f;
 
     auto &mixer = engine.get_sound_mixer();

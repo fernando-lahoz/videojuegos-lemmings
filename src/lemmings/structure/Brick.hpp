@@ -6,6 +6,7 @@ class Brick : public Directional_structure
 {
 private:
   int bricks = 1;
+  std::vector<Texture> textures;
 
 public:
   Brick(Point3f position, Engine &engine, Game_info &_game_info, int _direction, bool is_debug = false)
@@ -14,17 +15,20 @@ public:
     std::string frame_path = "assets/structure/structure_" + std::to_string(structure_type) + "_" + std::to_string(direc) + "_0.png";
     Texture txt = engine.load_texture(frame_path.c_str());
     set_active_texture(txt);
+
+    for (int i = 1; i < 12; i++)
+    {
+      textures.push_back(engine.load_texture(("assets/structure/structure_" + std::to_string(structure_type) + "_" + std::to_string(direc) + "_" + std::to_string(i) + ".png").c_str()));
+    }
   }
 
-  bool add_brick(Engine &engine)
+  bool add_brick()
   {
     bool res = true;
     if (bricks >= 11)
       res = false;
-    std::string frame_path = "assets/structure/structure_" + std::to_string(structure_type) + "_" + std::to_string(direc) + "_" + std::to_string(bricks) + ".png";
+    set_active_texture(textures[bricks - 1]);
     bricks++;
-    Texture txt = engine.load_texture(frame_path.c_str());
-    set_active_texture(txt);
     return res;
   }
 
@@ -35,5 +39,21 @@ public:
 
   void pre_physics(Engine &) override
   {
+  }
+
+  bool destroy_box_alpha(Engine &engine, Bound2f box, int direction)
+  {
+    bool destroy = false;
+    if (is_same_direction(direction))
+    {
+      for (int i = 0; i < max_frames; i++)
+      {
+        if (textures[i].set_alpha_box(world_to_local(box), 0, engine.get_renderer()))
+          destroy = true;
+      }
+      if (destroy)
+        set_active_texture(textures[bricks - 1]);
+    }
+    return destroy;
   }
 };

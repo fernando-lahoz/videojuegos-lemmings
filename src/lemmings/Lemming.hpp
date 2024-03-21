@@ -485,7 +485,7 @@ public:
         {
           if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
           {
-            if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 20)
+            if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 80)
             {
               // std::cout << "sube baja altura\n";
               position.y += (hit_offset_down - diagonal.y / 4);
@@ -557,6 +557,20 @@ public:
               if (dir_wall_ptr->destroy_box_alpha(engine, box5, 0))
                 destroyed = true;
             }
+            else if (entity->get_entity_name() == "BRICKS")
+            {
+              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
+              if (bricks_ptr->destroy_box_alpha(engine, box, 0))
+                destroyed = true;
+              if (bricks_ptr->destroy_box_alpha(engine, box2, 0))
+                destroyed = true;
+              if (bricks_ptr->destroy_box_alpha(engine, box3, 0))
+                destroyed = true;
+              if (bricks_ptr->destroy_box_alpha(engine, box4, 0))
+                destroyed = true;
+              if (bricks_ptr->destroy_box_alpha(engine, box5, 0))
+                destroyed = true;
+            }
           }
           if (!destroyed)
           {
@@ -587,28 +601,58 @@ public:
           if (!brick_ptr)
           {
             auto point = direction == -1 ? local_to_world(Point2f(-0.85, 0.15)) : local_to_world(Point2f(0.45, 0.15));
-            brick_ptr = std::make_shared<Brick>(Point3f(point.x, point.y, 250), engine, game_info, direction);
+            brick_ptr = std::make_shared<Brick>(Point3f(int(point.x), int(point.y), 250), engine, game_info, direction);
             engine.get_game().create_entity(brick_ptr);
           }
           else
           {
-            brick_ptr->add_brick(engine);
+            brick_ptr->add_brick();
           }
         }
         else if (current_frame == 0)
         {
           position.y -= 2;
           position.x += 4 * direction;
+          Ray ray_up = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, -1));
+          Ray ray_dir = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(direction, 0));
+          Float hit_offset;
+          EntityPtr hit_entity;
+          std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"};
           if (!brick_ptr->check_bricks())
           {
             brick_ptr = NULL;
             remove_skill(Utils::Lemming_Skills::BUILD);
             go_idle();
           }
+          else if (engine.intersect_ray(ray_up, get_entity_id(),
+                                        force_entity_names, hit_offset, hit_entity))
+          {
+            if (hit_offset < diagonal.y / 4)
+            {
+              brick_ptr = NULL;
+              remove_skill(Utils::Lemming_Skills::BUILD);
+              go_idle();
+            }
+          }
+          else if (engine.intersect_ray(ray_dir, get_entity_id(),
+                                        force_entity_names, hit_offset, hit_entity))
+          {
+            if (hit_offset < diagonal.y / 4)
+            {
+              brick_ptr = NULL;
+              remove_skill(Utils::Lemming_Skills::BUILD);
+              go_idle();
+            }
+          }
         }
       }
 
-      std::string frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
+      std::string frame_path;
+
+      if (state == Utils::Lemming_State::BUILDING)
+        frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty_selected()][game_info.get_level_selected()]) + "_" + std::to_string(current_frame) + ".png";
+      else
+        frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
 
       Texture txt = engine.load_texture(frame_path.c_str());
       set_active_texture(txt);
@@ -704,6 +748,12 @@ public:
             {
               std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
               if (dir_wall_ptr->destroy_box_alpha(engine, box, 0))
+                destroyed = true;
+            }
+            else if (entity->get_entity_name() == "BRICKS")
+            {
+              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
+              if (bricks_ptr->destroy_box_alpha(engine, box, 0))
                 destroyed = true;
             }
           }
