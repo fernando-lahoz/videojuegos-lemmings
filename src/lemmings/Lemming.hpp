@@ -444,10 +444,12 @@ public:
     time_frame_sprite += engine.get_delta_time() * game_info.get_game_speed();
     if (time_frame_sprite >= Utils::STATE_ANIMATION_DURATION[get_state()] / Utils::STATE_N_FRAMES[get_state()])
     {
+      // int times = time_frame_sprite / (Utils::STATE_ANIMATION_DURATION[get_state()] / Utils::STATE_N_FRAMES[get_state()]);
+      // time_frame_sprite = time_frame_sprite - (Utils::STATE_ANIMATION_DURATION[get_state()] / Utils::STATE_N_FRAMES[get_state()]) * times;
+      // current_frame = (current_frame + times) % Utils::STATE_N_FRAMES[get_state()];
 
-      int times = time_frame_sprite / (Utils::STATE_ANIMATION_DURATION[get_state()] / Utils::STATE_N_FRAMES[get_state()]);
-      time_frame_sprite = time_frame_sprite - (Utils::STATE_ANIMATION_DURATION[get_state()] / Utils::STATE_N_FRAMES[get_state()]) * times;
-      current_frame = (current_frame + times) % Utils::STATE_N_FRAMES[get_state()];
+      time_frame_sprite = 0.0f;
+      current_frame = (current_frame + 1) % Utils::STATE_N_FRAMES[get_state()];
 
       if (counter)
       {
