@@ -51,6 +51,9 @@ public:
   {
     engine.set_window_icon("assets/icon.png");
 
+    // Cargamos los efectos de sonido
+    game_info.start_sound_assets(engine);
+
     // HUD CAMERA
     auto ptr = std::make_shared<Static_camera>(Bound2f(Point2f(10000, -500), Point2f(10640, -100)), Bound2f(Point2f(0, 0), Point2f(640, 400)), 8);
     create_camera(std::dynamic_pointer_cast<Camera2D>(ptr));

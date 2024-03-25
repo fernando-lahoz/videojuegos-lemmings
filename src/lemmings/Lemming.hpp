@@ -37,6 +37,9 @@ class Lemming : public Rigid_body
 
   int direction = 1; // Comienza moviéndose hacia la derecha
 
+  //Este booleano es para que solo se ejecute una vez el sonido de muerte
+  bool play_death_sound = true;
+
   // Este booleano indica si un lemming es marcado para explotar
   bool dead_marked = false;
   // Este es el tiempo de vida que le queda al lemming si es marcado para explotar
@@ -190,6 +193,13 @@ class Lemming : public Rigid_body
 
   void go_escape()
   {
+
+    //Hacemos que suene el yipee
+    if(play_death_sound){
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::YIPEE_SOUND));
+      play_death_sound = false;
+    }
+    
     state = Utils::ESCAPING;
     type = Utils::LEMMING_TYPE[Utils::ESCAPING];
     // std::cout << "GO MINING\n";
@@ -199,6 +209,13 @@ class Lemming : public Rigid_body
   {
     state = Utils::DROWNING;
     type = Utils::LEMMING_TYPE[Utils::DROWNING];
+
+    //Hacemos que suene el chapuzon que se dan
+    if(play_death_sound){
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SPLASH_SOUND));
+      play_death_sound = false;
+    }
+    
     // std::cout << "GO MINING\n";
   }
 
@@ -206,6 +223,10 @@ class Lemming : public Rigid_body
   {
     state = Utils::CRASHING;
     type = Utils::LEMMING_TYPE[Utils::CRASHING];
+
+    //Hacemos que suene como se estrellan contra el suelo
+    engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SPLAT_SOUND));
+
     // std::cout << "GO MINING\n";
   }
 
@@ -580,10 +601,21 @@ public:
           }
 
           destroy_lemming(engine);
+
+          //Hacemos que suene el pop al petar el lemming
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::EXPLODE_SOUND));
           return;
         }
-        if (is_crashing() || is_drowning())
+        if (is_crashing())
         {
+          destroy_lemming(engine);
+          return;
+        }
+        if (is_drowning())
+        {
+          //Hacemos que suene como se ahogan
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::GLUG_SOUND));
+
           destroy_lemming(engine);
           return;
         }
@@ -1250,6 +1282,9 @@ public:
         bool res = add_skill(Utils::HUD_TO_SKILL[game_info.get_option_selected()]);
         if (res)
         {
+          //Realizamos el sonido de presion sobre el lemming
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::MOUSE_PRESS_SOUND));
+
           game_info.action_done();
           std::cout << "HABILIDAD AÑADIDA" << std::endl;
         }

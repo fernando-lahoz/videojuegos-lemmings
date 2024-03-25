@@ -66,7 +66,61 @@ private:
   int actual_seconds_left = 0;
   int spawn_velocity = 1;
 
+  // sound effects
+  Sound SOUND_EFFECT[19];
+
 public:
+
+  enum SoundAssets{
+    CHAIN_SOUND,
+    CHANGE_OP_SOUND,
+    CHINK_SOUND,
+    DIE_SOUND,
+    DOOR_SOUND,
+    ELECTRIC_SOUND,
+    EXPLODE_SOUND,
+    FIRE_SOUND,
+    GLUG_SOUND,
+    LETS_GO_SOUND,
+    MOUSE_PRESS_SOUND,
+    OH_NO_SOUND,
+    SPLASH_SOUND,
+    SPLAT_SOUND,
+    TENTON_SOUND,
+    THUD_SOUND,
+    THUNK_SOUND,
+    TING_SOUND,
+    YIPEE_SOUND
+  };
+
+  // Inicializa los efectos de sonido
+  void start_sound_assets(Engine& engine){
+    SOUND_EFFECT[CHAIN_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/chain.wav");
+    SOUND_EFFECT[CHANGE_OP_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/changeop.wav");
+    SOUND_EFFECT[CHINK_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/chink.wav");
+    SOUND_EFFECT[DIE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/die.wav");
+    SOUND_EFFECT[DOOR_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/door.wav");
+    SOUND_EFFECT[ELECTRIC_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/electric.wav");
+    SOUND_EFFECT[EXPLODE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/explode.wav");
+    SOUND_EFFECT[FIRE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/fire.wav");
+    SOUND_EFFECT[GLUG_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/glug.wav");
+    SOUND_EFFECT[LETS_GO_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/letsgo.wav");
+    SOUND_EFFECT[MOUSE_PRESS_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/mousepre.wav");
+    SOUND_EFFECT[OH_NO_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/ohno.wav");
+    SOUND_EFFECT[SPLASH_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/splash.wav");
+    SOUND_EFFECT[SPLAT_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/splat.wav");
+    SOUND_EFFECT[TENTON_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/tenton.wav");
+    SOUND_EFFECT[THUD_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/thud.wav");
+    SOUND_EFFECT[THUNK_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/thunk.wav");
+    SOUND_EFFECT[TING_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/ting.wav");
+    SOUND_EFFECT[YIPEE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/yipee.wav");
+  }
+
+  // Devuelve el sonido asociado al asset correspondiente
+  Sound get_sound_asset(SoundAssets asset){
+    return SOUND_EFFECT[asset];
+  }
+
   void start_game_info(int _level, int _difficulty)
   {
     credit_frame = 0;

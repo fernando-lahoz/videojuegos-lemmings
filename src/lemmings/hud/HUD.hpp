@@ -72,6 +72,13 @@ public:
       if (is_selectable)
       {
         game_info.set_option_selected(n);
+
+        //Hacemos sonar el sonido de opcion seleccionada si la opcion no es reventar a todos en pedacitos
+        if(n != Utils::HUD_ALL_EXPLODE){
+
+          //FIXME: Dependiendo de la opcion elegida deberia sonar mas agudo o mas grave
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND));
+        }
       }
 
       if (n == Utils::HUD_ALL_EXPLODE)
@@ -80,6 +87,10 @@ public:
         game_info.set_all_die(true);
         auto &entities = engine.get_entities();
         int j = 0;
+
+        //FIXME Esto es porque puedes clicar la habilidad mas de una vez, lo suyo seria que no pudieses
+        bool isEveryOneDoomed = true;
+
         for (std::size_t i = 0; i < entities.size(); i++)
         {
           if (entities[i]->get_entity_name() == "Lemming")
@@ -88,10 +99,20 @@ public:
             std::shared_ptr<Lemming> lemming_ptr = std::dynamic_pointer_cast<Lemming>(entities[i]);
             if (lemming_ptr)
             {
+              //Miramos si algun lemming fue marcado para morir y con eso vemos si estan todos condenados
+              isEveryOneDoomed &= lemming_ptr->get_dead_marked();
               lemming_ptr->set_dead_marked(true);
             }
           }
         }
+
+        //Si aun no estaban condenados
+        if(!isEveryOneDoomed)
+        {
+          //Hacemos que recen por su vida
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::OH_NO_SOUND));
+        }
+
         if (j == 0)
           game_info.set_level_ended();
       }
