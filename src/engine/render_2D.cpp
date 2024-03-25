@@ -186,7 +186,7 @@ Render_2D::Render_2D(const std::string& window_name, int width, int height)
     // Window with vsync
     window = SDL_CreateWindow(window_name.c_str(),
             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            width, height, SDL_WINDOW_RESIZABLE);
+            width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (window == nullptr)
         throw error::sdl_exception(ERROR_CONTEXT);
 
@@ -314,7 +314,7 @@ std::unordered_set<Entity*> Render_2D::draw_and_return_hovered(std::vector<Entit
         std::vector<std::shared_ptr<Camera2D>>& cameras, Point2f mouse_position)
 {
     clear_window();
-
+    static int x = 0;
     std::unordered_set<Entity*> hovered_entities;
     Engine::EntityCollection::iterator over_bands_begin = entities.end();
     for (auto& camera : cameras | std::views::reverse)
@@ -337,7 +337,6 @@ std::unordered_set<Entity*> Render_2D::draw_and_return_hovered(std::vector<Entit
             }
             else {
                 bool visible = render_entity(*d, *camera, *cameras[0]);
-                //TODO: should it ignore alpha channel to make it smoother
                 if (visible && d->contains(world_mouse, true))
                 {
                     hovered_entities.insert(d.get());
@@ -347,26 +346,21 @@ std::unordered_set<Entity*> Render_2D::draw_and_return_hovered(std::vector<Entit
     }
     SDL_RenderFillRect(renderer, &rect1);
     SDL_RenderFillRect(renderer, &rect2);
-    for (auto& camera : cameras | std::views::reverse)
+    auto& camera = cameras[0];
     {
         auto world_mouse = raster_to_world(mouse_position, *camera, *cameras[0]);
         // Render drawables
         for (auto it = over_bands_begin; it != entities.end(); ++it)
         {
             auto& d = *it;
-
-            FixedText *text_ptr = dynamic_cast<FixedText*>(d.get());
-            if (text_ptr != nullptr) {
-                render_fixed_text(*text_ptr, *camera, *cameras[0]);
-            }
-            else {
-                bool visible = render_entity(*d, *camera, *cameras[0], true);
-                //TODO: should it ignore alpha channel to make it smoother
-                if (visible && d->contains(world_mouse, true))
-                {
-                    hovered_entities.insert(d.get());
-                }
-            }
+            bool visible = render_entity(*d, *camera, *cameras[0], true);
+            if (x == 0) {
+                x ++;std::cout << std::endl << d << std::endl;
+            } 
+            if (visible && d->contains(world_mouse, true))
+            {
+                hovered_entities.insert(d.get());
+            } 
         }
     }
 

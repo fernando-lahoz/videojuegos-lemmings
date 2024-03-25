@@ -310,11 +310,12 @@ void Engine::update_delta_time()
 
     check_point = new_check_point;
 
-    if (total_delta_ns > 0 &&
+    if (total_delta_ns > 0 && total_measurements > 100 &&
         new_delta > 4 * total_delta_ns / total_measurements)
     {
         // Invalid delta time (game freezed) -> replace by mean delta time
         delta_ns = total_delta_ns / total_measurements;
+        delta_ns = 0;
     }
     else if ((total_measurements & 0xFFFF) == 0)
     {

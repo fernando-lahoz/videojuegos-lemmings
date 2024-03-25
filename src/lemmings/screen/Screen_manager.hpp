@@ -54,6 +54,7 @@ public:
   {
     if (game_info.get_do_action() == Utils::ACTIONS::GO_MENU && game_info.get_is_transition_done())
     {
+      game_info.set_cursor_menu_visible();
       game_info.set_is_transition_done(false);
       clear_screen(engine);
       std::cout << "GO TO MENU" << std::endl;

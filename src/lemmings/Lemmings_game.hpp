@@ -67,7 +67,10 @@ public:
 
     auto cursor = std::make_shared<Cursor>(engine, game_info, 25);
     create_entity(cursor);
-    create_entity(std::make_shared<Cursor_menu>(engine, game_info, 24));
+    auto cursor_menu = std::make_shared<Cursor_menu>(engine, game_info, 24);
+    std::cout << cursor_menu << std::endl;
+    create_entity(cursor_menu);
+    game_info.set_cursor_menu(cursor_menu);
     screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
     // screen.go_level(engine, 7, 0);
   }

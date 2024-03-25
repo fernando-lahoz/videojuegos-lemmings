@@ -89,7 +89,6 @@ public:
     SDL_Renderer *get_sdl_renderer();
 
     //TODO: set window resolution
-    //TODO: set fullscreen
     void set_fullscreen()
     {
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -97,7 +96,6 @@ public:
     void set_windowmode()
     {
         SDL_SetWindowFullscreen(window, 0);
-        //SDL_SetWindowDisplayMode
     }
 
     Point2f world_to_raster(Point2f world_point, Camera2D& camera, Camera2D& main_camera);

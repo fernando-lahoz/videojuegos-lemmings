@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "lemmings/utils.hpp"
+#include "engine/entity.hpp"
 #include "math/math.hpp"
 
 class Game_info
@@ -48,6 +49,7 @@ private:
   Texture cursor_txt;
   bool is_cursor_hover = false;
   bool is_action_possible = false;
+  Entity *cursor_menu = nullptr;
 
   // lemming count
   int lemmings_hovered = 0;
@@ -293,4 +295,12 @@ public:
 
   void set_lemming_hovered_type(std::string new_value) { lemming_hovered_type = new_value; }
   std::string get_lemming_hovered_type() const { return lemming_hovered_type; }
+
+  void set_cursor_menu_visible()
+  {
+    auto [cursorX, cursorY] = cursor_menu->get_position2D();
+    cursor_menu->set_position3D(Point3f{cursorX, cursorY, -INFINITY});
+  }
+
+  void set_cursor_menu(EntityPtr cursor) { cursor_menu = cursor.get(); }
 };

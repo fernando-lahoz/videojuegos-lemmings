@@ -16,7 +16,11 @@ private:
   float size;
 
 public:
-  Cursor(Engine &engine, Game_info &_game_info, float _size) : Rigid_body(Point3f(-1, -1, -INFINITY), Vector2f(_size, _size), engine.load_texture("assets/cursor.png"), engine, "Cursor"), game_info(_game_info), size(_size) {}
+  Cursor(Engine &engine, Game_info &_game_info, float _size)
+    : Rigid_body(Point3f(-1, -1, -INFINITY), Vector2f(_size, _size), engine.load_texture("assets/cursor.png"), engine, "Cursor"), game_info(_game_info), size(_size)
+  {
+    constructor_set_collision_type(Entity::Collision_type::CURSOR);
+  }
 
   void update_state(Engine &engine) override
   {

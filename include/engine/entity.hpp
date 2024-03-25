@@ -20,7 +20,7 @@ class Entity
 
 public:
 
-    enum Collision_type {HUD, STRUCTURE, CHARACTER};
+    enum Collision_type {HUD, STRUCTURE, CHARACTER, CURSOR};
 
 private:
     Collision_type collision_type = HUD;
