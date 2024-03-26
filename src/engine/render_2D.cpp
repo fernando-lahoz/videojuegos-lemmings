@@ -115,6 +115,32 @@ uint64_t Camera2D::get_id()
     return id;
 }
 
+void Camera2D::set_shader(std::string entity_class, const Shader& shader)
+{
+    if (entity_class == "ALL") {
+        is_global_shader_set = true;
+    }
+    shaders.emplace(std::move(entity_class), shader);
+}
+
+Shader* Camera2D::find_shader_for(const std::string& entity_class)
+{
+    auto it = shaders.find(entity_class);
+
+    if (it != shaders.end())
+    {
+        return &it->second;
+    }
+    else if (is_global_shader_set)
+    {
+        return &global_shader;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
 //------------------------------------------------------------------------------
 
 void Render_2D::clear_window(Spectrum color)
@@ -150,7 +176,16 @@ bool Render_2D::render_entity(Entity& entity, Camera2D& camera, Camera2D& main_c
         
         auto texture = entity.get_active_texture();
 
-        SDL_RenderCopy(renderer, texture.get(), nullptr, &rect);
+        Shader *shader = camera.find_shader_for(entity.get_class());
+        if (shader != nullptr)
+        {
+            shader->render_copy(texture, rect);
+        }
+        else
+        {
+            SDL_RenderCopy(renderer, texture.get(), nullptr, &rect);
+        }
+
         return true;  
     }
     return false;

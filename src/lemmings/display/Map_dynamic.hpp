@@ -31,7 +31,7 @@ public:
         last_level(0)
   {
     txt = engine.load_texture("assets/maps/raw/map_" + std::to_string(game_info.get_difficulty_selected()) + "_" + std::to_string(game_info.get_level_selected()) + ".png");
-    map = std::make_shared<Entity>(Point3f(10320 - (txt.get_width() * 65 / (2 * txt.get_height())), 20, 2), Vector2f(txt.get_width() * 65 / txt.get_height(), 65), txt, engine, "MAP");
+    map = std::make_shared<Entity>(Point3f(10320 - (txt.get_width() * 65 / (2 * txt.get_height())), 20, 2), Vector2f(txt.get_width() * 65 / txt.get_height(), 65), txt, engine, "MAP", "MAP");
     engine.get_game().create_entity(map);
   }
 
@@ -49,7 +49,7 @@ public:
       map->destroy();
 
       txt = engine.load_texture("assets/maps/raw/map_" + std::to_string(game_info.get_difficulty_selected()) + "_" + std::to_string(game_info.get_level_selected()) + ".png");
-      map = std::make_shared<Entity>(Point3f(10320 - (txt.get_width() * 65 / (2 * txt.get_height())), 20, 2), Vector2f(txt.get_width() * 65 / txt.get_height(), 65), txt, engine, "MAP");
+      map = std::make_shared<Entity>(Point3f(10320 - (txt.get_width() * 65 / (2 * txt.get_height())), 20, 2), Vector2f(txt.get_width() * 65 / txt.get_height(), 65), txt, engine, "MAP", "MAP");
       engine.get_game().create_entity(map);
     }
   }

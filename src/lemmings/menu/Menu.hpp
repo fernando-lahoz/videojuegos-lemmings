@@ -104,7 +104,7 @@ public:
     }
     else if (type == Utils::LEVEL_SELECTOR)
     {
-      auto background = std::make_shared<Entity>(Point3f(10000, 0, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_brown.png"), engine, "Background");
+      auto background = std::make_shared<Entity>(Point3f(10000, 0, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_brown.png"), engine, "Background", "Background");
       engine.get_game().create_entity(background);
       Texture txt = engine.load_texture("assets/maps/raw/map_0_" + std::to_string(level) + ".png");
 

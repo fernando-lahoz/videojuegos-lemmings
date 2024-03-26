@@ -16,6 +16,7 @@
 #include "engine/entity.hpp"
 #include "engine/IO.hpp"
 #include "engine/fixed_text.hpp"
+#include "engine/shader.hpp"
 
 class Engine;
 
@@ -29,6 +30,10 @@ protected:
     int64_t id;
     int layer = 0;
     bool deleted = false;
+
+    std::unordered_map<std::string, Shader> shaders;
+    Shader global_shader;
+    bool is_global_shader_set = false;
 
     static ID next_id;
 
@@ -61,6 +66,11 @@ public:
     int get_layer();
 
     uint64_t get_id();
+
+    // Applies this shader to all entities of the especified class
+    void set_shader(std::string entity_class, const Shader& shader);
+
+    Shader* find_shader_for(const std::string& entity_class);
 };
 
 class Render_2D
