@@ -41,6 +41,7 @@ private:
   bool do_restart_camera = false;
   bool is_camera_stopped = false;
   float pos_camera;
+  Camera2D::ID game_camera_id;
 
   // hud selection
   int option_selected = Utils::NO_OPTION_SELECTED;
@@ -357,4 +358,7 @@ public:
   }
 
   void set_cursor_menu(EntityPtr cursor) { cursor_menu = cursor.get(); }
+
+  void set_game_camera_id(Camera2D::ID id) { game_camera_id = id; }
+  Camera2D::ID get_game_camera_id() { return game_camera_id; }
 };

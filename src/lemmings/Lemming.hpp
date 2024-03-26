@@ -1273,6 +1273,11 @@ public:
 
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override
   {
+    // Evita que se puedan seleccionar desde el minimapa
+    if (engine.get_camera_in_which_hovered(*this) != game_info.get_game_camera_id())
+      return;
+    
+
     if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && !game_info.get_level_is_paused())
     {
       // std::cout << "LEMMING PULSADO" << std::endl;

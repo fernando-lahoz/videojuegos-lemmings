@@ -9,14 +9,16 @@
 #include <algorithm>
 #include <ranges>
 
+Camera2D::ID Camera2D::next_id = 0;
+
 Camera2D::Camera2D()
-    : world_frame{Point2f(0, 0), Point2f(1, 1)}, window_frame{}
+    : world_frame{Point2f(0, 0), Point2f(1, 1)}, window_frame{}, id{next_id++}
 {
 
 }
 
 Camera2D::Camera2D(Bound2f world_frame, Bound2f window_frame, int layer)
-    : world_frame{world_frame}, window_frame{window_frame}, layer{layer}
+    : world_frame{world_frame}, window_frame{window_frame}, id{next_id++}, layer{layer}
 {
 
 }
@@ -106,6 +108,11 @@ void Camera2D::change_layer(int new_layer)
 int Camera2D::get_layer()
 {
     return layer;
+}
+
+uint64_t Camera2D::get_id()
+{
+    return id;
 }
 
 //------------------------------------------------------------------------------
@@ -310,12 +317,11 @@ void Render_2D::update_resolution(Engine& engine)
 }
 
 // Draws and returns mouse-hovered entities
-std::unordered_set<Entity*> Render_2D::draw_and_return_hovered(std::vector<EntityPtr> &entities,
+std::unordered_map<Entity*, Camera2D::ID> Render_2D::draw_and_return_hovered(std::vector<EntityPtr> &entities,
         std::vector<std::shared_ptr<Camera2D>>& cameras, Point2f mouse_position)
 {
     clear_window();
-    static int x = 0;
-    std::unordered_set<Entity*> hovered_entities;
+    std::unordered_map<Entity*, Camera2D::ID> hovered_entities;
     Engine::EntityCollection::iterator over_bands_begin = entities.end();
     for (auto& camera : cameras | std::views::reverse)
     {
@@ -339,7 +345,7 @@ std::unordered_set<Entity*> Render_2D::draw_and_return_hovered(std::vector<Entit
                 bool visible = render_entity(*d, *camera, *cameras[0]);
                 if (visible && d->contains(world_mouse, true))
                 {
-                    hovered_entities.insert(d.get());
+                    hovered_entities.insert({d.get(), camera->get_id()});
                 }
             }
         }
@@ -354,12 +360,9 @@ std::unordered_set<Entity*> Render_2D::draw_and_return_hovered(std::vector<Entit
         {
             auto& d = *it;
             bool visible = render_entity(*d, *camera, *cameras[0], true);
-            if (x == 0) {
-                x ++;std::cout << std::endl << d << std::endl;
-            } 
             if (visible && d->contains(world_mouse, true))
             {
-                hovered_entities.insert(d.get());
+                hovered_entities.insert({d.get(), camera->get_id()});
             } 
         }
     }
