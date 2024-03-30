@@ -58,6 +58,7 @@ set(Modules
     "engine/rigid_body"
     "engine/trigger"
     "engine/fixed_text"
+    "engine/shader"
 )
 
 #--------------------------- EXTERNAL LIBRARIES --------------------------------

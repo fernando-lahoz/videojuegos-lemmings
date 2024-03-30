@@ -16,15 +16,26 @@
 #include "engine/entity.hpp"
 #include "engine/IO.hpp"
 #include "engine/fixed_text.hpp"
+#include "engine/shader.hpp"
 
 class Engine;
 
 class Camera2D
 {
+public:
+    using ID = int64_t;
+
 protected:
     Bound2f world_frame, window_frame;
+    int64_t id;
     int layer = 0;
     bool deleted = false;
+
+    std::unordered_map<std::string, Shader> shaders;
+    Shader global_shader;
+    bool is_global_shader_set = false;
+
+    static ID next_id;
 
 public:
     Camera2D();
@@ -53,6 +64,13 @@ public:
 
     void change_layer(int new_layer);
     int get_layer();
+
+    uint64_t get_id();
+
+    // Applies this shader to all entities of the especified class
+    void set_shader(std::string entity_class, const Shader& shader);
+
+    Shader* find_shader_for(const std::string& entity_class);
 };
 
 class Render_2D
@@ -89,7 +107,6 @@ public:
     SDL_Renderer *get_sdl_renderer();
 
     //TODO: set window resolution
-    //TODO: set fullscreen
     void set_fullscreen()
     {
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -97,7 +114,6 @@ public:
     void set_windowmode()
     {
         SDL_SetWindowFullscreen(window, 0);
-        //SDL_SetWindowDisplayMode
     }
 
     Point2f world_to_raster(Point2f world_point, Camera2D& camera, Camera2D& main_camera);
@@ -106,6 +122,6 @@ public:
     Point2f raster_to_world(Point2f raster_point, Camera2D& camera, Camera2D& main_camera);
     Vector2f raster_to_world(Vector2f raster_vector, Camera2D& camera, Camera2D& main_camera);
 
-    std::unordered_set<Entity*> draw_and_return_hovered(std::vector<EntityPtr> &entities,
+    std::unordered_map<Entity*, Camera2D::ID> draw_and_return_hovered(std::vector<EntityPtr> &entities,
             std::vector<std::shared_ptr<Camera2D>>& cameras, Point2f mouse_position);
 };

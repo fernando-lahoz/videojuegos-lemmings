@@ -75,7 +75,8 @@ void Engine::send_mouse_hover()
         if (entity->is_deleted())
             continue;
 
-        if (hovered_entities.find(entity) != hovered_entities.end())
+        const auto it = hovered_entities.find(entity);
+        if (it != hovered_entities.end())
         {
             entity->enable_mouse_hover();
             entity->on_event_down(*this, EngineIO::InputEvent::MOUSE_HOVER);
@@ -172,9 +173,15 @@ bool Engine::is_cursor_visible()
     // return renderer->frame.contains(mouse_position);
 }
 
-bool Engine::is_entity_hovered(Entity &entity)
+bool Engine::is_entity_hovered(Entity &entity) const
 {
     return hovered_entities.find(&entity) != hovered_entities.end();
+}
+
+Camera2D::ID Engine::get_camera_in_which_hovered(Entity &entity) const
+{
+    const auto it = hovered_entities.find(&entity);
+    return it != hovered_entities.end() ? it->second : -1;
 }
 
 SDL_Renderer *Engine::get_renderer()
@@ -310,11 +317,12 @@ void Engine::update_delta_time()
 
     check_point = new_check_point;
 
-    if (total_delta_ns > 0 &&
+    if (total_delta_ns > 0 && total_measurements > 100 &&
         new_delta > 4 * total_delta_ns / total_measurements)
     {
         // Invalid delta time (game freezed) -> replace by mean delta time
         delta_ns = total_delta_ns / total_measurements;
+        delta_ns = 0;
     }
     else if ((total_measurements & 0xFFFF) == 0)
     {
@@ -674,7 +682,7 @@ void Engine::start()
     bool quit = false;
     while (!quit && !quit_event)
     {
-        auto init = std::chrono::steady_clock::now();
+        // auto init = std::chrono::steady_clock::now();
         update_delta_time();
         renderer->update_resolution(*this);
         update_mouse_position();
@@ -696,7 +704,7 @@ void Engine::start()
 
         process_cameras();
 
-        auto end = std::chrono::steady_clock::now();
+        // auto end = std::chrono::steady_clock::now();
 
         // std::cout << "Executed in " << std::chrono::duration_cast<std::chrono::microseconds>(end - init).count() << "us\n";
 

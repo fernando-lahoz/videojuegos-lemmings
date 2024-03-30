@@ -30,4 +30,11 @@ public:
       set_position2D(Point2f(calculated_position, -148));
     }
   }
+
+  void on_event_down(Engine &engine, EngineIO::InputEvent event) override
+  {
+    if (event == EngineIO::InputEvent::MOUSE_HOVER) {
+      // TODO: Set state to dynamic camera to get updated with movement on this view
+    }
+  }
 };

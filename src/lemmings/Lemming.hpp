@@ -37,6 +37,9 @@ class Lemming : public Rigid_body
 
   int direction = 1; // Comienza moviéndose hacia la derecha
 
+  //Este booleano es para que solo se ejecute una vez el sonido de muerte
+  bool play_death_sound = true;
+
   // Este booleano indica si un lemming es marcado para explotar
   bool dead_marked = false;
   // Este es el tiempo de vida que le queda al lemming si es marcado para explotar
@@ -190,6 +193,13 @@ class Lemming : public Rigid_body
 
   void go_escape()
   {
+
+    //Hacemos que suene el yipee
+    if(play_death_sound){
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::YIPEE_SOUND));
+      play_death_sound = false;
+    }
+    
     state = Utils::ESCAPING;
     type = Utils::LEMMING_TYPE[Utils::ESCAPING];
     // std::cout << "GO MINING\n";
@@ -199,6 +209,13 @@ class Lemming : public Rigid_body
   {
     state = Utils::DROWNING;
     type = Utils::LEMMING_TYPE[Utils::DROWNING];
+
+    //Hacemos que suene el chapuzon que se dan
+    if(play_death_sound){
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SPLASH_SOUND));
+      play_death_sound = false;
+    }
+    
     // std::cout << "GO MINING\n";
   }
 
@@ -206,6 +223,10 @@ class Lemming : public Rigid_body
   {
     state = Utils::CRASHING;
     type = Utils::LEMMING_TYPE[Utils::CRASHING];
+
+    //Hacemos que suene como se estrellan contra el suelo
+    engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SPLAT_SOUND));
+
     // std::cout << "GO MINING\n";
   }
 
@@ -580,10 +601,21 @@ public:
           }
 
           destroy_lemming(engine);
+
+          //Hacemos que suene el pop al petar el lemming
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::EXPLODE_SOUND));
           return;
         }
-        if (is_crashing() || is_drowning())
+        if (is_crashing())
         {
+          destroy_lemming(engine);
+          return;
+        }
+        if (is_drowning())
+        {
+          //Hacemos que suene como se ahogan
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::GLUG_SOUND));
+
           destroy_lemming(engine);
           return;
         }
@@ -782,50 +814,6 @@ public:
     }
     if (is_bashing())
     {
-      /*if (current_frame == 3 || current_frame == 19)
-      {
-        if (!do_action_in_frame)
-        {
-          Bound2f box, box1, box2, box3;
-          if (direction > 0)
-          {
-            box.pMin = local_to_world(Point2f(0.50, 0.40));
-            box.pMax = box.pMin + Vector2f(15, 9);
-            box1.pMin = local_to_world(Point2f(0.50, 0.35));
-            box1.pMax = box1.pMin + Vector2f(13, 12);
-            box2.pMin = local_to_world(Point2f(0.50, 0.3));
-            box2.pMax = box2.pMin + Vector2f(11, 15);
-            box3.pMin = local_to_world(Point2f(0.50, 0.25));
-            box3.pMax = box3.pMin + Vector2f(9, 18);
-          }
-          else
-          {
-            box.pMin = local_to_world(Point2f(-0.25, 0.25));
-            box.pMax = box.pMin + Vector2f(4, 18);
-          }
-          // std::cout << box << box1 << std::endl;
-          bool destroyed = false;
-          auto &entities = engine.get_entities();
-          for (auto &entity : entities)
-          {
-            if (entity->get_entity_name() == "MAP")
-            {
-              if (entity->destroy_box_alpha(engine, box)) {destroyed = true;}
-              if (entity->destroy_box_alpha(engine, box1)) {destroyed = true;}
-              if (entity->destroy_box_alpha(engine, box2)) {destroyed = true;}
-              if (entity->destroy_box_alpha(engine, box3)) {destroyed = true;}
-            }
-          }
-          if (!destroyed)
-          {
-            remove_skill(Utils::Lemming_Skills::BASH);
-            go_walk();
-            std::cout << "Termina de cavar...: " << destroyed  << std::endl;
-          }
-          do_action_in_frame = true;
-        }
-      }
-      */
       if (current_frame == 3 || current_frame == 19)
       {
         if (!do_action_in_frame)
@@ -849,10 +837,12 @@ public:
           }
           else
           {
-            box.pMin = local_to_world(Point2f(-0.25, 0.25));
-            box.pMax = box.pMin + Vector2f(4, 18);
-            box1.pMin = local_to_world(Point2f(0.50, 0.40));
-            box1.pMax = box1.pMin + Vector2f(15, 5);
+            box.pMin = local_to_world(Point2f(0.25, 0.30));
+            box.pMax = box.pMin + Vector2f(9, 4);
+            box2.pMin = local_to_world(Point2f(0.20, 0.35));
+            box2.pMax = box2.pMin + Vector2f(11, 4);
+            box1.pMin = local_to_world(Point2f(0.15, 0.40));
+            box1.pMax = box1.pMin + Vector2f(13, 4);
           }
           std::cout << current_frame << " " << box << box1 << std::endl;
           bool destroyed = false;
@@ -910,10 +900,14 @@ public:
           }
           else
           {
-            box.pMin = local_to_world(Point2f(-0.25, 0.25));
-            box.pMax = box.pMin + Vector2f(4, 18);
-            box1.pMin = local_to_world(Point2f(0.50, 0.60));
-            box1.pMax = box1.pMin + Vector2f(15, 5);
+            box3.pMin = local_to_world(Point2f(0.15, 0.45));
+            box3.pMax = box3.pMin + Vector2f(14, 3);
+            box.pMin = local_to_world(Point2f(0.10, 0.50));
+            box.pMax = box.pMin + Vector2f(13, 4);
+            box2.pMin = local_to_world(Point2f(0.15, 0.55));
+            box2.pMax = box2.pMin + Vector2f(11, 4);
+            box1.pMin = local_to_world(Point2f(0.20, 0.60));
+            box1.pMax = box1.pMin + Vector2f(9, 4);
           }
           std::cout << current_frame << " " << box << box1 << std::endl;
           bool destroyed = false;
@@ -1241,6 +1235,11 @@ public:
 
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override
   {
+    // Evita que se puedan seleccionar desde el minimapa
+    if (engine.get_camera_in_which_hovered(*this) != game_info.get_game_camera_id())
+      return;
+    
+
     if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && !game_info.get_level_is_paused())
     {
       // std::cout << "LEMMING PULSADO" << std::endl;
@@ -1250,6 +1249,9 @@ public:
         bool res = add_skill(Utils::HUD_TO_SKILL[game_info.get_option_selected()]);
         if (res)
         {
+          //Realizamos el sonido de presion sobre el lemming
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::MOUSE_PRESS_SOUND));
+
           game_info.action_done();
           std::cout << "HABILIDAD AÑADIDA" << std::endl;
         }

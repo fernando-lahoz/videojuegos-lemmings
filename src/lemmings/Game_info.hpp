@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "lemmings/utils.hpp"
+#include "engine/entity.hpp"
 #include "math/math.hpp"
 
 class Game_info
@@ -40,6 +41,7 @@ private:
   bool do_restart_camera = false;
   bool is_camera_stopped = false;
   float pos_camera;
+  Camera2D::ID game_camera_id;
 
   // hud selection
   int option_selected = Utils::NO_OPTION_SELECTED;
@@ -48,6 +50,7 @@ private:
   Texture cursor_txt;
   bool is_cursor_hover = false;
   bool is_action_possible = false;
+  Entity *cursor_menu = nullptr;
 
   // lemming count
   int lemmings_hovered = 0;
@@ -64,7 +67,61 @@ private:
   int actual_seconds_left = 0;
   int spawn_velocity = 1;
 
+  // sound effects
+  Sound SOUND_EFFECT[19];
+
 public:
+
+  enum SoundAssets{
+    CHAIN_SOUND,
+    CHANGE_OP_SOUND,
+    CHINK_SOUND,
+    DIE_SOUND,
+    DOOR_SOUND,
+    ELECTRIC_SOUND,
+    EXPLODE_SOUND,
+    FIRE_SOUND,
+    GLUG_SOUND,
+    LETS_GO_SOUND,
+    MOUSE_PRESS_SOUND,
+    OH_NO_SOUND,
+    SPLASH_SOUND,
+    SPLAT_SOUND,
+    TENTON_SOUND,
+    THUD_SOUND,
+    THUNK_SOUND,
+    TING_SOUND,
+    YIPEE_SOUND
+  };
+
+  // Inicializa los efectos de sonido
+  void start_sound_assets(Engine& engine){
+    SOUND_EFFECT[CHAIN_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/chain.wav");
+    SOUND_EFFECT[CHANGE_OP_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/changeop.wav");
+    SOUND_EFFECT[CHINK_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/chink.wav");
+    SOUND_EFFECT[DIE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/die.wav");
+    SOUND_EFFECT[DOOR_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/door.wav");
+    SOUND_EFFECT[ELECTRIC_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/electric.wav");
+    SOUND_EFFECT[EXPLODE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/explode.wav");
+    SOUND_EFFECT[FIRE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/fire.wav");
+    SOUND_EFFECT[GLUG_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/glug.wav");
+    SOUND_EFFECT[LETS_GO_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/letsgo.wav");
+    SOUND_EFFECT[MOUSE_PRESS_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/mousepre.wav");
+    SOUND_EFFECT[OH_NO_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/ohno.wav");
+    SOUND_EFFECT[SPLASH_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/splash.wav");
+    SOUND_EFFECT[SPLAT_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/splat.wav");
+    SOUND_EFFECT[TENTON_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/tenton.wav");
+    SOUND_EFFECT[THUD_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/thud.wav");
+    SOUND_EFFECT[THUNK_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/thunk.wav");
+    SOUND_EFFECT[TING_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/ting.wav");
+    SOUND_EFFECT[YIPEE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/yipee.wav");
+  }
+
+  // Devuelve el sonido asociado al asset correspondiente
+  Sound get_sound_asset(SoundAssets asset){
+    return SOUND_EFFECT[asset];
+  }
+
   void start_game_info(int _level, int _difficulty)
   {
     credit_frame = 0;
@@ -293,4 +350,15 @@ public:
 
   void set_lemming_hovered_type(std::string new_value) { lemming_hovered_type = new_value; }
   std::string get_lemming_hovered_type() const { return lemming_hovered_type; }
+
+  void set_cursor_menu_visible()
+  {
+    auto [cursorX, cursorY] = cursor_menu->get_position2D();
+    cursor_menu->set_position3D(Point3f{cursorX, cursorY, -INFINITY});
+  }
+
+  void set_cursor_menu(EntityPtr cursor) { cursor_menu = cursor.get(); }
+
+  void set_game_camera_id(Camera2D::ID id) { game_camera_id = id; }
+  Camera2D::ID get_game_camera_id() { return game_camera_id; }
 };

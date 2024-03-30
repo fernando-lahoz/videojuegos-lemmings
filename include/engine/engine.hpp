@@ -5,7 +5,7 @@
 #include <queue>
 #include <chrono>
 #include <string>
-#include <unordered_set>
+#include <unordered_map>
 #include <thread>
 #include <mutex>
 #include <set>
@@ -75,7 +75,7 @@ private:
     std::set<Entity*> hud_entities;
     std::set<Entity*> structure_entities;
     std::set<Entity*> character_entities;
-    std::unordered_set<Entity*> hovered_entities;
+    std::unordered_map<Entity *, Camera2D::ID> hovered_entities;
     std::set<Entity*> event_entities;
 
     Point2f mouse_position;
@@ -124,7 +124,9 @@ public:
     void hide_cursor();
     bool is_cursor_visible();
 
-    bool is_entity_hovered(Entity& entity);
+    bool is_entity_hovered(Entity& entity) const;
+    // Returns id of the camera in which this entity is being hovered, or -1 if none.
+    Camera2D::ID get_camera_in_which_hovered(Entity &entity) const;
     void change_collision_type(Entity* entity, Entity::Collision_type new_type);
     void subscribe_to_events(Entity* entity);
 

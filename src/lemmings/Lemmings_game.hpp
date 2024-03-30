@@ -51,6 +51,9 @@ public:
   {
     engine.set_window_icon("assets/icon.png");
 
+    // Cargamos los efectos de sonido
+    game_info.start_sound_assets(engine);
+
     // HUD CAMERA
     auto ptr = std::make_shared<Static_camera>(Bound2f(Point2f(10000, -500), Point2f(10640, -100)), Bound2f(Point2f(0, 0), Point2f(640, 400)), 8);
     create_camera(std::dynamic_pointer_cast<Camera2D>(ptr));
@@ -58,16 +61,25 @@ public:
     // GAME CAMERA
     auto ptr2 = std::make_shared<Dynamic_camera>(game_info, Bound2f(Point2f(1884, 0), Point2f(2524, 320)), Bound2f(Point2f(0, 0), Point2f(640, 320)), 7);
     create_camera(std::dynamic_pointer_cast<Camera2D>(ptr2));
+    game_info.set_game_camera_id(ptr2->get_id());
 
     // MINIMAP CAMERA
-    create_camera(std::make_shared<Static_camera>(Bound2f(Point2f(0, 0), Point2f(3168, 320)), Bound2f(Point2f(416, 356), Point2f(616, 396)), 2));
+    auto minimap_camera = std::make_shared<Static_camera>(Bound2f(Point2f(0, 0), Point2f(3168, 320)), Bound2f(Point2f(416, 356), Point2f(616, 396)), 2);
+    create_camera(minimap_camera);
+    minimap_camera->set_shader("Lemming", std::move(Shader(engine).filled_box(RGBA{238, 204, 0, 255})));
+    minimap_camera->set_shader("BkgMap", std::move(Shader(engine).color_mask(RGBA{0, 136, 0, 255}, Shader::Resolution::AUTO, 40)));
+    minimap_camera->set_shader("ALL", std::move(Shader(engine).invisible()));
+
 
     game_info.set_cursor_txt("assets/cursor.png", engine);
     engine.hide_cursor();
 
     auto cursor = std::make_shared<Cursor>(engine, game_info, 25);
     create_entity(cursor);
-    create_entity(std::make_shared<Cursor_menu>(engine, game_info, 24));
+    auto cursor_menu = std::make_shared<Cursor_menu>(engine, game_info, 24);
+    std::cout << cursor_menu << std::endl;
+    create_entity(cursor_menu);
+    game_info.set_cursor_menu(cursor_menu);
     screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
     // screen.go_level(engine, 7, 0);
   }
