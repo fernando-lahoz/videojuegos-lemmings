@@ -5,67 +5,54 @@
 #include <chrono>
 
 #include "engine/engine.hpp"
-#include "engine/rigid_body.hpp"
+#include "engine/entity.hpp"
 
 
-class Apple : public Rigid_body
+class Apple : public Entity
 {
-    Texture black_apple;
-    Texture red_apple;
+    size_t COLLISION_POINT_DOWN, COLLISION_POINT_UP, COLLISION_POINT_LEFT, COLLISION_POINT_RIGHT;
 
     public:
 
-    Apple(Point3f position, Vector2f size, Engine& engine) 
-    : Rigid_body(position, size, engine.load_texture("assets/apple.png"),
+    Apple(Point3f position, Vector2f size, Texture txt, Engine& engine) 
+    : Entity(position, size, txt,
         engine,
         "Apple")
     {
-        black_apple = engine.load_texture("assets/apple.png");
-        red_apple = engine.load_texture("assets/red_apple.png");
+        COLLISION_POINT_DOWN = add_collision_point(Point2f(0.5, 0.95));
+        COLLISION_POINT_UP = add_collision_point(Point2f(0.5, 0.05));
+        COLLISION_POINT_LEFT = add_collision_point(Point2f(0.05, 0.5));
+        COLLISION_POINT_RIGHT = add_collision_point(Point2f(0.95, 0.5));
 
-        set_max_speed(Vector2f(1.5, 1.5));
-        set_gravity(0.3);
+
+        //set_max_speed(Vector2f(1.5, 1.5));
     }
 
-    void on_collision(Engine& engine, EntityPtr other) override
+    void on_collision(Engine& engine, EntityPtr other, size_t collision_point_id) override
     {
-        if (other->get_entity_name() == "Geralt")
+        Entity::on_collision(engine, other, collision_point_id);
+    
+        if (collision_point_id == COLLISION_POINT_DOWN)
         {
-            destroy();
+            set_speed(Vector2f(get_speed().x, -get_speed().y));
         }
-
-        Rigid_body::on_collision(engine, other);
+        else if (collision_point_id == COLLISION_POINT_UP)
+        {
+            set_speed(Vector2f(get_speed().x, -get_speed().y));
+        }
+        else if (collision_point_id == COLLISION_POINT_LEFT)
+        {
+            set_speed(Vector2f(-get_speed().x, get_speed().y));
+        }
+        else if (collision_point_id == COLLISION_POINT_RIGHT)
+        {
+            set_speed(Vector2f(-get_speed().x, get_speed().y));
+        }
     }
 
     void update_state (Engine& engine) override
     {
-        if (get_position3D().y > 1)
-        {
-            destroy();
-        }
-
-        Rigid_body::update_state(engine);
+        Entity::update_state(engine);
     }
 
-    void on_event_down(Engine& engine, EngineIO::InputEvent event) override
-    {
-        if (event == EngineIO::InputEvent::MOUSE_LEFT
-            && contains_the_mouse(engine))
-        {
-            destroy();
-        }
-
-        if (event == EngineIO::InputEvent::MOUSE_HOVER)
-        {
-            set_active_texture(red_apple);
-        }
-    }
-
-    void on_event_up([[maybe_unused]] Engine& engine, EngineIO::InputEvent event) override
-    {
-        if (event == EngineIO::InputEvent::MOUSE_HOVER)
-        {
-            set_active_texture(black_apple);
-        }
-    }
 };

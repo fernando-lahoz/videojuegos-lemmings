@@ -22,7 +22,8 @@ class Trigger : public Entity
 
 
     void on_collision([[maybe_unused]]Engine& engine, 
-            EntityPtr other) override;
+            EntityPtr other,
+            size_t collision_point_id) override;
 
     void update_state(Engine& engine) override;
 

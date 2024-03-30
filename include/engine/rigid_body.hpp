@@ -2,6 +2,7 @@
 
 #include "engine/entity.hpp"
 
+/*
 class Rigid_body : public Entity
 {
 protected:
@@ -25,7 +26,7 @@ public:
     // Returns true if the ray intersected
     //  tmin contains the minimum hit offset
     //  and tmax contains the maximum hit offset
-    /*
+    
     bool distance(Engine &engine, Ray ray, EntityPtr collided_entity, 
             Float &tmin, Float &tmax, Float &thit);
 
@@ -33,14 +34,17 @@ public:
     bool distance_down(Engine &engine, EntityPtr collided_entity, Float &tmin, Float &tmax, Float &thit);
     bool distance_left(Engine &engine, EntityPtr collided_entity, Float &tmin, Float &tmax, Float &thit);
     bool distance_right(Engine &engine, EntityPtr collided_entity, Float &tmin, Float &tmax, Float &thit);
-    */
+    
 
 
     void on_collision([[maybe_unused]]Engine& engine, 
-            EntityPtr other) override;
+            EntityPtr other, 
+            size_t collision_point_id) override;
 
     void update_state(Engine& engine) override;
 
     void pre_physics(Engine&) override;
     void on_creation(Engine&) override;
 };
+
+*/

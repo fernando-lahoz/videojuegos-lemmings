@@ -1,26 +1,33 @@
 #pragma once
 
-#include "engine/rigid_body.hpp"
+#include "engine/entity.hpp"
 #include "engine/render_2D.hpp"
 
 
-class Geralt : public Rigid_body
+class Geralt : public Entity
 {
     Texture txt_left, txt_right;
     Sound oof;
     EntityPtr ground;
     Float default_gravity = 3;
 
+    size_t COLLISION_POINT_DOWN, COLLISION_POINT_UP, COLLISION_POINT_LEFT, COLLISION_POINT_RIGHT;
+
 public:
 
     Geralt(Point3f position, Vector2f diagonal, Engine& engine)
-        : Rigid_body(position, diagonal, 
+        : Entity(position, diagonal, 
         engine.load_texture("assets/geralt_right.png"),
         engine,
         "Geralt")
     {
         set_max_speed(Vector2f(1.5, 1.5));
         gravity = default_gravity;
+
+        COLLISION_POINT_DOWN = add_collision_point(Point2f(0.5, 0.95));
+        COLLISION_POINT_UP = add_collision_point(Point2f(0.5, 0.05));
+        COLLISION_POINT_LEFT = add_collision_point(Point2f(0.05, 0.5));
+        COLLISION_POINT_RIGHT = add_collision_point(Point2f(0.95, 0.5));
 
         txt_left = engine.load_texture("assets/geralt_left.png");
         txt_right = engine.load_texture("assets/geralt_right.png");
@@ -30,6 +37,32 @@ public:
         disable_alpha_mouse();
         constructor_set_collision_type(Collision_type::CHARACTER);
     }
+
+    bool is_grounded(Engine& engine) const
+    {
+        return colliding_down();
+    }
+
+    bool colliding_down() const
+    {
+        return is_colliding(COLLISION_POINT_DOWN);
+    }
+
+    bool colliding_up() const
+    {
+        return is_colliding(COLLISION_POINT_UP);
+    }
+
+    bool colliding_left() const
+    {
+        return is_colliding(COLLISION_POINT_LEFT);
+    }
+
+    bool colliding_right() const
+    {
+        return is_colliding(COLLISION_POINT_RIGHT);
+    }
+
 
 
     void update_state(Engine& engine) override
@@ -99,22 +132,22 @@ public:
             }
         }
 
-        Rigid_body::update_state(engine);
+        Entity::update_state(engine);
     }
 
-    void on_collision(Engine& engine, EntityPtr other) override
+    void on_collision(Engine& engine, EntityPtr other, size_t collision_point_id) override
     {
         if (other->get_entity_name() == "Apple")
         {
             return;
         }
 
-        if (check_collision_down(other))
+        if (collision_point_id == COLLISION_POINT_DOWN)
         {
             ground = other;
         }
 
-        Rigid_body::on_collision(engine, other);
+        Entity::on_collision(engine, other, collision_point_id);
     }
 
     void look_left()

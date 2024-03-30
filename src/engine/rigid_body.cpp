@@ -1,12 +1,13 @@
 #include "engine/rigid_body.hpp"
 #include "engine/engine.hpp"
 
+/*
 
 bool Rigid_body::is_grounded(Engine& ) const
 {
     return colliding_down();
 
-    /*
+    
     // Spawn a ray from the bottom of the entity
     Point2f origin = local_to_world(down_point);
     Ray ray(origin, Vector2f(0, 1));
@@ -37,7 +38,7 @@ bool Rigid_body::is_grounded(Engine& ) const
     else {
         return false;
     }
-    */
+    
 }
 
 
@@ -51,12 +52,6 @@ Rigid_body::Rigid_body(Point3f position, Vector2f diagonal, Texture texture,
 {
     speed = Vector2f(0, 0);
 
-    right_point = default_right_point();
-    left_point = default_left_point();
-    up_point = default_up_point();
-    down_point = default_down_point();
-
-    disable_gravity();
     constructor_set_collision_type(Collision_type::STRUCTURE);
 }
 
@@ -64,7 +59,7 @@ Rigid_body::Rigid_body(Point3f position, Vector2f diagonal, Texture texture,
 // Returns true if the ray intersected
 //  tmin contains the minimum hit offset
 //  and tmax contains the maximum hit offset
-/*
+
 bool Rigid_body::distance(Engine &engine, Ray ray, EntityPtr collided_entity, 
         Float &tmin, Float &tmax, Float &thit)
 {
@@ -136,13 +131,13 @@ bool Rigid_body::distance_right(Engine &engine, EntityPtr collided_entity, Float
     Ray ray(p, Vector2f(1, 0));
     return distance(engine, ray, collided_entity, tmin, tmax, thit);
 }
-*/
+
 
 
 void Rigid_body::on_collision([[maybe_unused]]Engine& engine, 
-        EntityPtr other)
+        EntityPtr other, size_t collision_point_id)
 {
-    Entity::on_collision(engine, other);
+    Entity::on_collision(engine, other, collision_point_id);
 
     // If the entity is not moving, collision will not move it
     // Only rigid bodies can collide with other rigid bodies
@@ -195,3 +190,4 @@ void Rigid_body::on_creation(Engine& engine)
 {
     Entity::on_creation(engine);
 }
+*/

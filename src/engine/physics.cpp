@@ -31,17 +31,18 @@ void Physics_engine::compute_collisions(Engine& engine)
         for (auto &character : characters)
         {
             auto shared_character = std::make_shared<Entity>(*character);
+            size_t collision_point_id;
 
             if (structure->hitbox_collides(shared_character) &&
-                structure->collides(shared_character))
+                structure->collides(shared_character, collision_point_id))
             {
-                structure->on_collision(engine, shared_character);
+                structure->on_collision(engine, shared_character, collision_point_id);
             }
 
             if (structure->hitbox_collides(shared_character) &&
-                character->collides(shared_structure))
+                character->collides(shared_structure, collision_point_id))
             {
-                character->on_collision(engine, shared_structure);
+                character->on_collision(engine, shared_structure, collision_point_id);
             }
         }
     }

@@ -31,20 +31,16 @@ private:
     bool deleted_entity = false;
     int entity_id;
     bool mouse_over = false;
-
-    bool _collides_up = false, _collides_down = false,
-         _collides_left = false, _collides_right = false;
         
     bool alpha_collision = true, alpha_mouse = true;
-
     bool collisions_active = true;
 
 protected:
     Point3f position;
     Vector2f diagonal;
 
-    Point2f down_point, up_point,
-            left_point, right_point;
+    std::vector<Point2f> collision_points;
+    std::vector<bool> vector_is_colliding;
 
     std::string class_name;
     std::string entity_name;
@@ -149,12 +145,6 @@ public:
         position.y += speed.y * delta_time;
     }
 
-
-    bool colliding_up() const;
-    bool colliding_down() const;
-    bool colliding_left() const;
-    bool colliding_right() const;
-
     void enable_collisions();
     void disable_collisions();
 
@@ -164,21 +154,16 @@ public:
     }
 
 
-
-    bool check_collision_right(std::shared_ptr<Entity> other) const;
-    bool check_collision_left(std::shared_ptr<Entity> other) const;
-    bool check_collision_up(std::shared_ptr<Entity> other) const;
-    bool check_collision_down(std::shared_ptr<Entity> other) const;
-
-    void override_right_point(Point2f new_p);
-    void override_left_point(Point2f new_p);
-    void override_up_point(Point2f new_p);
-    void override_down_point(Point2f new_p);
-
-    Point2f default_right_point() const;
-    Point2f default_left_point() const;
-    Point2f default_up_point() const;
-    Point2f default_down_point() const;
+    // Overrides an existing collision_point, 
+    //  new_point in coordinates local to the entity
+    //  Returns true if the point was successfully set
+    bool set_collision_point(size_t point_id, Point2f new_point);
+    bool is_colliding(size_t point_id) const;
+    
+    // Adds a new collision point,
+    //  new_point is in coordinates local to the entity
+    //  Returns the id of the new collision point
+    size_t add_collision_point(Point2f new_point);
 
     Vector2f get_diagonal() const;
 
@@ -207,8 +192,7 @@ public:
 
     // Returns true if this entity collides with other.
     //  uses excusive comparisons
-    bool collides(std::shared_ptr<Entity> other, Point2f &collision_point) const;
-    bool collides(std::shared_ptr<Entity> other) const;
+    bool collides(std::shared_ptr<Entity> other, size_t &collision_point_id) const;
     bool contains(Point2f point, bool is_mouse=false) const;
 
     // Returns true if the mouse is pointing inside the visible entity
@@ -233,7 +217,8 @@ public:
     // Collisions are called right after pre_physics and
     //  before update_position
     virtual void on_collision(Engine& engine, 
-            std::shared_ptr<Entity> other);
+            std::shared_ptr<Entity> other,
+            size_t collision_point_id);
 
     // This is called after all physics have finished
     virtual void post_physics(Engine& engine);
