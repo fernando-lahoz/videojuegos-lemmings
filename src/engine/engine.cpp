@@ -677,6 +677,8 @@ void Engine::start()
 {
     set_ignored_events();
 
+    start_async_workers();
+
     game->on_game_startup(*this);
 
     bool quit = false;
@@ -711,10 +713,12 @@ void Engine::start()
         // Draw call to renderer
         hovered_entities = renderer->draw_and_return_hovered(entities, cameras, mouse_position);
 
-        destroy_finished_preloaders();
+        handle_finished_async_tasks();
     }
 
     game->on_game_shutdown(*this);
+
+    stop_async_workers();
 
     SDL_Quit();
 }
@@ -734,47 +738,97 @@ Texture Engine::load_texture(const std::string &path)
     return renderer->load_texture(path);
 }
 
-void Engine::send_preload_finished_event(int batch_id)
+
+int Engine::async_task(const std::function<void()> &task)
 {
-    game->on_preload_finished(*this, batch_id);
+    std::unique_lock<std::mutex> lock(async_tasks_mutex);
+
+    int id = async_task_id;
+    async_tasks.push(std::make_pair(id, task));
+    async_task_id++;
+
+    lock.unlock();
+    async_tasks_cv.notify_one();
+
+    return id;
 }
 
-void Engine::th_preload_textures(const std::vector<std::string> &paths, int batch_id)
+void Engine::th_async_worker()
+{
+    std::unique_lock<std::mutex> lock(async_tasks_mutex);
+
+    while (!b_finish_async_workers)
+    {
+        if (!async_tasks.empty())
+        {
+            auto task = async_tasks.front();
+            async_tasks.pop();
+
+            lock.unlock();
+            task.second();
+            lock.lock();
+
+            finished_tasks.push_back(task.first);
+        }
+        else
+        {
+            async_tasks_cv.wait(lock, [this] 
+                { return !async_tasks.empty() || b_finish_async_workers; });
+        }
+    }
+}
+
+
+
+
+void Engine::handle_finished_async_tasks()
+{
+    std::unique_lock<std::mutex> lock(async_tasks_mutex);
+
+    while (!finished_tasks.empty())
+    {
+        int id = finished_tasks.back();
+        finished_tasks.pop_back();
+
+        lock.unlock();
+        game->on_async_task_finished(*this, id);
+        lock.lock();
+    }
+}
+
+
+void Engine::start_async_workers()
+{
+    for (unsigned int i = 0; i < std::thread::hardware_concurrency(); i++)
+    {
+        async_worker_threads.push_back(std::thread(&Engine::th_async_worker, this));
+    }
+}
+
+void Engine::stop_async_workers()
+{
+    b_finish_async_workers = true;
+    async_tasks_cv.notify_all();
+
+    for (auto &thread : async_worker_threads)
+    {
+        thread.join();
+    }
+}
+
+
+void Engine::texture_preload_task(std::vector<std::string> paths)
 {
     for (auto &path : paths)
     {
         renderer->load_texture(path);
     }
-
-    send_preload_finished_event(batch_id);
 }
 
-void Engine::destroy_finished_preloaders()
-{
-    std::unique_lock<std::mutex> lock(preloaders_mutex);
-
-    if (preload_threads.empty())
-        return;
-
-    while (preload_threads.front().joinable())
-    {
-        preload_threads.front().join();
-        preload_threads.pop();
-    }
-}
 
 int Engine::preload_textures(const std::vector<std::string> &paths)
 {
-    std::unique_lock<std::mutex> lock(preloaders_mutex);
-
-    int id = preload_id;
-
-    // Launch thread
-    preload_threads.push(std::thread(&Engine::th_preload_textures, this, paths, id));
-
-    preload_id++;
-
-    return id;
+    return async_task(std::bind(&Engine::texture_preload_task, this, paths));
 }
 
 void Engine::set_window_icon(const std::string &path)

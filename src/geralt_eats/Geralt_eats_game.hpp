@@ -67,6 +67,12 @@ public:
         // return std::make_shared<Geralt_camera>();
     }
 
+    void test_task()
+    {
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::cout << "Task finished" << std::endl;
+    }
+
     void on_game_startup(Engine &engine) override
     {
         auto ground_alpha = engine.load_texture("assets/ground_alpha.png");
@@ -89,6 +95,7 @@ public:
 
         create_entity(box1);
         create_entity(box2);
+        engine.async_task([this]() { test_task(); });
 
         create_camera(std::make_shared<Geralt_camera>());
     }

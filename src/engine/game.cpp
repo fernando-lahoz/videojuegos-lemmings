@@ -70,4 +70,4 @@ void Game::on_game_shutdown(Engine&) {}
 
 void Game::on_entity_destruction(Engine&, EntityPtr) {}
 
-void Game::on_preload_finished(Engine&, int) {}
+void Game::on_async_task_finished(Engine&, long long) {}

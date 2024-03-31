@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <thread>
 #include <mutex>
+#include <condition_variable>
 #include <set>
 
 #include "lib/texture.hpp"
@@ -41,9 +42,12 @@ private:
     void process_cameras();
     void update_entities_state();
 
-    void th_preload_textures(const std::vector<std::string>& paths, int batch_id);
-    void send_preload_finished_event(int batch_id);
-    void destroy_finished_preloaders();
+    void handle_finished_async_tasks();
+    void start_async_workers();
+    void stop_async_workers();
+    void th_async_worker();
+
+    void texture_preload_task(std::vector<std::string> paths);
 
     void send_mouse_hover();
     void update_mouse_position();
@@ -66,10 +70,6 @@ private:
     uint64_t delta_ns = 0, total_delta_ns = 0, total_measurements = 1;
     double delta_time; // Delta time in seconds
 
-    int preload_id = 0;
-    std::mutex preloaders_mutex;
-    std::queue<std::thread> preload_threads;
-
     EntityCollection entities;
 
     std::set<Entity*> hud_entities;
@@ -77,6 +77,17 @@ private:
     std::set<Entity*> character_entities;
     std::unordered_map<Entity *, Camera2D::ID> hovered_entities;
     std::set<Entity*> event_entities;
+
+    std::queue<
+        std::pair<int, std::function<void()>>> async_tasks;
+    long long async_task_id = 0;
+
+    std::vector<int> finished_tasks;
+    bool b_finish_async_workers = false;
+
+    std::condition_variable async_tasks_cv;
+    std::mutex async_tasks_mutex;
+    std::vector<std::thread> async_worker_threads;
 
     Point2f mouse_position;
     bool quit_event = false;
@@ -104,6 +115,7 @@ public:
     // Returns the id of the batch loading
     // The event will be sent with this id
     int preload_textures(const std::vector<std::string>& paths);
+    int async_task(const std::function<void()>& task);
 
     void set_window_icon(const std::string& path);
     void set_fullscreen();
