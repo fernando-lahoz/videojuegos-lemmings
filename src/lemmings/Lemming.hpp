@@ -25,6 +25,7 @@ class Lemming : public Rigid_body
 
   bool is_playing = true; // Indica si la animación está actualmente en reproducción
   int current_frame = 0;  // Frame actual de la animación
+  bool climb_now = false;
   float distance_fall = 0.0f;
   float last_y = 0.0f;
   bool do_action_in_frame = false;
@@ -967,6 +968,25 @@ public:
       return;
     }
 
+    if (is_climbing())
+    {
+      if (current_frame == 9)
+      {
+          if (!do_action_in_frame && !climb_now) { 
+            current_frame = 0;
+            position.y -= 5; 
+            on_ground = false;
+          }
+      else if (current_frame == 3)
+      {
+        if (!do_action_in_frame) { position.y -= 2; }
+      }
+      else{ do_action_in_frame = false;}
+      return;
+      }
+    }
+
+
     if (is_mining())
     {
       if (current_frame == 0)
@@ -1086,10 +1106,30 @@ public:
         if ((check_collision_left(other) && direction == -1) || (check_collision_right(other) && direction == 1))
         {
 
-          position.x -= 3 * direction;
-          direction *= -1;
-
+          if (skills & Utils::CLIMB){
+            go_climb();
+          }
+          else{
+            position.x -= 3 * direction;
+            direction *= -1;
+          }
           // std::cout << "Lemming turn left\n";
+        }
+      }
+      if (is_climbing())
+      {
+        if(check_collision_up(other)){
+            //std::cout << "Techo\n";
+            //go_fall();
+        }
+        if ((!check_collision_left(other) && direction == -1) || (!check_collision_right(other) && direction == 1))
+        {
+          std::cout << "No hay pared\n";
+          if (!climb_now){ climb_now = true;}
+          else if (current_frame == 15){
+            go_walk();
+          }
+          
         }
       }
       if ((is_falling() || is_floating()) && !(other->get_entity_name() == "Lemming"))
@@ -1244,6 +1284,7 @@ public:
     {
       // std::cout << "LEMMING PULSADO" << std::endl;
       int skill = Utils::HUD_TO_SKILL[game_info.get_option_selected()];
+      std::cout << skill << std::endl;
       if (skill != Utils::NO_SKILLS && game_info.get_action_possible())
       {
         bool res = add_skill(Utils::HUD_TO_SKILL[game_info.get_option_selected()]);
