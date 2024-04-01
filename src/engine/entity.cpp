@@ -2,20 +2,26 @@
 #include "engine/engine.hpp"
 
 Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture, 
-            [[maybe_unused]]Engine &engine,
+            Engine &engine,
             std::string_view _entity_name, 
+            bool is_rigid_body,
+            Collision_type _collision_type,
+            Cursor_collision_type _cursor_collision_type,
             std::string_view _class_name)
     :
-    speed(Vector2f(0, 0)),
-    max_speed(Vector2f(INFINITY, INFINITY))
+    collision_type(_collision_type),
+    cursor_collision_type(_cursor_collision_type),
+    _is_rigid_body(is_rigid_body),
+    active_texture(texture),
+    deleted_entity(false),
+    entity_id(-1),
+    mouse_over(false),
+    position(position),
+    class_name(_class_name),
+    entity_name(_entity_name),
+    diagonal(diagonal),
+    speed(0, 0)
 {
-    this->position = position;
-    this->diagonal = diagonal;
-    this->active_texture = texture;
-
-    this->entity_name = _entity_name;
-    this->class_name = _class_name;
-
     //engine.subscribe_to_events(this);
 }
 
@@ -24,19 +30,17 @@ Entity::Collision_type Entity::get_collision_type() const
     return collision_type;
 }
 
-void Entity::constructor_set_collision_type(Collision_type new_type)
+
+Entity::Cursor_collision_type Entity::get_cursor_collision_type() const
 {
-    collision_type = new_type;
+    return cursor_collision_type;
 }
 
-void Entity::change_collision_type(Engine &engine, Collision_type new_type)
+bool Entity::is_rigid_body() const
 {
-    engine.change_collision_type(this, new_type);
-
-    // Change type after the engine has been notified
-    //  so it sees the old type
-    collision_type = new_type;
+    return _is_rigid_body;
 }
+
 
 Point2f Entity::world_to_local(Point2f w_p) const
 {
@@ -120,26 +124,6 @@ void Entity::set_entity_id(int id)
     entity_id = id;
 }
 
-void Entity::enable_alpha_collision()
-{
-    alpha_collision = true;
-}
-
-void Entity::disable_alpha_collision()
-{
-    alpha_collision = false;
-}
-
-void Entity::enable_alpha_mouse()
-{
-    alpha_mouse = true;
-}
-
-void Entity::disable_alpha_mouse()
-{
-    alpha_mouse = false;
-}
-
 Point2f Entity::max_corner2D() const
 {
     return get_position2D() + diagonal;
@@ -192,17 +176,8 @@ void Entity::disable_mouse_hover()
 }
 
 
-bool Entity::collides(std::shared_ptr<Entity> other, size_t &collision_point_id) const
+bool Entity::alpha_collides(std::shared_ptr<Entity> other, size_t &collision_point_id) const
 {
-    if (!collisions_active)
-        return false;
-
-    if (!alpha_collision)
-    {
-        collision_point_id = 0;
-        return bound2f().overlaps(other->bound2f());
-    }
-
     for (size_t i = 0; i < collision_points.size(); i++)
     {        
         Point2f world_point = local_to_world(collision_points[i]);
@@ -246,26 +221,17 @@ size_t Entity::add_collision_point(Point2f new_p)
     return collision_points.size() - 1;
 }
 
-void Entity::enable_collisions()
-{
-    collisions_active = true;
-}
-
-void Entity::disable_collisions()
-{
-    collisions_active = false;
-}
 
 bool Entity::contains(Point2f point, bool is_mouse) const
 {
     if (bound2f().contains(point))
     {
-        if (is_mouse && alpha_mouse)
+        if (is_mouse && cursor_collision_type == Cursor_collision_type::ALPHA)
             return !get_active_texture().is_alpha_pixel(world_to_local(point));
         else if (is_mouse)
             return true;
 
-        if (!is_mouse && alpha_collision)
+        if (!is_mouse && collision_type == Collision_type::ALPHA)
             return !get_active_texture().is_alpha_pixel(world_to_local(point));
         else if (!is_mouse)
             return true;
@@ -307,7 +273,7 @@ void Entity::update_state(Engine&)
     // Do nothing by default
 }
 
-void Entity::on_collision(Engine&, std::shared_ptr<Entity> , size_t collision_point_id)
+void Entity::on_collision(Engine&, std::shared_ptr<Entity> , bool, size_t collision_point_id)
 {
     vector_is_colliding[collision_point_id] = true;
 }

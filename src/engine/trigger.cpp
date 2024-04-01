@@ -6,11 +6,8 @@ Trigger::Trigger(Point3f position, Vector2f diagonal,
         Engine& engine,
         std::string _entity_name, 
         std::string _class_name)
-    : Entity(position, diagonal, Texture(), engine, _entity_name, _class_name)
+    : Entity(position, diagonal, Texture{}, engine, _entity_name, false, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, _class_name)
 {
-    disable_alpha_collision();
-    disable_alpha_mouse();
-    constructor_set_collision_type(Entity::Collision_type::STRUCTURE);
 }
 
 void Trigger::add_asociated_entity(EntityPtr entity)
@@ -25,6 +22,7 @@ std::vector<EntityPtr> Trigger::get_asociated_entities() const
 
 void Trigger::on_collision([[maybe_unused]]Engine& engine, 
         [[maybe_unused]]EntityPtr other,
+        [[maybe_unused]]bool is_alpha,
         [[maybe_unused]]size_t collision_point_id)
 {
     trigger_collision_event(engine, other);

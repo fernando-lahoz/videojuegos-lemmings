@@ -22,7 +22,6 @@ public:
         "Geralt")
     {
         set_max_speed(Vector2f(1.5, 1.5));
-        gravity = default_gravity;
 
         COLLISION_POINT_DOWN = add_collision_point(Point2f(0.5, 0.95));
         COLLISION_POINT_UP = add_collision_point(Point2f(0.5, 0.05));
@@ -34,8 +33,6 @@ public:
 
         auto& mixer = engine.get_sound_mixer();
         oof = mixer.load_sound("assets/sounds/explode.wav");
-        disable_alpha_mouse();
-        constructor_set_collision_type(Collision_type::CHARACTER);
     }
 
     bool is_grounded(Engine& engine) const
@@ -67,15 +64,6 @@ public:
 
     void update_state(Engine& engine) override
     {
-        if (is_grounded(engine))
-        {
-            disable_gravity();
-        }
-        else
-        {
-            set_gravity(default_gravity);
-        }
-
         auto speed = get_speed();
 
         if (engine.is_up_arrow_down()
@@ -135,7 +123,7 @@ public:
         Entity::update_state(engine);
     }
 
-    void on_collision(Engine& engine, EntityPtr other, size_t collision_point_id) override
+    void on_collision(Engine& engine, EntityPtr other, bool is_alpha, size_t collision_point_id) override
     {
         if (other->get_entity_name() == "Apple")
         {
@@ -147,7 +135,7 @@ public:
             ground = other;
         }
 
-        Entity::on_collision(engine, other, collision_point_id);
+        Entity::on_collision(engine, other, is_alpha, collision_point_id);
     }
 
     void look_left()

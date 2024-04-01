@@ -23,6 +23,7 @@ class Trigger : public Entity
 
     void on_collision([[maybe_unused]]Engine& engine, 
             EntityPtr other,
+            bool is_alpha,
             size_t collision_point_id) override;
 
     void update_state(Engine& engine) override;

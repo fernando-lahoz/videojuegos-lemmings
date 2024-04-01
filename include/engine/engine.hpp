@@ -54,8 +54,7 @@ private:
     void change_input_state(EngineIO::InputEvent key, bool is_down);
     void set_ignored_events();
     
-    void set_collision_type(Entity* entity, Entity::Collision_type type);
-    void erase_collision_type(Entity* entity, Entity::Collision_type type);
+    void add_entity_to_physics(EntityPtr entity);
 
     EngineIO::InputEvent SDL_to_input_event(SDL_KeyboardEvent key);
     EngineIO::InputEvent SDL_to_input_event(SDL_MouseButtonEvent key);
@@ -69,12 +68,12 @@ private:
     TimePoint check_point;
     uint64_t delta_ns = 0, total_delta_ns = 0, total_measurements = 1;
     double delta_time; // Delta time in seconds
+    Float gravity = 0;
 
     EntityCollection entities;
 
-    std::set<Entity*> hud_entities;
-    std::set<Entity*> structure_entities;
-    std::set<Entity*> character_entities;
+    std::vector<EntityPtr> aabb_entities;
+    std::vector<EntityPtr> alpha_entities;
     std::unordered_map<Entity *, Camera2D::ID> hovered_entities;
     std::set<Entity*> event_entities;
 
@@ -121,6 +120,8 @@ public:
     void set_fullscreen();
     EntityCollection& get_entities();
     double get_delta_time();
+    Float get_gravity() const;
+    void set_gravity(Float gravity);
     void destroy_all_entities();
     Game& get_game();
     Camera2D& get_main_camera();
@@ -139,12 +140,10 @@ public:
     bool is_entity_hovered(Entity& entity) const;
     // Returns id of the camera in which this entity is being hovered, or -1 if none.
     Camera2D::ID get_camera_in_which_hovered(Entity &entity) const;
-    void change_collision_type(Entity* entity, Entity::Collision_type new_type);
     void subscribe_to_events(Entity* entity);
 
-    std::set<Entity*>& get_hud_entities();
-    std::set<Entity*>& get_structure_entities();
-    std::set<Entity*>& get_character_entities();
+    std::vector<EntityPtr>& get_aabb_entities();
+    std::vector<EntityPtr>& get_alpha_entities();
 
     /*
     bool intesect_ray(Ray &ray, 

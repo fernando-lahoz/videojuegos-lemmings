@@ -379,10 +379,18 @@ void Engine::delete_dead_entities()
     std::for_each(iterator, entities.end(), [this](EntityPtr entity)
                   { 
                     game->on_entity_destruction(*this, entity); 
-                    erase_collision_type(entity.get(), entity->get_collision_type());
                     event_entities.erase(entity.get()); });
 
     entities.resize(std::distance(entities.begin(), iterator));
+}
+
+
+void Engine::add_entity_to_physics(EntityPtr entity)
+{
+    if (entity->get_collision_type() == Entity::Collision_type::AABB)
+        aabb_entities.push_back(entity);
+    else if (entity->get_collision_type() == Entity::Collision_type::ALPHA)
+        alpha_entities.push_back(entity);
 }
 
 void Engine::process_new_entities()
@@ -393,10 +401,8 @@ void Engine::process_new_entities()
     {
         entity->set_entity_id(entities.size());
         entities.push_back(entity);
+        add_entity_to_physics(entity);
         entity->on_creation(*this);
-
-        set_collision_type(entity.get(), entity->get_collision_type());
-        subscribe_to_events(entity.get());
     }
 }
 
@@ -461,59 +467,28 @@ SoundMixer &Engine::get_sound_mixer()
     return mixer;
 }
 
-void Engine::set_collision_type(Entity *entity, Entity::Collision_type type)
+
+std::vector<EntityPtr>& Engine::get_aabb_entities()
 {
-    // Insert into the new entities set
-    if (type == Entity::Collision_type::CHARACTER)
-    {
-        character_entities.insert(entity);
-    }
-    else if (type == Entity::Collision_type::STRUCTURE)
-    {
-        structure_entities.insert(entity);
-    }
-    else if (type == Entity::Collision_type::HUD)
-    {
-        hud_entities.insert(entity);
-    }
+    return aabb_entities;
 }
 
-void Engine::erase_collision_type(Entity *entity, Entity::Collision_type type)
+std::vector<EntityPtr>& Engine::get_alpha_entities()
 {
-    if (type == Entity::Collision_type::CHARACTER)
-    {
-        character_entities.erase(entity);
-    }
-    else if (type == Entity::Collision_type::STRUCTURE)
-    {
-        structure_entities.erase(entity);
-    }
-    else if (type == Entity::Collision_type::HUD)
-    {
-        hud_entities.erase(entity);
-    }
+    return alpha_entities;
 }
 
-void Engine::change_collision_type(Entity *entity, Entity::Collision_type new_type)
+
+Float Engine::get_gravity() const
 {
-    erase_collision_type(entity, entity->get_collision_type());
-    set_collision_type(entity, new_type);
+    return gravity;
 }
 
-std::set<Entity *> &Engine::get_character_entities()
+void Engine::set_gravity(Float _gravity)
 {
-    return character_entities;
+    gravity = _gravity;
 }
 
-std::set<Entity *> &Engine::get_structure_entities()
-{
-    return structure_entities;
-}
-
-std::set<Entity *> &Engine::get_hud_entities()
-{
-    return hud_entities;
-}
 
 bool Engine::intersect_ray(Ray &ray,
                            int not_this_entity_id,

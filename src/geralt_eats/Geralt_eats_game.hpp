@@ -90,12 +90,8 @@ public:
         box1->set_speed(Vector2f(0.1, 0.2));
         box2->set_speed(Vector2f(-0.1, -0.2));
 
-        box1->change_collision_type(engine, Entity::Collision_type::CHARACTER);
-        box2->change_collision_type(engine, Entity::Collision_type::STRUCTURE);
-
         create_entity(box1);
         create_entity(box2);
-        engine.async_task([this]() { test_task(); });
 
         create_camera(std::make_shared<Geralt_camera>());
     }

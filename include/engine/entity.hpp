@@ -20,10 +20,13 @@ class Entity
 
 public:
 
-    enum Collision_type {HUD, STRUCTURE, CHARACTER, CURSOR};
+    enum class Collision_type {NO_COLLISION, AABB, ALPHA};
+    enum class Cursor_collision_type {AABB, ALPHA};
 
 private:
-    Collision_type collision_type = HUD;
+    Collision_type collision_type = Collision_type::AABB;
+    Cursor_collision_type cursor_collision_type = Cursor_collision_type::AABB;
+    bool _is_rigid_body = false;
 
 
 private:
@@ -31,9 +34,6 @@ private:
     bool deleted_entity = false;
     int entity_id;
     bool mouse_over = false;
-        
-    bool alpha_collision = true, alpha_mouse = true;
-    bool collisions_active = true;
 
 protected:
     Point3f position;
@@ -47,9 +47,7 @@ protected:
 
 
     Vector2f speed;
-    Vector2f max_speed;
-
-    Float gravity = 0;
+    Vector2f max_speed = Vector2f(INFINITY, INFINITY);
 
 public:
 
@@ -57,6 +55,9 @@ public:
     Entity(Point3f position, Vector2f diagonal, const Texture& texture, 
             Engine &engine,
             std::string_view _entity_name, 
+            bool is_rigid_body = false,
+            Collision_type _collision_type = Collision_type::AABB,
+            Cursor_collision_type _cursor_collision_type = Cursor_collision_type::AABB,
             std::string_view _class_name = "Entity");
 
     // Get the specific entity name
@@ -64,11 +65,8 @@ public:
     std::string get_entity_name() const;
 
     Collision_type get_collision_type() const;
-
-    void constructor_set_collision_type(Collision_type new_type);
-
-    // This must only be used in the constructor of the entity 
-    void change_collision_type(Engine &engine, Collision_type new_type);
+    Cursor_collision_type get_cursor_collision_type() const;
+    bool is_rigid_body() const;
 
     Point2f world_to_local(Point2f w_p) const;
     Vector2f world_to_local(Vector2f w_p) const;
@@ -86,22 +84,6 @@ public:
 
     void set_position2D(Point2f p);
     void set_position3D(Point3f p);
-
-
-    void set_gravity(Float new_gravity)
-    {
-        this->gravity = new_gravity;
-    }
-
-    void disable_gravity()
-    {
-        set_gravity(0);
-    }
-
-    bool has_gravity() const
-    {
-        return gravity > 0;
-    }
 
 
     Vector2f get_speed() const
@@ -134,23 +116,15 @@ public:
         max_speed = new_max_speed;
     }
 
-    inline void update_gravity(Float delta_time)
-    {
-        speed.y = math::clamp(speed.y + gravity*delta_time, -max_speed.y, max_speed.y);
-    }
-
-    inline void update_position(Float delta_time)
+    inline static void update_position(Float delta_time, Point2f &position, Vector2f speed)
     {
         position.x += speed.x * delta_time;
         position.y += speed.y * delta_time;
     }
 
-    void enable_collisions();
-    void disable_collisions();
-
-    inline bool hitbox_collides(std::shared_ptr<Entity> other) const
+    inline bool aabb_collides(std::shared_ptr<Entity> other) const
     {
-        return collisions_active && bound2f().overlaps(other->bound2f());
+        return bound2f().overlaps(other->bound2f());
     }
 
 
@@ -185,14 +159,9 @@ public:
     void enable_mouse_hover();
     void disable_mouse_hover();
 
-    void enable_alpha_collision();
-    void disable_alpha_collision();
-    void enable_alpha_mouse();
-    void disable_alpha_mouse(); 
-
     // Returns true if this entity collides with other.
     //  uses excusive comparisons
-    bool collides(std::shared_ptr<Entity> other, size_t &collision_point_id) const;
+    bool alpha_collides(std::shared_ptr<Entity> other, size_t &collision_point_id) const;
     bool contains(Point2f point, bool is_mouse=false) const;
 
     // Returns true if the mouse is pointing inside the visible entity
@@ -218,6 +187,7 @@ public:
     //  before update_position
     virtual void on_collision(Engine& engine, 
             std::shared_ptr<Entity> other,
+            bool is_alpha,
             size_t collision_point_id);
 
     // This is called after all physics have finished
