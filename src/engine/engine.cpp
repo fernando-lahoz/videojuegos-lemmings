@@ -14,6 +14,10 @@
 
 EngineIO::InputEvent Engine::SDL_to_input_event(SDL_KeyboardEvent key)
 {
+    /*
+    // Para mostrar por consola la tecla que se ha pulsado.
+    std::cout << "Key pressed: " << key.keysym.sym << std::endl;
+    */
     switch (key.keysym.sym)
     {
     case SDLK_RIGHT:
