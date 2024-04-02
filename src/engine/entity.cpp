@@ -182,9 +182,10 @@ bool Entity::is_deleted() const
     return deleted_entity;
 }
 
-void Entity::destroy()
+void Entity::destroy(Engine &engine)
 {
     deleted_entity = true;
+    engine.delete_entity(this);
 }
 
 bool Entity::mouse_was_hovering() const

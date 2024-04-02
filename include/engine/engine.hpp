@@ -67,6 +67,8 @@ private:
     double delta_time; // Delta time in seconds
 
     EntityCollection entities;
+    long long entity_ids = 0;
+    std::unordered_set<Entity*> deleted_entities;
 
     std::unordered_map<Entity *, Camera2D::ID> hovered_entities;
     std::set<Entity*> event_entities;
@@ -120,6 +122,8 @@ public:
     std::vector<std::shared_ptr<Camera2D>>& get_cameras();
     SoundMixer& get_sound_mixer();
     SDL_Renderer *get_renderer();
+
+    void delete_entity(Entity* entity);
 
     Float get_gravity() const;
     void set_gravity(Float gravity);

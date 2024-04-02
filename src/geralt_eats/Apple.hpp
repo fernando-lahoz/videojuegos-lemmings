@@ -30,24 +30,12 @@ class Apple : public Entity
     {
         Entity::on_collision(engine, other, is_alpha, collision_point_id);
     
-    /*
-        if (collision_point_id == COLLISION_POINT_DOWN)
+
+        if (get_mass() > other->get_mass())
         {
-            set_speed(Vector2f(get_speed().x, -get_speed().y));
+            destroy(engine);
         }
-        else if (collision_point_id == COLLISION_POINT_UP)
-        {
-            set_speed(Vector2f(get_speed().x, -get_speed().y));
-        }
-        else if (collision_point_id == COLLISION_POINT_LEFT)
-        {
-            set_speed(Vector2f(-get_speed().x, get_speed().y));
-        }
-        else if (collision_point_id == COLLISION_POINT_RIGHT)
-        {
-            set_speed(Vector2f(-get_speed().x, get_speed().y));
-        }
-        */
+
     }
 
     void update_state (Engine& engine) override

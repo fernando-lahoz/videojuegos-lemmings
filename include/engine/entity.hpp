@@ -161,7 +161,7 @@ public:
     bool is_deleted() const;
     Bound2f bound2f() const;
 
-    void destroy();
+    void destroy(Engine &engine);
 
     bool mouse_was_hovering() const;
     void enable_mouse_hover();

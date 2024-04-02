@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <unordered_set>
 
 #include "geometry/vector.hpp"
 #include "geometry/point.hpp"
@@ -14,7 +15,8 @@ class Physics_engine
     std::vector<EntityPtr> aabb_entities;
     std::vector<EntityPtr> alpha_entities;
     Float gravity = 0;
-
+    size_t n_aabb_to_delete = 0;
+    size_t n_alpha_to_delete = 0;
 
 
     void update_positions(Engine& engine);
@@ -39,4 +41,5 @@ public:
     Float get_gravity() const;
     void set_gravity(Float gravity);
 
+    void delete_entities(const std::unordered_set<Entity*> &deleted_entities);
 };

@@ -258,3 +258,55 @@ void Physics_engine::set_gravity(Float gravity)
 {
     this->gravity = gravity;
 }
+
+
+
+
+void Physics_engine::delete_entities(const std::unordered_set<Entity*> &deleted_entities)
+{
+    if (deleted_entities.empty())
+        return;
+
+
+    /******************* Delete aabb entities *******************/
+    for (int i = aabb_entities.size()-1; i >= 0; i--)
+    {
+        size_t last_undeleted_position = aabb_entities.size()-1-n_aabb_to_delete;
+
+        if (deleted_entities.find(aabb_entities[i].get()) != deleted_entities.end())
+        {
+            if (i != (int)last_undeleted_position)
+                std::swap(aabb_entities[i], aabb_entities[last_undeleted_position]);
+            
+            n_aabb_to_delete++;
+        }
+    }
+
+    if (n_aabb_to_delete > 0)
+    {
+        aabb_entities.resize(aabb_entities.size() - n_aabb_to_delete);
+        n_aabb_to_delete = 0;
+    }
+
+
+    /******************* Delete alpha entities *******************/
+
+    for (int i = alpha_entities.size()-1; i >= 0; i--)
+    {
+        size_t last_undeleted_position = alpha_entities.size()-1-n_alpha_to_delete;
+
+        if (deleted_entities.find(alpha_entities[i].get()) != deleted_entities.end())
+        {
+            if (i != (int)last_undeleted_position)
+                std::swap(alpha_entities[i], alpha_entities[last_undeleted_position]);
+            
+            n_alpha_to_delete++;
+        }
+    }
+
+    if (n_alpha_to_delete > 0)
+    {
+        alpha_entities.resize(alpha_entities.size() - n_alpha_to_delete);
+        n_alpha_to_delete = 0;
+    }
+}

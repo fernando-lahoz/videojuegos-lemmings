@@ -342,24 +342,43 @@ void Engine::update_delta_time()
 void Engine::sort_by_z_buffer()
 {
     std::sort(entities.begin(), entities.end(), [](EntityPtr a, EntityPtr b) -> bool
-              { return !a->is_deleted() && ((b->is_deleted()) ||
-                                            (a->get_position3D().z > b->get_position3D().z)); });
+              { return a->get_position3D().z > b->get_position3D().z; });
 }
 
 // Removes all entities with a deleted flag, assuming an ordered vector with
 //  all dead entities at the end
 void Engine::delete_dead_entities()
 {
-    auto is_deleted = [](EntityPtr entity)
-    { return entity->is_deleted(); };
-    auto iterator = std::find_if(entities.begin(), entities.end(), is_deleted);
+    size_t n_entities_to_delete = 0;
 
-    std::for_each(iterator, entities.end(), [this](EntityPtr entity)
-                  { 
-                    game->on_entity_destruction(*this, entity); 
-                    event_entities.erase(entity.get()); });
+    if (deleted_entities.empty())
+        return;
 
-    entities.resize(std::distance(entities.begin(), iterator));
+    for (int i = entities.size()-1; i >= 0; i--)
+    {
+        size_t last_undeleted_position = entities.size() - 1 - n_entities_to_delete;
+
+        if (deleted_entities.find(entities[i].get()) != deleted_entities.end())
+        {
+            game->on_entity_destruction(*this, entities[i]);
+            event_entities.erase(entities[i].get());
+
+            if (i != (int)last_undeleted_position)
+                std::swap(entities[i], entities[last_undeleted_position]);
+            
+            n_entities_to_delete++;
+        }
+    }
+
+    physics.delete_entities(deleted_entities);
+    
+    entities.resize(entities.size() - n_entities_to_delete);
+    deleted_entities.clear();
+}
+
+void Engine::delete_entity(Entity* entity)
+{
+    deleted_entities.insert(entity);
 }
 
 
@@ -369,7 +388,8 @@ void Engine::process_new_entities()
 
     for (auto &entity : new_entities)
     {
-        entity->set_entity_id(entities.size());
+        entity->set_entity_id(entity_ids);
+        entity_ids++;
         entities.push_back(entity);
         physics.add_entity(entity);
         entity->on_creation(*this);
@@ -789,7 +809,7 @@ void Engine::destroy_all_entities()
 {
     for (auto &entity : entities)
     {
-        entity->destroy();
+        entity->destroy(*this);
     }
 }
 
