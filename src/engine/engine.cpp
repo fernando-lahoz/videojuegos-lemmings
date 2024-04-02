@@ -717,18 +717,33 @@ Texture Engine::load_texture(const std::string &path)
 }
 
 
-int Engine::async_task(const std::function<void()> &task)
+int Engine::async_task(const std::function<void()> &task, bool create_thread)
 {
     std::unique_lock<std::mutex> lock(async_tasks_mutex);
-
-    int id = async_task_id;
-    async_tasks.push(std::make_pair(id, task));
+    int task_id = async_task_id;
     async_task_id++;
 
-    lock.unlock();
-    async_tasks_cv.notify_one();
+    if (create_thread)
+    {
+        async_worker_threads.push_back(std::thread(&Engine::th_single_task_worker, this, std::make_pair(task_id, task)));
+    }
+    else
+    {
+        async_tasks.push(std::make_pair(task_id, task));
 
-    return id;
+        lock.unlock();
+        async_tasks_cv.notify_one();
+    }
+
+    return task_id;
+}
+
+void Engine::th_single_task_worker(std::pair<int, std::function<void()>> task)
+{
+    task.second();
+
+    std::unique_lock<std::mutex> lock(async_tasks_mutex);
+    finished_tasks.push_back(task.first);
 }
 
 void Engine::th_async_worker()

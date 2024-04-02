@@ -18,7 +18,7 @@ public:
         : Entity(position, 0, diagonal, 
         engine.load_texture("assets/geralt_right.png"),
         engine,
-        "Geralt", true, Entity::Collision_type::NO_COLLISION, Entity::Cursor_collision_type::AABB, "Geralt")
+        "Geralt", true, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Geralt")
     {
         set_max_speed(Vector2f(1.5, 1.5));
 

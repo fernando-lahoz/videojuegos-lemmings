@@ -44,6 +44,8 @@ private:
     void start_async_workers();
     void stop_async_workers();
     void th_async_worker();
+    void th_single_task_worker(std::pair<int, std::function<void()>> task);
+
 
     void texture_preload_task(std::vector<std::string> paths);
 
@@ -111,7 +113,7 @@ public:
     // Returns the id of the batch loading
     // The event will be sent with this id
     int preload_textures(const std::vector<std::string>& paths);
-    int async_task(const std::function<void()>& task);
+    int async_task(const std::function<void()>& task, bool create_thread=false);
 
     void set_window_icon(const std::string& path);
     void set_fullscreen();

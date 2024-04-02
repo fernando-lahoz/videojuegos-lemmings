@@ -87,7 +87,6 @@ public:
         Music canon = mixer.load_music("assets/music/02_Lemming 1 (Pachebel's Canon).mp3");
         //mixer.play_music(canon, true);
 
-
         engine.set_gravity(0.3);
 
         //box2->set_speed(Vector2f(-0.1, -0.2));
