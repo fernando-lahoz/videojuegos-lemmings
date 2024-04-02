@@ -1,7 +1,8 @@
 #include "engine/entity.hpp"
 #include "engine/engine.hpp"
 
-Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture, 
+Entity::Entity(Point2f position, Float depth,
+            Vector2f diagonal, const Texture& texture, 
             Engine &engine,
             std::string_view _entity_name, 
             bool is_rigid_body,
@@ -20,7 +21,8 @@ Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture,
     class_name(_class_name),
     entity_name(_entity_name),
     diagonal(diagonal),
-    speed(0, 0)
+    speed(0, 0),
+    depth(depth)
 {
     //engine.subscribe_to_events(this);
 }
@@ -41,10 +43,20 @@ bool Entity::is_rigid_body() const
     return _is_rigid_body;
 }
 
+void Entity::set_depth(Engine &engine, Float new_depth)
+{
+    depth = new_depth;
+    engine.depth_changed(this);
+}
+
+Float Entity::get_depth() const
+{
+    return depth;
+}
 
 Point2f Entity::world_to_local(Point2f w_p) const
 {
-    w_p -= get_position2D();
+    w_p -= get_position();
     
     auto d = get_diagonal();
     w_p.x = w_p.x / d.x;
@@ -73,7 +85,7 @@ Point2f Entity::local_to_world(Point2f l_p) const
     l_p.x *= d.x;
     l_p.y *= d.y;
 
-    l_p += get_position2D();
+    l_p += get_position();
 
     return l_p;
 }
@@ -88,12 +100,7 @@ std::string Entity::get_class() const
     return class_name;
 }
 
-Point2f Entity::get_position2D() const
-{
-    return Point2f(position.x, position.y);
-}
-
-Point3f Entity::get_position3D() const
+Point2f Entity::get_position() const
 {
     return position;
 }
@@ -103,16 +110,11 @@ Vector2f Entity::get_diagonal() const
     return diagonal;
 }
 
-void Entity::set_position2D(Point2f p)
-{
-    position.x = p.x;
-    position.y = p.y;
-}
-
-void Entity::set_position3D(Point3f p)
+void Entity::set_position(Point2f p)
 {
     position = p;
 }
+
 
 Float Entity::get_mass() const
 {
@@ -151,20 +153,15 @@ void Entity::set_entity_id(int id)
     entity_id = id;
 }
 
-Point2f Entity::max_corner2D() const
+Point2f Entity::max_corner() const
 {
-    return get_position2D() + diagonal;
+    return get_position() + diagonal;
 }
 
-Point3f Entity::max_corner3D() const
-{
-    auto maxCorner = max_corner2D();
-    return Point3f(maxCorner.x, maxCorner.y, position.z);
-}
 
 Bound2f Entity::bound2f() const
 {
-    return Bound2f(get_position2D(), max_corner2D());
+    return Bound2f(get_position(), max_corner());
 }
 
 Texture Entity::get_active_texture() const

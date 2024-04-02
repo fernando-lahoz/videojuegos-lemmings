@@ -2,11 +2,11 @@
 #include "lib/texture.hpp"
 
 
-Trigger::Trigger(Point3f position, Vector2f diagonal,
+Trigger::Trigger(Point2f position, Float depth, Vector2f diagonal,
         Engine& engine,
         std::string _entity_name, 
         std::string _class_name)
-    : Entity(position, diagonal, Texture{}, engine, _entity_name, false, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, _class_name)
+    : Entity(position, depth, diagonal, Texture{}, engine, _entity_name, false, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, _class_name)
 {
 }
 

@@ -14,11 +14,11 @@ class Geralt : public Entity
 
 public:
 
-    Geralt(Point3f position, Vector2f diagonal, Engine& engine)
-        : Entity(position, diagonal, 
+    Geralt(Point2f position, Vector2f diagonal, Engine& engine)
+        : Entity(position, 0, diagonal, 
         engine.load_texture("assets/geralt_right.png"),
         engine,
-        "Geralt")
+        "Geralt", true, Entity::Collision_type::NO_COLLISION, Entity::Cursor_collision_type::AABB, "Geralt")
     {
         set_max_speed(Vector2f(1.5, 1.5));
 

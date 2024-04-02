@@ -20,11 +20,11 @@ void Physics_engine::update_positions(Engine& engine)
 
     for (auto& entity : entities)
     {
-        auto position = entity->get_position2D();
+        auto position = entity->get_position();
         auto speed = entity->get_speed();
     
         Entity::update_position(delta_time, position, speed);
-        entity->set_position2D(position);
+        entity->set_position(position);
     }
 }
 
@@ -72,19 +72,13 @@ void inelastic_collision(Float mass1, Float mass2,
 
 }
 
-void undo_movement(double delta_time, EntityPtr a, EntityPtr b)
+void undo_movement(double delta_time, EntityPtr a)
 {
     auto a_speed = a->get_speed();
-    auto b_speed = b->get_speed();
-
-    auto a_position = a->get_position2D();
-    auto b_position = b->get_position2D();
+    auto a_position = a->get_position();
 
     Entity::update_position(-delta_time, a_position, a_speed);
-    Entity::update_position(-delta_time, b_position, b_speed);
-
-    a->set_position2D(a_position);
-    b->set_position2D(b_position);
+    a->set_position(a_position);
 }
 
 
@@ -97,6 +91,25 @@ void Physics_engine::add_entity(EntityPtr entity)
         alpha_entities.push_back(entity);
 }
 
+
+void rigid_body_collision(EntityPtr entity1, EntityPtr entity2)
+{
+    if (entity1->is_rigid_body() || entity2->is_rigid_body())
+    {
+        Vector2f new_speed1, new_speed2;
+
+        elastic_collision(entity1->get_mass(), entity2->get_mass(),
+            entity1->get_speed(), entity2->get_speed(),
+            Point2f(0, 0), Vector2f(0, 0),
+            new_speed1, new_speed2);
+
+        if (entity1->is_rigid_body())
+            entity1->set_speed(new_speed1);
+        
+        if (entity2->is_rigid_body())
+            entity2->set_speed(new_speed2);
+    }
+}
 
 
 void Physics_engine::compute_collisions(Engine& engine)
@@ -116,23 +129,13 @@ void Physics_engine::compute_collisions(Engine& engine)
 
             if (aabb->aabb_collides(other))
             {
-                undo_movement(delta_time, aabb, other);
+                undo_movement(delta_time, aabb);
+                undo_movement(delta_time, other);
 
                 aabb->on_collision(engine, other, false, collision_point_id);
                 other->on_collision(engine, aabb, false, collision_point_id);
 
-                Vector2f new_speed1, new_speed2;
-
-                inelastic_collision(aabb->get_mass(), other->get_mass(),
-                    aabb->get_speed(), other->get_speed(),
-                    Point2f(0, 0), Vector2f(0, 0),
-                    new_speed1, new_speed2);
-
-                if (aabb->is_rigid_body())
-                    aabb->set_speed(new_speed1);
-                
-                if (other->is_rigid_body())
-                    other->set_speed(new_speed2);
+                rigid_body_collision(aabb, other);
             }
         }
     }
@@ -149,13 +152,24 @@ void Physics_engine::compute_collisions(Engine& engine)
 
             if (aabb->aabb_collides(other))
             {
-                if (aabb->alpha_collides(other, collision_point_id)) {
+                bool first_collided = aabb->alpha_collides(other, collision_point_id);
+                bool second_collided = other->alpha_collides(aabb, collision_point_id);
+
+                if (first_collided) 
+                {
+                    undo_movement(delta_time, aabb);
                     aabb->on_collision(engine, other, true, collision_point_id);
                 }
 
-
-                if (other->alpha_collides(aabb, collision_point_id)) {
+                if (second_collided)
+                {
+                    undo_movement(delta_time, other);
                     other->on_collision(engine, aabb, true, collision_point_id);
+                }
+
+                if (first_collided || second_collided)
+                {
+                    rigid_body_collision(aabb, other);
                 }
             }
         }
@@ -173,13 +187,24 @@ void Physics_engine::compute_collisions(Engine& engine)
 
             if (alpha->aabb_collides(other))
             {
-                if (alpha->alpha_collides(other, collision_point_id)) {
+                bool first_collided = alpha->alpha_collides(other, collision_point_id);
+                bool second_collided = other->alpha_collides(alpha, collision_point_id);
+
+                if (first_collided) 
+                {
+                    undo_movement(delta_time, alpha);
                     alpha->on_collision(engine, other, true, collision_point_id);
                 }
 
-
-                if (other->alpha_collides(alpha, collision_point_id)) {
+                if (second_collided)
+                {
+                    undo_movement(delta_time, other);
                     other->on_collision(engine, alpha, true, collision_point_id);
+                }
+
+                if (first_collided || second_collided)
+                {
+                    rigid_body_collision(alpha, other);
                 }
             }
         }

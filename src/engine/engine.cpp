@@ -116,6 +116,11 @@ void Engine::send_event_up(EngineIO::InputEvent event)
     }
 }
 
+void Engine::depth_changed(Entity *entity)
+{
+    reorder_z_buffer = true;
+}
+
 void Engine::change_input_state(EngineIO::InputEvent event, bool is_down)
 {
     if (is_down)
@@ -342,7 +347,9 @@ void Engine::update_delta_time()
 void Engine::sort_by_z_buffer()
 {
     std::sort(entities.begin(), entities.end(), [](EntityPtr a, EntityPtr b) -> bool
-              { return a->get_position3D().z > b->get_position3D().z; });
+              { return a->get_depth() > b->get_depth(); });
+
+    reorder_z_buffer = false;
 }
 
 // Removes all entities with a deleted flag, assuming an ordered vector with
@@ -353,6 +360,8 @@ void Engine::delete_dead_entities()
 
     if (deleted_entities.empty())
         return;
+
+    reorder_z_buffer = true;
 
     for (int i = entities.size()-1; i >= 0; i--)
     {
@@ -386,13 +395,18 @@ void Engine::process_new_entities()
 {
     auto new_entities = game->get_new_entities();
 
-    for (auto &entity : new_entities)
+    if (new_entities.size() > 0)
     {
-        entity->set_entity_id(entity_ids);
-        entity_ids++;
-        entities.push_back(entity);
-        physics.add_entity(entity);
-        entity->on_creation(*this);
+        reorder_z_buffer = true;
+
+        for (auto &entity : new_entities)
+        {
+            entity->set_entity_id(entity_ids);
+            entity_ids++;
+            entities.push_back(entity);
+            physics.add_entity(entity);
+            entity->on_creation(*this);
+        }
     }
 }
 
@@ -656,8 +670,13 @@ void Engine::start()
 
         // Update entitie list
         process_new_entities();
-        // Sort by z buffer, dead entities go to the end
-        sort_by_z_buffer();
+        
+        if (reorder_z_buffer)
+        {
+            // Sort by z buffer
+            sort_by_z_buffer();
+        }
+
         // Delete old entities
         delete_dead_entities();
 

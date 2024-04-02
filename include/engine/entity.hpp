@@ -38,7 +38,8 @@ private:
     bool _has_gravity = true;
 
 protected:
-    Point3f position;
+    Point2f position;
+    Float depth = 0;
     Vector2f diagonal;
 
     std::vector<Point2f> collision_points;
@@ -54,7 +55,9 @@ protected:
 public:
 
 
-    Entity(Point3f position, Vector2f diagonal, const Texture& texture, 
+    Entity(Point2f position, Float depth,
+            Vector2f diagonal, 
+            const Texture& texture, 
             Engine &engine,
             std::string_view _entity_name, 
             bool is_rigid_body = false,
@@ -81,11 +84,11 @@ public:
     //  Ex: Rigid body, generic entity
     std::string get_class() const;
 
-    Point2f get_position2D() const;
-    Point3f get_position3D() const;
+    Point2f get_position() const;
 
-    void set_position2D(Point2f p);
-    void set_position3D(Point3f p);
+    void set_position(Point2f p);
+    void set_depth(Engine &engine, Float new_depth);
+    Float get_depth() const;
 
     Float get_mass() const;
     void set_mass(Float new_mass);
@@ -149,8 +152,7 @@ public:
 
     Vector2f get_diagonal() const;
 
-    Point2f max_corner2D() const;
-    Point3f max_corner3D() const;
+    Point2f max_corner() const;
 
     int get_entity_id() const;
     void set_entity_id(int id);

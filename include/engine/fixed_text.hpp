@@ -14,7 +14,7 @@ private:
 protected:
 
 public:
-    FixedText(Point3f position, Vector2f letter_size, const Texture& font_texture,
+    FixedText(Point2f position, Float depth, Vector2f letter_size, const Texture& font_texture,
             Vector2i texture_letter_size, MappingFunction map,
             std::string_view text, Engine &engine, std::string_view _class_name = "Text");
 

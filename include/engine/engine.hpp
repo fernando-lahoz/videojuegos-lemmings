@@ -69,6 +69,7 @@ private:
     EntityCollection entities;
     long long entity_ids = 0;
     std::unordered_set<Entity*> deleted_entities;
+    bool reorder_z_buffer = false;
 
     std::unordered_map<Entity *, Camera2D::ID> hovered_entities;
     std::set<Entity*> event_entities;
@@ -124,6 +125,7 @@ public:
     SDL_Renderer *get_renderer();
 
     void delete_entity(Entity* entity);
+    void depth_changed(Entity* entity);
 
     Float get_gravity() const;
     void set_gravity(Float gravity);

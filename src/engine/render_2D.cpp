@@ -366,7 +366,7 @@ std::unordered_map<Entity*, Camera2D::ID> Render_2D::draw_and_return_hovered(std
         {
             auto& d = *it;
 
-            auto z = d->get_position3D().z;
+            auto z = d->get_depth();
             if (std::isinf(z) && z < 0) {
                 over_bands_begin = it;
                 break;

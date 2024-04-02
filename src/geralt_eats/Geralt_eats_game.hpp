@@ -79,8 +79,8 @@ public:
         auto terrain = engine.load_texture("assets/terrain.png");
         auto t3 = engine.load_texture("assets/dehecho.png");
 
-        auto geralt = std::make_shared<Geralt>(Point3f(0.4, 0, 0), Vector2f(0.1, 0.1), engine);
-        auto ground = std::make_shared<Entity>(Point3f(0, 0.6, 0), Vector2f(1, 0.3), terrain, engine, "Ground", false, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Ground");
+        auto geralt = std::make_shared<Geralt>(Point2f(0.4, 0), Vector2f(0.1, 0.1), engine);
+        auto ground = std::make_shared<Entity>(Point2f(0, 0.6), 1, Vector2f(1, 0.3), terrain, engine, "Ground", false, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Ground");
         ground->disable_gravity();
 
         auto &mixer = engine.get_sound_mixer();
