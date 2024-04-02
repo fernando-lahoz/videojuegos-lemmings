@@ -76,28 +76,25 @@ public:
     void on_game_startup(Engine &engine) override
     {
         auto ground_alpha = engine.load_texture("assets/ground_alpha.png");
-        auto t2 = engine.load_texture("assets/terrain.png");
+        auto terrain = engine.load_texture("assets/terrain.png");
         auto t3 = engine.load_texture("assets/dehecho.png");
 
-        auto box1 = std::make_shared<Apple>(Point3f(0.2, 0.45, 0), Vector2f(0.1, 0.1), t3, engine);
-        auto box2 = std::make_shared<Apple>(Point3f(0.5, 0.4, 0), Vector2f(0.2, 0.2), t3, engine, true);
+        auto geralt = std::make_shared<Geralt>(Point3f(0.4, 0, 0), Vector2f(0.1, 0.1), engine);
+        auto ground = std::make_shared<Entity>(Point3f(0, 0.6, 0), Vector2f(1, 0.3), terrain, engine, "Ground", false, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Ground");
+        ground->disable_gravity();
 
         auto &mixer = engine.get_sound_mixer();
         Music canon = mixer.load_music("assets/music/02_Lemming 1 (Pachebel's Canon).mp3");
         //mixer.play_music(canon, true);
 
 
-        engine.set_gravity(0);
+        engine.set_gravity(0.3);
 
-        box1->set_speed(Vector2f(0.2, 0));
         //box2->set_speed(Vector2f(-0.1, -0.2));
 
         
-        box2->set_mass(3);
-        box2->disable_gravity();
-
-        create_entity(box1);
-        create_entity(box2);
+        create_entity(geralt);
+        create_entity(ground);
 
         create_camera(std::make_shared<Geralt_camera>());
     }

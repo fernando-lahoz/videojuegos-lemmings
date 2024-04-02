@@ -303,7 +303,8 @@ void Entity::update_state(Engine&)
 
 void Entity::on_collision(Engine&, std::shared_ptr<Entity> , bool, size_t collision_point_id)
 {
-    vector_is_colliding[collision_point_id] = true;
+    if (collision_type == Collision_type::ALPHA)
+        vector_is_colliding[collision_point_id] = true;
 }
 
 void Entity::post_physics(Engine&)

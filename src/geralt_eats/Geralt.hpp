@@ -9,7 +9,6 @@ class Geralt : public Entity
     Texture txt_left, txt_right;
     Sound oof;
     EntityPtr ground;
-    Float default_gravity = 3;
 
     size_t COLLISION_POINT_DOWN, COLLISION_POINT_UP, COLLISION_POINT_LEFT, COLLISION_POINT_RIGHT;
 
