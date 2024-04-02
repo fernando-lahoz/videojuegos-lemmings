@@ -79,20 +79,21 @@ public:
         auto t2 = engine.load_texture("assets/terrain.png");
         auto t3 = engine.load_texture("assets/dehecho.png");
 
-        auto box1 = std::make_shared<Apple>(Point3f(0.3, 0, 0), Vector2f(0.2, 0.2), t3, engine);
-        auto box2 = std::make_shared<Apple>(Point3f(0.3, 0.5, 0), Vector2f(0.2, 0.2), t3, engine, false);
+        auto box1 = std::make_shared<Apple>(Point3f(0.2, 0.45, 0), Vector2f(0.1, 0.1), t3, engine);
+        auto box2 = std::make_shared<Apple>(Point3f(0.5, 0.4, 0), Vector2f(0.2, 0.2), t3, engine, true);
 
         auto &mixer = engine.get_sound_mixer();
         Music canon = mixer.load_music("assets/music/02_Lemming 1 (Pachebel's Canon).mp3");
         //mixer.play_music(canon, true);
 
 
-        engine.set_gravity(0.3);
+        engine.set_gravity(0);
 
-        //box1->set_speed(Vector2f(0.1, 0.2));
+        box1->set_speed(Vector2f(0.2, 0));
         //box2->set_speed(Vector2f(-0.1, -0.2));
 
-        box2->set_mass(1);
+        
+        box2->set_mass(3);
         box2->disable_gravity();
 
         create_entity(box1);

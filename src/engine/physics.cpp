@@ -28,8 +28,7 @@ void Physics_engine::update_positions(Engine& engine)
     }
 }
 
-
-void elastic_colision(Float mass1, Float mass2,
+void elastic_collision(Float mass1, Float mass2,
     Vector2f speed1, Vector2f speed2, 
 
     Point2f hit_point, Vector2f hit_normal,
@@ -61,6 +60,17 @@ void elastic_colision(Float mass1, Float mass2,
     new_speed2 = normal * new_v2n + tangent * v2t;
 }
 
+
+void inelastic_collision(Float mass1, Float mass2,
+    Vector2f speed1, Vector2f speed2,
+    Point2f hit_point, Vector2f hit_normal,
+    Vector2f &new_speed1, Vector2f &new_speed2)
+{
+    // Collision between aabb
+    new_speed1 = (speed1 * mass1 + speed2 * mass2) / (mass1 + mass2);
+    new_speed2 = new_speed1;
+
+}
 
 void undo_movement(double delta_time, EntityPtr a, EntityPtr b)
 {
@@ -113,7 +123,7 @@ void Physics_engine::compute_collisions(Engine& engine)
 
                 Vector2f new_speed1, new_speed2;
 
-                elastic_colision(aabb->get_mass(), other->get_mass(),
+                inelastic_collision(aabb->get_mass(), other->get_mass(),
                     aabb->get_speed(), other->get_speed(),
                     Point2f(0, 0), Vector2f(0, 0),
                     new_speed1, new_speed2);
