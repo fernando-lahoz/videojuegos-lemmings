@@ -35,12 +35,10 @@ private:
     void send_event_up(EngineIO::InputEvent key);
     bool process_events();
     void update_delta_time();
-    void compute_physics();
     void sort_by_z_buffer();
     void delete_dead_entities();
     void process_new_entities();
     void process_cameras();
-    void update_entities_state();
 
     void handle_finished_async_tasks();
     void start_async_workers();
@@ -54,7 +52,6 @@ private:
     void change_input_state(EngineIO::InputEvent key, bool is_down);
     void set_ignored_events();
     
-    void add_entity_to_physics(EntityPtr entity);
 
     EngineIO::InputEvent SDL_to_input_event(SDL_KeyboardEvent key);
     EngineIO::InputEvent SDL_to_input_event(SDL_MouseButtonEvent key);
@@ -68,12 +65,9 @@ private:
     TimePoint check_point;
     uint64_t delta_ns = 0, total_delta_ns = 0, total_measurements = 1;
     double delta_time; // Delta time in seconds
-    Float gravity = 0;
 
     EntityCollection entities;
 
-    std::vector<EntityPtr> aabb_entities;
-    std::vector<EntityPtr> alpha_entities;
     std::unordered_map<Entity *, Camera2D::ID> hovered_entities;
     std::set<Entity*> event_entities;
 
@@ -120,13 +114,15 @@ public:
     void set_fullscreen();
     EntityCollection& get_entities();
     double get_delta_time();
-    Float get_gravity() const;
-    void set_gravity(Float gravity);
     void destroy_all_entities();
     Game& get_game();
     Camera2D& get_main_camera();
+    std::vector<std::shared_ptr<Camera2D>>& get_cameras();
     SoundMixer& get_sound_mixer();
     SDL_Renderer *get_renderer();
+
+    Float get_gravity() const;
+    void set_gravity(Float gravity);
 
     // Returns world position of mouse viewed by main camera
     Point2f get_mouse_position();
@@ -141,9 +137,6 @@ public:
     // Returns id of the camera in which this entity is being hovered, or -1 if none.
     Camera2D::ID get_camera_in_which_hovered(Entity &entity) const;
     void subscribe_to_events(Entity* entity);
-
-    std::vector<EntityPtr>& get_aabb_entities();
-    std::vector<EntityPtr>& get_alpha_entities();
 
     /*
     bool intesect_ray(Ray &ray, 

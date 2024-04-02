@@ -27,6 +27,7 @@ private:
     Collision_type collision_type = Collision_type::AABB;
     Cursor_collision_type cursor_collision_type = Cursor_collision_type::AABB;
     bool _is_rigid_body = false;
+    Float mass = 1;
 
 
 private:
@@ -34,6 +35,7 @@ private:
     bool deleted_entity = false;
     int entity_id;
     bool mouse_over = false;
+    bool _has_gravity = true;
 
 protected:
     Point3f position;
@@ -84,6 +86,12 @@ public:
 
     void set_position2D(Point2f p);
     void set_position3D(Point3f p);
+
+    Float get_mass() const;
+    void set_mass(Float new_mass);
+    bool has_gravity() const;
+    void enable_gravity();
+    void disable_gravity();
 
 
     Vector2f get_speed() const

@@ -5,15 +5,17 @@ void Physics_engine::update_positions(Engine& engine)
 {
     auto &entities = engine.get_entities();
     auto delta_time = engine.get_delta_time();
-    Float gravity = engine.get_gravity();
 
     for (auto& entity : entities)
     {
         auto speed = entity->get_speed();
         auto max_speed = entity->get_max_speed();
 
-        speed.y = std::clamp(Float(speed.y + gravity * delta_time), -max_speed.y, max_speed.y);
-        entity->set_speed(speed);
+        if (entity->has_gravity())
+        {
+            speed.y = std::clamp(Float(speed.y + gravity * delta_time), -max_speed.y, max_speed.y);
+            entity->set_speed(speed);
+        }
     }
 
     for (auto& entity : entities)
@@ -27,16 +29,36 @@ void Physics_engine::update_positions(Engine& engine)
 }
 
 
-void hit_computation(Vector2f speed1, Vector2f speed2, 
-    Float mass1, Float mass2,
+void elastic_colision(Float mass1, Float mass2,
+    Vector2f speed1, Vector2f speed2, 
+
     Point2f hit_point, Vector2f hit_normal,
     Vector2f &new_speed1, Vector2f &new_speed2)
 {
-    Vector2f relative_speed = speed1 - speed2;
-    Float impulse = 2 * dot(relative_speed, hit_normal) / (mass1 + mass2);
+    // Collision between aabb
+    if (hit_normal.x == 0 && hit_normal.y == 0)
+    {
+        new_speed1 = (speed1 * (mass1 - mass2) + 2 * mass2 * speed2) / (mass1 + mass2);
+        new_speed2 = (speed2 * (mass2 - mass1) + 2 * mass1 * speed1) / (mass1 + mass2);
 
-    new_speed1 = speed1 - impulse * mass2 * hit_normal;
-    new_speed2 = speed2 + impulse * mass1 * hit_normal;
+        return;
+    }
+
+    auto normal = hit_normal;
+    auto tangent = Vector2f(-normal.y, normal.x);
+
+    auto v1n = dot(normal, speed1);
+    auto v1t = dot(tangent, speed1);
+
+    auto v2n = dot(normal, speed2);
+    auto v2t = dot(tangent, speed2);
+
+
+    auto new_v1n = (v1n * (mass1 - mass2) + 2 * mass2 * v2n) / (mass1 + mass2);
+    auto new_v2n = (v2n * (mass2 - mass1) + 2 * mass1 * v1n) / (mass1 + mass2);
+ 
+    new_speed1 = normal * new_v1n + tangent * v1t;
+    new_speed2 = normal * new_v2n + tangent * v2t;
 }
 
 
@@ -53,16 +75,24 @@ void undo_movement(double delta_time, EntityPtr a, EntityPtr b)
 
     a->set_position2D(a_position);
     b->set_position2D(b_position);
-
 }
+
+
+
+void Physics_engine::add_entity(EntityPtr entity)
+{
+    if (entity->get_collision_type() == Entity::Collision_type::AABB)
+        aabb_entities.push_back(entity);
+    else if (entity->get_collision_type() == Entity::Collision_type::ALPHA)
+        alpha_entities.push_back(entity);
+}
+
+
 
 void Physics_engine::compute_collisions(Engine& engine)
 {
     //auto &huds = engine.get_hud_entities();
-    auto &aabb_entities = engine.get_aabb_entities();
-    auto &alpha_entities = engine.get_alpha_entities();
     auto delta_time = engine.get_delta_time();
-
 
     // Check for collisions between AABB entities
     for (size_t i = 0; i < aabb_entities.size(); i++)
@@ -83,13 +113,16 @@ void Physics_engine::compute_collisions(Engine& engine)
 
                 Vector2f new_speed1, new_speed2;
 
-                hit_computation(aabb->get_speed(), other->get_speed(),
-                    1.0f, 1.0f,
-                    aabb->get_position2D(), Vector2f(1, 0),
+                elastic_colision(aabb->get_mass(), other->get_mass(),
+                    aabb->get_speed(), other->get_speed(),
+                    Point2f(0, 0), Vector2f(0, 0),
                     new_speed1, new_speed2);
 
-                aabb->set_speed(new_speed1);
-                other->set_speed(new_speed2);
+                if (aabb->is_rigid_body())
+                    aabb->set_speed(new_speed1);
+                
+                if (other->is_rigid_body())
+                    other->set_speed(new_speed2);
             }
         }
     }
@@ -162,4 +195,56 @@ void Physics_engine::post_physics(Engine& engine)
     {
         entity->post_physics(engine);
     }
+}
+
+void Physics_engine::update_camera_positions(Engine& engine)
+{
+    auto &cameras = engine.get_cameras();
+    auto delta_time = engine.get_delta_time();
+
+    for (auto &camera : cameras)
+    {
+        camera->update_position(engine);
+    }
+}
+
+
+void Physics_engine::update_entities_state(Engine& engine)
+{
+    auto &entities = engine.get_entities();
+
+    for (auto &entity : entities)
+    {
+        if (!entity->is_deleted())
+            entity->update_state(engine);
+    }
+}
+
+
+void Physics_engine::compute_physics(Engine &engine)
+{
+    // Send pre-physics event to all entities
+    pre_physics(engine);
+
+    compute_collisions(engine);
+
+
+    update_camera_positions(engine);
+    update_positions(engine);
+
+    update_entities_state(engine);
+
+    // Send post-physics event to all entities
+    post_physics(engine);
+}
+
+
+Float Physics_engine::get_gravity() const
+{
+    return gravity;
+}
+
+void Physics_engine::set_gravity(Float gravity)
+{
+    this->gravity = gravity;
 }

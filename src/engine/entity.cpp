@@ -114,6 +114,33 @@ void Entity::set_position3D(Point3f p)
     position = p;
 }
 
+Float Entity::get_mass() const
+{
+    return mass;
+}
+
+void Entity::set_mass(Float new_mass)
+{
+    mass = new_mass;
+}
+
+bool Entity::has_gravity() const
+{
+    return _has_gravity;
+}
+
+void Entity::enable_gravity()
+{
+    _has_gravity = true;
+}
+
+void Entity::disable_gravity()
+{
+    _has_gravity = false;
+}
+
+
+
 int Entity::get_entity_id() const
 {
     return entity_id;

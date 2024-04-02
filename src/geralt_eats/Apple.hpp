@@ -14,8 +14,8 @@ class Apple : public Entity
 
     public:
 
-    Apple(Point3f position, Vector2f size, Texture txt, Engine& engine) 
-    : Entity(position, size, txt, engine, "Apple", true, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Apple")
+    Apple(Point3f position, Vector2f size, Texture txt, Engine& engine, bool is_rb = true) 
+    : Entity(position, size, txt, engine, "Apple", is_rb, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Apple")
     {
         COLLISION_POINT_DOWN = add_collision_point(Point2f(0.5, 0.95));
         COLLISION_POINT_UP = add_collision_point(Point2f(0.5, 0.05));

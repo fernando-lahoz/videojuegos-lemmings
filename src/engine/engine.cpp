@@ -153,14 +153,7 @@ void Engine::hide_cursor()
     SDL_ShowCursor(SDL_DISABLE);
 }
 
-void Engine::update_entities_state()
-{
-    for (auto &entity : entities)
-    {
-        if (!entity->is_deleted())
-            entity->update_state(*this);
-    }
-}
+
 
 void Engine::subscribe_to_events(Entity *entity)
 {
@@ -342,22 +335,7 @@ void Engine::update_delta_time()
     delta_time = (double)delta_ns / 1e9;
 }
 
-void Engine::compute_physics()
-{
-    // Send pre-physics event to all entities
-    physics.pre_physics(*this);
 
-    physics.compute_collisions(*this);
-
-    for (auto &camera : cameras)
-        camera->update_position(*this);
-    physics.update_positions(*this);
-
-    update_entities_state();
-
-    // Send post-physics event to all entities
-    physics.post_physics(*this);
-}
 
 // Sorts the drawables in descending z order.
 //  Dead entities are moved to the end of the list.
@@ -385,14 +363,6 @@ void Engine::delete_dead_entities()
 }
 
 
-void Engine::add_entity_to_physics(EntityPtr entity)
-{
-    if (entity->get_collision_type() == Entity::Collision_type::AABB)
-        aabb_entities.push_back(entity);
-    else if (entity->get_collision_type() == Entity::Collision_type::ALPHA)
-        alpha_entities.push_back(entity);
-}
-
 void Engine::process_new_entities()
 {
     auto new_entities = game->get_new_entities();
@@ -401,9 +371,25 @@ void Engine::process_new_entities()
     {
         entity->set_entity_id(entities.size());
         entities.push_back(entity);
-        add_entity_to_physics(entity);
+        physics.add_entity(entity);
         entity->on_creation(*this);
     }
+}
+
+
+Float Engine::get_gravity() const
+{
+    return physics.get_gravity();
+}
+
+void Engine::set_gravity(Float gravity)
+{
+    physics.set_gravity(gravity);
+}
+
+std::vector<std::shared_ptr<Camera2D>>& Engine::get_cameras()
+{
+    return cameras;
 }
 
 void Engine::process_cameras()
@@ -465,28 +451,6 @@ Camera2D &Engine::get_main_camera()
 SoundMixer &Engine::get_sound_mixer()
 {
     return mixer;
-}
-
-
-std::vector<EntityPtr>& Engine::get_aabb_entities()
-{
-    return aabb_entities;
-}
-
-std::vector<EntityPtr>& Engine::get_alpha_entities()
-{
-    return alpha_entities;
-}
-
-
-Float Engine::get_gravity() const
-{
-    return gravity;
-}
-
-void Engine::set_gravity(Float _gravity)
-{
-    gravity = _gravity;
 }
 
 
@@ -668,7 +632,7 @@ void Engine::start()
         quit = process_events();
 
         // Update call to physics engine
-        compute_physics();
+        physics.compute_physics(*this);
 
         // Update entitie list
         process_new_entities();
