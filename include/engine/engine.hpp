@@ -84,7 +84,7 @@ private:
 
 public:
 
-    long long input_state = 0;
+    std::set<EngineIO::InputEvent> input_state;
 
     /**
      * Creates a game engine while adquiring ownership of the object.
@@ -182,7 +182,7 @@ public:
     bool is_key_down(EngineIO::InputEvent key) const;
     bool is_key_up(EngineIO::InputEvent key) const;
     bool any_key_down() const;
-    long long get_all_keys_down() const;
+    std::set<EngineIO::InputEvent> get_all_keys_down() const;
     
     bool is_left_arrow_down() const;
     bool is_right_arrow_down() const;

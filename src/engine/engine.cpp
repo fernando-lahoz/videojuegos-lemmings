@@ -1,5 +1,6 @@
 #include <vector>
 #include <chrono>
+#include <set>
 #include <unordered_set>
 
 #include <SDL2/SDL.h>
@@ -14,28 +15,32 @@
 
 EngineIO::InputEvent Engine::SDL_to_input_event(SDL_KeyboardEvent key)
 {
-    /*
+    
     // Para mostrar por consola la tecla que se ha pulsado.
     std::cout << "Key pressed: " << key.keysym.sym << std::endl;
-    */
+
+    if (key.keysym.sym >= SDLK_0 && key.keysym.sym <= SDLK_9)
+            return (EngineIO::InputEvent)(key.keysym.sym - SDLK_0 + 48);
+
+    else if (key.keysym.sym >= SDLK_a && key.keysym.sym <= SDLK_z)
+            return (EngineIO::InputEvent)(key.keysym.sym - SDLK_a + 65);
+        
+    else if (key.keysym.sym >= SDLK_F1 && key.keysym.sym <= SDLK_F12)
+            return (EngineIO::InputEvent)(key.keysym.sym - SDLK_F1 + 256);
+
+    else if (key.keysym.sym >= SDLK_KP_DIVIDE && key.keysym.sym <= SDLK_KP_PERIOD)
+            return (EngineIO::InputEvent)(key.keysym.sym - SDLK_KP_DIVIDE + 268);
+    
     switch (key.keysym.sym)
     {
     case SDLK_RIGHT:
-        return EngineIO::InputEvent::RIGHT_ARROW;
+        return EngineIO::InputEvent::RIGHT;
     case SDLK_LEFT:
-        return EngineIO::InputEvent::LEFT_ARROW;
+        return EngineIO::InputEvent::LEFT;
     case SDLK_UP:
-        return EngineIO::InputEvent::UP_ARROW;
+        return EngineIO::InputEvent::UP;
     case SDLK_DOWN:
-        return EngineIO::InputEvent::DOWN_ARROW;
-    case SDLK_w:
-        return EngineIO::InputEvent::W;
-    case SDLK_a:
-        return EngineIO::InputEvent::A;
-    case SDLK_s:
-        return EngineIO::InputEvent::S;
-    case SDLK_d:
-        return EngineIO::InputEvent::D;
+        return EngineIO::InputEvent::DOWN;
     case SDLK_SPACE:
         return EngineIO::InputEvent::SPACE;
     case SDLK_LSHIFT:
@@ -123,9 +128,9 @@ void Engine::send_event_up(EngineIO::InputEvent event)
 void Engine::change_input_state(EngineIO::InputEvent event, bool is_down)
 {
     if (is_down)
-        input_state |= event;
+        input_state.insert(event);  //input_state |= event;
     else
-        input_state &= ~event;
+        input_state.erase(event);   //input_state &= ~event;
 }
 
 void Engine::update_mouse_position()
@@ -808,42 +813,42 @@ void Engine::destroy_all_entities()
 
 bool Engine::is_key_down(EngineIO::InputEvent key) const
 {
-    return input_state & key;
+    return input_state.contains(key);
 }
 
 bool Engine::is_key_up(EngineIO::InputEvent key) const
 {
-    return !(input_state & key);
+    return !input_state.contains(key);
 }
 
 bool Engine::any_key_down() const
 {
-    return input_state != 0;
+    return !input_state.empty();
 }
 
-long long Engine::get_all_keys_down() const
+std::set<EngineIO::InputEvent> Engine::get_all_keys_down() const
 {
     return input_state;
 }
 
 bool Engine::is_left_arrow_down() const
 {
-    return is_key_down(EngineIO::InputEvent::LEFT_ARROW);
+    return is_key_down(EngineIO::InputEvent::LEFT);
 }
 
 bool Engine::is_right_arrow_down() const
 {
-    return is_key_down(EngineIO::InputEvent::RIGHT_ARROW);
+    return is_key_down(EngineIO::InputEvent::RIGHT);
 }
 
 bool Engine::is_up_arrow_down() const
 {
-    return is_key_down(EngineIO::InputEvent::UP_ARROW);
+    return is_key_down(EngineIO::InputEvent::UP);
 }
 
 bool Engine::is_down_arrow_down() const
 {
-    return is_key_down(EngineIO::InputEvent::DOWN_ARROW);
+    return is_key_down(EngineIO::InputEvent::DOWN);
 }
 
 bool Engine::is_w_down() const
