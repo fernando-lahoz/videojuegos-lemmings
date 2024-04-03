@@ -6,7 +6,7 @@ Trigger::Trigger(Point2f position, Float depth, Vector2f diagonal,
         Engine& engine,
         std::string _entity_name, 
         std::string _class_name)
-    : Entity(position, depth, diagonal, Texture{}, engine, _entity_name, false, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, _class_name)
+    : Entity(position, depth, diagonal, Texture{}, engine, _entity_name, Entity::Physics_type::NO_PHYSICS, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, _class_name)
 {
 }
 

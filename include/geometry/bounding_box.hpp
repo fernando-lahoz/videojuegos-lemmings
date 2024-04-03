@@ -5,6 +5,7 @@
 #include "geometry/point.hpp"
 #include "geometry/ray.hpp"
 #include "geometry/vector.hpp"
+#include "geometry/collision_point.hpp"
 
 template <typename T>
 class BoundingBox3
@@ -113,6 +114,9 @@ public:
 
     constexpr bool contains(const Point2<T> &p) const;
 
+    constexpr Point2<T> local_to_world(Point2<T> p) const;
+    constexpr Point2<T> centroid() const;
+
     // Same as contains, but the borders are not included
     constexpr bool contains_exclusively(const Point2<T> &p);
 
@@ -143,6 +147,7 @@ public:
     constexpr Vector2<T> relative_offset(const Point2<T> &p) const;
 
     constexpr void bounding_sphere(Point2<T> &center, Float &radius) const;
+    constexpr Collision_point collision_point(const BoundingBox2<T> &other) const;
 
     // Algorithm based on the 2D box slab intersection 
     //  implemented branchless by Tavian Barnes

@@ -18,20 +18,21 @@ public:
         : Entity(position, 0, diagonal, 
         engine.load_texture("assets/geralt_right.png"),
         engine,
-        "Geralt", true, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Geralt")
+        "Geralt", Entity::Physics_type::DYNAMIC_BODY, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Geralt")
     {
         set_max_speed(Vector2f(1.5, 1.5));
 
-        COLLISION_POINT_DOWN = add_collision_point(Point2f(0.5, 0.95));
-        COLLISION_POINT_UP = add_collision_point(Point2f(0.5, 0.05));
-        COLLISION_POINT_LEFT = add_collision_point(Point2f(0.05, 0.5));
-        COLLISION_POINT_RIGHT = add_collision_point(Point2f(0.95, 0.5));
+        COLLISION_POINT_DOWN = add_collision_point(Collision_point(Point2f(0.5, 0.95), Vector2f(0, 1)));
+        COLLISION_POINT_UP = add_collision_point(Collision_point(Point2f(0.5, 0.05), Vector2f(0, -1)));
+        COLLISION_POINT_LEFT = add_collision_point(Collision_point(Point2f(0.05, 0.5), Vector2f(-1, 0)));
+        COLLISION_POINT_RIGHT = add_collision_point(Collision_point(Point2f(0.95, 0.5), Vector2f(1, 0)));
 
         txt_left = engine.load_texture("assets/geralt_left.png");
         txt_right = engine.load_texture("assets/geralt_right.png");
 
         auto& mixer = engine.get_sound_mixer();
         oof = mixer.load_sound("assets/sounds/explode.wav");
+        engine.subscribe_to_events(this);
     }
 
     bool is_grounded(Engine& engine) const

@@ -368,7 +368,7 @@ constexpr Point2<T> Point2<T>::operator+(const Vector2<T> &v) const
 template <typename T>
 constexpr Point2<T> &Point2<T>::operator+=(const Vector2<T> &v) 
 {
-    assert(!v.hasNaNs());
+    assert(!v.has_NaNs());
     x += v.x; 
     y += v.y;
 

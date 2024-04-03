@@ -7,6 +7,7 @@
 #include "geometry/point.hpp"
 #include "geometry/bounding_box.hpp"
 #include "engine/entity.hpp"
+#include "geometry/collision_point.hpp"
 
 class Engine;
 
@@ -26,6 +27,14 @@ class Physics_engine
     void pre_physics(Engine& engine);
     void post_physics(Engine& engine);
     void update_entities_state(Engine &engine);
+
+    void friction_collision(
+        Float mass1, Float mass2,
+        Float mu,
+        Vector2f speed1, Vector2f speed2,
+        Vector2f &new_speed1);
+
+    void rigid_body_collision(EntityPtr entity1, EntityPtr entity2);
 
 
     

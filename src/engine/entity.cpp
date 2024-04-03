@@ -5,14 +5,14 @@ Entity::Entity(Point2f position, Float depth,
             Vector2f diagonal, const Texture& texture, 
             Engine &engine,
             std::string_view _entity_name, 
-            bool is_rigid_body,
+            Physics_type _physics_type,
             Collision_type _collision_type,
             Cursor_collision_type _cursor_collision_type,
             std::string_view _class_name)
     :
     collision_type(_collision_type),
     cursor_collision_type(_cursor_collision_type),
-    _is_rigid_body(is_rigid_body),
+    physics_type(_physics_type),
     active_texture(texture),
     deleted_entity(false),
     entity_id(-1),
@@ -38,10 +38,11 @@ Entity::Cursor_collision_type Entity::get_cursor_collision_type() const
     return cursor_collision_type;
 }
 
-bool Entity::is_rigid_body() const
+Entity::Physics_type Entity::get_physics_type() const
 {
-    return _is_rigid_body;
+    return physics_type;
 }
+
 
 void Entity::set_depth(Engine &engine, Float new_depth)
 {
@@ -164,6 +165,12 @@ Bound2f Entity::bound2f() const
     return Bound2f(get_position(), max_corner());
 }
 
+Point2f Entity::centroid() const
+{
+    return get_position() + diagonal / 2;
+
+}
+
 Texture Entity::get_active_texture() const
 {
     return active_texture;
@@ -205,7 +212,7 @@ bool Entity::alpha_collides(std::shared_ptr<Entity> other, size_t &collision_poi
 {
     for (size_t i = 0; i < collision_points.size(); i++)
     {        
-        Point2f world_point = local_to_world(collision_points[i]);
+        Point2f world_point = local_to_world(collision_points[i].point);
 
         if (other->contains(world_point, false))
         {
@@ -218,7 +225,7 @@ bool Entity::alpha_collides(std::shared_ptr<Entity> other, size_t &collision_poi
 }
 
 
-bool Entity::set_collision_point(size_t id, Point2f new_p)
+bool Entity::set_collision_point(size_t id, Collision_point new_p)
 {
     if (id >= collision_points.size())
         return false;
@@ -238,7 +245,7 @@ bool Entity::is_colliding(size_t id) const
 
 
 
-size_t Entity::add_collision_point(Point2f new_p)
+size_t Entity::add_collision_point(Collision_point new_p)
 {
     collision_points.push_back(new_p);
     vector_is_colliding.push_back(false);

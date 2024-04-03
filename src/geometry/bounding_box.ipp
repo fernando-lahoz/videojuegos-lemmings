@@ -351,6 +351,47 @@ constexpr BoundingBox2<T>::BoundingBox2(const BoundingBox2<U>& b)
 
 }
 
+
+template<typename T>
+constexpr Point2<T> BoundingBox2<T>::local_to_world(Point2<T> p) const
+{
+    Vector2f offset = diagonal();
+    offset = Vector2f(p.x * offset.x, p.y * offset.y);
+
+    return pMin + offset;
+}
+
+template<typename T>
+constexpr Point2<T> BoundingBox2<T>::centroid() const
+{
+    return (pMin + pMax) / 2;
+}
+
+template<typename T>
+constexpr Collision_point BoundingBox2<T>::collision_point(const BoundingBox2<T> &other) const
+{
+    // Distance from right to other left
+    Float dx1 = std::abs(other.pMin.x - pMax.x);
+    // Distance from left to other right
+    Float dx2 = std::abs(other.pMax.x - pMin.x);
+
+    // Distance from top to other bottom
+    Float dy1 = std::abs(other.pMax.y - pMin.y);
+    // Distance from bottom to other top
+    Float dy2 = std::abs(other.pMin.y - pMax.y);
+
+    Float min = std::min(std::min(dx1, dx2), std::min(dy1, dy2));
+
+    if (min == dx1)
+        return Collision_point(local_to_world(Point2f(1, 0.5)), Vector2f(1, 0));
+    else if (min == dx2)
+        return Collision_point(local_to_world(Point2f(0, 0.5)), Vector2f(-1, 0));
+    else if (min == dy1)
+        return Collision_point(local_to_world(Point2f(0.5, 0)), Vector2f(0, -1));
+    else
+        return Collision_point(local_to_world(Point2f(0.5, 1)), Vector2f(0, 1));
+}
+
 template <typename T>
 constexpr const Point2<T> &BoundingBox2<T>::operator[](int i) const
 {

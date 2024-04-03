@@ -14,13 +14,13 @@ class Apple : public Entity
 
     public:
 
-    Apple(Point2f position, Vector2f size, Texture txt, Engine& engine, bool is_rb = true) 
-    : Entity(position, 0, size, txt, engine, "Apple", is_rb, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Apple")
+    Apple(Point2f position, Vector2f size, Texture txt, Engine& engine) 
+    : Entity(position, 0, size, txt, engine, "Apple", Entity::Physics_type::DYNAMIC_BODY, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Apple")
     {
-        COLLISION_POINT_DOWN = add_collision_point(Point2f(0.5, 0.95));
-        COLLISION_POINT_UP = add_collision_point(Point2f(0.5, 0.05));
-        COLLISION_POINT_LEFT = add_collision_point(Point2f(0.05, 0.5));
-        COLLISION_POINT_RIGHT = add_collision_point(Point2f(0.95, 0.5));
+        COLLISION_POINT_DOWN = add_collision_point(Collision_point(Point2f(0.5, 0.95), Vector2f(0, 1)));
+        COLLISION_POINT_UP = add_collision_point(Collision_point(Point2f(0.5, 0.05), Vector2f(0, -1)));
+        COLLISION_POINT_LEFT = add_collision_point(Collision_point(Point2f(0.05, 0.5), Vector2f(-1, 0)));
+        COLLISION_POINT_RIGHT = add_collision_point(Collision_point(Point2f(0.95, 0.5), Vector2f(1, 0)));
 
 
         //set_max_speed(Vector2f(1.5, 1.5));

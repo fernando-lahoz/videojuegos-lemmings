@@ -12,6 +12,7 @@
 #include "lib/spectrum.hpp"
 #include "lib/texture.hpp"
 #include "engine/IO.hpp"
+#include "geometry/collision_point.hpp"
 
 class Engine;
 
@@ -20,13 +21,15 @@ class Entity
 
 public:
 
+
     enum class Collision_type {NO_COLLISION, AABB, ALPHA};
     enum class Cursor_collision_type {AABB, ALPHA};
+    enum class Physics_type {NO_PHYSICS, STATIC_BODY, DYNAMIC_BODY};
 
 private:
     Collision_type collision_type = Collision_type::AABB;
     Cursor_collision_type cursor_collision_type = Cursor_collision_type::AABB;
-    bool _is_rigid_body = false;
+    Physics_type physics_type = Physics_type::DYNAMIC_BODY;
     Float mass = 1;
 
 
@@ -42,7 +45,7 @@ protected:
     Float depth = 0;
     Vector2f diagonal;
 
-    std::vector<Point2f> collision_points;
+    std::vector<Collision_point> collision_points;
     std::vector<bool> vector_is_colliding;
 
     std::string class_name;
@@ -60,7 +63,7 @@ public:
             const Texture& texture, 
             Engine &engine,
             std::string_view _entity_name, 
-            bool is_rigid_body = false,
+            Physics_type _physics_type = Physics_type::DYNAMIC_BODY,
             Collision_type _collision_type = Collision_type::AABB,
             Cursor_collision_type _cursor_collision_type = Cursor_collision_type::AABB,
             std::string_view _class_name = "Entity");
@@ -71,7 +74,7 @@ public:
 
     Collision_type get_collision_type() const;
     Cursor_collision_type get_cursor_collision_type() const;
-    bool is_rigid_body() const;
+    Physics_type get_physics_type() const;
 
     Point2f world_to_local(Point2f w_p) const;
     Vector2f world_to_local(Vector2f w_p) const;
@@ -85,6 +88,7 @@ public:
     std::string get_class() const;
 
     Point2f get_position() const;
+    Point2f centroid() const;
 
     void set_position(Point2f p);
     void set_depth(Engine &engine, Float new_depth);
@@ -142,13 +146,13 @@ public:
     // Overrides an existing collision_point, 
     //  new_point in coordinates local to the entity
     //  Returns true if the point was successfully set
-    bool set_collision_point(size_t point_id, Point2f new_point);
+    bool set_collision_point(size_t point_id, Collision_point new_point);
     bool is_colliding(size_t point_id) const;
     
     // Adds a new collision point,
     //  new_point is in coordinates local to the entity
     //  Returns the id of the new collision point
-    size_t add_collision_point(Point2f new_point);
+    size_t add_collision_point(Collision_point new_point);
 
     Vector2f get_diagonal() const;
 
