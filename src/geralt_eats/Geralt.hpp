@@ -20,7 +20,7 @@ public:
         engine,
         "Geralt", Entity::Physics_type::DYNAMIC_BODY, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Geralt")
     {
-        set_max_speed(Vector2f(1.5, 1.5));
+        set_max_speed(Vector2f(30, 30));
 
         COLLISION_POINT_DOWN = add_collision_point(Collision_point(Point2f(0.5, 0.95), Vector2f(0, 1)));
         COLLISION_POINT_UP = add_collision_point(Collision_point(Point2f(0.5, 0.05), Vector2f(0, -1)));
@@ -42,22 +42,22 @@ public:
 
     bool colliding_down() const
     {
-        return is_colliding(COLLISION_POINT_DOWN);
+        return alpha_is_colliding(COLLISION_POINT_DOWN) || aabb_is_colliding(2);
     }
 
     bool colliding_up() const
     {
-        return is_colliding(COLLISION_POINT_UP);
+        return alpha_is_colliding(COLLISION_POINT_UP) || aabb_is_colliding(0);
     }
 
     bool colliding_left() const
     {
-        return is_colliding(COLLISION_POINT_LEFT);
+        return alpha_is_colliding(COLLISION_POINT_LEFT) || aabb_is_colliding(3);
     }
 
     bool colliding_right() const
     {
-        return is_colliding(COLLISION_POINT_RIGHT);
+        return alpha_is_colliding(COLLISION_POINT_RIGHT) || aabb_is_colliding(1);
     }
 
 
@@ -69,7 +69,7 @@ public:
         if (engine.is_up_arrow_down()
             && colliding_down())
         {
-            speed.y = -1;
+            speed.y = -3;
         }
 
         if (engine.is_down_arrow_down()
@@ -82,14 +82,14 @@ public:
         if (engine.is_left_arrow_down()
             && !colliding_left())
         {
-            speed.x = -0.3;
+            speed.x = -1;
             look_left();
         }
 
         if (engine.is_right_arrow_down()
             && !colliding_right())
         {
-            speed.x = 0.3;
+            speed.x = 1;
             look_right();
         }
 
@@ -130,7 +130,8 @@ public:
             return;
         }
 
-        if (collision_point_id == COLLISION_POINT_DOWN)
+        if (is_alpha && collision_point_id == COLLISION_POINT_DOWN
+            || !is_alpha && collision_point_id == 2)
         {
             ground = other;
         }

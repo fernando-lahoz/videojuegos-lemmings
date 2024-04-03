@@ -14,6 +14,12 @@ void Physics_engine::update_positions(Engine& engine)
         if (entity->has_gravity())
         {
             speed.y = std::clamp(Float(speed.y + gravity * delta_time), -max_speed.y, max_speed.y);
+
+            if (entity->get_entity_name() == "Geralt")
+            {
+                std::cout << "Speed: " << speed << std::endl;
+            }
+
             entity->set_speed(speed);
         }
     }
@@ -78,9 +84,6 @@ void undo_movement(double delta_time, EntityPtr body, Collision_point collision_
     auto body_centroid = body->centroid();
     auto body_position = body->get_position();
 
-    //std::cout << "Body centroid " << body_centroid << std::endl;
-    //std::cout << "Collision point " << collision_point.point << std::endl;
-
     Vector2f collision_to_body = body_centroid - collision_point.point;
     collision_point.normal = face_forward(collision_point.normal, collision_to_body);
     
@@ -137,19 +140,21 @@ void Physics_engine::friction_collision(
 void Physics_engine::rigid_body_collision(EntityPtr entity1, EntityPtr entity2)
 {
     if (entity1->get_physics_type() == Entity::Physics_type::DYNAMIC_BODY
-        &&
+        ||
         entity2->get_physics_type()  == Entity::Physics_type::DYNAMIC_BODY)
     {
         Vector2f new_speed1, new_speed2;
 
-        inelastic_collision(entity1->get_mass(), entity2->get_mass(),
+        elastic_collision(entity1->get_mass(), entity2->get_mass(),
             entity1->get_speed(), entity2->get_speed(),
             Point2f(0, 0), Vector2f(0, 0),
             new_speed1, new_speed2);
 
-        entity1->set_speed(new_speed1);
-        entity2->set_speed(new_speed2);
-
+        if (entity1->get_physics_type() == Entity::Physics_type::DYNAMIC_BODY)
+            entity1->set_speed(new_speed1);
+        
+        if (entity2->get_physics_type() == Entity::Physics_type::DYNAMIC_BODY)
+            entity2->set_speed(new_speed2);
     }
 }
 
@@ -167,20 +172,20 @@ void Physics_engine::compute_collisions(Engine& engine)
             auto &aabb = aabb_entities[i];
             auto &other = aabb_entities[j];
 
-            size_t collision_point_id = 0;
-
-            if (aabb->aabb_collides(other))
+            if (aabb->aabb_check_collision(other))
             {
                 // Compute hit normal
                 auto collision_point = aabb->bound2f().collision_point(other->bound2f());
+                size_t collision_point_id1 = aabb->bound2f().closest_side(collision_point.point);
+                size_t collision_point_id2 = other->bound2f().closest_side(collision_point.point);
 
                 undo_movement(delta_time, aabb, collision_point);
                 undo_movement(delta_time, other, collision_point);
 
-                aabb->on_collision(engine, other, false, collision_point_id);
-                other->on_collision(engine, aabb, false, collision_point_id);
+                aabb->on_collision(engine, other, false, collision_point_id1);
+                other->on_collision(engine, aabb, false, collision_point_id2);
 
-                //rigid_body_collision(aabb, other);
+                rigid_body_collision(aabb, other);
             }
         }
     }
@@ -195,10 +200,10 @@ void Physics_engine::compute_collisions(Engine& engine)
 
             size_t collision_point_id;
 
-            if (aabb->aabb_collides(other))
+            if (aabb->aabb_check_collision(other))
             {
-                bool first_collided = aabb->alpha_collides(other, collision_point_id);
-                bool second_collided = other->alpha_collides(aabb, collision_point_id);
+                bool first_collided = aabb->alpha_check_collision(other, collision_point_id);
+                bool second_collided = other->alpha_check_collision(aabb, collision_point_id);
 
                 if (first_collided) 
                 {
@@ -230,10 +235,10 @@ void Physics_engine::compute_collisions(Engine& engine)
 
             size_t collision_point_id;
 
-            if (alpha->aabb_collides(other))
+            if (alpha->aabb_check_collision(other))
             {
-                bool first_collided = alpha->alpha_collides(other, collision_point_id);
-                bool second_collided = other->alpha_collides(alpha, collision_point_id);
+                bool first_collided = alpha->alpha_check_collision(other, collision_point_id);
+                bool second_collided = other->alpha_check_collision(alpha, collision_point_id);
 
                 if (first_collided) 
                 {
@@ -306,11 +311,10 @@ void Physics_engine::compute_physics(Engine &engine)
     // Send pre-physics event to all entities
     pre_physics(engine);
 
-    compute_collisions(engine);
-
-
     update_camera_positions(engine);
     update_positions(engine);
+    compute_collisions(engine);
+
 
     update_entities_state(engine);
 

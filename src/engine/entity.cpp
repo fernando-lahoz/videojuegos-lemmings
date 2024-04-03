@@ -208,7 +208,7 @@ void Entity::disable_mouse_hover()
 }
 
 
-bool Entity::alpha_collides(std::shared_ptr<Entity> other, size_t &collision_point_id) const
+bool Entity::alpha_check_collision(std::shared_ptr<Entity> other, size_t &collision_point_id) const
 {
     for (size_t i = 0; i < collision_points.size(); i++)
     {        
@@ -235,12 +235,20 @@ bool Entity::set_collision_point(size_t id, Collision_point new_p)
     return true;
 }
 
-bool Entity::is_colliding(size_t id) const
+bool Entity::alpha_is_colliding(size_t id) const
 {
     if (id >= vector_is_colliding.size())
         return false;
 
     return vector_is_colliding[id];
+}
+
+bool Entity::aabb_is_colliding(size_t id) const
+{
+    if (id >= 4)
+        return false;
+
+    return aabb_side_colliding[id];
 }
 
 
@@ -298,6 +306,11 @@ void Entity::pre_physics(Engine&)
     {
         vector_is_colliding[i] = false;
     }
+
+    for (size_t i = 0; i < 4; i++)
+    {
+        aabb_side_colliding[i] = false;
+    }
 }
 
 void Entity::update_state(Engine&)
@@ -305,10 +318,17 @@ void Entity::update_state(Engine&)
     // Do nothing by default
 }
 
-void Entity::on_collision(Engine&, std::shared_ptr<Entity> , bool, size_t collision_point_id)
+void Entity::on_collision(Engine&, std::shared_ptr<Entity> , bool is_alpha, size_t collision_point_id)
 {
-    if (collision_type == Collision_type::ALPHA)
+    if (is_alpha)
+    {
         vector_is_colliding[collision_point_id] = true;
+    }
+    else
+    {
+        aabb_side_colliding[collision_point_id] = true;
+    }
+    
 }
 
 void Entity::post_physics(Engine&)

@@ -488,25 +488,25 @@ constexpr BoundingBox2<T> BoundingBox2<T>::operator-(const BoundingBox2<T> &b) c
 }
 
 
-// 0: Right
-// 1: Top
-// 2: Left
-// 3: Bottom
+// 0: Top
+// 1: Right
+// 2: Bottom
+// 3: Left
 template <typename T>
 constexpr int BoundingBox2<T>::closest_side (Point2<T> p) const
 {
-    Float distance_right = pMax.x - p.x;
-    Float distance_top = pMax.y - p.y;
-    Float distance_left = p.x - pMin.x;
-    Float distance_bottom = p.y - pMin.y;
+    Float distance_right  = std::abs(pMax.x - p.x);
+    Float distance_top    = std::abs(p.y - pMin.y);
+    Float distance_left   = std::abs(p.x - pMin.x);
+    Float distance_bottom = std::abs(pMax.y - p.y);
 
     Float min_distance = std::min(std::min(distance_right, distance_top), std::min(distance_left, distance_bottom));
 
-    if (min_distance == distance_right)
+    if (min_distance == distance_top)
         return 0;
-    else if (min_distance == distance_top)
+    else if (min_distance == distance_right)
         return 1;
-    else if (min_distance == distance_left)
+    else if (min_distance == distance_bottom)
         return 2;
     else
         return 3;

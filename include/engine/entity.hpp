@@ -32,6 +32,8 @@ private:
     Physics_type physics_type = Physics_type::DYNAMIC_BODY;
     Float mass = 1;
 
+    bool aabb_side_colliding[4] = {false, false, false, false};
+
 
 private:
     Texture active_texture;
@@ -137,7 +139,7 @@ public:
         position.y += speed.y * delta_time;
     }
 
-    inline bool aabb_collides(std::shared_ptr<Entity> other) const
+    inline bool aabb_check_collision(std::shared_ptr<Entity> other) const
     {
         return bound2f().overlaps(other->bound2f());
     }
@@ -147,7 +149,8 @@ public:
     //  new_point in coordinates local to the entity
     //  Returns true if the point was successfully set
     bool set_collision_point(size_t point_id, Collision_point new_point);
-    bool is_colliding(size_t point_id) const;
+    bool alpha_is_colliding(size_t point_id) const;
+    bool aabb_is_colliding(size_t point_id) const;
     
     // Adds a new collision point,
     //  new_point is in coordinates local to the entity
@@ -175,7 +178,7 @@ public:
 
     // Returns true if this entity collides with other.
     //  uses excusive comparisons
-    bool alpha_collides(std::shared_ptr<Entity> other, size_t &collision_point_id) const;
+    bool alpha_check_collision(std::shared_ptr<Entity> other, size_t &collision_point_id) const;
     bool contains(Point2f point, bool is_mouse=false) const;
 
     // Returns true if the mouse is pointing inside the visible entity
