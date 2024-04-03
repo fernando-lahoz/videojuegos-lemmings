@@ -103,9 +103,20 @@ void Shader::render_copy(const Texture& texture, SDL_Rect& rect)
 {
     int w = texture.get_width(), h = texture.get_height();
 
+    constexpr Float scale = 0.5f;
+    int h_aux = 0, w_aux = 0;
+
     switch (type)
     {
     case Type::FILLED_BOX:
+
+        w_aux = rect.w;
+        h_aux = rect.h;
+        rect.w = (Float)rect.w * scale;
+        rect.h = (Float)rect.h * scale;
+        rect.x += (w_aux - rect.w) / 2;
+        rect.y += (h_aux - rect.h) / 2;
+
         SDL_SetRenderDrawColor(renderer, mask_color.r, mask_color.g,
                                          mask_color.b, mask_color.a);
 
@@ -123,7 +134,7 @@ void Shader::render_copy(const Texture& texture, SDL_Rect& rect)
     case Type::CHANGE_RESOLUTION:
         if (buffer_width == AUTO && buffer_height == AUTO) { generate_buffer(w, h); }
         else if (buffer_width == AUTO) { generate_buffer((buffer_height * w) / h, buffer_height); }
-        else if (buffer_height == AUTO) { generate_buffer(buffer_width, (buffer_width * h) / w); }
+        else if (buffer_height == AUTO) { generate_buffer(buffer_width, ((buffer_width * h) / w)); }
 
         SDL_SetRenderTarget(renderer, buffer);
         
