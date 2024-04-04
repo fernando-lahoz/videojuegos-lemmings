@@ -55,12 +55,12 @@ Vector2f Camera2D::screen_to_world(Vector2f screen_vector)
     return Vector2f(x, y);
 }
 
-Bound2f Camera2D::get_window_frame() const
+Bound2f& Camera2D::get_window_frame()
 {
     return window_frame;
 }
 
-Bound2f Camera2D::get_world_frame() const
+Bound2f& Camera2D::get_world_frame()
 {
     return world_frame;
 }
@@ -395,7 +395,7 @@ std::unordered_map<Entity*, Camera2D::ID> Render_2D::draw_and_return_hovered(std
         {
             auto& d = *it;
             bool visible = render_entity(*d, *camera, *cameras[0], true);
-            if (visible && d->contains(world_mouse, true))
+            if (visible && d->contains(world_mouse, false))
             {
                 hovered_entities.insert({d.get(), camera->get_id()});
             } 

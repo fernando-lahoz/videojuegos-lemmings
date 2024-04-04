@@ -668,7 +668,6 @@ void Engine::set_ignored_events()
         SDL_MOUSEMOTION,
         // SDL_MOUSEBUTTONDOWN,
         // SDL_MOUSEBUTTONUP,
-        SDL_MOUSEBUTTONUP,
         SDL_MULTIGESTURE,
         // SDL_QUIT,
         SDL_SYSWMEVENT,

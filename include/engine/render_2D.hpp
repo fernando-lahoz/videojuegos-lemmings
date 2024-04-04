@@ -48,8 +48,8 @@ public:
     Point2f screen_to_world(Point2f screen_point);
     Vector2f screen_to_world(Vector2f screen_vector);
 
-    Bound2f get_window_frame() const;
-    Bound2f get_world_frame() const;
+    Bound2f& get_window_frame();
+    Bound2f& get_world_frame();
 
     virtual void update_position(Engine&);
 

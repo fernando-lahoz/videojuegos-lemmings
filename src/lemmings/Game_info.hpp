@@ -42,6 +42,7 @@ private:
   bool is_camera_stopped = false;
   float pos_camera;
   Camera2D::ID game_camera_id;
+  Camera2D *dynamic_camera = nullptr;
 
   // hud selection
   int option_selected = Utils::NO_OPTION_SELECTED;
@@ -361,4 +362,7 @@ public:
 
   void set_game_camera_id(Camera2D::ID id) { game_camera_id = id; }
   Camera2D::ID get_game_camera_id() { return game_camera_id; }
+
+  void set_dynamic_camera(Camera2D& cam) { dynamic_camera = &cam; }
+  Camera2D &get_dynamic_camera() { return *dynamic_camera; }
 };
