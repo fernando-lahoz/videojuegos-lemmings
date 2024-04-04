@@ -1006,15 +1006,20 @@ public:
         { // Destruimos el cubo de mapa
 
           Bound2f box;
-          box.pMin = local_to_world(Point2f(0.65, 0.80));
-          box.pMax = box.pMin + Vector2f(14, -17);
+          auto minC = 0.65;
+          box.pMin = local_to_world(Point2f(direction > 0 ? minC : 1-minC, 0.75));
+          box.pMax = box.pMin + Vector2f(13*direction, -14);//Extremo del vector para señalar tamaño de caja
 
-          Bound2f box2; // Destruimos un cubo más a medio camino del movimineto de excabación
+          Bound2f box2;
+          box2.pMin = local_to_world(Point2f(direction > 0 ? minC : 1-minC, 0.80));
+          box2.pMax = box2.pMin + Vector2f(10*direction, -17);//Extremo del vector para señalar tamaño de caja
+
+          Bound2f box3; // Destruimos un cubo más a medio camino del movimineto de excabación
           position.x -= direction * 4.0;
           position.y -= 2.5;
 
-          box2.pMin = local_to_world(Point2f(0.65, 0.80));
-          box2.pMax = box2.pMin + Vector2f(14, -17);
+          box3.pMin = local_to_world(Point2f(direction > 0 ? minC : 1-minC, 0.80));
+          box3.pMax = box3.pMin + Vector2f(14*direction, -17);
 
           position.x += direction * 4.0; // Volvemos a poner el Lemming donde estaba
           position.y += 2.5;
@@ -1028,50 +1033,17 @@ public:
 
               entity->destroy_box_alpha(engine, box);
               entity->destroy_box_alpha(engine, box2);
+              entity->destroy_box_alpha(engine, box3);
             }
             else if (entity->get_entity_name() == "DIRECTIONAL WALL")
             {
               std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
               dir_wall_ptr->destroy_box_alpha(engine, box, 0);
               dir_wall_ptr->destroy_box_alpha(engine, box2, 0);
+              dir_wall_ptr->destroy_box_alpha(engine, box3, 0);
             }
           }
           do_action_in_frame = false;
-        }
-      }
-      else if (current_frame == 3)
-      { // Clava el pico del todo
-        // Comprobamos que hay suelo
-        Ray ray_down = Ray(local_to_world(Point2f(0.7, 0.5)), Vector2f(0, 1));
-        Float hit_offset_down;
-        EntityPtr hit_entity_down;
-
-        std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
-
-        engine.intersect_ray(ray_down, get_entity_id(),
-                             force_entity_names, hit_offset_down, hit_entity_down);
-
-        if (hit_offset_down > (diagonal.y / 2)) // Detectamos que no hay suelo
-        {
-          remove_skill(Utils::Lemming_Skills::MINE);
-          on_ground = false;
-        }
-      }
-      else if (current_frame == 16)
-      { // Da un pasito para delante en la animación
-        Ray ray_down = Ray(local_to_world(Point2f(0.7, 0.5)), Vector2f(0, 1));
-        Float hit_offset_down;
-        EntityPtr hit_entity_down;
-
-        std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
-
-        engine.intersect_ray(ray_down, get_entity_id(),
-                             force_entity_names, hit_offset_down, hit_entity_down);
-
-        if (hit_offset_down > (diagonal.y / 2)) // Detectamos que no hay suelo
-        {
-          remove_skill(Utils::Lemming_Skills::MINE);
-          on_ground = false;
         }
       }
       else
@@ -1081,6 +1053,22 @@ public:
         speed.y = 0;
         set_speed(speed);
       }
+      //Comprobamos que haya suelo
+      Ray ray_down = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1-0.65, 0.5)), Vector2f(0, 1));
+      Float hit_offset_down;
+      EntityPtr hit_entity_down;
+
+      std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
+
+      engine.intersect_ray(ray_down, get_entity_id(),
+                           force_entity_names, hit_offset_down, hit_entity_down);
+
+      if (hit_offset_down > (diagonal.y / 2)) // Detectamos que no hay suelo
+      {
+        remove_skill(Utils::Lemming_Skills::MINE);
+        on_ground = false;
+      }
+
       return;
     }
   }
