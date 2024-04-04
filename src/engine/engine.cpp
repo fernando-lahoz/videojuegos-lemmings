@@ -719,7 +719,7 @@ void Engine::start()
             {
             case 0:
                 std::printf("Blocked...\n");
-                //...block_sound();
+                mixer.block_sound();
                 break;
             case -1:
                 break;
@@ -761,7 +761,7 @@ void Engine::start()
         }
         if (local_jumped) {
             std::printf("Resumed...\n");
-            //...release_sound();
+            mixer.release_sound();
         }
 
 

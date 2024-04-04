@@ -2,6 +2,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
@@ -16,8 +17,7 @@ private:
     std::shared_ptr<Mix_Music> music {nullptr, Mix_FreeMusic};
 
 public:
-    // `__fresno`: Si esta función falla actualizar el contenido de la carpeta
-    // "assets/music" con el fichero de discord
+
     void load(const std::string& file)
     {
         auto raw = Mix_LoadMUS(file.c_str());
@@ -63,12 +63,16 @@ private:
     std::unordered_map<std::string, Sound> sound_cache;
     int reserved_channels, free_channels;
 
+    bool is_music_paused = false;
+    std::vector<bool> is_channel_paused;
+
 public:
     SoundMixer(const SoundMixer& other) = delete;
     SoundMixer(SoundMixer&& other) = delete;
 
-    inline SoundMixer(int reserved_channels = 0, int free_channels = 0)
-        : reserved_channels{reserved_channels}, free_channels{free_channels}
+    inline SoundMixer(int reserved_channels = 0, int free_channels = 8)
+        : reserved_channels{reserved_channels}, free_channels{free_channels},
+          is_channel_paused(reserved_channels + free_channels, false)
     {
         // These magic numbers should work fine
         if ( Mix_OpenAudio(48000, AUDIO_S16SYS, 2, 512) != 0 )
@@ -113,16 +117,19 @@ public:
     //Plays music from the beginning
     inline void play_music(Music music, bool loop = false)
     {
+        is_music_paused = false;
         Mix_PlayMusic(music.get(), loop ? -1 : 0);
     }
 
     inline void pause_music()
     {
+        is_music_paused = true;
         Mix_PauseMusic();
     }
 
     inline void resume_music()
     {
+        is_music_paused = false;
         Mix_ResumeMusic();
     }
 
@@ -142,6 +149,8 @@ public:
         reserved_channels = n;
         Mix_ReserveChannels(n);
         Mix_AllocateChannels(reserved_channels + free_channels);
+
+        is_channel_paused.resize(reserved_channels + free_channels, false);
     }
 
     //Should not be called if any sound is currently being played in a free
@@ -153,6 +162,8 @@ public:
             
         free_channels = n;
         Mix_AllocateChannels(reserved_channels + free_channels);
+
+        is_channel_paused.resize(reserved_channels + free_channels, false);
     }
 
     inline int get_reserved_channels()
@@ -168,35 +179,50 @@ public:
     //Plays sound on a free channel
     inline void play_sound(Sound sound, bool loop = false)
     {
-        Mix_PlayChannel(-1, sound.get(), loop ? -1 : 0);
+        int channel = Mix_PlayChannel(-1, sound.get(), loop ? -1 : 0);
+
+        is_channel_paused[channel] = false;
     }
 
     //Plays sound on a reserved channel
     inline void play_sound_on_channel(Sound sound, int channel, bool loop = false)
     {
         Mix_PlayChannel(channel, sound.get(), loop ? -1 : 0);
+
+        is_channel_paused[channel] = false;
     }
 
     inline void pause_sound_on_channel(int channel)
     {
         Mix_Pause(channel);
+
+        is_channel_paused[channel] = true;
     }
 
     inline void pause_all_sounds()
     {
         Mix_Pause(-1);
+
+        for (auto e : is_channel_paused)
+            e = true;
     }
 
     inline void resume_all_paused_sounds()
     {
         Mix_Resume(-1);
+
+        for (auto e : is_channel_paused)
+            e = false;
     }
 
     inline void resume_sound_on_channel(int channel)
     {
         Mix_Resume(channel);
+
+        is_channel_paused[channel] = false;
     }
 
+    // Sets the channel volume to a value between 0 (no sound) and 1 (max value)
     inline void set_channel_volume(int channel, float volume)
     {
         Mix_Volume(channel, (int)(volume * MIX_MAX_VOLUME));
@@ -213,14 +239,28 @@ public:
     {
         Mix_VolumeMusic((int)(volume * MIX_MAX_VOLUME));
     }
-    
-    //TODO: add event -> on_music_stop???
-    //TODO: pass to ipp
 
     inline ~SoundMixer()
     {
         music_cache.clear();
         sound_cache.clear();
         Mix_CloseAudio();
+    }
+
+
+    inline void block_sound()
+    {
+        Mix_PauseMusic();
+        Mix_Pause(-1);
+    }
+
+    inline void release_sound()
+    {
+        if (!is_music_paused)
+            Mix_ResumeMusic();
+
+        for (std::size_t i = 0; i < is_channel_paused.size(); i++)
+            if (!is_channel_paused[i])
+                Mix_Resume(i);
     }
 };
