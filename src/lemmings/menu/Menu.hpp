@@ -96,7 +96,7 @@ public:
       auto button2 = std::make_shared<Menu_button>(Point3f(10181, 220, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::PLAYER_VS_IA);
       engine.get_game().create_entity(button2);
 
-      auto button3 = std::make_shared<Menu_button>(Point3f(10334, 220, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::SOUND_EFFECTS, true);
+      auto button3 = std::make_shared<Menu_button>(Point3f(10334, 220, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::CONFIGURACION);
       engine.get_game().create_entity(button3);
 
       auto button4 = std::make_shared<Menu_button>(Point3f(10487, 220, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::EXIT);
@@ -280,6 +280,29 @@ public:
     else if (type == Utils::MENU_TYPE::INTRO)
     {
       engine.get_game().create_entity(std::make_shared<Intro>(engine, game_info));
+    }
+    else if(type == Utils::MENU_TYPE::CONFIG)
+    {
+      auto background = std::make_shared<Entity>(Point3f(10000, 0, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_brown.png"), engine, "Background", "Background");
+      engine.get_game().create_entity(background);
+      
+      //Añadimos el botón de sonido
+      auto button1 = std::make_shared<Menu_button>(Point3f(10334, 220, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::SOUND_EFFECTS, true);
+      engine.get_game().create_entity(button1);
+
+      //Título de menu de configuracion
+      double size = 1.50;//Multiplicación del tamaño de letra
+      auto text = std::make_shared<Text_displayer>(Point3f(10320, 60, 2), Vector2f(16*size, 30*size), game_info, "center",
+                                              engine.load_texture("assets/font/font-red.png"),
+                                              Vector2i(16, 30), lemmings_font_map, "Settings", engine,
+                                              "TEXT");
+      engine.get_game().create_entity(text);
+
+      text = std::make_shared<Text_displayer>(Point3f(10320, 365, 2), Vector2f(16, 30), game_info, "center",
+                                              engine.load_texture("assets/font/font-blue.png"),
+                                              Vector2i(16, 30), lemmings_font_map, Utils::TEXT_BLUE_2[2], engine,
+                                              "TEXT");
+      engine.get_game().create_entity(text);
     }
   }
 };

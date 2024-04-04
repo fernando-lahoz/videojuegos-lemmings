@@ -53,6 +53,12 @@ public:
     {
       engine.quit();
     }
+    else if (button_type == Utils::CONFIGURACION)
+    {
+      game_info.set_do_transition(true);
+      game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
+      game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+    }
   }
 
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override
