@@ -639,8 +639,8 @@ bool Engine::intersect_ray(Ray &ray,
 void Engine::set_ignored_events()
 {
     static constexpr uint32_t ignored_events[] = {
-        SDL_AUDIODEVICEADDED,
-        SDL_AUDIODEVICEREMOVED,
+        //SDL_AUDIODEVICEADDED,
+        //SDL_AUDIODEVICEREMOVED,
         SDL_CONTROLLERAXISMOTION,
         SDL_CONTROLLERBUTTONDOWN,
         SDL_CONTROLLERBUTTONUP,
@@ -684,20 +684,87 @@ void Engine::set_ignored_events()
 
 void Engine::start()
 {
+    std::atomic_bool end = false;
+    std::mutex mtx;
+    int watchdog_counter = -1;
+    bool watchdog_jumped = false;
+    
+    std::thread watchdog {[&](){
+        std::printf("Im ON...\n");
+        using namespace std::chrono_literals;
+        using namespace std::chrono;
+
+        int x = 0;
+        auto time_point = steady_clock::now();
+        while (!end) {
+            std::this_thread::sleep_until(time_point + 1ms);
+            time_point += 1ms;
+        
+            {
+                std::lock_guard<std::mutex> lock {mtx};
+                x = watchdog_counter--;
+                switch (x)
+                {
+                case 0:
+                    watchdog_jumped = true;
+                    break;
+                case -1:
+                    watchdog_counter = -1;
+                    break;
+                }
+            }
+
+            // std::printf("...%d\n", x);
+            switch (x)
+            {
+            case 0:
+                std::printf("Blocked...\n");
+                //...block_sound();
+                break;
+            case -1:
+                break;
+            default:
+                std::printf("...%d\n", x);
+            }            
+        }
+    }};
+
     set_ignored_events();
 
     game->on_game_startup(*this);
 
     bool quit = false;
     while (!quit && !quit_event)
-    {
+    {       
         // auto init = std::chrono::steady_clock::now();
         update_delta_time();
         renderer->update_resolution(*this);
         update_mouse_position();
 
         game->on_loop_start(*this);
+
+
+
+        {
+            std::lock_guard<std::mutex> lock {mtx};
+            watchdog_counter = (total_delta_ns / total_measurements) / 1'000'000; /*ns -> ms*/
+        }
+
         quit = process_events();
+
+        bool local_jumped;
+        {
+            std::lock_guard<std::mutex> lock {mtx};
+            watchdog_counter = -1; // cancel
+            local_jumped = watchdog_jumped;
+            watchdog_jumped = false;
+        }
+        if (local_jumped) {
+            std::printf("Resumed...\n");
+            //...release_sound();
+        }
+
+
 
         // Update call to physics engine
         compute_physics();
@@ -724,6 +791,9 @@ void Engine::start()
     }
 
     game->on_game_shutdown(*this);
+
+    end = true;
+    watchdog.join();
 
     SDL_Quit();
 }
