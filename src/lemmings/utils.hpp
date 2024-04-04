@@ -326,14 +326,16 @@ namespace Utils
     LEVEL_SELECTOR = 1,
     LEVEL_INTRO = 2,
     LEVEL_OUTRO = 3,
-    INTRO = 4
+    INTRO = 4,
+    CONFIG = 5 //Muestra menú de configuración
   };
   enum BUTTON_TYPE
   {
     PLAYER_SOLO = 0,
     PLAYER_VS_IA = 1,
     SOUND_EFFECTS = 2,
-    EXIT = 4
+    EXIT = 4,
+    CONFIGURACION = 5 //Botón que lleva a pantalla de configuración
   };
   enum ACTIONS
   {
