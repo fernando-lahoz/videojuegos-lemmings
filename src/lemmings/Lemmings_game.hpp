@@ -64,6 +64,7 @@ public:
     auto ptr2 = std::make_shared<Dynamic_camera>(game_info, Bound2f(Point2f(1884, 0), Point2f(2524, 320)), Bound2f(Point2f(0, 0), Point2f(640, 320)), 7);
     create_camera(std::dynamic_pointer_cast<Camera2D>(ptr2));
     game_info.set_game_camera_id(ptr2->get_id());
+    game_info.set_dynamic_camera(*ptr2);
 
     // MINIMAP CAMERA
     auto minimap_camera = std::make_shared<Static_camera>(Bound2f(Point2f(0, 0), Point2f(3168, 320)), Bound2f(Point2f(416, 356), Point2f(616, 396)), 2);

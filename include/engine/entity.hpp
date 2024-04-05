@@ -34,12 +34,12 @@ private:
 
     bool _collides_up = false, _collides_down = false,
          _collides_left = false, _collides_right = false;
-        
+         
+protected:        
     bool alpha_collision = true, alpha_mouse = true;
 
     bool collisions_active = true;
 
-protected:
     Point3f position;
     Vector2f diagonal;
 
