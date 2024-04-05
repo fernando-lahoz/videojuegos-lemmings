@@ -14,6 +14,7 @@
 #include "lemmings/cursor/Cursor_menu.hpp"
 #include "lemmings/utils.hpp"
 #include "lemmings/screen/Screen_manager.hpp"
+#include "lemmings/keyboard/Keyboard_manager.hpp"
 
 // ASK: change _collides_up from bool to EntityPtr
 
@@ -32,10 +33,11 @@ class Lemmings_game : public Game
 private:
   Game_info game_info;
   Screen_manager screen;
+  Keyboard_manager keyboard;
 
 public:
   Lemmings_game()
-      : Game("Lemmings"), screen(game_info)
+      : Game("Lemmings"), screen(game_info), keyboard(game_info)
   {
   }
 
@@ -89,4 +91,19 @@ public:
     // std::cout << engine.get_delta_time() << std::endl;
     screen.update_game(engine);
   }
+
+  void on_event_up(Engine &engine, EngineIO::InputEvent event) override
+  {
+    // Gestionamos el evento si procede del teclado
+    if (event < EngineIO::InputEvent::MOUSE_HOVER || event > EngineIO::InputEvent::MOUSE_SCROLL_DOWN)
+      keyboard.manage_key_up(engine, event);
+  }
+
+  void on_event_down(Engine &engine, EngineIO::InputEvent event) override
+  {
+    // Gestionamos el evento si procede del teclado
+    if (event < EngineIO::InputEvent::MOUSE_HOVER || event > EngineIO::InputEvent::MOUSE_SCROLL_DOWN)
+      keyboard.manage_key_down(engine, event);
+  }
+
 };

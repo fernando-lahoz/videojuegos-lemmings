@@ -53,7 +53,9 @@ public:
         if (!game_info.get_is_camera_stopped())
         {
             auto p = engine.get_mouse_position_in_camera(*this);
-            if (world_frame.is_near_border(p, Bound2f::Border::RIGHT, 10) || world_frame.is_past_border(p, Bound2f::Border::RIGHT) || engine.is_key_down(EngineIO::InputEvent::LEFT))
+            bool move_left = world_frame.is_near_border(p, Bound2f::Border::LEFT, 10) || world_frame.is_past_border(p, Bound2f::Border::LEFT) || engine.is_key_down(EngineIO::InputEvent::RIGHT);
+            bool move_right = world_frame.is_near_border(p, Bound2f::Border::RIGHT, 10) || world_frame.is_past_border(p, Bound2f::Border::RIGHT) || engine.is_key_down(EngineIO::InputEvent::LEFT);
+            if (move_right && !move_left)
             {
                 if (world_frame.pMin.x - 200 * delta_time < 0)
                 {
@@ -68,7 +70,7 @@ public:
                     game_info.set_pos_camera(game_info.get_pos_camera() - 200 * delta_time);
                 }
             }
-            else if (world_frame.is_near_border(p, Bound2f::Border::LEFT, 10) || world_frame.is_past_border(p, Bound2f::Border::LEFT) || engine.is_key_down(EngineIO::InputEvent::RIGHT))
+            if (move_left && !move_right)
             {
                 if (world_frame.pMax.x + 200 * delta_time > 3168)
                 {

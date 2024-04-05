@@ -15,10 +15,10 @@
 
 EngineIO::InputEvent Engine::SDL_to_input_event(SDL_KeyboardEvent key)
 {
-    
+    /*
     // Para mostrar por consola la tecla que se ha pulsado.
     std::cout << "Key pressed: " << key.keysym.sym << std::endl;
-
+    */
     if (key.keysym.sym >= SDLK_0 && key.keysym.sym <= SDLK_9)
             return (EngineIO::InputEvent)(key.keysym.sym - SDLK_0 + 48);
 

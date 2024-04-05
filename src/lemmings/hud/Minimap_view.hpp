@@ -31,7 +31,7 @@ public:
     }
   }
 
-  void on_event_down(Engine &engine, EngineIO::InputEvent event) override
+  void on_event_down([[maybe_unused]]Engine &engine, EngineIO::InputEvent event) override
   {
     if (event == EngineIO::InputEvent::MOUSE_HOVER) {
       // TODO: Set state to dynamic camera to get updated with movement on this view

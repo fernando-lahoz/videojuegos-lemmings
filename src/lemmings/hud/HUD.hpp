@@ -23,7 +23,6 @@ private:
   Game_info &game_info;
   int option_selected = 11;
   float last_position;
-  EngineIO::InputEvent last_event = EngineIO::InputEvent::NONE;
 
 public:
   HUD(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, std::string _path, int _n, bool _is_hovereable = false, bool _is_clickable = true, bool _is_changeable = false, bool _is_selectable = true)
@@ -67,47 +66,6 @@ public:
 
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override
   {
-    if (event >= EngineIO::charToInputEvent('1') && event <= EngineIO::charToInputEvent('8'))
-    {
-      int selected_ability = event - EngineIO::charToInputEvent('1') + 1;
-      if (selected_ability + 1 != game_info.get_option_selected())
-      {
-        game_info.set_option_selected(selected_ability + 1);
-        //FIXME: Dependiendo de la opcion elegida deberia sonar mas agudo o mas grave
-        engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND));
-      }
-    }
-
-    // if (!engine.any_key_down())
-    // {
-    //   last_event = EngineIO::InputEvent::NONE;
-    // }
-
-    if (event == EngineIO::charToInputEvent('Q') && last_event != EngineIO::charToInputEvent('Q'))
-    {
-      game_info.add_game_speed();
-      last_event = EngineIO::charToInputEvent('Q');
-    }
-    if (event == EngineIO::charToInputEvent('A') && last_event != EngineIO::charToInputEvent('A'))
-    {
-      game_info.sub_game_speed();
-      last_event = EngineIO::charToInputEvent('A');
-    }
-    if (event == EngineIO::charToInputEvent('W') && last_event != EngineIO::charToInputEvent('W'))
-    {
-      game_info.add_spawn_velocity();
-      last_event = EngineIO::charToInputEvent('W');
-    }
-    if (event == EngineIO::charToInputEvent('S') && last_event != EngineIO::charToInputEvent('S'))
-    {
-      game_info.sub_spawn_velocity();
-      last_event = EngineIO::charToInputEvent('S');
-    }
-    if (event == EngineIO::InputEvent::ENTER && last_event != EngineIO::InputEvent::ENTER)
-    {
-      game_info.set_level_is_paused(!game_info.get_level_is_paused());
-      last_event = EngineIO::InputEvent::ENTER;
-    }
 
     if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && is_clickable && !(game_info.get_level_is_paused() && n != Utils::HUD_PAUSE))
     {
@@ -177,14 +135,7 @@ public:
       }
       else if (n == Utils::HUD_PAUSE)
       {
-        // if (game_info.get_level_is_paused())
-        // {
-        //   std::cout << "PAUSE" << std::endl;
-        // }
-        // else
-        // {
-        //   std::cout << "PLAY" << std::endl;
-        // }
+        //std::cout << (game_info.get_level_is_paused() ? "PAUSE\n" : "PLAY\n");
         game_info.set_level_is_paused(!game_info.get_level_is_paused());
       }
 
