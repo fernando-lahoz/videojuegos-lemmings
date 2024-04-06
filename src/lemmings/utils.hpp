@@ -335,7 +335,23 @@ namespace Utils
     PLAYER_VS_IA = 1,
     SOUND_EFFECTS = 2,
     EXIT = 4,
-    CONFIGURACION = 5 //Botón que lleva a pantalla de configuración
+    CONFIGURACION = 5, //Botón que lleva a pantalla de configuración
+    PAUSE = 6, //Botón para modificar tecla de pausa
+    ABILITY_1 = 7,
+    ABILITY_2 = 8,
+    ABILITY_3 = 9,
+    ABILITY_4 = 10,
+    ABILITY_5 = 11,
+    ABILITY_6 = 12,
+    ABILITY_7 = 13,
+    ABILITY_8 = 14,
+		EXPLODE_ALL = 15,
+		ABILITY_UP = 16,
+		ABILITY_DOWN = 17,
+		SPEED_UP = 18,
+		SPEED_DOWN = 19,
+		SPAWN_UP = 20,
+		SPAWN_DOWN = 21
   };
   enum ACTIONS
   {

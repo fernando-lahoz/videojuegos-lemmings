@@ -290,15 +290,41 @@ public:
       auto button1 = std::make_shared<Menu_button>(Point3f(10334, 220, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::SOUND_EFFECTS, true);
       engine.get_game().create_entity(button1);
 
+      //Botones de control de juego(habilidades, pausa, etc)
+      auto b_pause = std::make_shared<Menu_button>(Point3f(10025, 50, 2), Vector2f(40, 40), engine, game_info, Utils::BUTTON_TYPE::PAUSE);
+      engine.get_game().create_entity(b_pause);
+
+      auto b_ability1 = std::make_shared<Menu_button>(Point3f(10075, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_1);
+      engine.get_game().create_entity(b_ability1);
+
+      auto b_ability2 = std::make_shared<Menu_button>(Point3f(10125, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_2);
+      engine.get_game().create_entity(b_ability2);
+      
+      auto b_ability3 = std::make_shared<Menu_button>(Point3f(10175, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_3);
+      engine.get_game().create_entity(b_ability3);
+      
+      auto b_ability4 = std::make_shared<Menu_button>(Point3f(10225, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_4);
+      engine.get_game().create_entity(b_ability4);
+      
+      auto b_ability5 = std::make_shared<Menu_button>(Point3f(10275, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_5);
+      engine.get_game().create_entity(b_ability5);
+      
+      auto b_ability6 = std::make_shared<Menu_button>(Point3f(10325, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_6);
+      engine.get_game().create_entity(b_ability6);
+
+      auto b_ability7 = std::make_shared<Menu_button>(Point3f(10375, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_7);
+      engine.get_game().create_entity(b_ability7);
+
+
+
       //Título de menu de configuracion
-      double size = 1.50;//Multiplicación del tamaño de letra
-      auto text = std::make_shared<Text_displayer>(Point3f(10320, 60, 2), Vector2f(16*size, 30*size), game_info, "center",
+      auto text = std::make_shared<Text_displayer>(Point3f(10320, 30, 2), Vector2f(16, 30), game_info, "center",
                                               engine.load_texture("assets/font/font-red.png"),
                                               Vector2i(16, 30), lemmings_font_map, "Settings", engine,
                                               "TEXT");
       engine.get_game().create_entity(text);
 
-      text = std::make_shared<Text_displayer>(Point3f(10320, 365, 2), Vector2f(16, 30), game_info, "center",
+      text = std::make_shared<Text_displayer>(Point3f(10320, 385, 2), Vector2f(16, 30), game_info, "center",
                                               engine.load_texture("assets/font/font-blue.png"),
                                               Vector2i(16, 30), lemmings_font_map, Utils::TEXT_BLUE_2[2], engine,
                                               "TEXT");
