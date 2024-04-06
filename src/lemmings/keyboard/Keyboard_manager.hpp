@@ -1,5 +1,5 @@
-#ifndef KEYBOARD
-#define KEYBOARD
+#ifndef LEMMINGS_KEYBOARD
+#define LEMMINGS_KEYBOARD
 
 #pragma once
 
@@ -8,6 +8,7 @@
 #include "engine/engine.hpp"
 #include "engine/IO.hpp"
 #include "lemmings/Game_info.hpp"
+#include "lemmings/memory/keyBindings.hpp"
 
 #define NUM_ACTIONS 16
 #define NUM_CHECKABLE_KEYS 9
@@ -17,7 +18,7 @@ class Keyboard_manager
 private:
 	EngineIO::InputEvent actionKey[NUM_ACTIONS];
 	bool available[NUM_CHECKABLE_KEYS];
-	Game_info &game_info;
+	Game_info& game_info;
 	char killAllCounter = 0;
 
 	enum KeyCode
@@ -41,27 +42,19 @@ private:
 	};
 
 public:
-	Keyboard_manager(Game_info &_game_info)
-		: game_info(_game_info)
+	Keyboard_manager(Game_info& _game_info)
+		: game_info (_game_info)
 	{
-		// PROVISIONAL: con el sistema de persistencia, se guardarán ahí los controles.
-		actionKey[0] = EngineIO::InputEvent::ENTER;			// Pausa
-		actionKey[1] = EngineIO::charToInputEvent('1');	// Habilidades
-		actionKey[2] = EngineIO::charToInputEvent('2');
-		actionKey[3] = EngineIO::charToInputEvent('3');
-		actionKey[4] = EngineIO::charToInputEvent('4');
-		actionKey[5] = EngineIO::charToInputEvent('5');
-		actionKey[6] = EngineIO::charToInputEvent('6');
-		actionKey[7] = EngineIO::charToInputEvent('7');
-		actionKey[8] = EngineIO::charToInputEvent('8');
-		actionKey[9] = EngineIO::charToInputEvent('9');
-		actionKey[10] = EngineIO::InputEvent::UP;				// Desplazar entre habilidades
-		actionKey[11] = EngineIO::InputEvent::DOWN;
-		actionKey[12] = EngineIO::charToInputEvent('Q');// Velocidad de juego
-		actionKey[13] = EngineIO::charToInputEvent('A');
-		actionKey[14] = EngineIO::charToInputEvent('W');// Velocidad de aparición
-		actionKey[15] = EngineIO::charToInputEvent('S');
-		for (int i = 0; i < NUM_CHECKABLE_KEYS; i++) available[i] = true;
+		for (int i = 0; i < NUM_CHECKABLE_KEYS; i++)
+			available[i] = true;
+	}
+
+	void set_key_bindings()
+	{
+		EngineIO::InputEvent aux[18];
+		KeyBindings().readKeyBindingsFile(aux);
+		for (int i = 0; i < NUM_ACTIONS; i++)
+			actionKey[i] = aux[i];
 	}
 
 	void manage_key_down(Engine &engine, EngineIO::InputEvent event)
@@ -165,4 +158,4 @@ public:
   }
 };
 
-#endif // KEYBOARD
+#endif // LEMMINGS_KEYBOARD

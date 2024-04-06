@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <vector>
@@ -6,6 +5,7 @@
 #include "lemmings/utils.hpp"
 #include "engine/entity.hpp"
 #include "math/math.hpp"
+#include "memory/keyBindings.hpp"
 
 class Game_info
 {
@@ -67,6 +67,9 @@ private:
   int actual_minutes_left = 0;
   int actual_seconds_left = 0;
   int spawn_velocity = 1;
+
+  // key bindings
+
 
   // sound effects
   Sound SOUND_EFFECT[19];

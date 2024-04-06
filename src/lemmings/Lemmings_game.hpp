@@ -73,6 +73,8 @@ public:
     minimap_camera->set_shader("BkgMap", std::move(Shader(engine).color_mask(RGBA{0, 136, 0, 255}, Shader::Resolution::AUTO, 22)));
     minimap_camera->set_shader("ALL", std::move(Shader(engine).invisible()));
 
+    // KEY BINDINGS
+    keyboard.set_key_bindings();
 
     game_info.set_cursor_txt("assets/cursor.png", engine);
     engine.hide_cursor();
