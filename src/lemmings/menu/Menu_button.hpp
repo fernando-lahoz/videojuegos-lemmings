@@ -2,6 +2,7 @@
 
 #include "engine/engine.hpp"
 #include "engine/rigid_body.hpp"
+#include "lemmings/keyboard/Keyboard_manager.hpp"
 
 #include "lemmings/utils.hpp"
 
@@ -15,6 +16,7 @@ private:
   bool is_changeable;
   Game_info &game_info;
   Engine &engine;
+  Keyboard_manager &keyboard;
 
   //Devuelve el nombre del fichero que corresponde a la imagen del tipo de botón
   // suministrado como entrada
@@ -59,14 +61,19 @@ private:
       {
         n_file = "assets/menu/menu_spawn_down.png";	
       }
+      else if(_type == Utils::SAVE)
+      {
+        n_file = "assets/menu/menu_conf_save.png";	
+      }
+
     }
     return n_file;
   }
 
 public:
-  Menu_button(Point3f position, Vector2f size, Engine &_engine, Game_info &_game_info, int _type, bool _is_changeable = false)
+  Menu_button(Point3f position, Vector2f size, Engine &_engine, Game_info &_game_info, Keyboard_manager &_keyboard, int _type, bool _is_changeable = false)
       : Rigid_body(position, size, !_game_info.get_sound_effects() && _is_changeable ? _engine.load_texture("assets/menu/menu_button_" + std::to_string(_type + 1) + ".png") : _engine.load_texture(name_file(_type)), engine, "Menu Button"),
-        type(_type), game_info(_game_info), engine(_engine)
+        type(_type), game_info(_game_info), engine(_engine), keyboard(_keyboard)
   {
     std::cout << "Type: " << _type << std::endl;
     txt_on = engine.load_texture(name_file(_type));
@@ -107,17 +114,31 @@ public:
       game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
       game_info.set_do_action(Utils::ACTIONS::GO_MENU);
     }
-    else if (button_type == Utils::PAUSE)
+    else if (button_type >= Utils::PAUSE && button_type <= Utils::SPAWN_DOWN)//Gestión de teclas de modificación
     {
-      //Leer proxima letra pulsada
-      std::cout << "Modificacion de PAUSE" << std::endl;
+
+      if(button_type != game_info.get_last_button() || !game_info.get_is_buton_conf())
+      {//Si no concuerda con el ultimo pulsado
+        std::cout << "HABILITADO BOTON  " << button_type-6 << std::endl;
+        game_info.set_is_buton_conf(true);
+        game_info.set_last_button(button_type);
+      }
+      else
+      {//Si pulsamos dos veces seguida el mismo es como dejar de seleccionar el boton
+        std::cout << "DESHABILITADO BOTON  " << button_type-6 << std::endl;
+        game_info.set_is_buton_conf(false);
+      }
     }
-    else if (button_type == Utils::ABILITY_1)
+    else if(button_type >= Utils::SAVE)
     {
-      //Leer proxima letra pulsada
-      std::cout << "Modificacion de ABILITY_1" << std::endl;
+      //Guardar configuración de botones actual
+      EngineIO::InputEvent conf_butons[NUM_KEYBINDINGS];
+      game_info.get_conf_butons(conf_butons);
+      KeyBindings().setKeyBindings(conf_butons);//Modificamos el fichero
+
+      keyboard.set_key_bindings();//Actualizamos botones de partida
+      std::cout << "CONFIGURACION GUARDADA"<< std::endl;
     }
-    //FALTAN: Comportaminetos de guardar la tecla nueva a asociar al boton
   }
 
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override

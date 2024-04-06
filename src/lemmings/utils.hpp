@@ -351,7 +351,8 @@ namespace Utils
 		SPEED_UP = 18,
 		SPEED_DOWN = 19,
 		SPAWN_UP = 20,
-		SPAWN_DOWN = 21
+		SPAWN_DOWN = 21,
+    SAVE = 22 //Botón de guardar configuración
   };
   enum ACTIONS
   {

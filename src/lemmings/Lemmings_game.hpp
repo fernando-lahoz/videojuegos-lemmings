@@ -37,7 +37,7 @@ private:
 
 public:
   Lemmings_game()
-      : Game("Lemmings"), screen(game_info), keyboard(game_info)
+      : Game("Lemmings"), screen(game_info, keyboard), keyboard(game_info)
   {
   }
 

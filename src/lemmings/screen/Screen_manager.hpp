@@ -5,6 +5,7 @@
 #include "lemmings/Level.hpp"
 #include "lemmings/menu/Menu.hpp"
 #include "lemmings/screen/Transition.hpp"
+#include "lemmings/keyboard/Keyboard_manager.hpp"
 
 class Screen_manager
 {
@@ -18,7 +19,7 @@ private:
   int last_lemmings_hovered = 0;
 
 public:
-  Screen_manager(Game_info &_game_info) : level(_game_info), menu(_game_info), game_info(_game_info)
+  Screen_manager(Game_info &_game_info, Keyboard_manager &_keyboard) : level(_game_info), menu(_game_info, _keyboard), game_info(_game_info)
   {
   }
 

@@ -64,7 +64,15 @@ public:
 		if (game_info.get_actual_state() == Utils::STATE::MENU)
 		{
 			if (event == EngineIO::InputEvent::ESC) engine.quit();
-			else return;
+			else{
+
+				if(game_info.get_is_buton_conf())
+				{//Si hay un boton de configuración seleccionado
+					game_info.set_conf_butons(event, game_info.get_last_button()-6);//Guardamos la tecla pulsada
+					std::cout << "Guardado boton: " << event << "  en " << game_info.get_last_button()-6 << std::endl;
+				}
+				return;
+			}
 		}
 
 		// En el caso de que estemos en el juego, primero se comprueba el botón que se ha pulsado.

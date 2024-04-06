@@ -14,11 +14,13 @@
 #include "lemmings/display/Text_displayer.hpp"
 #include "lemmings/display/Text_dynamic.hpp"
 #include "lemmings/display/Map_dynamic.hpp"
+#include "lemmings/keyboard/Keyboard_manager.hpp"
 
 class Menu
 {
 private:
   Game_info &game_info;
+  Keyboard_manager &keyboard;
 
   static Point2i lemmings_font_map(char c)
   {
@@ -57,7 +59,7 @@ private:
   }
 
 public:
-  Menu(Game_info &_game_info) : game_info(_game_info)
+  Menu(Game_info &_game_info, Keyboard_manager &_keyboard) : game_info(_game_info), keyboard(_keyboard)
   {
   }
 
@@ -90,16 +92,16 @@ public:
       engine.get_game().create_entity(std::make_shared<Menu_animation>(Point3f(10361.996, 224.492, 1), Vector2f(65.014367, 55.625), engine, 6, 10, 0.3f, 9.0f, 8.0f, true));
       engine.get_game().create_entity(std::make_shared<Menu_animation>(Point3f(10515.5432, 224.492, 1), Vector2f(65.014367, 55.625), engine, 7, 10, 0.3f, 8.5f, 8.0f, false));
 
-      auto button1 = std::make_shared<Menu_button>(Point3f(10028, 220, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::PLAYER_SOLO);
+      auto button1 = std::make_shared<Menu_button>(Point3f(10028, 220, 2), Vector2f(125, 125), engine, game_info, keyboard, Utils::BUTTON_TYPE::PLAYER_SOLO);
       engine.get_game().create_entity(button1);
 
-      auto button2 = std::make_shared<Menu_button>(Point3f(10181, 220, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::PLAYER_VS_IA);
+      auto button2 = std::make_shared<Menu_button>(Point3f(10181, 220, 2), Vector2f(125, 125), engine, game_info, keyboard, Utils::BUTTON_TYPE::PLAYER_VS_IA);
       engine.get_game().create_entity(button2);
 
-      auto button3 = std::make_shared<Menu_button>(Point3f(10334, 220, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::CONFIGURACION);
+      auto button3 = std::make_shared<Menu_button>(Point3f(10334, 220, 2), Vector2f(125, 125), engine, game_info, keyboard, Utils::BUTTON_TYPE::CONFIGURACION);
       engine.get_game().create_entity(button3);
 
-      auto button4 = std::make_shared<Menu_button>(Point3f(10487, 220, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::EXIT);
+      auto button4 = std::make_shared<Menu_button>(Point3f(10487, 220, 2), Vector2f(125, 125), engine, game_info, keyboard, Utils::BUTTON_TYPE::EXIT);
       engine.get_game().create_entity(button4);
     }
     else if (type == Utils::LEVEL_SELECTOR)
@@ -287,35 +289,66 @@ public:
       engine.get_game().create_entity(background);
       
       //Añadimos el botón de sonido
-      auto button1 = std::make_shared<Menu_button>(Point3f(10334, 220, 2), Vector2f(125, 125), engine, game_info, Utils::BUTTON_TYPE::SOUND_EFFECTS, true);
+      auto button1 = std::make_shared<Menu_button>(Point3f(10400, 250, 2), Vector2f(125, 125), engine, game_info, keyboard, Utils::BUTTON_TYPE::SOUND_EFFECTS, true);
       engine.get_game().create_entity(button1);
 
-      //Botones de control de juego(habilidades, pausa, etc)
-      auto b_pause = std::make_shared<Menu_button>(Point3f(10025, 50, 2), Vector2f(40, 40), engine, game_info, Utils::BUTTON_TYPE::PAUSE);
-      engine.get_game().create_entity(b_pause);
+      //Guardamos en una variable el contenido de fichero de comfiguración
+      EngineIO::InputEvent aux[18];
+      KeyBindings().readKeyBindingsFile(aux);//Leemos fichero con valores asociados a los botones de partida
+      game_info.set_conf_butons(aux);
 
-      auto b_ability1 = std::make_shared<Menu_button>(Point3f(10075, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_1);
+      //Botones de control de juego(habilidades, pausa, etc)
+      auto b_pause = std::make_shared<Menu_button>(Point3f(10025, 50, 2), Vector2f(40, 40), engine, game_info, keyboard, Utils::BUTTON_TYPE::PAUSE);
+      engine.get_game().create_entity(b_pause);
+      
+      auto b_ability1 = std::make_shared<Menu_button>(Point3f(10075, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_1);
       engine.get_game().create_entity(b_ability1);
 
-      auto b_ability2 = std::make_shared<Menu_button>(Point3f(10125, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_2);
+      auto b_ability2 = std::make_shared<Menu_button>(Point3f(10125, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_2);
       engine.get_game().create_entity(b_ability2);
       
-      auto b_ability3 = std::make_shared<Menu_button>(Point3f(10175, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_3);
+      auto b_ability3 = std::make_shared<Menu_button>(Point3f(10175, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_3);
       engine.get_game().create_entity(b_ability3);
       
-      auto b_ability4 = std::make_shared<Menu_button>(Point3f(10225, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_4);
+      auto b_ability4 = std::make_shared<Menu_button>(Point3f(10225, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_4);
       engine.get_game().create_entity(b_ability4);
       
-      auto b_ability5 = std::make_shared<Menu_button>(Point3f(10275, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_5);
+      auto b_ability5 = std::make_shared<Menu_button>(Point3f(10275, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_5);
       engine.get_game().create_entity(b_ability5);
       
-      auto b_ability6 = std::make_shared<Menu_button>(Point3f(10325, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_6);
+      auto b_ability6 = std::make_shared<Menu_button>(Point3f(10325, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_6);
       engine.get_game().create_entity(b_ability6);
 
-      auto b_ability7 = std::make_shared<Menu_button>(Point3f(10375, 50, 2), Vector2f(50, 50), engine, game_info, Utils::BUTTON_TYPE::ABILITY_7);
+      auto b_ability7 = std::make_shared<Menu_button>(Point3f(10375, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_7);
       engine.get_game().create_entity(b_ability7);
 
+      auto b_ability8 = std::make_shared<Menu_button>(Point3f(10025, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_8);
+      engine.get_game().create_entity(b_ability8);
 
+      auto b_explode_all = std::make_shared<Menu_button>(Point3f(10075, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::EXPLODE_ALL);
+      engine.get_game().create_entity(b_explode_all);
+
+      auto b_ability_up = std::make_shared<Menu_button>(Point3f(10125, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_UP);
+      engine.get_game().create_entity(b_ability_up);
+
+      auto b_ability_down = std::make_shared<Menu_button>(Point3f(10175, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_DOWN);
+      engine.get_game().create_entity(b_ability_down);
+
+      auto b_speed_up = std::make_shared<Menu_button>(Point3f(10225, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPEED_UP);
+      engine.get_game().create_entity(b_speed_up);
+
+      auto b_speed_down = std::make_shared<Menu_button>(Point3f(10275, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPEED_DOWN);
+      engine.get_game().create_entity(b_speed_down);
+
+      auto b_spawn_up = std::make_shared<Menu_button>(Point3f(10325, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPAWN_UP);
+      engine.get_game().create_entity(b_spawn_up);
+
+      auto b_spawn_down = std::make_shared<Menu_button>(Point3f(10375, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPAWN_DOWN);
+      engine.get_game().create_entity(b_spawn_down);
+
+      //Boton de guardado
+      auto b_save = std::make_shared<Menu_button>(Point3f(10320, 325, 2), Vector2f(40, 40), engine, game_info, keyboard, Utils::BUTTON_TYPE::SAVE);
+      engine.get_game().create_entity(b_save);
 
       //Título de menu de configuracion
       auto text = std::make_shared<Text_displayer>(Point3f(10320, 30, 2), Vector2f(16, 30), game_info, "center",
