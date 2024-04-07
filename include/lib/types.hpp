@@ -17,6 +17,7 @@ using Float = float;
 static constexpr Float PI = std::numbers::pi_v<Float>;
 static constexpr Float TAU = (2*PI);
 static constexpr Float SQRT2 = std::numbers::sqrt2_v<Float>;
+static constexpr Float INV_4_PI = 1.0 / (4.0 * PI);
 
 static constexpr Float MACHINE_EPSILON = std::numeric_limits<Float>::epsilon();
 static constexpr Float FLOAT_ERROR_MARGIN = 0.0000001;

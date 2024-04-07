@@ -15,12 +15,13 @@ class Physics_engine
 {
     std::vector<EntityPtr> aabb_entities;
     std::vector<EntityPtr> alpha_entities;
+    std::vector<EntityPtr> charge_emitters;
     Float gravity = 0;
     size_t n_aabb_to_delete = 0;
     size_t n_alpha_to_delete = 0;
 
 
-    void update_positions(Engine& engine);
+    void update_physics(Engine& engine);
     void update_camera_positions(Engine& engine);
     void compute_collisions(Engine& engine);
 
@@ -36,13 +37,17 @@ class Physics_engine
 
     void rigid_body_collision(EntityPtr entity1, EntityPtr entity2);
 
+    void on_collision(Engine& engine,
+            Float delta_time,
+            bool first_collided, bool second_collided,
+            EntityPtr entity1, EntityPtr entity2, 
+            bool is_alpha, 
+            size_t collision_point_id1, size_t collision_point_id2);
 
     
 public:
 
     Physics_engine() = default;
-
-    // TODO: Shouldn't these be static methods? or will this engine get members?
 
     void compute_physics(Engine &engine);
     void add_entity(EntityPtr entity);

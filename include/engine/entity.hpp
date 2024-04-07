@@ -21,28 +21,30 @@ class Entity
 
 public:
 
+    enum class Cursor_type {AABB, ALPHA};
 
-    enum class Collision_type {NO_COLLISION, AABB, ALPHA};
-    enum class Cursor_collision_type {AABB, ALPHA};
-    enum class Physics_type {NO_PHYSICS, STATIC_BODY, DYNAMIC_BODY};
+    enum class Collision_check {NONE, AABB, ALPHA};
+    enum class Collision_type {TRIGGER, STATIC_BODY, DYNAMIC_BODY};
+    enum class Physics_type {NONE, RIGID_BODY, CHARGE_EMITTER};
 
 private:
-    Collision_type collision_type = Collision_type::AABB;
-    Cursor_collision_type cursor_collision_type = Cursor_collision_type::AABB;
-    Physics_type physics_type = Physics_type::DYNAMIC_BODY;
     Float mass = 1;
+    Float inv_mass = 1;
 
     bool aabb_side_colliding[4] = {false, false, false, false};
 
-
-private:
     Texture active_texture;
     bool deleted_entity = false;
-    int entity_id;
+    int entity_id = -1;
     bool mouse_over = false;
     bool _has_gravity = true;
 
 protected:
+    Collision_type collision_type = Collision_type::DYNAMIC_BODY;
+    Cursor_type cursor_type = Cursor_type::AABB;
+    Physics_type physics_type = Physics_type::RIGID_BODY;
+    Collision_check collision_check_type = Collision_check::AABB;
+
     Point2f position;
     Float depth = 0;
     Vector2f diagonal;
@@ -54,8 +56,19 @@ protected:
     std::string entity_name;
 
 
-    Vector2f speed;
+    Vector2f speed = Vector2f(0, 0);
+    Vector2f acceleration = Vector2f(0, 0);
     Vector2f max_speed = Vector2f(INFINITY, INFINITY);
+
+    Float charge = 0;
+
+    Entity(Point2f position, Float depth,
+            Vector2f diagonal, 
+            const Texture& texture, 
+            Engine &engine,
+            std::string_view _entity_name, 
+            std::string_view _class_name);
+
 
 public:
 
@@ -65,9 +78,10 @@ public:
             const Texture& texture, 
             Engine &engine,
             std::string_view _entity_name, 
-            Physics_type _physics_type = Physics_type::DYNAMIC_BODY,
-            Collision_type _collision_type = Collision_type::AABB,
-            Cursor_collision_type _cursor_collision_type = Cursor_collision_type::AABB,
+            Physics_type _physics_type = Physics_type::RIGID_BODY,
+            Collision_check _collision_check = Collision_check::AABB,
+            Collision_type _collision_type = Collision_type::DYNAMIC_BODY,
+            Cursor_type _cursor_type = Cursor_type::AABB,
             std::string_view _class_name = "Entity");
 
     // Get the specific entity name
@@ -75,7 +89,7 @@ public:
     std::string get_entity_name() const;
 
     Collision_type get_collision_type() const;
-    Cursor_collision_type get_cursor_collision_type() const;
+    Cursor_type get_cursor_type() const;
     Physics_type get_physics_type() const;
 
     Point2f world_to_local(Point2f w_p) const;
@@ -89,9 +103,6 @@ public:
     //  Ex: Rigid body, generic entity
     std::string get_class() const;
 
-    Point2f get_position() const;
-    Point2f centroid() const;
-
     void set_position(Point2f p);
     void set_depth(Engine &engine, Float new_depth);
     Float get_depth() const;
@@ -102,10 +113,41 @@ public:
     void enable_gravity();
     void disable_gravity();
 
+    Float get_charge() const { return charge; }
+    void set_charge(Float new_charge) { charge = new_charge; }
+
+    Collision_check get_collision_check_type() const { return collision_check_type; }
+
+
+    Point2f centroid() const
+    {
+        return get_position() + diagonal/2;
+    }
+
+    Point2f get_position() const
+    {
+        return position;
+    }
+
 
     Vector2f get_speed() const
     {
         return speed;
+    }
+
+    Vector2f get_acceleration() const
+    {
+        return acceleration;
+    }
+
+    void clear_acceleration()
+    {
+        acceleration = Vector2f(0, 0);
+    }
+
+    void set_acceleration(Vector2f new_acceleration)
+    {
+        acceleration = new_acceleration;
     }
 
     void set_speed(Vector2f new_speed)
@@ -185,7 +227,7 @@ public:
     bool contains_the_mouse(Engine& engine);
     bool destroy_box_alpha(Engine &engine, Bound2f box);
     
-    void entity_collision(Engine&, std::shared_ptr<Entity>, 
+    void entity_collision(Engine&, std::shared_ptr<Entity> other, 
             bool is_alpha, size_t collision_point_id)
     {
         if (is_alpha)
@@ -212,6 +254,11 @@ public:
         }
     }
 
+    void apply_force(Engine &, Vector2f force)
+    {
+        acceleration += force * inv_mass;
+    }
+
     // Event processing is the second thing executed, 
     //  right after game->on_loop_start()
     virtual void on_event_down(Engine&, EngineIO::InputEvent) {}
@@ -229,9 +276,10 @@ public:
     // Collisions are called right after pre_physics and
     //  before update_position
     virtual void on_collision(Engine&, 
-            std::shared_ptr<Entity>,
-            bool,
-            size_t) {}
+            std::shared_ptr<Entity>, // other
+            bool, // is_alpha
+            size_t // collision_point_id
+            ) {}
 
     // This is called after all physics have finished
     virtual void post_physics(Engine&) {}

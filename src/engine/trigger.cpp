@@ -6,16 +6,27 @@ Trigger::Trigger(Point2f position, Float depth, Vector2f diagonal,
         Engine& engine,
         std::string _entity_name, 
         std::string _class_name)
-    : Entity(position, depth, diagonal, Texture{}, engine, _entity_name, Entity::Physics_type::NO_PHYSICS, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, _class_name)
+    : Entity(position, depth, diagonal, Texture{}, engine, _entity_name)
 {
+    physics_type = Physics_type::NONE;
+    collision_type = Collision_type::TRIGGER;
+    cursor_type = Cursor_type::AABB;
+    
+
+    disable_gravity();
 }
 
 void Trigger::add_asociated_entity(EntityPtr entity)
 {
+    asociated_entities.push_back(entity.get());
+}
+
+void Trigger::add_asociated_entity(Entity *entity)
+{
     asociated_entities.push_back(entity);
 }
 
-std::vector<EntityPtr> Trigger::get_asociated_entities() const
+std::vector<Entity*> Trigger::get_asociated_entities() const
 {
     return asociated_entities;
 }

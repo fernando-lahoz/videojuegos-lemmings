@@ -12,6 +12,7 @@
 #include "Apple.hpp"
 #include "Geralt_eats_camera.hpp"
 #include "MainCamera.hpp"
+#include "electric_field.hpp"
 
 class Geralt_eats_game : public Game
 {
@@ -81,8 +82,8 @@ public:
         auto cielo_txt = engine.load_texture("assets/cielo.jpeg");
 
         auto geralt = std::make_shared<Geralt>(Point2f(2, 0), Vector2f(0.5, 0.6), engine);
-        auto ground = std::make_shared<Entity>(Point2f(0, 1.75), 1, Vector2f(4, 0.5), terrain, engine, "Ground", Entity::Physics_type::STATIC_BODY, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Ground");
-        auto cielo = std::make_shared<Entity>(Point2f(0, 0), 10, Vector2f(4, 2.24), cielo_txt, engine, "Cielo", Entity::Physics_type::NO_PHYSICS, Entity::Collision_type::NO_COLLISION, Entity::Cursor_collision_type::AABB, "Cielo");
+        auto ground = std::make_shared<Entity>(Point2f(0, 1.75), 1, Vector2f(4, 0.5), terrain, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::AABB, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
+        auto cielo = std::make_shared<Entity>(Point2f(0, 0), 10, Vector2f(4, 2.24), cielo_txt, engine, "Cielo", Entity::Physics_type::NONE, Entity::Collision_check::NONE, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Cielo");
         ground->disable_gravity();
         cielo->disable_gravity();
 
@@ -94,10 +95,13 @@ public:
 
         //box2->set_speed(Vector2f(-0.1, -0.2));
 
+        auto field = std::make_shared<Electric_field>(Point2f(0.5, 0.7), Vector2f(0.7, 0.7), t3, engine);
+
         
         engine.create_entity(geralt);
         engine.create_entity(ground);
         engine.create_entity(cielo);
+        engine.create_entity(field);
 
         create_camera(std::make_shared<Geralt_camera>());
     }

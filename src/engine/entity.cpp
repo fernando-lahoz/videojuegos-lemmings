@@ -2,26 +2,47 @@
 #include "engine/engine.hpp"
 
 Entity::Entity(Point2f position, Float depth,
-            Vector2f diagonal, const Texture& texture, 
-            Engine &,
+            Vector2f diagonal, 
+            const Texture& texture, 
+            Engine &engine,
             std::string_view _entity_name, 
-            Physics_type _physics_type,
-            Collision_type _collision_type,
-            Cursor_collision_type _cursor_collision_type,
             std::string_view _class_name)
     :
-    collision_type(_collision_type),
-    cursor_collision_type(_cursor_collision_type),
-    physics_type(_physics_type),
+    collision_type(Collision_type::DYNAMIC_BODY),
+    cursor_type(Cursor_type::AABB),
+    physics_type(Physics_type::RIGID_BODY),
     active_texture(texture),
-    deleted_entity(false),
-    entity_id(-1),
-    mouse_over(false),
     position(position),
     class_name(_class_name),
     entity_name(_entity_name),
     diagonal(diagonal),
-    speed(0, 0),
+    depth(depth)
+{
+    //engine.subscribe_to_events(this);
+}
+
+
+
+
+Entity::Entity(Point2f position, Float depth,
+            Vector2f diagonal, const Texture& texture, 
+            Engine &,
+            std::string_view _entity_name, 
+            Physics_type _physics_type,
+            Collision_check _collision_check,
+            Collision_type _collision_type,
+            Cursor_type _cursor_type,
+            std::string_view _class_name)
+    :
+    collision_type(_collision_type),
+    collision_check_type(_collision_check),
+    cursor_type(_cursor_type),
+    physics_type(_physics_type),
+    active_texture(texture),
+    position(position),
+    class_name(_class_name),
+    entity_name(_entity_name),
+    diagonal(diagonal),
     depth(depth)
 {
     //engine.subscribe_to_events(this);
@@ -33,9 +54,9 @@ Entity::Collision_type Entity::get_collision_type() const
 }
 
 
-Entity::Cursor_collision_type Entity::get_cursor_collision_type() const
+Entity::Cursor_type Entity::get_cursor_type() const
 {
-    return cursor_collision_type;
+    return cursor_type;
 }
 
 Entity::Physics_type Entity::get_physics_type() const
@@ -54,6 +75,7 @@ Float Entity::get_depth() const
 {
     return depth;
 }
+
 
 Point2f Entity::world_to_local(Point2f w_p) const
 {
@@ -101,10 +123,6 @@ std::string Entity::get_class() const
     return class_name;
 }
 
-Point2f Entity::get_position() const
-{
-    return position;
-}
 
 Vector2f Entity::get_diagonal() const
 {
@@ -125,6 +143,7 @@ Float Entity::get_mass() const
 void Entity::set_mass(Float new_mass)
 {
     mass = new_mass;
+    inv_mass = 1 / mass;
 }
 
 bool Entity::has_gravity() const
@@ -163,12 +182,6 @@ Point2f Entity::max_corner() const
 Bound2f Entity::bound2f() const
 {
     return Bound2f(get_position(), max_corner());
-}
-
-Point2f Entity::centroid() const
-{
-    return get_position() + diagonal / 2;
-
 }
 
 Texture Entity::get_active_texture() const
@@ -266,12 +279,12 @@ bool Entity::contains(Point2f point, bool is_mouse) const
 {
     if (bound2f().contains(point))
     {
-        if (is_mouse && cursor_collision_type == Cursor_collision_type::ALPHA)
+        if (is_mouse && cursor_type == Cursor_type::ALPHA)
             return !get_active_texture().is_alpha_pixel(world_to_local(point));
         else if (is_mouse)
             return true;
 
-        if (!is_mouse && collision_type == Collision_type::ALPHA)
+        if (!is_mouse && collision_check_type == Collision_check::ALPHA)
             return !get_active_texture().is_alpha_pixel(world_to_local(point));
         else if (!is_mouse)
             return true;

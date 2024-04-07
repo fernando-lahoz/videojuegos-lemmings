@@ -18,7 +18,7 @@ public:
         : Entity(position, 0, diagonal, 
         engine.load_texture("assets/geralt_right.png"),
         engine,
-        "Geralt", Entity::Physics_type::DYNAMIC_BODY, Entity::Collision_type::AABB, Entity::Cursor_collision_type::AABB, "Geralt")
+        "Geralt", "Geralt")
     {
         set_max_speed(Vector2f(30, 30));
 
@@ -33,6 +33,12 @@ public:
         auto& mixer = engine.get_sound_mixer();
         oof = mixer.load_sound("assets/sounds/explode.wav");
         engine.subscribe_to_events(this);
+
+        collision_check_type = Collision_check::AABB;
+        physics_type = Physics_type::RIGID_BODY;
+        collision_type = Collision_type::DYNAMIC_BODY;
+
+        set_charge(1);
     }
 
     bool is_grounded(Engine& engine) const

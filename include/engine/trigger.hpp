@@ -8,7 +8,7 @@ class Trigger : public Entity
 
     protected:
 
-    std::vector<EntityPtr> asociated_entities;
+    std::vector<Entity*> asociated_entities;
 
     public:
 
@@ -19,7 +19,9 @@ class Trigger : public Entity
             std::string _class_name="Trigger");
 
     void add_asociated_entity(EntityPtr entity);
-    std::vector<EntityPtr> get_asociated_entities() const;
+    void add_asociated_entity(Entity *entity);
+
+    std::vector<Entity*> get_asociated_entities() const;
 
 
     void on_collision([[maybe_unused]]Engine& engine, 

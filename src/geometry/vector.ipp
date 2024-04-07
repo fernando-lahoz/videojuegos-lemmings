@@ -181,6 +181,14 @@ constexpr Vector3<T> &Vector3<T>::operator/=(T f)
     return *this;
 }
 
+
+template <typename T>
+constexpr Vector3<T> clamp(const Vector3<T> &v, const Vector3<T> &low, const Vector3<T> &high)
+{
+    return Vector3<T>(std::clamp(v.x, low.x, high.x), std::clamp(v.y, low.y, high.y), std::clamp(v.z, low.z, high.z));
+}
+
+
 template <typename T>
 constexpr Vector3<T> Vector3<T>::operator-() const
 {
@@ -537,6 +545,12 @@ template <typename T>
 constexpr Vector2<T> operator*(T f, const Vector2<T> &v)
 {
     return v * f;
+}
+
+template <typename T>
+constexpr Vector2<T> clamp(const Vector2<T> &v, const Vector2<T> &low, const Vector2<T> &high)
+{
+    return Vector2<T>(std::clamp(v.x, low.x, high.x), std::clamp(v.y, low.y, high.y));
 }
 
 template <typename T>

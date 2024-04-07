@@ -176,4 +176,13 @@ constexpr void generate_coordinate_system(const Vector3<T> &v1,
 template <typename T>
 constexpr T max_component(Vector3<T> v);
 
+// Clamp
+template <typename T>
+constexpr Vector3<T> clamp(const Vector3<T> &v, const Vector3<T> &min, 
+        const Vector3<T> &max);
+
+template <typename T>
+constexpr Vector2<T> clamp(const Vector2<T> &v, const Vector2<T> &min, 
+        const Vector2<T> &max);
+
 #include "geometry/vector.ipp"

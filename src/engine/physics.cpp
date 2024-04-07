@@ -1,33 +1,6 @@
 #include "engine/physics.hpp"
 #include "engine/engine.hpp"
 
-void Physics_engine::update_positions(Engine& engine)
-{
-    auto &entities = engine.get_entities();
-    auto delta_time = engine.get_delta_time();
-
-    for (auto& entity : entities)
-    {
-        auto speed = entity->get_speed();
-        auto max_speed = entity->get_max_speed();
-
-        if (entity->has_gravity())
-        {
-            speed.y = std::clamp(Float(speed.y + gravity * delta_time), -max_speed.y, max_speed.y);
-
-            entity->set_speed(speed);
-        }
-    }
-
-    for (auto& entity : entities)
-    {
-        auto position = entity->get_position();
-        auto speed = entity->get_speed();
-    
-        Entity::update_position(delta_time, position, speed);
-        entity->set_position(position);
-    }
-}
 
 void elastic_collision(Float mass1, Float mass2,
     Vector2f speed1, Vector2f speed2, 
@@ -96,47 +69,21 @@ void undo_movement(double delta_time, EntityPtr body, Collision_point collision_
 
 void Physics_engine::add_entity(EntityPtr entity)
 {
-    if (entity->get_collision_type() == Entity::Collision_type::AABB)
+    if (entity->get_collision_check_type() == Entity::Collision_check::AABB)
         aabb_entities.push_back(entity);
-    else if (entity->get_collision_type() == Entity::Collision_type::ALPHA)
+    else if (entity->get_collision_check_type() == Entity::Collision_check::ALPHA)
         alpha_entities.push_back(entity);
+
+    if (entity->get_physics_type() == Entity::Physics_type::CHARGE_EMITTER)
+        charge_emitters.push_back(entity);
 }
 
-
-void Physics_engine::friction_collision(
-    Float mass1, Float mass2,
-    Float mu,
-    Vector2f speed1, Vector2f speed2,
-    Vector2f &new_speed1)
-{
-    // Compute force applied to o1
-    auto force = mass2 * mu * gravity;
-    auto deceleration = force / mass1;
-
-    /*
-    if (speed1.x > 0)
-    {
-        new_speed1.x = std::max(0.0f, speed1.x - deceleration);
-    }
-    else if (speed1.x < 0)
-    {
-        new_speed1.x = std::min(0.0f, speed1.x + deceleration);
-    }
-    else {
-        new_speed1.x = 0;
-    }
-    */
-
-    new_speed1.y = 0;
-
-    std::cout << "Speed1: " << speed1 << " new_speed1: " << new_speed1 << std::endl;
-}
 
 void Physics_engine::rigid_body_collision(EntityPtr entity1, EntityPtr entity2)
 {
-    if (entity1->get_physics_type() == Entity::Physics_type::DYNAMIC_BODY
+    if (entity1->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
         ||
-        entity2->get_physics_type()  == Entity::Physics_type::DYNAMIC_BODY)
+        entity2->get_collision_type()  == Entity::Collision_type::DYNAMIC_BODY)
     {
         Vector2f new_speed1, new_speed2;
 
@@ -145,11 +92,53 @@ void Physics_engine::rigid_body_collision(EntityPtr entity1, EntityPtr entity2)
             Point2f(0, 0), Vector2f(0, 0),
             new_speed1, new_speed2);
 
-        if (entity1->get_physics_type() == Entity::Physics_type::DYNAMIC_BODY)
+        if (entity1->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY)
             entity1->set_speed(new_speed1);
         
-        if (entity2->get_physics_type() == Entity::Physics_type::DYNAMIC_BODY)
+        if (entity2->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY)
             entity2->set_speed(new_speed2);
+    }
+}
+
+void electric_force(Engine &engine, EntityPtr emitter, EntityPtr aabb)
+{
+    // Force direction
+    Vector2f force_direction = normalize(aabb->centroid() - emitter->centroid());
+    
+
+    Float charge1 = emitter->get_charge();
+    Float charge2 = aabb->get_charge();
+
+    // Force magnitude
+    Float force_magnitude = charge1 * charge2 
+            / (aabb->centroid() - emitter->centroid()).length_squared();
+
+    // Apply force
+    aabb->apply_force(engine, force_direction * force_magnitude);
+}
+
+void Physics_engine::on_collision(Engine& engine,
+        Float delta_time,
+        bool first_collided, bool second_collided,
+        EntityPtr entity1, EntityPtr entity2, 
+        bool is_alpha, 
+        size_t collision_point_id1, size_t collision_point_id2)
+{
+    if (first_collided)
+    {
+        entity1->entity_collision(engine, entity2, is_alpha, collision_point_id1);
+        entity1->on_collision(engine, entity2, is_alpha, collision_point_id1);
+    }
+
+    if (second_collided)
+    {
+        entity2->entity_collision(engine, entity1, is_alpha, collision_point_id2);
+        entity2->on_collision(engine, entity1, is_alpha, collision_point_id2);
+    }
+
+    if (first_collided || second_collided)
+    {
+        rigid_body_collision(entity1, entity2);
     }
 }
 
@@ -177,16 +166,11 @@ void Physics_engine::compute_collisions(Engine& engine)
                 undo_movement(delta_time, aabb, collision_point);
                 undo_movement(delta_time, other, collision_point);
 
-                aabb->entity_collision(engine, other, false, collision_point_id1);
-                aabb->on_collision(engine, other, false, collision_point_id1);
-                
-                other->entity_collision(engine, aabb, false, collision_point_id2);
-                other->on_collision(engine, aabb, false, collision_point_id2);
-                
-                rigid_body_collision(aabb, other);
+                on_collision(engine, delta_time, true, true, aabb, other, false, collision_point_id1, collision_point_id2);
             }
         }
     }
+    
 
     // Check for collisions between AABB and alpha entities
     for (size_t i = 0; i < aabb_entities.size(); i++)
@@ -203,24 +187,7 @@ void Physics_engine::compute_collisions(Engine& engine)
                 bool first_collided = aabb->alpha_check_collision(other, collision_point_id);
                 bool second_collided = other->alpha_check_collision(aabb, collision_point_id);
 
-                if (first_collided) 
-                {
-                    //undo_movement(delta_time, aabb);
-                    aabb->entity_collision(engine, other, true, collision_point_id);
-                    aabb->on_collision(engine, other, true, collision_point_id);
-                }
-
-                if (second_collided)
-                {
-                    //undo_movement(delta_time, other);
-                    other->entity_collision(engine, aabb, false, collision_point_id);
-                    other->on_collision(engine, aabb, true, collision_point_id);
-                }
-
-                if (first_collided || second_collided)
-                {
-                    rigid_body_collision(aabb, other);
-                }
+                on_collision(engine, delta_time, first_collided, second_collided, aabb, other, false, collision_point_id, collision_point_id);
             }
         }
     }
@@ -240,28 +207,60 @@ void Physics_engine::compute_collisions(Engine& engine)
                 bool first_collided = alpha->alpha_check_collision(other, collision_point_id);
                 bool second_collided = other->alpha_check_collision(alpha, collision_point_id);
 
-                if (first_collided) 
-                {
-                    //undo_movement(delta_time, alpha);
-                    alpha->entity_collision(engine, other, true, collision_point_id);
-                    alpha->on_collision(engine, other, true, collision_point_id);
-                }
-
-                if (second_collided)
-                {
-                    //undo_movement(delta_time, other);
-                    other->entity_collision(engine, alpha, true, collision_point_id);
-                    other->on_collision(engine, alpha, true, collision_point_id);
-                }
-
-                if (first_collided || second_collided)
-                {
-                    rigid_body_collision(alpha, other);
-                }
+                on_collision(engine, delta_time, first_collided, second_collided, alpha, other, true, collision_point_id, collision_point_id);
             }
         }
     }
+}
 
+
+void Physics_engine::update_physics(Engine& engine)
+{
+    auto &entities = engine.get_entities();
+    auto delta_time = engine.get_delta_time();
+
+    /************* Apply electric forces ****************/
+    for (size_t i = 0; i < charge_emitters.size(); i++)
+    {
+        auto &emitter = charge_emitters[i];
+
+        for (size_t j = 0; j < aabb_entities.size(); j++)
+        {
+            auto &aabb = aabb_entities[j];
+            
+            if (aabb->get_physics_type() == Entity::Physics_type::RIGID_BODY)
+                electric_force(engine, emitter, aabb);
+        }
+    }
+
+
+    for (auto& entity : entities)
+    {
+        if (entity->get_physics_type() != Entity::Physics_type::NONE)
+        {
+            /*********** Update accelerations ************/
+            auto acc = entity->get_acceleration();
+            auto speed = entity->get_speed();
+            auto max_speed = entity->get_max_speed();
+
+            if (entity->has_gravity())
+            {
+                acc.y += gravity;
+            }
+
+            std::cout << "Speed: " << speed << " acc: " << acc << std::endl;
+            speed = clamp(speed + acc * delta_time, -max_speed, max_speed);
+            entity->set_speed(speed);
+            entity->clear_acceleration();      
+
+
+            /*********** Update speed ************/
+            auto position = entity->get_position();
+        
+            Entity::update_position(delta_time, position, speed);
+            entity->set_position(position);
+        }  
+    }
 }
 
 void Physics_engine::pre_physics(Engine& engine)
@@ -315,7 +314,7 @@ void Physics_engine::compute_physics(Engine &engine)
     pre_physics(engine);
 
     update_camera_positions(engine);
-    update_positions(engine);
+    update_physics(engine);
     compute_collisions(engine);
 
 
