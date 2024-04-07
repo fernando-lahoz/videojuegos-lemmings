@@ -970,20 +970,20 @@ public:
 
     if (is_climbing())
     {
-      if (current_frame == 9)
+      if (current_frame == 7)
       {
           if (!do_action_in_frame && !climb_now) { 
-            current_frame = 0;
-            position.y -= 5;
+            //position.y -= 0;
+            current_frame = -1;
             on_ground = false;
           }
-      else if (current_frame == 3)
+      }
+      else if (current_frame == 0)
       {
-        if (!do_action_in_frame) { position.y -= 2; }
+        if (!do_action_in_frame && !climb_now) { position.y -= 3; }
       }
       else{ do_action_in_frame = false;}
       return;
-      }
     }
 
 
@@ -1112,7 +1112,7 @@ public:
         if(check_collision_up(other)){
             std::cout << "Techo\n";
             go_fall();
-            position.x += 2 * direction;
+            //position.x += 2 * direction;
             direction *= -1;
         }
         else {
@@ -1122,6 +1122,7 @@ public:
             std::cout << "No hay pared\n";
             if (!climb_now){ climb_now = true;}
             else if (current_frame == 15){
+              climb_now = false;
               go_walk();
             }
           }
