@@ -32,34 +32,42 @@ private:
     {//Botones de modificar teclas
       if(_type == Utils::PAUSE)
       {
-        n_file = "assets/menu/menu_button_" + std::to_string(_type) + ".png";
+        n_file = "assets/menu/config_pause.png";
       }
       else if(_type >= Utils::ABILITY_1 && _type <= Utils::EXPLODE_ALL){
         n_file = "assets/hud/hud_option_" + std::to_string(_type - 5) + ".png";
       }
       else if(_type == Utils::ABILITY_UP)
       {
-        n_file = "assets/menu/menu_arrow_" + std::to_string(0) + ".png";	
+        n_file = "assets/menu/config_skill_left.png";	
       }
       else if(_type == Utils::ABILITY_DOWN)
       {
-        n_file = "assets/menu/menu_arrow_" + std::to_string(1) + ".png";	
+        n_file = "assets/menu/config_skill_right.png";	
       }
       else if(_type == Utils::SPEED_UP)
       {
-        n_file = "assets/menu/menu_speed_up.png";	
+        n_file = "assets/menu/config_speed_plus.png";	
       }
       else if(_type == Utils::SPEED_DOWN)
       {
-        n_file = "assets/menu/menu_speed_down.png";	
+        n_file = "assets/menu/config_speed_minus.png";	
       }
       else if(_type == Utils::SPAWN_UP)
       {
-        n_file = "assets/menu/menu_spawn_up.png";	
+        n_file = "assets/menu/config_spawn_plus.png";	
       }
       else if(_type == Utils::SPAWN_DOWN)
       {
-        n_file = "assets/menu/menu_spawn_down.png";	
+        n_file = "assets/menu/config_spawn_minus.png";	
+      }
+      else if(_type == Utils::MAP_LEFT)
+      {
+        n_file = "assets/menu/config_map_left.png";	
+      }
+      else if(_type == Utils::MAP_RIGHT)
+      {
+        n_file = "assets/menu/config_map_right.png";	
       }
       else if(_type == Utils::SAVE)
       {
@@ -114,7 +122,7 @@ public:
       game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
       game_info.set_do_action(Utils::ACTIONS::GO_MENU);
     }
-    else if (button_type >= Utils::PAUSE && button_type <= Utils::SPAWN_DOWN)//Gestión de teclas de modificación
+    else if (button_type >= Utils::PAUSE && button_type <= Utils::MAP_RIGHT)//Gestión de teclas de modificación
     {
 
       if(button_type != game_info.get_last_button() || !game_info.get_is_buton_conf())
@@ -137,6 +145,9 @@ public:
       KeyBindings().setKeyBindings(conf_butons);//Modificamos el fichero
 
       keyboard.set_key_bindings();//Actualizamos botones de partida
+      
+      //Actualiza teclas de movimiento de mapa en partida
+      dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
       std::cout << "CONFIGURACION GUARDADA"<< std::endl;
     }
   }

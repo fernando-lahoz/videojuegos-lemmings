@@ -100,8 +100,6 @@ public:
         }
     }
 
-private:
-
     void assign_keys()
     {
         EngineIO::InputEvent aux[18];

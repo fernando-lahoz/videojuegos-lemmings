@@ -346,6 +346,13 @@ public:
       auto b_spawn_down = std::make_shared<Menu_button>(Point3f(10375, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPAWN_DOWN);
       engine.get_game().create_entity(b_spawn_down);
 
+      auto b_map_left = std::make_shared<Menu_button>(Point3f(10425, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::MAP_LEFT);
+      engine.get_game().create_entity(b_map_left);
+
+      auto b_map_right = std::make_shared<Menu_button>(Point3f(10475, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::MAP_RIGHT);
+      engine.get_game().create_entity(b_map_right);
+
+
       //Boton de guardado
       auto b_save = std::make_shared<Menu_button>(Point3f(10320, 325, 2), Vector2f(40, 40), engine, game_info, keyboard, Utils::BUTTON_TYPE::SAVE);
       engine.get_game().create_entity(b_save);

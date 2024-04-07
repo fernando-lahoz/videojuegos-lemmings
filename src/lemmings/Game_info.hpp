@@ -373,6 +373,7 @@ public:
 
   void set_dynamic_camera(Camera2D& cam) { dynamic_camera = &cam; }
   Camera2D &get_dynamic_camera() { return *dynamic_camera; }
+  Camera2D *get_dynamic_camera_ptr() { return dynamic_camera; }
 
   void set_is_buton_conf(bool _is_buton_conf) { is_buton_conf = _is_buton_conf; }
   bool get_is_buton_conf() { return is_buton_conf; }
