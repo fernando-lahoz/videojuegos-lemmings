@@ -141,8 +141,6 @@ public:
         {
             ground = other;
         }
-
-        Entity::on_collision(engine, other, is_alpha, collision_point_id);
     }
 
     void look_left()

@@ -35,7 +35,8 @@ class Physics_engine
         Vector2f speed1, Vector2f speed2,
         Vector2f &new_speed1);
 
-    void rigid_body_collision(EntityPtr entity1, EntityPtr entity2);
+    void rigid_body_collision(bool collided1, bool collided2,
+            EntityPtr entity1, EntityPtr entity2);
 
     void on_collision(Engine& engine,
             Float delta_time,
@@ -54,6 +55,16 @@ public:
 
     Float get_gravity() const;
     void set_gravity(Float gravity);
+
+    static void elastic_collision(Float mass1, Float mass2,
+        Vector2f speed1, Vector2f speed2, 
+        Point2f hit_point, Vector2f hit_normal,
+        Vector2f &new_speed1, Vector2f &new_speed2);
+
+    static void inelastic_collision(Float mass1, Float mass2,
+        Vector2f speed1, Vector2f speed2,
+        Point2f hit_point, Vector2f hit_normal,
+        Vector2f &new_speed1, Vector2f &new_speed2);
 
     void delete_entities(const std::unordered_set<Entity*> &deleted_entities);
 };

@@ -7,6 +7,7 @@
 #include "engine/engine.hpp"
 #include "engine/entity.hpp"
 #include "engine/trigger.hpp"
+#include "engine/physics.hpp"
 
 
 class Electric_field : public Entity
@@ -23,19 +24,26 @@ class Electric_field : public Entity
         COLLISION_POINT_LEFT = add_collision_point(Collision_point(Point2f(0.05, 0.5), Vector2f(-1, 0)));
         COLLISION_POINT_RIGHT = add_collision_point(Collision_point(Point2f(0.95, 0.5), Vector2f(1, 0)));
 
-        set_charge(10);
+        set_charge(0);
         disable_gravity();
 
         collision_check_type = Collision_check::AABB;
         physics_type = Physics_type::CHARGE_EMITTER;
-        collision_type = Collision_type::STATIC_BODY;
+        collision_type = Collision_type::TRANSPARENT_BODY;
 
         //set_max_speed(Vector2f(1.5, 1.5));
     }
 
     void on_collision(Engine& engine, EntityPtr other, bool is_alpha, size_t collision_point_id) override
     {
-
+        if (other->get_collision_type() == Collision_type::STATIC_BODY)
+        {
+            //Physics_engine::inelastic_collision(get_mass(), other->get_mass(),
+            //    get_speed(), other->get_speed(),
+            //    get_collision_point(collision_point_id).get_position(), 
+            //    get_collision_point(collision_point_id).get_normal(),
+            //    get_speed(), other->get_speed());
+        }
     }
 
 
