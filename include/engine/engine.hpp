@@ -89,6 +89,8 @@ private:
 
     Point2f mouse_position;
     bool quit_event = false;
+
+    std::vector<EntityPtr> new_entities;
     
 
 public:
@@ -128,6 +130,8 @@ public:
 
     void delete_entity(Entity* entity);
     void depth_changed(Entity* entity);
+    void create_entity(EntityPtr entity);
+
 
     Float get_gravity() const;
     void set_gravity(Float gravity);

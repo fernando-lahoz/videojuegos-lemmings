@@ -116,7 +116,7 @@ void Engine::send_event_up(EngineIO::InputEvent event)
     }
 }
 
-void Engine::depth_changed(Entity *entity)
+void Engine::depth_changed(Entity *)
 {
     reorder_z_buffer = true;
 }
@@ -393,8 +393,6 @@ void Engine::delete_entity(Entity* entity)
 
 void Engine::process_new_entities()
 {
-    auto new_entities = game->get_new_entities();
-
     if (new_entities.size() > 0)
     {
         reorder_z_buffer = true;
@@ -407,7 +405,14 @@ void Engine::process_new_entities()
             physics.add_entity(entity);
             entity->on_creation(*this);
         }
+
+        new_entities.clear();
     }
+}
+
+void Engine::create_entity(EntityPtr entity)
+{
+    new_entities.push_back(entity);
 }
 
 

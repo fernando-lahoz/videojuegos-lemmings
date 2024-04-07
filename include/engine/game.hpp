@@ -26,14 +26,9 @@ public:
     : game_name(_game_name)
     { }
 
-    std::vector<EntityPtr> get_new_entities();
     std::vector<std::shared_ptr<Camera2D>> get_new_cameras();
 
     std::string get_name() const;
-
-    // Entities are processed after physics 
-    //  and before deleting old entities
-    void create_entity(EntityPtr entity);
 
     void create_camera(std::shared_ptr<Camera2D> camera);
     void replace_main_camera(std::shared_ptr<Camera2D> camera);

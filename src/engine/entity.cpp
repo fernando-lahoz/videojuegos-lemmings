@@ -3,7 +3,7 @@
 
 Entity::Entity(Point2f position, Float depth,
             Vector2f diagonal, const Texture& texture, 
-            Engine &engine,
+            Engine &,
             std::string_view _entity_name, 
             Physics_type _physics_type,
             Collision_type _collision_type,
@@ -288,67 +288,4 @@ bool Entity::destroy_box_alpha(Engine &engine, Bound2f box)
 bool Entity::contains_the_mouse(Engine& engine)
 {
     return engine.is_entity_hovered(*this);
-}
-
-void Entity::on_event_down(Engine&, EngineIO::InputEvent)
-{
-    // Do nothing by default
-}
-
-void Entity::on_event_up(Engine&, EngineIO::InputEvent)
-{
-    // Do nothing by default
-}
-
-void Entity::pre_physics(Engine&)
-{
-    for (size_t i = 0; i < vector_is_colliding.size(); i++)
-    {
-        vector_is_colliding[i] = false;
-    }
-
-    for (size_t i = 0; i < 4; i++)
-    {
-        aabb_side_colliding[i] = false;
-    }
-}
-
-void Entity::update_state(Engine&)
-{
-    // Do nothing by default
-}
-
-void Entity::on_collision(Engine&, std::shared_ptr<Entity> , bool is_alpha, size_t collision_point_id)
-{
-    if (is_alpha)
-    {
-        vector_is_colliding[collision_point_id] = true;
-    }
-    else
-    {
-        aabb_side_colliding[collision_point_id] = true;
-    }
-    
-}
-
-void Entity::post_physics(Engine&)
-{
-    // Do nothing by default
-}
-
-// Called right after the entity has been inserted
-//  into the engine runtime
-void Entity::on_creation(Engine&)
-{
-    // Do nothing by default
-}
-
-void Entity::on_trigger_collision_event(Engine&, Entity*, EntityPtr)
-{
-    // Do nothing by default
-}
-
-void Entity::on_trigger_IO_event(Engine&, Entity*, EngineIO::InputEvent)
-{
-    // Do nothing by default
 }

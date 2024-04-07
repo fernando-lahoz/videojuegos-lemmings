@@ -183,38 +183,64 @@ public:
 
     // Returns true if the mouse is pointing inside the visible entity
     bool contains_the_mouse(Engine& engine);
-
-    // Event processing is the second thing executed, 
-    //  right after game->on_loop_start()
-    virtual void on_event_down(Engine& engine, EngineIO::InputEvent event);
-
-    // Event processing is the second thing executed, 
-    //  right after game->on_loop_start()
-    virtual void on_event_up(Engine& engine, EngineIO::InputEvent event);
-
     bool destroy_box_alpha(Engine &engine, Bound2f box);
+    
+    void entity_collision(Engine&, std::shared_ptr<Entity>, 
+            bool is_alpha, size_t collision_point_id)
+    {
+        if (is_alpha)
+        {
+            vector_is_colliding[collision_point_id] = true;
+        }
+        else
+        {
+            aabb_side_colliding[collision_point_id] = true;
+        }
+    }
+
+
+    void entity_pre_physics(Engine&)
+    {
+        for (size_t i = 0; i < vector_is_colliding.size(); i++)
+        {
+            vector_is_colliding[i] = false;
+        }
+
+        for (size_t i = 0; i < 4; i++)
+        {
+            aabb_side_colliding[i] = false;
+        }
+    }
+
+    // Event processing is the second thing executed, 
+    //  right after game->on_loop_start()
+    virtual void on_event_down(Engine&, EngineIO::InputEvent) {}
+
+    // Event processing is the second thing executed, 
+    //  right after game->on_loop_start()
+    virtual void on_event_up(Engine&, EngineIO::InputEvent) {}
 
     // This is called right before the physics are computed
-    virtual void pre_physics(Engine& engine);
+    virtual void pre_physics(Engine&) {}
 
     // This is called at the end of physics, just before post_physics
-    virtual void update_state(Engine& engine);
+    virtual void update_state(Engine&) {}
 
     // Collisions are called right after pre_physics and
     //  before update_position
-    virtual void on_collision(Engine& engine, 
-            std::shared_ptr<Entity> other,
-            bool is_alpha,
-            size_t collision_point_id);
+    virtual void on_collision(Engine&, 
+            std::shared_ptr<Entity>,
+            bool,
+            size_t) {}
 
     // This is called after all physics have finished
-    virtual void post_physics(Engine& engine);
+    virtual void post_physics(Engine&) {}
 
     // This is called right after the entity is inserted into the engine runtime
-    virtual void on_creation(Engine& engine);
+    virtual void on_creation(Engine&) {}
 
-    virtual void on_trigger_collision_event(Engine& engine, Entity *trigger, std::shared_ptr<Entity> other);
-    virtual void on_trigger_IO_event(Engine& engine, Entity *trigger, EngineIO::InputEvent event);
+    virtual void on_trigger_collision_event(Engine&, Entity *, std::shared_ptr<Entity>) {}
+    virtual void on_trigger_IO_event(Engine&, Entity *, EngineIO::InputEvent) {}
 };
 
 //TODO: custom names for pointers should not be equal for shared and raw

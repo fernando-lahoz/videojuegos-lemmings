@@ -2,16 +2,6 @@
 #include "engine/engine.hpp"
 #include "engine/IO.hpp"
 
-std::vector<EntityPtr> Game::get_new_entities()
-{
-    std::vector<EntityPtr> new_entities_tmp;
-    
-    // Gets entities to local and clears the game vector
-    new_entities_tmp.swap(new_entities);
-
-    return new_entities_tmp;
-}
-
 std::vector<std::shared_ptr<Camera2D>> Game::get_new_cameras()
 {
     std::vector<std::shared_ptr<Camera2D>> new_cameras_tmp;
@@ -25,11 +15,6 @@ std::vector<std::shared_ptr<Camera2D>> Game::get_new_cameras()
 std::string Game::get_name() const
 {
     return game_name;
-}
-
-void Game::create_entity(EntityPtr entity)
-{
-    new_entities.push_back(entity);
 }
 
 void Game::create_camera(std::shared_ptr<Camera2D> camera)

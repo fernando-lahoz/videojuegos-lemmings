@@ -15,11 +15,6 @@ void Physics_engine::update_positions(Engine& engine)
         {
             speed.y = std::clamp(Float(speed.y + gravity * delta_time), -max_speed.y, max_speed.y);
 
-            if (entity->get_entity_name() == "Geralt")
-            {
-                std::cout << "Speed: " << speed << std::endl;
-            }
-
             entity->set_speed(speed);
         }
     }
@@ -182,9 +177,12 @@ void Physics_engine::compute_collisions(Engine& engine)
                 undo_movement(delta_time, aabb, collision_point);
                 undo_movement(delta_time, other, collision_point);
 
+                aabb->entity_collision(engine, other, false, collision_point_id1);
                 aabb->on_collision(engine, other, false, collision_point_id1);
+                
+                other->entity_collision(engine, aabb, false, collision_point_id2);
                 other->on_collision(engine, aabb, false, collision_point_id2);
-
+                
                 rigid_body_collision(aabb, other);
             }
         }
@@ -208,12 +206,14 @@ void Physics_engine::compute_collisions(Engine& engine)
                 if (first_collided) 
                 {
                     //undo_movement(delta_time, aabb);
+                    aabb->entity_collision(engine, other, true, collision_point_id);
                     aabb->on_collision(engine, other, true, collision_point_id);
                 }
 
                 if (second_collided)
                 {
                     //undo_movement(delta_time, other);
+                    other->entity_collision(engine, aabb, false, collision_point_id);
                     other->on_collision(engine, aabb, true, collision_point_id);
                 }
 
@@ -243,12 +243,14 @@ void Physics_engine::compute_collisions(Engine& engine)
                 if (first_collided) 
                 {
                     //undo_movement(delta_time, alpha);
+                    alpha->entity_collision(engine, other, true, collision_point_id);
                     alpha->on_collision(engine, other, true, collision_point_id);
                 }
 
                 if (second_collided)
                 {
                     //undo_movement(delta_time, other);
+                    other->entity_collision(engine, alpha, true, collision_point_id);
                     other->on_collision(engine, alpha, true, collision_point_id);
                 }
 
@@ -268,6 +270,7 @@ void Physics_engine::pre_physics(Engine& engine)
 
     for (auto& entity : entities)
     {
+        entity->entity_pre_physics(engine);
         entity->pre_physics(engine);
     }
 }

@@ -90,14 +90,14 @@ public:
         Music canon = mixer.load_music("assets/music/02_Lemming 1 (Pachebel's Canon).mp3");
         //mixer.play_music(canon, true);
 
-        //engine.set_gravity(9.8);
+        engine.set_gravity(9.8);
 
         //box2->set_speed(Vector2f(-0.1, -0.2));
 
         
-        create_entity(geralt);
-        create_entity(ground);
-        create_entity(cielo);
+        engine.create_entity(geralt);
+        engine.create_entity(ground);
+        engine.create_entity(cielo);
 
         create_camera(std::make_shared<Geralt_camera>());
     }
