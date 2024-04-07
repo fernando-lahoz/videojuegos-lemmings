@@ -289,82 +289,190 @@ public:
       engine.get_game().create_entity(background);
       
       //Añadimos el botón de sonido
-      auto button1 = std::make_shared<Menu_button>(Point3f(10400, 250, 2), Vector2f(125, 125), engine, game_info, keyboard, Utils::BUTTON_TYPE::SOUND_EFFECTS, true);
-      engine.get_game().create_entity(button1);
-
-      //Guardamos en una variable el contenido de fichero de comfiguración
-      EngineIO::InputEvent aux[18];
-      KeyBindings().readKeyBindingsFile(aux);//Leemos fichero con valores asociados a los botones de partida
-      game_info.set_conf_butons(aux);
+      auto b_sonido = std::make_shared<Menu_button>(Point3f(10525, 330, 2), Vector2f(60, 60), engine, game_info, keyboard, Utils::BUTTON_TYPE::SOUND_EFFECTS, true);
+      engine.get_game().create_entity(b_sonido);
 
       //Botones de control de juego(habilidades, pausa, etc)
-      auto b_pause = std::make_shared<Menu_button>(Point3f(10025, 50, 2), Vector2f(40, 40), engine, game_info, keyboard, Utils::BUTTON_TYPE::PAUSE);
+      float size_x = 90.0, size_y = size_x, size_t = 0.425;//Tamaño de botones
+      float x_b = 10045, y_b = 50;//Posiciones x e y de los botones
+      float i_bot = size_x;//Incremento de posición en x entre los botones
+      float i_tx = i_bot/2;//Incremento de posición en x del texto del boton
+
+      auto b_pause = std::make_shared<Menu_button>(Point3f(x_b, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::PAUSE);
       engine.get_game().create_entity(b_pause);
-      
-      auto b_ability1 = std::make_shared<Menu_button>(Point3f(10075, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_1);
+      auto dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::PAUSE-6)), 
+                                                         4, Utils::BUTTON_TYPE::PAUSE-6);
+      engine.get_game().create_entity(dynamic_t);
+
+
+      auto b_ability1 = std::make_shared<Menu_button>(Point3f(x_b+=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_1);
       engine.get_game().create_entity(b_ability1);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::ABILITY_1-6)), 
+                                                         4, Utils::BUTTON_TYPE::ABILITY_1-6);
+      engine.get_game().create_entity(dynamic_t);
 
-      auto b_ability2 = std::make_shared<Menu_button>(Point3f(10125, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_2);
+
+      auto b_ability2 = std::make_shared<Menu_button>(Point3f(x_b+=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_2);
       engine.get_game().create_entity(b_ability2);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::ABILITY_2-6)), 
+                                                         4, Utils::BUTTON_TYPE::ABILITY_2-6);
+      engine.get_game().create_entity(dynamic_t);
+
       
-      auto b_ability3 = std::make_shared<Menu_button>(Point3f(10175, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_3);
+      auto b_ability3 = std::make_shared<Menu_button>(Point3f(x_b+=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_3);
       engine.get_game().create_entity(b_ability3);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::ABILITY_3-6)), 
+                                                         4, Utils::BUTTON_TYPE::ABILITY_3-6);
+      engine.get_game().create_entity(dynamic_t);
+
       
-      auto b_ability4 = std::make_shared<Menu_button>(Point3f(10225, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_4);
+      auto b_ability4 = std::make_shared<Menu_button>(Point3f(x_b+=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_4);
       engine.get_game().create_entity(b_ability4);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::ABILITY_4-6)), 
+                                                         4, Utils::BUTTON_TYPE::ABILITY_4-6);
+      engine.get_game().create_entity(dynamic_t);
+
       
-      auto b_ability5 = std::make_shared<Menu_button>(Point3f(10275, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_5);
+      auto b_ability5 = std::make_shared<Menu_button>(Point3f(x_b+=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_5);
       engine.get_game().create_entity(b_ability5);
-      
-      auto b_ability6 = std::make_shared<Menu_button>(Point3f(10325, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_6);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::ABILITY_5-6)), 
+                                                         4, Utils::BUTTON_TYPE::ABILITY_5-6);
+      engine.get_game().create_entity(dynamic_t);
+
+
+      y_b = 140;
+      auto b_ability6 = std::make_shared<Menu_button>(Point3f(x_b, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_6);
       engine.get_game().create_entity(b_ability6);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::ABILITY_6-6)), 
+                                                         4, Utils::BUTTON_TYPE::ABILITY_6-6);
+      engine.get_game().create_entity(dynamic_t);
 
-      auto b_ability7 = std::make_shared<Menu_button>(Point3f(10375, 50, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_7);
+
+      auto b_ability7 = std::make_shared<Menu_button>(Point3f(x_b-=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_7);
       engine.get_game().create_entity(b_ability7);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::ABILITY_7-6)), 
+                                                         4, Utils::BUTTON_TYPE::ABILITY_7-6);
+      engine.get_game().create_entity(dynamic_t);
 
-      auto b_ability8 = std::make_shared<Menu_button>(Point3f(10025, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_8);
+
+      auto b_ability8 = std::make_shared<Menu_button>(Point3f(x_b-=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_8);
       engine.get_game().create_entity(b_ability8);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::ABILITY_8-6)), 
+                                                         4, Utils::BUTTON_TYPE::ABILITY_8-6);
+      engine.get_game().create_entity(dynamic_t);
 
-      auto b_explode_all = std::make_shared<Menu_button>(Point3f(10075, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::EXPLODE_ALL);
+
+      auto b_explode_all = std::make_shared<Menu_button>(Point3f(x_b-=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::EXPLODE_ALL);
       engine.get_game().create_entity(b_explode_all);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::EXPLODE_ALL-6)), 
+                                                         4, Utils::BUTTON_TYPE::EXPLODE_ALL-6);
+      engine.get_game().create_entity(dynamic_t);
 
-      auto b_ability_up = std::make_shared<Menu_button>(Point3f(10125, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_UP);
+
+      auto b_ability_up = std::make_shared<Menu_button>(Point3f(x_b-=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_UP);
       engine.get_game().create_entity(b_ability_up);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::ABILITY_UP-6)), 
+                                                         4, Utils::BUTTON_TYPE::ABILITY_UP-6);
+      engine.get_game().create_entity(dynamic_t);
 
-      auto b_ability_down = std::make_shared<Menu_button>(Point3f(10175, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_DOWN);
+
+      auto b_ability_down = std::make_shared<Menu_button>(Point3f(x_b-=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_DOWN);
       engine.get_game().create_entity(b_ability_down);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::ABILITY_DOWN-6)), 
+                                                         4, Utils::BUTTON_TYPE::ABILITY_DOWN-6);
+      engine.get_game().create_entity(dynamic_t);
 
-      auto b_speed_up = std::make_shared<Menu_button>(Point3f(10225, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPEED_UP);
+      y_b = 230;
+      auto b_speed_up = std::make_shared<Menu_button>(Point3f(x_b, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPEED_UP);
       engine.get_game().create_entity(b_speed_up);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::SPEED_UP-6)), 
+                                                         4, Utils::BUTTON_TYPE::SPEED_UP-6);
+      engine.get_game().create_entity(dynamic_t);
 
-      auto b_speed_down = std::make_shared<Menu_button>(Point3f(10275, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPEED_DOWN);
+
+      auto b_speed_down = std::make_shared<Menu_button>(Point3f(x_b+=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPEED_DOWN);
       engine.get_game().create_entity(b_speed_down);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::SPEED_DOWN-6)), 
+                                                         4, Utils::BUTTON_TYPE::SPEED_DOWN-6);
+      engine.get_game().create_entity(dynamic_t);
 
-      auto b_spawn_up = std::make_shared<Menu_button>(Point3f(10325, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPAWN_UP);
+
+      auto b_spawn_up = std::make_shared<Menu_button>(Point3f(x_b+=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPAWN_UP);
       engine.get_game().create_entity(b_spawn_up);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::SPAWN_UP-6)), 
+                                                         4, Utils::BUTTON_TYPE::SPAWN_UP-6);
+      engine.get_game().create_entity(dynamic_t);
 
-      auto b_spawn_down = std::make_shared<Menu_button>(Point3f(10375, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPAWN_DOWN);
+
+      auto b_spawn_down = std::make_shared<Menu_button>(Point3f(x_b+=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::SPAWN_DOWN);
       engine.get_game().create_entity(b_spawn_down);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::SPAWN_DOWN-6)), 
+                                                         4, Utils::BUTTON_TYPE::SPAWN_DOWN-6);
+      engine.get_game().create_entity(dynamic_t);
 
-      auto b_map_left = std::make_shared<Menu_button>(Point3f(10425, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::MAP_LEFT);
+
+      auto b_map_left = std::make_shared<Menu_button>(Point3f(x_b+=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::MAP_LEFT);
       engine.get_game().create_entity(b_map_left);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::MAP_LEFT-6)), 
+                                                         4, Utils::BUTTON_TYPE::MAP_LEFT-6);
+      engine.get_game().create_entity(dynamic_t);
 
-      auto b_map_right = std::make_shared<Menu_button>(Point3f(10475, 200, 2), Vector2f(50, 50), engine, game_info, keyboard, Utils::BUTTON_TYPE::MAP_RIGHT);
+
+      auto b_map_right = std::make_shared<Menu_button>(Point3f(x_b+=i_bot, y_b, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::MAP_RIGHT);
       engine.get_game().create_entity(b_map_right);
+      dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b+i_tx, y_b+15, 1), Vector2f(16*size_t, 30*size_t), engine, game_info, "center",
+                                                         engine.load_texture("assets/font/font-red.png"),
+                                                         Vector2i(16, 30), lemmings_font_map, KeyBindings().InEvenToCh(game_info.get_conf_butons(Utils::BUTTON_TYPE::MAP_RIGHT-6)), 
+                                                         4, Utils::BUTTON_TYPE::MAP_RIGHT-6);
+      engine.get_game().create_entity(dynamic_t);
 
 
       //Boton de guardado
-      auto b_save = std::make_shared<Menu_button>(Point3f(10320, 325, 2), Vector2f(40, 40), engine, game_info, keyboard, Utils::BUTTON_TYPE::SAVE);
+      auto b_save = std::make_shared<Menu_button>(Point3f(10300, 325, 2), Vector2f(40, 40), engine, game_info, keyboard, Utils::BUTTON_TYPE::SAVE);
       engine.get_game().create_entity(b_save);
 
       //Título de menu de configuracion
-      auto text = std::make_shared<Text_displayer>(Point3f(10320, 30, 2), Vector2f(16, 30), game_info, "center",
+      auto text = std::make_shared<Text_displayer>(Point3f(10320, 25, 2), Vector2f(16*1.25, 30*1.25), game_info, "center",
                                               engine.load_texture("assets/font/font-red.png"),
                                               Vector2i(16, 30), lemmings_font_map, "Settings", engine,
                                               "TEXT");
       engine.get_game().create_entity(text);
 
-      text = std::make_shared<Text_displayer>(Point3f(10320, 385, 2), Vector2f(16, 30), game_info, "center",
+      text = std::make_shared<Text_displayer>(Point3f(10320, 385, 2), Vector2f(16*0.75, 30*0.75), game_info, "center",
                                               engine.load_texture("assets/font/font-blue.png"),
                                               Vector2i(16, 30), lemmings_font_map, Utils::TEXT_BLUE_2[2], engine,
                                               "TEXT");

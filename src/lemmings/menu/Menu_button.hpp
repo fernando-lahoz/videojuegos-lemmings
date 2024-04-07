@@ -34,8 +34,12 @@ private:
       {
         n_file = "assets/menu/config_pause.png";
       }
-      else if(_type >= Utils::ABILITY_1 && _type <= Utils::EXPLODE_ALL){
+      else if(_type >= Utils::ABILITY_1 && _type <= Utils::ABILITY_8){
         n_file = "assets/hud/hud_option_" + std::to_string(_type - 5) + ".png";
+      }
+      else if(_type == Utils::EXPLODE_ALL)
+      {
+        n_file = "assets/menu/config_explode_all.png";	
       }
       else if(_type == Utils::ABILITY_UP)
       {
@@ -121,6 +125,12 @@ public:
       game_info.set_do_transition(true);
       game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
       game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+
+      //Guardamos en una variable el contenido de fichero de comfiguración
+      EngineIO::InputEvent aux[18];
+      KeyBindings().readKeyBindingsFile(aux);//Leemos fichero con valores asociados a los botones de partida
+      game_info.set_conf_butons(aux);
+
     }
     else if (button_type >= Utils::PAUSE && button_type <= Utils::MAP_RIGHT)//Gestión de teclas de modificación
     {
