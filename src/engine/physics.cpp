@@ -114,6 +114,8 @@ void electric_force(Engine &engine, EntityPtr emitter, EntityPtr aabb)
     Float force_magnitude = charge1 * charge2 
             / (aabb->centroid() - emitter->centroid()).length_squared();
 
+    //std::cout << "Electric force on " << aabb->get_class() << ": " << force_direction*force_magnitude << std::endl;
+
     // Apply force
     aabb->apply_force(engine, force_direction * force_magnitude);
 }
@@ -374,7 +376,13 @@ void Physics_engine::update_physics(Engine& engine)
 
             speed = clamp(speed + acc * delta_time, -max_speed, max_speed);
             entity->set_speed(speed);
-            entity->clear_acceleration();      
+            entity->clear_acceleration();     
+
+            if (entity->get_entity_name() == "Geralt")
+            {
+                std::cout << "Speed: " << speed << std::endl;
+                std::cout << "Acceleration " << acc << std::endl;
+            } 
 
 
             /*********** Update speed ************/
@@ -508,4 +516,28 @@ void Physics_engine::delete_entities(const std::unordered_set<Entity*> &deleted_
         alpha_entities.resize(alpha_entities.size() - n_alpha_to_delete);
         n_alpha_to_delete = 0;
     }
+
+
+    /******************* Delete charge emitters *******************/
+
+    for (int i = charge_emitters.size()-1; i >= 0; i--)
+    {
+        size_t last_undeleted_position = charge_emitters.size()-1-n_charge_emitters_to_delete;
+
+        if (deleted_entities.find(charge_emitters[i].get()) != deleted_entities.end())
+        {
+            if (i != (int)last_undeleted_position)
+                std::swap(charge_emitters[i], charge_emitters[last_undeleted_position]);
+            
+            n_charge_emitters_to_delete++;
+        }
+    }
+
+    if (n_charge_emitters_to_delete > 0)
+    {
+        charge_emitters.resize(charge_emitters.size() - n_charge_emitters_to_delete);
+        n_charge_emitters_to_delete = 0;
+    }
+
+
 }

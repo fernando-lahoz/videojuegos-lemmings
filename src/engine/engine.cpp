@@ -746,6 +746,17 @@ int Engine::async_task(const std::function<void()> &task, bool create_thread)
     return task_id;
 }
 
+void Engine::start_timer(std::chrono::milliseconds duration, const std::function<void()> &callback)
+{
+    // This can be improved by making a custom timer system
+    async_task([this, duration, callback]
+               {
+                   std::this_thread::sleep_until(std::chrono::steady_clock::now() + duration);
+                   callback();
+               },
+               true);
+}
+
 void Engine::th_single_task_worker(std::pair<int, std::function<void()>> task)
 {
     task.second();

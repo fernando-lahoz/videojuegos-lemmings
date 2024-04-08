@@ -83,7 +83,7 @@ public:
         if (engine.is_s_down()
             && !colliding_down())
         {
-            speed.y = speed.y + 1;
+            acceleration.y += 60;
         }
 
 
@@ -143,9 +143,24 @@ public:
 
                 electric_field->set_speed(speed*1.5);
                 electric_field->set_position(get_position()+speed*1.5*0.1);
-                electric_field->disable_gravity();
             }
         }
+        else if (event == EngineIO::InputEvent::BACKSPACE)
+        {
+            for (auto& electric_field : electric_fields)
+            {
+                electric_field->start_destruction(engine);
+            }
+
+            engine.start_timer(std::chrono::milliseconds(200), [this, &engine]()
+            {
+                for (auto& electric_field : electric_fields)
+                {
+                    electric_field->destroy(engine);
+                }
+            });
+        }
+        
     }
 
     void look_left()

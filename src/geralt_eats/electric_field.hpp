@@ -14,6 +14,8 @@ class Electric_field : public Entity
 {
     size_t COLLISION_POINT_DOWN, COLLISION_POINT_UP, COLLISION_POINT_LEFT, COLLISION_POINT_RIGHT;
 
+    bool destroying = false;
+
     public:
 
     Electric_field(Engine& engine, Point2f position, Vector2f size, Float charge) 
@@ -34,6 +36,10 @@ class Electric_field : public Entity
         //set_max_speed(Vector2f(1.5, 1.5));
     }
 
+    void update_state(Engine& engine) override
+    {
+    }
+
     void on_collision(Engine& engine, EntityPtr other, bool is_alpha, size_t collision_point_id) override
     {
         if (other->get_collision_type() == Collision_type::STATIC_BODY)
@@ -46,10 +52,9 @@ class Electric_field : public Entity
         }
     }
 
-
-    void update_state (Engine& engine) override
+    void start_destruction(Engine &engine)
     {
-
+        destroying = true;
+        set_charge(get_charge()*3);
     }
-
 };

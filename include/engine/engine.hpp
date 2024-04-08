@@ -116,6 +116,7 @@ public:
     // The event will be sent with this id
     int preload_textures(const std::vector<std::string>& paths);
     int async_task(const std::function<void()>& task, bool create_thread=false);
+    void start_timer(std::chrono::milliseconds duration, const std::function<void()>& callback);
 
     void set_window_icon(const std::string& path);
     void set_fullscreen();

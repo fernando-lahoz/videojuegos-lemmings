@@ -19,6 +19,7 @@ class Physics_engine
     Float gravity = 0;
     size_t n_aabb_to_delete = 0;
     size_t n_alpha_to_delete = 0;
+    size_t n_charge_emitters_to_delete = 0;
 
 
     void update_physics(Engine& engine);
