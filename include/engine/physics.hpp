@@ -36,11 +36,13 @@ class Physics_engine
         Vector2f &new_speed1);
 
     void rigid_body_collision(bool collided1, bool collided2,
+            bool compute_physics1, bool compute_physics2,
             EntityPtr entity1, EntityPtr entity2);
 
     void on_collision(Engine& engine,
             Float delta_time,
             bool first_collided, bool second_collided,
+            bool compute_physics1, bool compute_physics2,
             EntityPtr entity1, EntityPtr entity2, 
             bool is_alpha, 
             size_t collision_point_id1, size_t collision_point_id2);

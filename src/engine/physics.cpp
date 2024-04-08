@@ -81,11 +81,10 @@ void Physics_engine::add_entity(EntityPtr entity)
 
 void Physics_engine::rigid_body_collision(
         bool collided1, bool collided2,
+        bool compute_physics1, bool compute_physics2,
         EntityPtr entity1, EntityPtr entity2)
 {
-    if (entity1->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
-        ||
-        entity2->get_collision_type()  == Entity::Collision_type::DYNAMIC_BODY)
+    if (compute_physics1 || compute_physics2)
     {
         Vector2f new_speed1, new_speed2;
 
@@ -94,10 +93,10 @@ void Physics_engine::rigid_body_collision(
             Point2f(0, 0), Vector2f(0, 0),
             new_speed1, new_speed2);
 
-        if (collided1 && entity1->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY)
+        if (collided1 && compute_physics1)
             entity1->set_speed(new_speed1);
         
-        if (collided2 && entity2->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY)
+        if (collided2 && compute_physics2)
             entity2->set_speed(new_speed2);
     }
 }
@@ -122,6 +121,7 @@ void electric_force(Engine &engine, EntityPtr emitter, EntityPtr aabb)
 void Physics_engine::on_collision(Engine& engine,
         Float delta_time,
         bool first_collided, bool second_collided,
+        bool compute_physics1, bool compute_physics2,
         EntityPtr entity1, EntityPtr entity2, 
         bool is_alpha, 
         size_t collision_point_id1, size_t collision_point_id2)
@@ -140,7 +140,9 @@ void Physics_engine::on_collision(Engine& engine,
 
     if (first_collided || second_collided)
     {
-        rigid_body_collision(first_collided, second_collided, entity1, entity2);
+        rigid_body_collision(first_collided, second_collided, 
+                compute_physics1, compute_physics2,
+                entity1, entity2);
     }
 }
 
@@ -191,15 +193,26 @@ void Physics_engine::compute_collisions(Engine& engine)
                         aabb->get_collision_type() == Entity::Collision_type::STATIC_BODY
                     );
 
+                bool compute_physics1 = aabb->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
+                                        || (aabb->get_collision_type() == Entity::Collision_type::TRANSPARENT_BODY
+                                            && other->get_collision_type() == Entity::Collision_type::STATIC_BODY);
 
-                if (first_collided)
+                bool compute_physics2 = other->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
+                                        || (other->get_collision_type() == Entity::Collision_type::TRANSPARENT_BODY
+                                            && aabb->get_collision_type() == Entity::Collision_type::STATIC_BODY);
+
+
+                if (first_collided && compute_physics1)
                     undo_movement(delta_time, aabb, collision_point);
 
-                if (second_collided)
+                if (second_collided && compute_physics2)
                     undo_movement(delta_time, other, collision_point);
                 
 
-                on_collision(engine, delta_time, first_collided, second_collided, aabb, other, false, collision_point_id1, collision_point_id2);
+                on_collision(engine, delta_time, first_collided, second_collided, 
+                            compute_physics1, compute_physics2,
+                            aabb, other, false, 
+                            collision_point_id1, collision_point_id2);
             }
         }
     }
@@ -247,7 +260,19 @@ void Physics_engine::compute_collisions(Engine& engine)
                     );
 
 
-                on_collision(engine, delta_time, first_collided, second_collided, aabb, other, false, collision_point_id, collision_point_id);
+                bool compute_physics1 = aabb->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
+                                        || (aabb->get_collision_type() == Entity::Collision_type::TRANSPARENT_BODY
+                                            && other->get_collision_type() == Entity::Collision_type::STATIC_BODY);
+
+                bool compute_physics2 = other->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
+                                        || (other->get_collision_type() == Entity::Collision_type::TRANSPARENT_BODY
+                                            && aabb->get_collision_type() == Entity::Collision_type::STATIC_BODY);
+
+
+                on_collision(engine, delta_time, first_collided, second_collided, 
+                        compute_physics1, compute_physics2,
+                        aabb, other, false, 
+                        collision_point_id, collision_point_id);
             }
         }
     }
@@ -293,7 +318,20 @@ void Physics_engine::compute_collisions(Engine& engine)
                         alpha->get_collision_type() == Entity::Collision_type::STATIC_BODY
                     );
 
-                on_collision(engine, delta_time, first_collided, second_collided, alpha, other, true, collision_point_id, collision_point_id);
+                
+                bool compute_physics1 = alpha->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
+                                        || (alpha->get_collision_type() == Entity::Collision_type::TRANSPARENT_BODY
+                                            && other->get_collision_type() == Entity::Collision_type::STATIC_BODY);
+
+                bool compute_physics2 = other->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
+                                        || (other->get_collision_type() == Entity::Collision_type::TRANSPARENT_BODY
+                                            && alpha->get_collision_type() == Entity::Collision_type::STATIC_BODY);
+
+
+                on_collision(engine, delta_time, first_collided, second_collided, 
+                    compute_physics1, compute_physics2,
+                    alpha, other, true, 
+                    collision_point_id, collision_point_id);
             }
         }
     }

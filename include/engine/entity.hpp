@@ -26,7 +26,7 @@ public:
     enum class Collision_check {NONE, AABB, ALPHA};
 
     // Trigger: does not collide physically with anything, but can trigger events
-    // Transparent_body: Other bodies can pass through it, but it can collide with them
+    // Transparent_body: Other bodies can pass through it, but it can collide with them. Has physics only with static body
     // Static_body: Other bodies collide with it, but it does not get affected physically by them
     // Dynamic_body: Collides with other bodies and they collide with it
     enum class Collision_type {TRIGGER, TRANSPARENT_BODY, STATIC_BODY, DYNAMIC_BODY};
@@ -160,7 +160,6 @@ public:
 
     void set_speed(Vector2f new_speed)
     {
-        std::cout << "Setting speed to " << new_speed << std::endl;
         speed = math::clamp(new_speed, -max_speed, max_speed);
     }
 

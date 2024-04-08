@@ -25,7 +25,7 @@ class Electric_field : public Entity
         COLLISION_POINT_RIGHT = add_collision_point(Collision_point(Point2f(0.95, 0.5), Vector2f(1, 0)));
 
         set_charge(0);
-        disable_gravity();
+        //disable_gravity();
 
         collision_check_type = Collision_check::AABB;
         physics_type = Physics_type::CHARGE_EMITTER;
