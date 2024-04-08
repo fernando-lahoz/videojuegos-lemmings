@@ -126,7 +126,7 @@ public:
         game_info.set_build_menu(Utils::MENU_TYPE::TITLE);
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         game_info.set_do_transition(true);
-        game_info.set_is_buton_conf(false);//No hay boton seleccionado en menu configuración
+        game_info.set_is_button_conf(false);//No hay boton seleccionado en menu configuración
         return;
       }
 

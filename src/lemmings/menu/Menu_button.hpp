@@ -35,7 +35,7 @@ private:
         n_file = "assets/menu/config_pause.png";
       }
       else if(_type >= Utils::ABILITY_1 && _type <= Utils::ABILITY_8){
-        n_file = "assets/hud/hud_option_" + std::to_string(_type - 5) + ".png";
+        n_file = "assets/menu/config_skill_" + std::to_string(_type - 5) + ".png";
       }
       else if(_type == Utils::EXPLODE_ALL)
       {
@@ -129,30 +129,30 @@ public:
       //Guardamos en una variable el contenido de fichero de comfiguración
       EngineIO::InputEvent aux[18];
       KeyBindings().readKeyBindingsFile(aux);//Leemos fichero con valores asociados a los botones de partida
-      game_info.set_conf_butons(aux);
+      game_info.set_conf_buttons(aux);
 
     }
     else if (button_type >= Utils::PAUSE && button_type <= Utils::MAP_RIGHT)//Gestión de teclas de modificación
     {
 
-      if(button_type != game_info.get_last_button() || !game_info.get_is_buton_conf())
+      if(button_type != game_info.get_last_button() || !game_info.get_is_button_conf())
       {//Si no concuerda con el ultimo pulsado
         std::cout << "HABILITADO BOTON  " << button_type-6 << std::endl;
-        game_info.set_is_buton_conf(true);
+        game_info.set_is_button_conf(true);
         game_info.set_last_button(button_type);
       }
       else
       {//Si pulsamos dos veces seguida el mismo es como dejar de seleccionar el boton
         std::cout << "DESHABILITADO BOTON  " << button_type-6 << std::endl;
-        game_info.set_is_buton_conf(false);
+        game_info.set_is_button_conf(false);
       }
     }
     else if(button_type >= Utils::SAVE)
     {
       //Guardar configuración de botones actual
-      EngineIO::InputEvent conf_butons[NUM_KEYBINDINGS];
-      game_info.get_conf_butons(conf_butons);
-      KeyBindings().setKeyBindings(conf_butons);//Modificamos el fichero
+      EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS];
+      game_info.get_conf_buttons(conf_buttons);
+      KeyBindings().setKeyBindings(conf_buttons);//Modificamos el fichero
 
       keyboard.set_key_bindings();//Actualizamos botones de partida
       

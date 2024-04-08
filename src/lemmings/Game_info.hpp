@@ -48,9 +48,9 @@ private:
   int option_selected = Utils::NO_OPTION_SELECTED;
 
   // Variables de configuración
-  bool is_buton_conf = false; //indica si está pulsado un botón del menu de configuración
+  bool is_button_conf = false; //indica si está pulsado un botón del menu de configuración
   int last_button = -1; //indica el ultimo boton pulsado en el menu de configuración
-  EngineIO::InputEvent conf_butons[NUM_KEYBINDINGS]; //Guarda la configuración de teclas del fichero para modificarlo
+  EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS]; //Guarda la configuración de teclas del fichero para modificarlo
 
   // cursor
   Texture cursor_txt;
@@ -375,30 +375,35 @@ public:
   Camera2D &get_dynamic_camera() { return *dynamic_camera; }
   Camera2D *get_dynamic_camera_ptr() { return dynamic_camera; }
 
-  void set_is_buton_conf(bool _is_buton_conf) { is_buton_conf = _is_buton_conf; }
-  bool get_is_buton_conf() { return is_buton_conf; }
+  void set_is_button_conf(bool _is_button_conf) { is_button_conf = _is_button_conf; }
+  bool get_is_button_conf() { return is_button_conf; }
 
   void set_last_button(int _last_button) { last_button = _last_button; }
   int get_last_button() { return last_button; }
 
-  void set_conf_butons(EngineIO::InputEvent _conf_butons[]) {
+  void set_conf_buttons(EngineIO::InputEvent _conf_buttons[]) {
     for(int i = 0; i < NUM_KEYBINDINGS; i++){
-      conf_butons[i] = _conf_butons[i]; 
+      conf_buttons[i] = _conf_buttons[i]; 
     }
   }
 
-  void set_conf_butons(EngineIO::InputEvent _conf_buton, int idx) {
+  void set_conf_buttons(EngineIO::InputEvent _conf_button, int idx) {
     if(idx >= 0 && idx <= NUM_KEYBINDINGS)
-      conf_butons[idx] = _conf_buton;
-  }
-
-  void get_conf_butons(EngineIO::InputEvent _conf_butons[])
-  { 
-    for(int i = 0; i < NUM_KEYBINDINGS; i++){
-      _conf_butons[i] = conf_butons[i];
+    {
+      for (int i = 0; i < NUM_KEYBINDINGS; i++)
+          if (conf_buttons[i] == _conf_button)
+              conf_buttons[i] = conf_buttons[idx];
+      conf_buttons[idx] = _conf_button;
     }
+    set_is_button_conf(false);
   }
 
-  EngineIO::InputEvent get_conf_butons(int idx) { return conf_butons[idx]; }
+  void get_conf_buttons(EngineIO::InputEvent _conf_buttons[])
+  { 
+    for(int i = 0; i < NUM_KEYBINDINGS; i++)
+        _conf_buttons[i] = conf_buttons[i];
+  }
+
+  EngineIO::InputEvent get_conf_buttons(int idx) { return conf_buttons[idx]; }
 
 };

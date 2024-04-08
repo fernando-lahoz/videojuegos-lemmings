@@ -15,50 +15,37 @@
 
 EngineIO::InputEvent Engine::SDL_to_input_event(SDL_KeyboardEvent key)
 {
-    /*
+    
     // Para mostrar por consola la tecla que se ha pulsado.
     std::cout << "Key pressed: " << key.keysym.sym << std::endl;
-    */
-    if (key.keysym.sym >= SDLK_0 && key.keysym.sym <= SDLK_9)
-            return (EngineIO::InputEvent)(key.keysym.sym - SDLK_0 + 48);
 
-    else if (key.keysym.sym >= SDLK_a && key.keysym.sym <= SDLK_z)
+    if (key.keysym.sym >= SDLK_a && key.keysym.sym <= SDLK_z)
             return (EngineIO::InputEvent)(key.keysym.sym - SDLK_a + 65);
+    
+    if (key.keysym.sym >= SDLK_SPACE && key.keysym.sym < 256)
+            return (EngineIO::InputEvent)(key.keysym.sym);
         
-    else if (key.keysym.sym >= SDLK_F1 && key.keysym.sym <= SDLK_F12)
+    if (key.keysym.sym >= SDLK_F1 && key.keysym.sym <= SDLK_F12)
             return (EngineIO::InputEvent)(key.keysym.sym - SDLK_F1 + 256);
 
-    else if (key.keysym.sym >= SDLK_KP_DIVIDE && key.keysym.sym <= SDLK_KP_PERIOD)
+    if (key.keysym.sym >= SDLK_KP_DIVIDE && key.keysym.sym <= SDLK_KP_PERIOD)
             return (EngineIO::InputEvent)(key.keysym.sym - SDLK_KP_DIVIDE + 268);
     
     switch (key.keysym.sym)
     {
-    case SDLK_RIGHT:
-        return EngineIO::InputEvent::RIGHT;
-    case SDLK_LEFT:
-        return EngineIO::InputEvent::LEFT;
-    case SDLK_UP:
-        return EngineIO::InputEvent::UP;
-    case SDLK_DOWN:
-        return EngineIO::InputEvent::DOWN;
-    case SDLK_SPACE:
-        return EngineIO::InputEvent::SPACE;
-    case SDLK_LSHIFT:
-        return EngineIO::InputEvent::SHIFT;
-    case SDLK_LCTRL:
-        return EngineIO::InputEvent::CTRL;
-    case SDLK_LALT:
-        return EngineIO::InputEvent::ALT;
-    case SDLK_RETURN:
-        return EngineIO::InputEvent::ENTER;
-    case SDLK_ESCAPE:
-        return EngineIO::InputEvent::ESC;
-    case SDLK_TAB:
-        return EngineIO::InputEvent::TAB;
-    case SDLK_BACKSPACE:
-        return EngineIO::InputEvent::BACKSPACE;
-    default:
-        return EngineIO::InputEvent::NONE;
+        case SDLK_RIGHT:        return EngineIO::InputEvent::RIGHT;
+        case SDLK_LEFT:         return EngineIO::InputEvent::LEFT;
+        case SDLK_UP:           return EngineIO::InputEvent::UP;
+        case SDLK_DOWN:         return EngineIO::InputEvent::DOWN;
+        case SDLK_SPACE:        return EngineIO::InputEvent::SPACE;
+        case SDLK_LSHIFT:       return EngineIO::InputEvent::SHIFT;
+        case SDLK_LCTRL:        return EngineIO::InputEvent::CTRL;
+        case SDLK_LALT:         return EngineIO::InputEvent::ALT;
+        case SDLK_RETURN:       return EngineIO::InputEvent::ENTER;
+        case SDLK_ESCAPE:       return EngineIO::InputEvent::ESC;
+        case SDLK_TAB:          return EngineIO::InputEvent::TAB;
+        case SDLK_BACKSPACE:    return EngineIO::InputEvent::BACKSPACE;
+        default:                return EngineIO::InputEvent::NONE;
     }
 }
 
@@ -66,14 +53,10 @@ EngineIO::InputEvent Engine::SDL_to_input_event(SDL_MouseButtonEvent button)
 {
     switch (button.button)
     {
-    case SDL_BUTTON_LEFT:
-        return EngineIO::InputEvent::MOUSE_LEFT;
-    case SDL_BUTTON_RIGHT:
-        return EngineIO::InputEvent::MOUSE_RIGHT;
-    case SDL_BUTTON_MIDDLE:
-        return EngineIO::InputEvent::MOUSE_MIDDLE;
-    default:
-        return EngineIO::InputEvent::NONE;
+        case SDL_BUTTON_LEFT:   return EngineIO::InputEvent::MOUSE_LEFT;
+        case SDL_BUTTON_RIGHT:  return EngineIO::InputEvent::MOUSE_RIGHT;
+        case SDL_BUTTON_MIDDLE: return EngineIO::InputEvent::MOUSE_MIDDLE;
+        default:                return EngineIO::InputEvent::NONE;
     }
 }
 
@@ -722,8 +705,8 @@ void Engine::start()
                 break;
             case -1:
                 break;
-            default:
-                std::printf("...%d\n", x);
+            //default:
+                //std::printf("...%d\n", x);
             }            
         }
     }};

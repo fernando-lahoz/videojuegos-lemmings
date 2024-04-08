@@ -103,9 +103,9 @@ public:
       engine.get_game().create_entity(text);
       return;
     }
-    if(type == 4 && last_text != KeyBindings().InEvenToCh(game_info.get_conf_butons(index)))
+    if(type == 4 && last_text != KeyBindings().InEvenToCh(game_info.get_conf_buttons(index)))
     {//No coincide el mensaje de tecla actual con el anterior
-      last_text = KeyBindings().InEvenToCh(game_info.get_conf_butons(index));
+      last_text = KeyBindings().InEvenToCh(game_info.get_conf_buttons(index));
       text->destroy();
 
       text = std::make_shared<Text_displayer>(position, letter_size, game_info, justified, font_texture,
