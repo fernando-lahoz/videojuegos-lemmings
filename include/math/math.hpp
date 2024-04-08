@@ -54,6 +54,11 @@ inline constexpr unsigned int roundup(Float x) {
     return (unsigned int)std::ceil(x);
 }
 
+// 1 if positive; -1 if negative
+inline constexpr int sign(Float x) {
+    return (x > 0) - (x < 0);
+}
+
 inline Float next_float_up(Float x);
 
 inline Float next_float_down(Float x);

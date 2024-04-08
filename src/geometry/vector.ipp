@@ -586,6 +586,14 @@ constexpr T max_component(Vector2<T> v)
     return std::max(v.x, v.y);
 }
 
+
+template <typename T>
+constexpr Vector2<T> normal(const Vector2<T> &v)
+{
+    return Vector2<T>(-v.y, v.x);
+
+}
+
 namespace math
 {
 

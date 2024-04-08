@@ -94,7 +94,6 @@ void Engine::send_event_down(EngineIO::InputEvent event)
     game->on_event_down(*this, event);
     for (auto &camera : cameras)
         camera->on_event_down(*this, event);
-    std::cout << event_entities.size() << std::endl;
 
     for (auto &entity : event_entities)
     {
@@ -465,8 +464,6 @@ Engine::Engine(std::shared_ptr<Game> &&game)
 
     cameras.push_back(this->game->get_main_camera());
     auto [w, h] = cameras[0]->get_window_frame().diagonal();
-
-    std::cout << "Window size: " << w << "x" << h << std::endl;
 
     renderer = std::make_shared<Render_2D>(this->game->get_name(), (int)w, (int)h);
     physics = Physics_engine();

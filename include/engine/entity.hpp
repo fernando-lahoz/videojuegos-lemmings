@@ -66,6 +66,7 @@ protected:
 
     Vector2f speed = Vector2f(0, 0);
     Vector2f acceleration = Vector2f(0, 0);
+    Vector2f force = Vector2f(0, 0);
     Vector2f max_speed = Vector2f(INFINITY, INFINITY);
 
     Float charge = 0;
@@ -148,6 +149,11 @@ public:
         return acceleration;
     }
 
+    Float get_friction_coefficient() const
+    {
+        return 0.5;
+    }
+
     void clear_acceleration()
     {
         acceleration = Vector2f(0, 0);
@@ -171,6 +177,29 @@ public:
     void set_speedY(Float new_y_speed)
     {
         speed.y = math::clamp(new_y_speed, -max_speed.y, max_speed.y);
+    }
+
+    void set_force(Vector2f new_force)
+    {
+        force = new_force;
+    }
+
+    void clear_forces(Float gravity)
+    {
+        if (has_gravity())
+            force = Vector2f(0, mass * gravity);
+        else
+            force = Vector2f(0, 0);
+    }
+
+    void apply_force(Vector2f new_force)
+    {
+        force += new_force;
+    }
+
+    Vector2f get_forces() const
+    {   
+        return force;
     }
 
     Vector2f get_max_speed() const
@@ -234,6 +263,14 @@ public:
     // Returns true if the mouse is pointing inside the visible entity
     bool contains_the_mouse(Engine& engine);
     bool destroy_box_alpha(Engine &engine, Bound2f box);
+
+    Collision_point get_collision_point(size_t point_id) const
+    {
+        if (point_id >= collision_points.size())
+            throw std::out_of_range("Collision point id out of range");
+
+        return collision_points[point_id];
+    }
     
     void entity_collision(Engine&, std::shared_ptr<Entity> other, 
             bool is_alpha, size_t collision_point_id)
@@ -260,11 +297,6 @@ public:
         {
             aabb_side_colliding[i] = false;
         }
-    }
-
-    void apply_force(Engine &, Vector2f force)
-    {
-        acceleration += force * inv_mass;
     }
 
     // Event processing is the second thing executed, 

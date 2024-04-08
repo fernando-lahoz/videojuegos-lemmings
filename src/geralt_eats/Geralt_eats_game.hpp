@@ -96,12 +96,13 @@ public:
 
         //box2->set_speed(Vector2f(-0.1, -0.2));
 
-        //auto field = std::make_shared<Electric_field>(Point2f(0.5, 0.7), Vector2f(0.44, 0.4), energy_ball_txt, engine);
+        //auto field = std::make_shared<Electric_field>(engine, Point2f(0.5, 0.7), Vector2f(0.44, 0.4), 10);
 
         
         engine.create_entity(geralt);
         engine.create_entity(ground);
         engine.create_entity(cielo);
+        //engine.create_entity(field);
 
         create_camera(std::make_shared<Geralt_camera>());
     }

@@ -14,6 +14,18 @@ class Geralt : public Entity
 
     size_t COLLISION_POINT_DOWN, COLLISION_POINT_UP, COLLISION_POINT_LEFT, COLLISION_POINT_RIGHT;
 
+    enum class Geralt_state
+    {
+        IDLE,
+        WALKING_RIGHT,
+        WALKING_LEFT,
+        FORCING_DOWN,
+        JUMPING,
+        FALLING
+    };
+
+    Geralt_state state = Geralt_state::IDLE;
+
 public:
 
     Geralt(Point2f position, Vector2f diagonal, Engine& engine)
@@ -43,10 +55,6 @@ public:
         set_charge(1);
     }
 
-    bool is_grounded(Engine& engine) const
-    {
-        return colliding_down();
-    }
 
     bool colliding_down() const
     {
@@ -72,48 +80,58 @@ public:
 
     void update_state(Engine& engine) override
     {
-        auto speed = get_speed();
+        Float dt = engine.get_delta_time();
 
-        if (engine.is_w_down()
-            && colliding_down())
+        if (engine.is_a_down())
+        {
+            look_left();
+
+            if (speed.x > -1)
+            {
+                apply_force(Vector2f(-10, 0));
+            }
+        }
+
+        if (engine.is_d_down())
+        {
+            look_right();
+
+            if (speed.x < 1)
+            {
+                apply_force(Vector2f(10, 0));
+            }
+        }
+
+        if (engine.is_w_down() && colliding_down())
         {
             speed.y = -3;
         }
 
-        if (engine.is_s_down()
-            && !colliding_down())
+        if (engine.is_s_down())
         {
-            acceleration.y += 60;
+            apply_force(Vector2f(0, 30));
         }
 
 
-        if (engine.is_a_down()
-            && !colliding_left())
+        if (colliding_down() && force.y > 0)
         {
-            speed.x = -1;
-            look_left();
+            Float friction = ground->get_friction_coefficient() * force.y;
+            Float acc_x = friction / get_mass();
+
+            if (speed.x > 0)
+            {
+                acc_x *= -1;
+            }
+
+            Float new_speed_x = math::clamp(speed.x + acc_x * dt, -max_speed.x, max_speed.x);
+
+            if (math::sign(speed.x) != math::sign(new_speed_x)) {
+                speed.x = 0;
+            }
+            else {
+                speed.x = new_speed_x;
+            }
         }
-
-        if (engine.is_d_down()
-            && !colliding_right())
-        {
-            speed.x = 1;
-            look_right();
-        }
-
-        if (engine.is_d_down() && engine.is_a_down())
-        {
-            speed.x = 0;
-        }
-
-        if (!engine.is_d_down() && !engine.is_a_down())
-        {
-            speed.x = 0;
-        }
-
-        set_speed(speed);
-
-        Entity::update_state(engine);
     }
 
     void on_collision(Engine& engine, EntityPtr other, bool is_alpha, size_t collision_point_id) override
@@ -137,7 +155,7 @@ public:
             if (wasd_pressed(engine))
             {
                 // Create electric field
-                auto electric_field = std::make_shared<Electric_field>(engine, get_position(), Vector2f(0.34, 0.3), 40);
+                auto electric_field = std::make_shared<Electric_field>(engine, get_position(), Vector2f(0.34, 0.3), 20);
                 engine.create_entity(electric_field);
                 electric_fields.push_back(electric_field);
 
@@ -160,8 +178,8 @@ public:
                 }
             });
         }
-        
     }
+
 
     void look_left()
     {

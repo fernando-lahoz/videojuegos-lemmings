@@ -8,15 +8,6 @@ void Physics_engine::elastic_collision(Float mass1, Float mass2,
     Point2f hit_point, Vector2f hit_normal,
     Vector2f &new_speed1, Vector2f &new_speed2)
 {
-    // Collision between aabb
-    if (hit_normal.x == 0 && hit_normal.y == 0)
-    {
-        new_speed1 = (speed1 * (mass1 - mass2) + 2 * mass2 * speed2) / (mass1 + mass2);
-        new_speed2 = (speed2 * (mass2 - mass1) + 2 * mass1 * speed1) / (mass1 + mass2);
-
-        return;
-    }
-
     auto normal = hit_normal;
     auto tangent = Vector2f(-normal.y, normal.x);
 
@@ -46,23 +37,31 @@ void Physics_engine::inelastic_collision(Float mass1, Float mass2,
 
 }
 
-void undo_movement(double delta_time, EntityPtr body, Collision_point collision_point)
+void undo_movement(double delta_time, EntityPtr body, EntityPtr other, Collision_point collision_point)
 {
     auto body_speed = body->get_speed();
+    auto body_acceleration = body->get_acceleration();
     auto body_centroid = body->centroid();
     auto body_position = body->get_position();
+
+    Vector2f collision_tangent = normal(collision_point.normal);
 
     Vector2f collision_to_body = body_centroid - collision_point.point;
     collision_point.normal = face_forward(collision_point.normal, collision_to_body);
     
-    // Speed in the direction of the normal
+    // Speed and acceleration in the direction of the normal
     auto speed_normal = abs(dot(body_speed, collision_point.normal));
+    auto acc_normal = abs(dot(body_acceleration, collision_point.normal));
+    auto acc_tangent = abs(dot(body_acceleration, collision_tangent));
 
-
-    // Move the body in the normal direction
+    // Undo the movement
     body_position += collision_point.normal * speed_normal * delta_time;
 
+    // Undo acceleration
+    body_speed += collision_point.normal * acc_normal * delta_time;
+
     body->set_position(body_position);
+    body->set_speed(body_speed);
 }
 
 
@@ -84,7 +83,12 @@ void Physics_engine::rigid_body_collision(
         bool compute_physics1, bool compute_physics2,
         EntityPtr entity1, EntityPtr entity2)
 {
-    if (compute_physics1 || compute_physics2)
+    bool compute_physics = compute_physics1 || compute_physics2;
+
+    if (compute_physics && 
+        entity1->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
+        &&
+        entity2->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY)
     {
         Vector2f new_speed1, new_speed2;
 
@@ -117,7 +121,7 @@ void electric_force(Engine &engine, EntityPtr emitter, EntityPtr aabb)
     //std::cout << "Electric force on " << aabb->get_class() << ": " << force_direction*force_magnitude << std::endl;
 
     // Apply force
-    aabb->apply_force(engine, force_direction * force_magnitude);
+    aabb->apply_force(force_direction * force_magnitude);
 }
 
 void Physics_engine::on_collision(Engine& engine,
@@ -205,10 +209,10 @@ void Physics_engine::compute_collisions(Engine& engine)
 
 
                 if (first_collided && compute_physics1)
-                    undo_movement(delta_time, aabb, collision_point);
+                    undo_movement(delta_time, aabb, other, collision_point);
 
                 if (second_collided && compute_physics2)
-                    undo_movement(delta_time, other, collision_point);
+                    undo_movement(delta_time, other, aabb, collision_point);
                 
 
                 on_collision(engine, delta_time, first_collided, second_collided, 
@@ -364,28 +368,25 @@ void Physics_engine::update_physics(Engine& engine)
     {
         if (entity->get_physics_type() != Entity::Physics_type::NONE)
         {
-            /*********** Update accelerations ************/
-            auto acc = entity->get_acceleration();
+            /*********** Apply forces ************/
+            auto total_force = entity->get_forces();
+            auto acc = total_force / entity->get_mass();
+            entity->clear_forces(gravity);
+
+            /*********** Apply acceleration ************/
             auto speed = entity->get_speed();
             auto max_speed = entity->get_max_speed();
-
-            if (entity->has_gravity())
-            {
-                acc.y += gravity;
-            }
-
-            speed = clamp(speed + acc * delta_time, -max_speed, max_speed);
-            entity->set_speed(speed);
-            entity->clear_acceleration();     
 
             if (entity->get_entity_name() == "Geralt")
             {
                 std::cout << "Speed: " << speed << std::endl;
-                std::cout << "Acceleration " << acc << std::endl;
-            } 
+            }
 
+            speed = clamp(speed + acc * delta_time, -max_speed, max_speed);
+            entity->set_acceleration(acc);
+            entity->set_speed(speed);
 
-            /*********** Update speed ************/
+            /*********** Apply speed ************/
             auto position = entity->get_position();
         
             Entity::update_position(delta_time, position, speed);
@@ -410,7 +411,7 @@ void Physics_engine::post_physics(Engine& engine)
     auto &entities = engine.get_entities();
 
     for (auto& entity : entities)
-    {
+    {     
         entity->post_physics(engine);
     }
 }

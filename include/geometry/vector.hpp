@@ -160,6 +160,8 @@ constexpr Vector2<T> abs (const Vector2<T> &v);
 template <typename T>
 constexpr Vector2<T> face_forward(const Vector2<T> &n, const Vector2<T> &v);
 
+template <typename T>
+constexpr Vector2<T> normal(const Vector2<T> &v);
 
 //Inverse * for Vector3
 template <typename T>
