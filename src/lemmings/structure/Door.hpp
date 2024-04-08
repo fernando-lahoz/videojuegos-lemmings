@@ -71,25 +71,29 @@ public:
         int level = game_info.get_level();
         std::string music_file = [&]() {
           using namespace Utils;
-          if (difficulty == DIFFICULTY_LEVEL::FUN && level == 22)
+          if (level == 0)
           {
-              return MUSIC_DIRECTORY + SPECIAL_MUSIC[0];
+            return MUSIC_DIRECTORY + LEVEL_MUSIC[11];
+          }
+          else if (difficulty == DIFFICULTY_LEVEL::FUN && level == 22)
+          {
+            return MUSIC_DIRECTORY + SPECIAL_MUSIC[0];
           }
           else if (difficulty == DIFFICULTY_LEVEL::TRICKY && level == 14)
           {
-              return MUSIC_DIRECTORY + SPECIAL_MUSIC[1];
+            return MUSIC_DIRECTORY + SPECIAL_MUSIC[1];
           }
           else if (difficulty == DIFFICULTY_LEVEL::TAXING && level == 15)
           {
-              return MUSIC_DIRECTORY + SPECIAL_MUSIC[2];
+            return MUSIC_DIRECTORY + SPECIAL_MUSIC[2];
           }
           else if (difficulty == DIFFICULTY_LEVEL::MAYHEM && level == 22)
           {
-              return MUSIC_DIRECTORY + SPECIAL_MUSIC[3];
+            return MUSIC_DIRECTORY + SPECIAL_MUSIC[3];
           }
           else
           {
-              return MUSIC_DIRECTORY + LEVEL_MUSIC[((30 * difficulty + level - 1) % 17)];
+            return MUSIC_DIRECTORY + LEVEL_MUSIC[((30 * difficulty + level - 1) % 17)];
           }
         }();
         
