@@ -80,8 +80,10 @@ private:
 
     Point2f mouse_position;
     bool quit_event = false;
-    
 
+    std::thread watchdog {};
+    std::atomic_bool end = false;
+    
 public:
 
     std::set<EngineIO::InputEvent> input_state;
@@ -95,6 +97,7 @@ public:
      */
     Engine(Game* game);
     Engine(std::shared_ptr<Game>&& game);
+    ~Engine();
 
     void start();
     void quit();

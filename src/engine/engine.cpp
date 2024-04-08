@@ -666,12 +666,12 @@ void Engine::set_ignored_events()
 
 void Engine::start()
 {
-    std::atomic_bool end = false;
+    end = false;
     std::mutex mtx;
     int watchdog_counter = -1;
     bool watchdog_jumped = false;
     
-    std::thread watchdog {[&](){
+    watchdog = std::thread {[&](){
         std::printf("Im ON...\n");
         using namespace std::chrono_literals;
         using namespace std::chrono;
@@ -778,6 +778,12 @@ void Engine::start()
     watchdog.join();
 
     SDL_Quit();
+}
+
+Engine::~Engine() {
+    end = true;
+    if (watchdog.joinable())
+        watchdog.join();
 }
 
 void Engine::quit()

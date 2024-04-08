@@ -15,7 +15,6 @@ public:
 
     Physics_engine() = default;
 
-    // TODO: Shouldn't these be static methods? or will this engine get members?
     void update_positions(Engine& engine);
 
     void compute_collisions(Engine& engine);

@@ -26,6 +26,8 @@ public:
     : game_name(_game_name)
     { }
 
+    virtual ~Game() = default;
+
     std::vector<EntityPtr> get_new_entities();
     std::vector<std::shared_ptr<Camera2D>> get_new_cameras();
 

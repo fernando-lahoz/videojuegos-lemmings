@@ -42,6 +42,8 @@ public:
 
     Camera2D(Bound2f world_frame, Bound2f window_frame, int layer = 0);
 
+    virtual ~Camera2D() = default;
+
     Point2f world_to_screen(Point2f world_point);
     Vector2f world_to_screen(Vector2f world_vector);
 

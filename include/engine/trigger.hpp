@@ -17,6 +17,8 @@ class Trigger : public Entity
             std::string _entity_name, 
             std::string _class_name="Trigger");
 
+    virtual ~Trigger() = default;
+
     void add_asociated_entity(EntityPtr entity);
     std::vector<EntityPtr> get_asociated_entities() const;
 

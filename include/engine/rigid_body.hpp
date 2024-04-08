@@ -22,6 +22,8 @@ public:
         std::string _entity_name, 
         std::string _class_name=RIGID_BODY_ID);
 
+    virtual ~Rigid_body() = default;
+
     // Returns true if the ray intersected
     //  tmin contains the minimum hit offset
     //  and tmax contains the maximum hit offset

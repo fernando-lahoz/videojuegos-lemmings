@@ -18,5 +18,7 @@ public:
             Vector2i texture_letter_size, MappingFunction map,
             std::string_view text, Engine &engine, std::string_view _class_name = "Text");
 
+    virtual ~FixedText() = default;
+
     friend class Render_2D;
 };

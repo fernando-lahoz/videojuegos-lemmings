@@ -63,6 +63,8 @@ public:
             std::string_view _entity_name, 
             std::string_view _class_name = "Entity");
 
+    virtual ~Entity() = default;
+
     // Get the specific entity name
     //  Ex: Main character
     std::string get_entity_name() const;

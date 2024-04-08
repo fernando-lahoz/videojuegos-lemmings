@@ -96,6 +96,14 @@ namespace Utils
   const std::string TEXT_BLUE_1[3] = {"Press left button to try again", "", "Press left button to continue"};
   const std::string TEXT_BLUE_2[3] = {"Press right button for menu", "Press mouse button to continue", "Press right button for menu"};
 
+  enum DIFFICULTY_LEVEL
+  {
+    FUN = 0,
+    TRICKY = 1,
+    TAXING = 2,
+    MAYHEM = 3
+  };
+
   const std::string DIFFICULTY_NAME[4] = {"Fun", "Tricky", "Taxing", "Mayhem"};
   const std::string LEVEL_NAME[4][31] = {{"Este mapa es de prueba", "Just dig!", "Only floaters can survive this", "Tailor-made for blockers", "Now use miners and climbers", "You need bashers this time", "A task for blockers and bombers", "Builders will help you here", "Not as complicated as it looks", "As long as you try your best", "Smile if you love Lemmings", "Keep your hair on Mr. Lemming", "Patience", "We all fall down", "Origins and Lemmings", "Don't let your eyes deceive you", "Don't do anything too hasty", "Easy when you know how", "Let's block and blow", "Take good care of my Lemmings", "We are now at LEMCON ONE", "You Live and Lem", "A Beast of a level", "I've lost that Lemming feeling", "Konbanwa Lemming San", "Lemmings Lemmings everywhere", "Nightmare on Lem Street", "Let's be careful out there", "If only they could fly", "worra lorra Lemmings", "Lock up your Lemmings"},
                                          {"?", "This should be a doddle!", "We all fall down", "A ladder would be handy", "Here's one I prepared earlier", "Careless clicking costs lives", "Lemmingology", "Been there, seen it, done it", "Lemming sanctuary in sight", "They just keep on coming", "There's a lot of them about", "Lemmings in the attic", "Bitter Lemming", "Lemming Drops", "MENACING !!", "Ozone friendly Lemmings", "Luvly Jubly", "Diet Lemmingaid", "It's Lemmingentry Watson", "Postcard from Lemmingland", "One-way digging to freedom", "All the 6's", "Turn around young lemmings!", "From The Boundary Line", "Tightrope City", "Cascade", "I have a cunning plan", "The Island of the Wicker people", "Lost something?", "Rainbow Island", "The Crankshaft"},
@@ -256,6 +264,35 @@ namespace Utils
                                                            {10, 1, 10, 10, 30, 10, 10, 4},
                                                        }};
   const int SKILL_TO_SKILLS_AMOUNT[8] = {0, 1, 2, 3, 4, 7, 5, 6};
+
+  constexpr std::string MUSIC_DIRECTORY = "assets/music/";
+
+  const std::string LEVEL_MUSIC[17] = {
+    "11_The Galop (Can-Can).mp3",
+    "02_Lemming 1 (Pachebel's Canon).mp3",
+    "07_Tim 2.mp3",
+    "03_Lemming 2 (Miners and Climbers).mp3",
+    "17_Dance of the Little Swans.mp3",
+    "08_Tim 3.mp3",
+    "10_Tim 5.mp3",
+    "12_How Much is That Doggie in the Window.mp3",
+    "15_Dance of the Reed Flutes.mp3",
+    "04_Lemming 3.mp3",
+    "16_Rondo Alla Turca.mp3",
+    "18_London Bridge.mp3",
+    "06_Tim 1.mp3",
+    "14_Forest Green.mp3",
+    "09_Tim 4.mp3",
+    "05_Twang (TenLem).mp3",
+    "13_She'll Be Comin' Round the Mountain.mp3"
+  };
+
+  const std::string SPECIAL_MUSIC[4] = {
+    "21_Shadow of the Beast.mp3", //[Fun 22]
+    "19_Menace.mp3", //[Tricky 14]
+    "20_Awesome.mp3", //[Taxing 15]
+    "22_Shadow of the Beast II.mp3" //[Mayhem 22]
+  };
 
   // GAME CONSTANTS
 

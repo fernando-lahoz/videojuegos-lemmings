@@ -20,9 +20,13 @@ public:
 
     void load(const std::string& file)
     {
+        
+            std::cout << "OA" << std::endl;
         auto raw = Mix_LoadMUS(file.c_str());
-        if (!raw)
+        if (raw == nullptr) {
             throw error::sdl_exception(ERROR_CONTEXT);
+        }
+            
         music = std::shared_ptr<Mix_Music>{raw, Mix_FreeMusic};
     }
 
@@ -117,6 +121,7 @@ public:
     //Plays music from the beginning
     inline void play_music(Music music, bool loop = false)
     {
+        std::cout << "PLAY" << std::endl;
         is_music_paused = false;
         Mix_PlayMusic(music.get(), loop ? -1 : 0);
     }
@@ -135,7 +140,18 @@ public:
 
     inline bool is_playing_music()
     {
-        return Mix_PlayingMusic();
+        return Mix_PlayingMusic() && !Mix_PausedMusic();
+    }
+
+    inline bool is_playing_any_sound()
+    {
+        for (int i = 0; i < reserved_channels + free_channels; i++)
+        {
+            if (Mix_Playing(i) && !Mix_Paused(i))
+                return true;
+        }
+
+        return is_playing_music();
     }
 
     //Should not be called if any sound is currently being played in a free
