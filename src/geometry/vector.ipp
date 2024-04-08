@@ -256,6 +256,14 @@ constexpr Vector2<T>::Vector2(T xx, T yy)
     assert(!has_NaNs());
 }
 
+
+template <typename T>
+constexpr Vector2<T>::Vector2(T f)
+    : x(f), y(f)
+{
+    assert(!has_NaNs());
+}
+
 template <typename T>
 template <typename U>
 constexpr Vector2<T>::Vector2(const Vector2<U> &v)
@@ -570,6 +578,12 @@ template <typename T>
 constexpr T max_component(Vector3<T> v)
 {
     return max(v.x, max(v.y, v.z));
+}
+
+template <typename T>
+constexpr T max_component(Vector2<T> v)
+{
+    return std::max(v.x, v.y);
 }
 
 namespace math

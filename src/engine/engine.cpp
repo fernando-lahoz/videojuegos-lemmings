@@ -670,7 +670,6 @@ void Engine::start()
         update_mouse_position();
 
         game->on_loop_start(*this);
-        quit = process_events();
 
         // Update call to physics engine
         physics.compute_physics(*this);
@@ -686,6 +685,8 @@ void Engine::start()
 
         // Delete old entities
         delete_dead_entities();
+
+        quit = process_events();
 
         game->on_loop_end(*this);
 

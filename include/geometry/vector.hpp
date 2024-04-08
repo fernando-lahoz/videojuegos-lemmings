@@ -71,6 +71,7 @@ public:
     T x, y;
 
     constexpr Vector2() = default;
+    constexpr Vector2(T f);
     constexpr Vector2(T xx, T yy);
 
     constexpr bool has_NaNs() const;
@@ -175,6 +176,9 @@ constexpr void generate_coordinate_system(const Vector3<T> &v1,
 
 template <typename T>
 constexpr T max_component(Vector3<T> v);
+
+template <typename T>
+constexpr T max_component(Vector2<T> v);
 
 // Clamp
 template <typename T>

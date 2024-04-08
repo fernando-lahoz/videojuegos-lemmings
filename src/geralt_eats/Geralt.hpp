@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engine/entity.hpp"
+#include "electric_field.hpp"
 #include "engine/render_2D.hpp"
 
 
@@ -9,6 +10,7 @@ class Geralt : public Entity
     Texture txt_left, txt_right;
     Sound oof;
     EntityPtr ground;
+    std::vector<std::shared_ptr<Electric_field>> electric_fields;
 
     size_t COLLISION_POINT_DOWN, COLLISION_POINT_UP, COLLISION_POINT_LEFT, COLLISION_POINT_RIGHT;
 
@@ -72,74 +74,77 @@ public:
     {
         auto speed = get_speed();
 
-        if (engine.is_up_arrow_down()
+        if (engine.is_w_down()
             && colliding_down())
         {
             speed.y = -3;
         }
 
-        if (engine.is_down_arrow_down()
+        if (engine.is_s_down()
             && !colliding_down())
         {
             speed.y = speed.y + 1;
         }
 
 
-        if (engine.is_left_arrow_down()
+        if (engine.is_a_down()
             && !colliding_left())
         {
             speed.x = -1;
             look_left();
         }
 
-        if (engine.is_right_arrow_down()
+        if (engine.is_d_down()
             && !colliding_right())
         {
             speed.x = 1;
             look_right();
         }
 
-        if (engine.is_right_arrow_down() && engine.is_left_arrow_down())
+        if (engine.is_d_down() && engine.is_a_down())
         {
             speed.x = 0;
         }
 
-        if (!engine.is_right_arrow_down() && !engine.is_left_arrow_down())
+        if (!engine.is_d_down() && !engine.is_a_down())
         {
             speed.x = 0;
         }
 
         set_speed(speed);
 
-
-        if (engine.is_key_down(EngineIO::ENTER)) // && is_grounded(engine))
-        {
-            Bound2f box;
-            box.pMin = local_to_world(Point2f(0, 0.95));
-            box.pMax = box.pMin + Vector2f(0.1, 0.1);
-
-            bool destroyed = ground->destroy_box_alpha(engine, box);
-            
-            if (!destroyed)
-            {
-                std::cout << "Nothing destroyed\n";
-            }
-        }
-
         Entity::update_state(engine);
     }
 
     void on_collision(Engine& engine, EntityPtr other, bool is_alpha, size_t collision_point_id) override
     {
-        if (other->get_entity_name() == "Apple")
-        {
-            return;
-        }
-
         if (is_alpha && collision_point_id == COLLISION_POINT_DOWN
             || !is_alpha && collision_point_id == 2)
         {
             ground = other;
+        }
+    }
+
+    bool wasd_pressed(Engine &engine) const
+    {
+        return engine.is_w_down() || engine.is_a_down() || engine.is_s_down() || engine.is_d_down();
+    }
+
+    void on_event_down(Engine& engine, EngineIO::InputEvent event) override
+    {
+        if (event == EngineIO::InputEvent::ENTER)
+        {
+            if (wasd_pressed(engine))
+            {
+                // Create electric field
+                auto electric_field = std::make_shared<Electric_field>(engine, get_position(), Vector2f(0.34, 0.3), 40);
+                engine.create_entity(electric_field);
+                electric_fields.push_back(electric_field);
+
+                electric_field->set_speed(speed*1.5);
+                electric_field->set_position(get_position()+speed*1.5*0.1);
+                electric_field->disable_gravity();
+            }
         }
     }
 
