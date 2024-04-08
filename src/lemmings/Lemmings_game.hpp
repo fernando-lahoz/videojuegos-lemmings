@@ -18,10 +18,9 @@
 
 // ASK: change _collides_up from bool to EntityPtr
 
-// TODO: add movements to the lemming (BUILD, CLIMB, BASH, MINING)
+// TODO: refine movements of the lemming to be more similar to original
 // TODO: add player vs IA mode
 // TODO: add sound effects
-// TODO: fix lemming animations
 // TODO: change assets more similar to original amiga
 // TODO: hud more friendly
 // TODO: add some structures to levels (CHOF, WALL, ICE, ELECT, TONS WEIGHT)
@@ -86,7 +85,7 @@ public:
     create_entity(cursor_menu);
     game_info.set_cursor_menu(cursor_menu);
     screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
-    // screen.go_level(engine, 7, 0);
+    // screen.go_level(engine, 14, 3);
   }
 
   void on_loop_start(Engine &engine) override
@@ -108,5 +107,4 @@ public:
     if (event < EngineIO::InputEvent::MOUSE_HOVER || event > EngineIO::InputEvent::MOUSE_SCROLL_DOWN)
       keyboard.manage_key_down(engine, event);
   }
-
 };

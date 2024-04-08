@@ -268,30 +268,29 @@ namespace Utils
   constexpr std::string MUSIC_DIRECTORY = "assets/music/";
 
   const std::string LEVEL_MUSIC[17] = {
-    "11_The Galop (Can-Can).mp3",
-    "02_Lemming 1 (Pachebel's Canon).mp3",
-    "07_Tim 2.mp3",
-    "03_Lemming 2 (Miners and Climbers).mp3",
-    "17_Dance of the Little Swans.mp3",
-    "08_Tim 3.mp3",
-    "10_Tim 5.mp3",
-    "12_How Much is That Doggie in the Window.mp3",
-    "15_Dance of the Reed Flutes.mp3",
-    "04_Lemming 3.mp3",
-    "16_Rondo Alla Turca.mp3",
-    "18_London Bridge.mp3",
-    "06_Tim 1.mp3",
-    "14_Forest Green.mp3",
-    "09_Tim 4.mp3",
-    "05_Twang (TenLem).mp3",
-    "13_She'll Be Comin' Round the Mountain.mp3"
-  };
+      "11_The Galop (Can-Can).mp3",
+      "02_Lemming 1 (Pachebel's Canon).mp3",
+      "07_Tim 2.mp3",
+      "03_Lemming 2 (Miners and Climbers).mp3",
+      "17_Dance of the Little Swans.mp3",
+      "08_Tim 3.mp3",
+      "10_Tim 5.mp3",
+      "12_How Much is That Doggie in the Window.mp3",
+      "15_Dance of the Reed Flutes.mp3",
+      "04_Lemming 3.mp3",
+      "16_Rondo Alla Turca.mp3",
+      "18_London Bridge.mp3",
+      "06_Tim 1.mp3",
+      "14_Forest Green.mp3",
+      "09_Tim 4.mp3",
+      "05_Twang (TenLem).mp3",
+      "13_She'll Be Comin' Round the Mountain.mp3"};
 
   const std::string SPECIAL_MUSIC[4] = {
-    "21_Shadow of the Beast.mp3", //[Fun 22]
-    "19_Menace.mp3", //[Tricky 14]
-    "20_Awesome.mp3", //[Taxing 15]
-    "22_Shadow of the Beast II.mp3" //[Mayhem 22]
+      "21_Shadow of the Beast.mp3",   //[Fun 22]
+      "19_Menace.mp3",                //[Tricky 14]
+      "20_Awesome.mp3",               //[Taxing 15]
+      "22_Shadow of the Beast II.mp3" //[Mayhem 22]
   };
 
   // GAME CONSTANTS
@@ -364,7 +363,8 @@ namespace Utils
     LEVEL_INTRO = 2,
     LEVEL_OUTRO = 3,
     INTRO = 4,
-    CONFIG = 5 //Muestra menú de configuración
+    CONFIG = 5, // Muestra menú de configuración
+    IA = 6      // Menú placeholder para la IA
   };
   enum BUTTON_TYPE
   {
@@ -372,8 +372,8 @@ namespace Utils
     PLAYER_VS_IA = 1,
     SOUND_EFFECTS = 2,
     EXIT = 4,
-    CONFIGURACION = 5, //Botón que lleva a pantalla de configuración
-    PAUSE = 6, //Botón para modificar tecla de pausa
+    CONFIGURACION = 5, // Botón que lleva a pantalla de configuración
+    PAUSE = 6,         // Botón para modificar tecla de pausa
     ABILITY_1 = 7,
     ABILITY_2 = 8,
     ABILITY_3 = 9,
@@ -382,16 +382,16 @@ namespace Utils
     ABILITY_6 = 12,
     ABILITY_7 = 13,
     ABILITY_8 = 14,
-		EXPLODE_ALL = 15,
-		ABILITY_UP = 16,
-		ABILITY_DOWN = 17,
-		SPEED_UP = 18,
-		SPEED_DOWN = 19,
-		SPAWN_UP = 20,
-		SPAWN_DOWN = 21,
+    EXPLODE_ALL = 15,
+    ABILITY_UP = 16,
+    ABILITY_DOWN = 17,
+    SPEED_UP = 18,
+    SPEED_DOWN = 19,
+    SPAWN_UP = 20,
+    SPAWN_DOWN = 21,
     MAP_LEFT = 22,
     MAP_RIGHT = 23,
-    SAVE = 24 //Botón de guardar configuración
+    SAVE = 24 // Botón de guardar configuración
   };
   enum ACTIONS
   {

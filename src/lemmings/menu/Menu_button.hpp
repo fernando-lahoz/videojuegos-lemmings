@@ -18,66 +18,66 @@ private:
   Engine &engine;
   Keyboard_manager &keyboard;
 
-  //Devuelve el nombre del fichero que corresponde a la imagen del tipo de botón
-  // suministrado como entrada
+  // Devuelve el nombre del fichero que corresponde a la imagen del tipo de botón
+  //  suministrado como entrada
   std::string name_file(int _type)
   {
     std::string n_file;
 
-    if(_type < 6)
+    if (_type < 6)
     {
       n_file = "assets/menu/menu_button_" + std::to_string(_type) + ".png";
     }
-    else 
-    {//Botones de modificar teclas
-      if(_type == Utils::PAUSE)
+    else
+    { // Botones de modificar teclas
+      if (_type == Utils::PAUSE)
       {
         n_file = "assets/menu/config_pause.png";
       }
-      else if(_type >= Utils::ABILITY_1 && _type <= Utils::ABILITY_8){
+      else if (_type >= Utils::ABILITY_1 && _type <= Utils::ABILITY_8)
+      {
         n_file = "assets/menu/config_skill_" + std::to_string(_type - 5) + ".png";
       }
-      else if(_type == Utils::EXPLODE_ALL)
+      else if (_type == Utils::EXPLODE_ALL)
       {
-        n_file = "assets/menu/config_explode_all.png";	
+        n_file = "assets/menu/config_explode_all.png";
       }
-      else if(_type == Utils::ABILITY_UP)
+      else if (_type == Utils::ABILITY_UP)
       {
-        n_file = "assets/menu/config_skill_left.png";	
+        n_file = "assets/menu/config_skill_left.png";
       }
-      else if(_type == Utils::ABILITY_DOWN)
+      else if (_type == Utils::ABILITY_DOWN)
       {
-        n_file = "assets/menu/config_skill_right.png";	
+        n_file = "assets/menu/config_skill_right.png";
       }
-      else if(_type == Utils::SPEED_UP)
+      else if (_type == Utils::SPEED_UP)
       {
-        n_file = "assets/menu/config_speed_plus.png";	
+        n_file = "assets/menu/config_speed_plus.png";
       }
-      else if(_type == Utils::SPEED_DOWN)
+      else if (_type == Utils::SPEED_DOWN)
       {
-        n_file = "assets/menu/config_speed_minus.png";	
+        n_file = "assets/menu/config_speed_minus.png";
       }
-      else if(_type == Utils::SPAWN_UP)
+      else if (_type == Utils::SPAWN_UP)
       {
-        n_file = "assets/menu/config_spawn_plus.png";	
+        n_file = "assets/menu/config_spawn_plus.png";
       }
-      else if(_type == Utils::SPAWN_DOWN)
+      else if (_type == Utils::SPAWN_DOWN)
       {
-        n_file = "assets/menu/config_spawn_minus.png";	
+        n_file = "assets/menu/config_spawn_minus.png";
       }
-      else if(_type == Utils::MAP_LEFT)
+      else if (_type == Utils::MAP_LEFT)
       {
-        n_file = "assets/menu/config_map_left.png";	
+        n_file = "assets/menu/config_map_left.png";
       }
-      else if(_type == Utils::MAP_RIGHT)
+      else if (_type == Utils::MAP_RIGHT)
       {
-        n_file = "assets/menu/config_map_right.png";	
+        n_file = "assets/menu/config_map_right.png";
       }
-      else if(_type == Utils::SAVE)
+      else if (_type == Utils::SAVE)
       {
-        n_file = "assets/menu/menu_conf_save.png";	
+        n_file = "assets/menu/menu_conf_save.png";
       }
-
     }
     return n_file;
   }
@@ -109,7 +109,7 @@ public:
     else if (button_type == Utils::PLAYER_VS_IA)
     {
       game_info.set_do_transition(true);
-      game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, 0, 0);
+      game_info.set_build_menu(Utils::MENU_TYPE::IA, 0, 0);
       game_info.set_do_action(Utils::ACTIONS::GO_MENU);
     }
     else if (button_type == Utils::SOUND_EFFECTS)
@@ -126,39 +126,38 @@ public:
       game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
       game_info.set_do_action(Utils::ACTIONS::GO_MENU);
 
-      //Guardamos en una variable el contenido de fichero de comfiguración
+      // Guardamos en una variable el contenido de fichero de comfiguración
       EngineIO::InputEvent aux[18];
-      KeyBindings().readKeyBindingsFile(aux);//Leemos fichero con valores asociados a los botones de partida
+      KeyBindings().readKeyBindingsFile(aux); // Leemos fichero con valores asociados a los botones de partida
       game_info.set_conf_buttons(aux);
-
     }
-    else if (button_type >= Utils::PAUSE && button_type <= Utils::MAP_RIGHT)//Gestión de teclas de modificación
+    else if (button_type >= Utils::PAUSE && button_type <= Utils::MAP_RIGHT) // Gestión de teclas de modificación
     {
 
-      if(button_type != game_info.get_last_button() || !game_info.get_is_button_conf())
-      {//Si no concuerda con el ultimo pulsado
-        //std::cout << "HABILITADO BOTON  " << button_type-6 << std::endl;
+      if (button_type != game_info.get_last_button() || !game_info.get_is_button_conf())
+      { // Si no concuerda con el ultimo pulsado
+        // std::cout << "HABILITADO BOTON  " << button_type-6 << std::endl;
         game_info.set_is_button_conf(true);
         game_info.set_last_button(button_type);
       }
       else
-      {//Si pulsamos dos veces seguida el mismo es como dejar de seleccionar el boton
-        //std::cout << "DESHABILITADO BOTON  " << button_type-6 << std::endl;
+      { // Si pulsamos dos veces seguida el mismo es como dejar de seleccionar el boton
+        // std::cout << "DESHABILITADO BOTON  " << button_type-6 << std::endl;
         game_info.set_is_button_conf(false);
       }
     }
-    else if(button_type >= Utils::SAVE)
+    else if (button_type >= Utils::SAVE)
     {
-      //Guardar configuración de botones actual
+      // Guardar configuración de botones actual
       EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS];
       game_info.get_conf_buttons(conf_buttons);
-      KeyBindings().setKeyBindings(conf_buttons);//Modificamos el fichero
+      KeyBindings().setKeyBindings(conf_buttons); // Modificamos el fichero
 
-      keyboard.set_key_bindings();//Actualizamos botones de partida
-      
-      //Actualiza teclas de movimiento de mapa en partida
+      keyboard.set_key_bindings(); // Actualizamos botones de partida
+
+      // Actualiza teclas de movimiento de mapa en partida
       dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
-      std::cout << "CONFIGURACION GUARDADA"<< std::endl;
+      std::cout << "CONFIGURACION GUARDADA" << std::endl;
     }
   }
 
