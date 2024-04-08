@@ -69,7 +69,7 @@ public:
 				if(game_info.get_is_button_conf())
 				{//Si hay un boton de configuración seleccionado
 					game_info.set_conf_buttons(event, game_info.get_last_button()-6);//Guardamos la tecla pulsada
-					std::cout << "Guardado boton: " << event << "  en " << game_info.get_last_button()-6 << std::endl;
+					//std::cout << "Guardado boton: " << event << "  en " << game_info.get_last_button()-6 << std::endl;
 				}
 				return;
 			}

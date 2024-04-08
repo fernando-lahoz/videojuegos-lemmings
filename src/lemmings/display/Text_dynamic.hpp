@@ -103,9 +103,17 @@ public:
       engine.get_game().create_entity(text);
       return;
     }
-    if(type == 4 && last_text != KeyBindings().InEvenToCh(game_info.get_conf_buttons(index)))
+    if(type == 4 && ( ( last_text.compare(KeyBindings().InEvenToCh(game_info.get_conf_buttons(index))) != 0) || 
+                      ( last_text != "..." && game_info.get_is_button_conf() && index == game_info.get_last_button()-6) ) )
     {//No coincide el mensaje de tecla actual con el anterior
-      last_text = KeyBindings().InEvenToCh(game_info.get_conf_buttons(index));
+      if(game_info.get_is_button_conf() && index == game_info.get_last_button()-6)
+      {
+        last_text = "...";
+      }
+      else
+      {
+        last_text = KeyBindings().InEvenToCh(game_info.get_conf_buttons(index));
+      }
       text->destroy();
 
       text = std::make_shared<Text_displayer>(position, letter_size, game_info, justified, font_texture,

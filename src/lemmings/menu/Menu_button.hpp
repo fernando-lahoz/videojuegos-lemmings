@@ -137,13 +137,13 @@ public:
 
       if(button_type != game_info.get_last_button() || !game_info.get_is_button_conf())
       {//Si no concuerda con el ultimo pulsado
-        std::cout << "HABILITADO BOTON  " << button_type-6 << std::endl;
+        //std::cout << "HABILITADO BOTON  " << button_type-6 << std::endl;
         game_info.set_is_button_conf(true);
         game_info.set_last_button(button_type);
       }
       else
       {//Si pulsamos dos veces seguida el mismo es como dejar de seleccionar el boton
-        std::cout << "DESHABILITADO BOTON  " << button_type-6 << std::endl;
+        //std::cout << "DESHABILITADO BOTON  " << button_type-6 << std::endl;
         game_info.set_is_button_conf(false);
       }
     }
