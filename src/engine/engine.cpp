@@ -670,7 +670,6 @@ void Engine::set_ignored_events()
 void Engine::start()
 {
     end = false;
-    std::mutex mtx;
     int watchdog_counter = -1;
     bool watchdog_jumped = false;
     
