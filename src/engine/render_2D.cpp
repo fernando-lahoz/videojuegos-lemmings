@@ -273,8 +273,8 @@ Texture Render_2D::load_texture(const std::string& file)
 
 Point2f bound_to_bound(Point2f p, Bound2f src, Bound2f dst)
 {
-    return Point2f((int)(((p.x - src.pMin.x) / src.width()) * dst.width() + dst.pMin.x),
-                   (int)(((p.y - src.pMin.y) / src.height()) * dst.height() + dst.pMin.y));
+    return Point2f(((p.x - src.pMin.x) / src.width()) * dst.width() + dst.pMin.x,
+                   ((p.y - src.pMin.y) / src.height()) * dst.height() + dst.pMin.y);
 }
 
 Vector2f bound_to_bound(Vector2f p, Bound2f src, Bound2f dst)

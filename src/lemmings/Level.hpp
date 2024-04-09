@@ -84,7 +84,7 @@ public:
       }
       case 4:
       {
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 0), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 0), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
 
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1022, 250.847, 299), 1.5, engine, 2, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1213, 250.847, 299), 1.5, engine, 2, 0.4f, game_info));
@@ -172,7 +172,7 @@ public:
       }
       case 9:
       {
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 302), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 302), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
 
         engine.get_game().create_entity(std::make_shared<Spinner>(Point3f(1364.93, 216.646, 303), engine, 0.8f, game_info));
         engine.get_game().create_entity(std::make_shared<Spinner>(Point3f(1554.78, 96.8136, 303), engine, 0.8f, game_info));
@@ -188,7 +188,7 @@ public:
       }
       case 10:
       {
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 302), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 302), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
 
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(0, 271, 301), 1, engine, 1, 0.4f, game_info));
@@ -336,7 +336,7 @@ public:
       }
       case 20:
       {
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
 
         engine.get_game().create_entity(std::make_shared<Spinner>(Point3f(1239.94, 201.736, 301), engine, 0.8f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(751, 250.847, 299), 1.5, engine, 2, 0.4f, game_info));
@@ -512,7 +512,7 @@ public:
       case 1:
         break;
       case 2:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
 
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(496, 260.04, 299), 1, engine, 3, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(623.5, 260.04, 299), 1, engine, 3, 0.4f, game_info));
@@ -548,7 +548,7 @@ public:
 
         break;
       case 4:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(1523.34, 32.8401, 300), Vector2f(94, 144), engine, 4, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(0, 261, 299), 1, engine, 1, 0.4f, game_info));
@@ -580,7 +580,7 @@ public:
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(-3, 301.847, 100), Vector2f(3181, 24), engine));
         break;
       case 5:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(892.5, 261, 299), 1, engine, 0, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1020, 261, 299), 1, engine, 0, 0.4f, game_info));
@@ -608,7 +608,7 @@ public:
         engine.get_game().create_entity(std::make_shared<Flamethrower>(Point3f(1144.05, 186.309, 299), engine, true, 0.5f, game_info));
         break;
       case 7:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(0, 261, 299), 1, engine, 1, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(127.5, 261, 299), 1, engine, 1, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(255, 261, 299), 1, engine, 1, 0.4f, game_info));
@@ -862,7 +862,7 @@ public:
         engine.get_game().create_entity(std::make_shared<Chain>(Point3f(1972.88, 146.452, 301), engine, 0.8f, game_info));
         break;
       case 26:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
 
         engine.get_game().create_entity(std::make_shared<Spinner>(Point3f(1364.93, 216.646, 303), engine, 0.8f, game_info));
         engine.get_game().create_entity(std::make_shared<Spinner>(Point3f(1554.78, 96.8136, 303), engine, 0.8f, game_info));
@@ -1015,7 +1015,7 @@ public:
 
         break;
       case 7:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(1523.34, 32.8401, 300), Vector2f(94, 144), engine, 4, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(0, 261, 299), 1, engine, 1, 0.4f, game_info));
@@ -1047,7 +1047,7 @@ public:
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(-3, 301.847, 100), Vector2f(3181, 24), engine));
         break;
       case 8:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(892.5, 261, 299), 1, engine, 0, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1020, 261, 299), 1, engine, 0, 0.4f, game_info));
@@ -1071,7 +1071,7 @@ public:
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(971, 301.847, 100), Vector2f(2200, 24), engine));
         break;
       case 9:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
 
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(0, 271, 301), 1, engine, 1, 0.4f, game_info));
@@ -1107,8 +1107,8 @@ public:
         engine.get_game().create_entity(std::make_shared<Flamethrower>(Point3f(1144.05, 186.309, 299), engine, true, 0.5f, game_info));
         break;
       case 11:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(0, 261, 299), 1, engine, 1, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(127.5, 261, 299), 1, engine, 1, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(255, 261, 299), 1, engine, 1, 0.4f, game_info));
@@ -1216,7 +1216,7 @@ public:
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(1519, 298.847, 100), Vector2f(131, 24), engine));
         break;
       case 18:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(1416.76, 112.478, 301), Vector2f(192, 160), engine, 0, game_info));
         break;
@@ -1345,8 +1345,8 @@ public:
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(1429, 300.847, 100), Vector2f(378, 20), engine));
         break;
       case 30:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
 
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(496, 260.04, 299), 1, engine, 3, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(623.5, 260.04, 299), 1, engine, 3, 0.4f, game_info));
@@ -1453,7 +1453,7 @@ public:
         engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(989, 212, 303), Vector2f(87.12, 59.4), engine, 3, game_info));
         break;
       case 7:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
 
         engine.get_game().create_entity(std::make_shared<Spinner>(Point3f(1239.94, 201.736, 301), engine, 0.8f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(751, 250.847, 299), 1.5, engine, 2, 0.4f, game_info));
@@ -1491,9 +1491,9 @@ public:
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(1270, 266.847, 100), Vector2f(635, 38), engine));
         break;
       case 11:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
 
-        engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(496, 260.04, 299), 1, engine, 3, 0.4f, game_info));
+        engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(496, 260.04, 301), 1, engine, 3, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(623.5, 260.04, 299), 1, engine, 3, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(751, 260.04, 299), 1, engine, 3, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(878.5, 260.04, 299), 1, engine, 3, 0.4f, game_info));
@@ -1543,7 +1543,7 @@ public:
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2707.5, 261, 301), 1, engine, 1, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2835, 261, 301), 1, engine, 1, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2952.5, 261, 301), 1, engine, 1, 0.4f, game_info));
-        engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(3090, 261, 301), 1, engine, 1, 0.4f, game_info));
+        engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(3080, 261, 301), 1, engine, 1, 0.4f, game_info));
 
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(2240, 301.847, 100), Vector2f(1255, 24), engine));
 
@@ -1609,7 +1609,7 @@ public:
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(1700, 291.847, 100), Vector2f(339, 33), engine));
         break;
       case 20:
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 0), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP"));
+        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 0), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
 
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1022, 250.847, 299), 1.5, engine, 2, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1213, 250.847, 299), 1.5, engine, 2, 0.4f, game_info));

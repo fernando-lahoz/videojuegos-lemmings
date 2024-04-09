@@ -32,7 +32,7 @@ mv external/libwebp/ external/webp
 
 cd ..
 rm release-2.8.2.zip
-rm -r SDL_image-release-2.8.2
+rm -fr SDL_image-release-2.8.2
 
 ##--- SDL_mixer --------------------------------------------------------------##
 
@@ -44,4 +44,4 @@ cd SDL_mixer-release-2.8.0
 
 cd ..
 rm release-2.8.0.zip
-rm -r SDL_mixer-release-2.8.0
+rm -fr SDL_mixer-release-2.8.0
