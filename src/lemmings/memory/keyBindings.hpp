@@ -52,21 +52,23 @@ public:
             keyName[EngineIO::InputEvent::SHIFT] = "Shift";
             keyName[EngineIO::InputEvent::CTRL] = "Ctrl";
             keyName[EngineIO::InputEvent::ALT] = "Alt";
+            keyName[EngineIO::InputEvent::CAPS_LOCK] = "CapsLock";
             keyName[EngineIO::InputEvent::SPACE] = "Space";
             for (int i=0; i<=9; i++)
                 keyName[(EngineIO::InputEvent)(48+i)] = std::to_string(i);
             keyName[EngineIO::InputEvent::DEL] = "Del";
             for (int i=1; i<=12; i++)
                 keyName[(EngineIO::InputEvent)(255+i)] = "F" + std::to_string(i);
+            keyName[EngineIO::InputEvent::NUM_BLOQ] = "BloqNum";
             keyName[EngineIO::InputEvent::NUM_SLASH] = "NumSlash";
             keyName[EngineIO::InputEvent::NUM_ASTERISK] = "NumAsterisk";
             keyName[EngineIO::InputEvent::NUM_MINUS] = "NumMinus";
             keyName[EngineIO::InputEvent::NUM_PLUS] = "NumPlus";
             keyName[EngineIO::InputEvent::NUM_ENTER] = "NumEnter";
             for (int i=1; i<=9; i++)
-                keyName[(EngineIO::InputEvent)(272+i)] = "Num" + std::to_string(i);
+                keyName[(EngineIO::InputEvent)(273+i)] = "Num" + std::to_string(i);
             keyName[EngineIO::InputEvent::NUM_0] = "Num0";
-            keyName[EngineIO::InputEvent::NUM_POINT] = "NumPoint";
+            keyName[EngineIO::InputEvent::NUM_POINT] = "NumPeriod";
             keyName[(EngineIO::InputEvent)33] = "!";
             keyName[(EngineIO::InputEvent)34] = "Quote";
             keyName[(EngineIO::InputEvent)35] = "Hash";
@@ -80,7 +82,7 @@ public:
             keyName[(EngineIO::InputEvent)43] = "Plus";
             keyName[(EngineIO::InputEvent)44] = "Comma";
             keyName[(EngineIO::InputEvent)45] = "Dash";
-            keyName[(EngineIO::InputEvent)46] = "Point";
+            keyName[(EngineIO::InputEvent)46] = "Period";
             keyName[(EngineIO::InputEvent)47] = "Slash";
             keyName[(EngineIO::InputEvent)58] = "Colon";
             keyName[(EngineIO::InputEvent)59] = "Semicolon";
@@ -128,6 +130,11 @@ public:
         keyBindingsFile.close();
     }
 
+    void setDefaultKeyBindings(EngineIO::InputEvent keyBindings[]) {
+        for (int i = 0; i < NUM_KEYBINDINGS; i++)
+                keyBindings[i] = defaultKeyBindings[i];
+    }
+
     void setKeyBindings(EngineIO::InputEvent keyBindings[]) {
         // Write the keybindings to the file.
         std::ofstream keyBindingsFile = std::ofstream("keyBindings.conf");
@@ -149,11 +156,11 @@ public:
         std::string line;
         int i = 0;
         while (std::getline(keyBindingsFile, line) && i < NUM_KEYBINDINGS) {
-            std::cout << "Boton " << i << ": " << line << std::endl;
+            //std::cout << "Boton " << i << ": " << line << std::endl;
             keyBindings[i++] = static_cast<EngineIO::InputEvent>(std::stoi(line));
         }
         keyBindingsFile.close();
-        std::cout << "Leidos " << i << " botones.\n";
+        //std::cout << "Leidos " << i << " botones.\n";
         if (i < NUM_KEYBINDINGS) {
             std::cout << "Faltan botones en el archivo de configuración, creando uno nuevo.\n";
             generateKeyBindingsFile();

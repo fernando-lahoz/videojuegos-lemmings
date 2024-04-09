@@ -15,10 +15,10 @@
 
 EngineIO::InputEvent Engine::SDL_to_input_event(SDL_KeyboardEvent key)
 {
-    
+    /*
     // Para mostrar por consola la tecla que se ha pulsado.
     std::cout << "Key pressed: " << key.keysym.sym << std::endl;
-
+    */
     if (key.keysym.sym >= SDLK_a && key.keysym.sym <= SDLK_z)
             return (EngineIO::InputEvent)(key.keysym.sym - SDLK_a + 65);
     
@@ -28,9 +28,9 @@ EngineIO::InputEvent Engine::SDL_to_input_event(SDL_KeyboardEvent key)
     if (key.keysym.sym >= SDLK_F1 && key.keysym.sym <= SDLK_F12)
             return (EngineIO::InputEvent)(key.keysym.sym - SDLK_F1 + 256);
 
-    if (key.keysym.sym >= SDLK_KP_DIVIDE && key.keysym.sym <= SDLK_KP_PERIOD)
-            return (EngineIO::InputEvent)(key.keysym.sym - SDLK_KP_DIVIDE + 268);
-    
+    if (key.keysym.sym >= SDLK_NUMLOCKCLEAR && key.keysym.sym <= SDLK_KP_PERIOD)
+            return (EngineIO::InputEvent)(key.keysym.sym - SDLK_NUMLOCKCLEAR + 268);
+
     switch (key.keysym.sym)
     {
         case SDLK_RIGHT:        return EngineIO::InputEvent::RIGHT;
@@ -39,12 +39,15 @@ EngineIO::InputEvent Engine::SDL_to_input_event(SDL_KeyboardEvent key)
         case SDLK_DOWN:         return EngineIO::InputEvent::DOWN;
         case SDLK_SPACE:        return EngineIO::InputEvent::SPACE;
         case SDLK_LSHIFT:       return EngineIO::InputEvent::SHIFT;
-        case SDLK_LCTRL:        return EngineIO::InputEvent::CTRL;
-        case SDLK_LALT:         return EngineIO::InputEvent::ALT;
+        case SDLK_LCTRL:
+        case SDLK_RCTRL:        return EngineIO::InputEvent::CTRL;
+        case SDLK_LALT:
+        case SDLK_RALT:         return EngineIO::InputEvent::ALT;
         case SDLK_RETURN:       return EngineIO::InputEvent::ENTER;
         case SDLK_ESCAPE:       return EngineIO::InputEvent::ESC;
         case SDLK_TAB:          return EngineIO::InputEvent::TAB;
         case SDLK_BACKSPACE:    return EngineIO::InputEvent::BACKSPACE;
+        case SDLK_CAPSLOCK:     return EngineIO::InputEvent::CAPS_LOCK;
         default:                return EngineIO::InputEvent::NONE;
     }
 }
@@ -700,7 +703,7 @@ void Engine::start()
             switch (x)
             {
             case 0:
-                std::printf("Blocked...\n");
+                // std::printf("Blocked...\n");
                 mixer.block_sound();
                 break;
             case -1:
@@ -742,7 +745,7 @@ void Engine::start()
             watchdog_jumped = false;
         }
         if (local_jumped) {
-            std::printf("Resumed...\n");
+            // std::printf("Resumed...\n");
             mixer.release_sound();
         }
 
