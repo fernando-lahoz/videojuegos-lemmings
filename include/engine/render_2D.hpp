@@ -117,6 +117,16 @@ public:
     {
         SDL_SetWindowFullscreen(window, 0);
     }
+    void set_window_size(Vector2i size)
+    {
+        SDL_SetWindowSize(window, size.x, size.y);
+    }
+    Vector2i get_window_size()
+    {
+        Vector2i size;
+        SDL_GetWindowSize(window, &size.x, &size.y);
+        return size;
+    }
 
     Point2f world_to_raster(Point2f world_point, Camera2D& camera, Camera2D& main_camera);
     Vector2f world_to_raster(Vector2f world_vector, Camera2D& camera, Camera2D& main_camera);

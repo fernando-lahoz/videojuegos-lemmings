@@ -111,6 +111,10 @@ public:
 
     void set_window_icon(const std::string& path);
     void set_fullscreen();
+    void set_windowmode();
+    void set_window_size(Vector2i size);
+    Vector2i get_window_size();
+
     EntityCollection& get_entities();
     double get_delta_time();
     void destroy_all_entities();

@@ -421,16 +421,19 @@ void Engine::process_cameras()
     cameras.resize(std::distance(cameras.begin(), iterator));
 }
 
-Engine::Engine(std::shared_ptr<Game> &&game)
-    : game{std::move(game)}
+Engine::Engine(std::shared_ptr<Game> &&game_)
+    : game{std::move(game_)}
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
         throw error::sdl_exception(ERROR_CONTEXT);
 
     cameras.push_back(this->game->get_main_camera());
-    auto [w, h] = cameras[0]->get_window_frame().diagonal();
+    auto [cam_w, cam_h] = cameras[0]->get_window_frame().diagonal();
 
-    renderer = std::make_shared<Render_2D>(this->game->get_name(), (int)w, (int)h);
+    auto [win_w, win_h] = game->get_initial_window_size();
+
+    renderer = std::make_shared<Render_2D>(this->game->get_name(),
+            win_w < 0 ? (int)cam_w : win_w, win_h < 0 ? (int)cam_h : win_h);
     physics = Physics_engine();
 
     check_point = std::chrono::steady_clock::now();
@@ -855,6 +858,22 @@ void Engine::set_fullscreen()
 {
     renderer->set_fullscreen();
 }
+
+void Engine::set_windowmode()
+{
+    renderer->set_windowmode();
+}
+
+void Engine::set_window_size(Vector2i size)
+{
+    renderer->set_window_size(size);
+}
+
+Vector2i Engine::get_window_size()
+{
+    return renderer->get_window_size();
+}
+
 
 double Engine::get_delta_time()
 {

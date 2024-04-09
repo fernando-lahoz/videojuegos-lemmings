@@ -19,14 +19,17 @@ protected:
     std::vector<std::shared_ptr<Camera2D>> new_cameras;
     std::string game_name;
     bool replace_main_cam = false;
+    Vector2i _initial_window_size;
 
 public:
 
-    Game(std::string _game_name)
-    : game_name(_game_name)
+    Game(std::string _game_name, Vector2i initial_window_size = Vector2i{-1, -1})
+    : game_name(_game_name), _initial_window_size{initial_window_size}
     { }
 
     virtual ~Game() = default;
+
+    Vector2i get_initial_window_size() const;
 
     std::vector<EntityPtr> get_new_entities();
     std::vector<std::shared_ptr<Camera2D>> get_new_cameras();

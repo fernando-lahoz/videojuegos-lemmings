@@ -36,7 +36,7 @@ private:
 
 public:
   Lemmings_game()
-      : Game("Lemmings"), screen(game_info, keyboard), keyboard(game_info)
+      : Game("Lemmings", /*INITIAL WINDOW SIZE*/Vector2i{1280, 800}), screen(game_info, keyboard), keyboard(game_info)
   {
   }
 

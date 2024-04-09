@@ -2,6 +2,11 @@
 #include "engine/engine.hpp"
 #include "engine/IO.hpp"
 
+Vector2i Game::get_initial_window_size() const
+{
+    return _initial_window_size;
+}
+
 std::vector<EntityPtr> Game::get_new_entities()
 {
     std::vector<EntityPtr> new_entities_tmp;
