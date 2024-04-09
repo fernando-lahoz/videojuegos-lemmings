@@ -1200,6 +1200,7 @@ public:
       on_ground = true;
       speed.x = 0;
       speed.y = 0;
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::FIRE_SOUND));
       destroy_lemming(engine);
     }
 
@@ -1224,6 +1225,17 @@ public:
     if (is_falling() || is_floating())
     {
       distance_fall = distance_fall + (position.y - last_y);
+      //std::cout << "Posicion de Lemming: " << position.y << std::endl;
+
+      //Si se salen fuera del mapa
+      if(position.y > 320.0f){
+
+        //Obten el sonido de un Lemming gritando por su vida
+        engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::DIE_SOUND));
+
+        //Destruye el lemming
+        destroy_lemming(engine);
+      }
     }
     else
     {
