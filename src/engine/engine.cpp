@@ -801,9 +801,14 @@ Engine::EntityCollection &Engine::get_entities()
     return entities;
 }
 
-Texture Engine::load_texture(const std::string &path)
+Texture Engine::load_texture(const std::string &path, bool cache)
 {
-    return renderer->load_texture(path);
+    return renderer->load_texture(path, cache);
+}
+
+void Engine::flush_texture_cache()
+{
+    renderer->flush_texture_cache();
 }
 
 void Engine::send_preload_finished_event(int batch_id)
@@ -815,7 +820,7 @@ void Engine::th_preload_textures(const std::vector<std::string> &paths, int batc
 {
     for (auto &path : paths)
     {
-        renderer->load_texture(path);
+        renderer->load_texture(path, true);
     }
 
     send_preload_finished_event(batch_id);
@@ -872,6 +877,11 @@ void Engine::set_window_size(Vector2i size)
 Vector2i Engine::get_window_size()
 {
     return renderer->get_window_size();
+}
+
+void Engine::set_window_title(const std::string title)
+{
+    renderer->set_window_title(title);
 }
 
 

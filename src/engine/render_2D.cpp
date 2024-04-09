@@ -249,7 +249,7 @@ void Render_2D::set_window_icon(const std::string& window_icon)
     SDL_FreeSurface(icon);
 }
 
-Texture Render_2D::load_texture(const std::string& file)
+Texture Render_2D::load_texture(const std::string& file, bool cache)
 {
     std::unique_lock lock(texture_mtx);
 
@@ -264,11 +264,18 @@ Texture Render_2D::load_texture(const std::string& file)
         Texture texture;
         texture.load(file, renderer);
         
-        lock.lock();
-        textures[file] = texture;
+        if (cache) {
+            lock.lock();
+            textures[file] = texture;
+        }
 
         return texture;
     }
+}
+
+void Render_2D::flush_texture_cache()
+{
+    textures.clear();
 }
 
 Point2f bound_to_bound(Point2f p, Bound2f src, Bound2f dst)

@@ -100,33 +100,14 @@ public:
     Render_2D() = default;
     Render_2D(const std::string& window_name, int width, int height);
 
-    Texture load_texture(const std::string& file);
+    Texture load_texture(const std::string& file, bool cache);
+    void flush_texture_cache();
     void set_window_icon(const std::string& window_icon);
 
     //Updates resolution and printable frame
     void update_resolution(Engine& engine);
 
     SDL_Renderer *get_sdl_renderer();
-
-    //TODO: set window resolution
-    void set_fullscreen()
-    {
-        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    }
-    void set_windowmode()
-    {
-        SDL_SetWindowFullscreen(window, 0);
-    }
-    void set_window_size(Vector2i size)
-    {
-        SDL_SetWindowSize(window, size.x, size.y);
-    }
-    Vector2i get_window_size()
-    {
-        Vector2i size;
-        SDL_GetWindowSize(window, &size.x, &size.y);
-        return size;
-    }
 
     Point2f world_to_raster(Point2f world_point, Camera2D& camera, Camera2D& main_camera);
     Vector2f world_to_raster(Vector2f world_vector, Camera2D& camera, Camera2D& main_camera);
@@ -136,4 +117,33 @@ public:
 
     std::unordered_map<Entity*, Camera2D::ID> draw_and_return_hovered(std::vector<EntityPtr> &entities,
             std::vector<std::shared_ptr<Camera2D>>& cameras, Point2f mouse_position);
+
+
+    inline void set_fullscreen()
+    {
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    }
+
+    inline void set_windowmode()
+    {
+        SDL_SetWindowFullscreen(window, 0);
+    }
+
+    inline void set_window_size(Vector2i size)
+    {
+        SDL_SetWindowSize(window, size.x, size.y);
+    }
+
+    inline Vector2i get_window_size()
+    {
+        Vector2i size;
+        SDL_GetWindowSize(window, &size.x, &size.y);
+        return size;
+    }
+
+    inline void set_window_title(const std::string &title)
+    {
+        SDL_SetWindowTitle(window, title.c_str());
+    }
+
 };

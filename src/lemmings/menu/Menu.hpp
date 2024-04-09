@@ -69,6 +69,7 @@ public:
 
     if (type == Utils::TITLE)
     {
+      engine.flush_texture_cache();
       game_info.set_credit_frame(0);
       auto background = std::make_shared<Entity>(Point3f(10000, -0, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_brown.png"), engine, "Background");
       engine.get_game().create_entity(background);

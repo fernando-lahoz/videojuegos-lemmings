@@ -88,7 +88,7 @@ public:
         }
 
         std::string frame_path = "assets/intro/intro_" + std::to_string(current_frame) + ".jpg";
-        Texture txt = engine.load_texture(frame_path.c_str());
+        Texture txt = engine.load_texture(frame_path, false);
         set_active_texture(txt);
       }
     }

@@ -103,7 +103,8 @@ public:
     void start();
     void quit();
 
-    Texture load_texture(const std::string& path);
+    Texture load_texture(const std::string& path, bool cache = true);
+    void flush_texture_cache();
     
     // Returns the id of the batch loading
     // The event will be sent with this id
@@ -114,6 +115,7 @@ public:
     void set_windowmode();
     void set_window_size(Vector2i size);
     Vector2i get_window_size();
+    void set_window_title(const std::string title);
 
     EntityCollection& get_entities();
     double get_delta_time();
