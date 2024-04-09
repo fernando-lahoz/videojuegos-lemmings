@@ -16,3 +16,5 @@ CMakeCache.txt
 *.a
 Makefile
 CMakeFiles
+
+*.conf
