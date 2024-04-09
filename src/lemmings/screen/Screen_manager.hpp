@@ -108,5 +108,70 @@ public:
         engine.get_game().create_entity(std::make_shared<Transition>(engine, game_info, 0.5f));
       }
     }
+
+
+    //Update sound and music if its the start of level
+    if (game_info.get_level_is_paused() || game_info.get_level_ended())
+      return;
+
+    //Hacemos sonar una puerta que chirria
+    if(game_info.get_play_open_sound()) {
+        engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::DOOR_SOUND));
+        game_info.set_play_open_sound(false);
+    }
+
+    if (!game_info.get_is_door_opening())
+    { // Espera a que la animación termine para comenzar a invocar
+      
+      //Hacemos sonar el letsgo
+      if(game_info.get_play_letsgo_sound())
+      {
+        engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::LETS_GO_SOUND));
+        
+        //FIXME: Necesito una función para saber cuando no esta sonando nigun sonido, aunque parece no ser necesaria
+        //UPDATE: Usa esta: SoundMixer::is_playing_any_sound()
+        //while(engine.get_sound_mixer().is_playing_music()); //Esperamos a que termine el let's go
+        game_info.set_play_letsgo_sound(false);
+      }
+      else if (game_info.get_play_music() && !engine.get_sound_mixer().is_playing_any_sound())
+      {
+        game_info.set_let_lemmings_spawn(true);
+        game_info.set_play_music(false);
+
+        // Setup music
+        auto& mixer = engine.get_sound_mixer();
+        int difficulty = game_info.get_difficulty();
+        int level = game_info.get_level();
+        std::string music_file = [&]() {
+          using namespace Utils;
+          if (level == 0)
+          {
+            return MUSIC_DIRECTORY + LEVEL_MUSIC[11];
+          }
+          else if (difficulty == DIFFICULTY_LEVEL::FUN && level == 22)
+          {
+            return MUSIC_DIRECTORY + SPECIAL_MUSIC[0];
+          }
+          else if (difficulty == DIFFICULTY_LEVEL::TRICKY && level == 14)
+          {
+            return MUSIC_DIRECTORY + SPECIAL_MUSIC[1];
+          }
+          else if (difficulty == DIFFICULTY_LEVEL::TAXING && level == 15)
+          {
+            return MUSIC_DIRECTORY + SPECIAL_MUSIC[2];
+          }
+          else if (difficulty == DIFFICULTY_LEVEL::MAYHEM && level == 22)
+          {
+            return MUSIC_DIRECTORY + SPECIAL_MUSIC[3];
+          }
+          else
+          {
+            return MUSIC_DIRECTORY + LEVEL_MUSIC[((30 * difficulty + level - 1) % 17)];
+          }
+        }();
+        
+        mixer.play_music(mixer.load_music(music_file), true /*play on loop*/);
+      }
+    }
   }
 };

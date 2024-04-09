@@ -33,6 +33,11 @@ public:
   {
   }
 
+  void update_sounds()
+  {
+    
+  }
+
   void setup_level(Engine &engine, int level_number, int difficulty_number = 0)
   {
     hud.setupElements(engine);

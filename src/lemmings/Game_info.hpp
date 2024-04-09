@@ -72,12 +72,18 @@ private:
   int actual_minutes_left = 0;
   int actual_seconds_left = 0;
   int spawn_velocity = 1;
+  bool let_lemmings_spawn = false;
 
   // key bindings
 
 
   // sound effects
   Sound SOUND_EFFECT[19];
+
+  bool play_open_sound = false;
+  bool play_letsgo_sound = false;
+  bool play_music = false;
+  bool is_door_open = false;
 
 public:
 
@@ -158,6 +164,12 @@ public:
     actual_minutes_left = 0;
     actual_seconds_left = 0;
     spawn_ended = false;
+
+    let_lemmings_spawn = false;
+    play_open_sound = true;
+    play_letsgo_sound = true;
+    play_music = true;
+    is_door_open = false;
   }
   int get_level() const { return level; }
   int get_difficulty() const { return difficulty; }
@@ -413,4 +425,51 @@ public:
 
   EngineIO::InputEvent get_conf_buttons(int idx) { return conf_buttons[idx]; }
 
+  bool get_let_lemmings_spawn()
+  {
+    return let_lemmings_spawn;
+  }
+
+  void set_let_lemmings_spawn(bool value)
+  {
+    let_lemmings_spawn = value;
+  }
+
+  bool get_play_open_sound()
+  {
+    return play_open_sound;
+  }
+
+  void set_play_open_sound(bool value)
+  {
+    play_open_sound = value;
+  }
+  bool get_play_letsgo_sound()
+  {
+    return play_letsgo_sound;
+  }
+
+  void set_play_letsgo_sound(bool value)
+  {
+    play_letsgo_sound = value;
+  }
+  bool get_play_music()
+  {
+    return play_music;
+  }
+
+  void set_play_music(bool value)
+  {
+    play_music = value;
+  }
+
+  bool get_is_door_opening()
+  {
+    return is_door_open;
+  }
+
+  void set_is_door_opening(bool value)
+  {
+    is_door_open = value;
+  }
 };

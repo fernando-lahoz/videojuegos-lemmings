@@ -265,7 +265,7 @@ namespace Utils
                                                        }};
   const int SKILL_TO_SKILLS_AMOUNT[8] = {0, 1, 2, 3, 4, 7, 5, 6};
 
-  constexpr std::string MUSIC_DIRECTORY = "assets/music/";
+  const std::string MUSIC_DIRECTORY = "assets/music/";
 
   const std::string LEVEL_MUSIC[17] = {
       "11_The Galop (Can-Can).mp3",
