@@ -22,14 +22,14 @@ private:
   Vector2i texture_letter_size;
   MappingFunction map;
 
-  std::string_view last_text;
+  std::string last_text;
   std::shared_ptr<Text_displayer> text;
   int type;
   int index;
 
 public:
   Text_dynamic(Point3f _position, Vector2f _letter_size, Engine &engine, Game_info &_game_info, std::string _justified, Texture _font_texture,
-               Vector2i _texture_letter_size, MappingFunction _map, std::string_view _text, int _type, int _index = -1)
+               Vector2i _texture_letter_size, MappingFunction _map, const std::string &_text, int _type, int _index = -1)
       : Entity(_position, _letter_size,
                engine.load_texture("assets/menu/transparent.png"),
                engine,

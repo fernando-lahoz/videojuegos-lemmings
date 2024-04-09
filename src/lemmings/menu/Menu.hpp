@@ -126,7 +126,7 @@ public:
 
       dynamic_text = std::make_shared<Text_dynamic>(Point3f(10320, 225, 2), Vector2f(16, 30), engine, game_info, "center",
                                                     engine.load_texture("assets/font/font-green.png"),
-                                                    Vector2i(16, 30), lemmings_font_map, std::to_string(game_info.get_difficulty_selected()), 0);
+                                                    Vector2i(16, 30), lemmings_font_map,  Utils::DIFFICULTY_NAME[game_info.get_difficulty_selected()], 0);
       engine.get_game().create_entity(dynamic_text);
 
       engine.get_game().create_entity(std::make_shared<Menu_arrow>(Point3f(10405, 270, 2), Vector2f(30, 30), game_info, engine, 2));
