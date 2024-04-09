@@ -472,7 +472,7 @@ public:
 
       text = std::make_shared<Text_displayer>(Point3f(10320, 187.5, 2), Vector2f(16 * 1.5, 30 * 1.5), game_info, "center",
                                               engine.load_texture("assets/font/font-purple.png"),
-                                              Vector2i(16, 30), lemmings_font_map, "WORKING PROGRESS ...", engine,
+                                              Vector2i(16, 30), lemmings_font_map, "WORK IN PROGRESS ...", engine,
                                               "TEXT");
       engine.get_game().create_entity(text);
 
