@@ -83,6 +83,7 @@ private:
 
     std::thread watchdog {};
     std::atomic_bool end = false;
+    std::mutex mtx;
     
 public:
 
