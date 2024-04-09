@@ -381,13 +381,20 @@ public:
   void set_last_button(int _last_button) { last_button = _last_button; }
   int get_last_button() { return last_button; }
 
-  void set_conf_buttons(EngineIO::InputEvent _conf_buttons[]) {
+  void set_default_keys()
+  {
+    KeyBindings().setDefaultKeyBindings(conf_buttons);
+  }
+
+  void set_conf_buttons(EngineIO::InputEvent _conf_buttons[])
+  {
     for(int i = 0; i < NUM_KEYBINDINGS; i++){
       conf_buttons[i] = _conf_buttons[i]; 
     }
   }
 
-  void set_conf_buttons(EngineIO::InputEvent _conf_button, int idx) {
+  void set_conf_buttons(EngineIO::InputEvent _conf_button, int idx)
+  {
     if(idx >= 0 && idx <= NUM_KEYBINDINGS)
     {
       for (int i = 0; i < NUM_KEYBINDINGS; i++)

@@ -265,8 +265,8 @@ namespace Utils
                                                        }};
   const int SKILL_TO_SKILLS_AMOUNT[8] = {0, 1, 2, 3, 4, 7, 5, 6};
 
-  constexpr std::string MUSIC_DIRECTORY = "assets/music/";
-
+  constexpr const char* MUSIC_DIRECTORY = "assets/music/";
+  
   const std::string LEVEL_MUSIC[17] = {
       "11_The Galop (Can-Can).mp3",
       "02_Lemming 1 (Pachebel's Canon).mp3",
@@ -370,28 +370,29 @@ namespace Utils
   {
     PLAYER_SOLO = 0,
     PLAYER_VS_IA = 1,
-    SOUND_EFFECTS = 2,
-    EXIT = 4,
-    CONFIGURACION = 5, // Botón que lleva a pantalla de configuración
-    PAUSE = 6,         // Botón para modificar tecla de pausa
-    ABILITY_1 = 7,
-    ABILITY_2 = 8,
-    ABILITY_3 = 9,
-    ABILITY_4 = 10,
-    ABILITY_5 = 11,
-    ABILITY_6 = 12,
-    ABILITY_7 = 13,
-    ABILITY_8 = 14,
-    EXPLODE_ALL = 15,
-    ABILITY_UP = 16,
-    ABILITY_DOWN = 17,
-    SPEED_UP = 18,
-    SPEED_DOWN = 19,
-    SPAWN_UP = 20,
-    SPAWN_DOWN = 21,
-    MAP_LEFT = 22,
-    MAP_RIGHT = 23,
-    SAVE = 24 // Botón de guardar configuración
+    SETTINGS = 2, //Botón que lleva a pantalla de configuración
+    EXIT = 3,
+    SOUND_EFFECTS = 4,
+    RESET = 6,
+    SAVE = 7,
+    PAUSE = 8, //Botón para modificar tecla de pausa
+    ABILITY_1 = 9,
+    ABILITY_2 = 10,
+    ABILITY_3 = 11,
+    ABILITY_4 = 12,
+    ABILITY_5 = 13,
+    ABILITY_6 = 14,
+    ABILITY_7 = 15,
+    ABILITY_8 = 16,
+		EXPLODE_ALL = 17,
+		ABILITY_UP = 18,
+		ABILITY_DOWN = 19,
+		SPEED_UP = 20,
+		SPEED_DOWN = 21,
+		SPAWN_UP = 22,
+		SPAWN_DOWN = 23,
+    MAP_LEFT = 24,
+    MAP_RIGHT = 25
   };
   enum ACTIONS
   {

@@ -24,7 +24,7 @@ private:
   {
     std::string n_file;
 
-    if (_type < 6)
+    if(_type < 8)
     {
       n_file = "assets/menu/menu_button_" + std::to_string(_type) + ".png";
     }
@@ -34,9 +34,8 @@ private:
       {
         n_file = "assets/menu/config_pause.png";
       }
-      else if (_type >= Utils::ABILITY_1 && _type <= Utils::ABILITY_8)
-      {
-        n_file = "assets/menu/config_skill_" + std::to_string(_type - 5) + ".png";
+      else if(_type >= Utils::ABILITY_1 && _type <= Utils::ABILITY_8){
+        n_file = "assets/menu/config_skill_" + std::to_string(_type - 7) + ".png";
       }
       else if (_type == Utils::EXPLODE_ALL)
       {
@@ -87,7 +86,7 @@ public:
       : Rigid_body(position, size, !_game_info.get_sound_effects() && _is_changeable ? _engine.load_texture("assets/menu/menu_button_" + std::to_string(_type + 1) + ".png") : _engine.load_texture(name_file(_type)), engine, "Menu Button"),
         type(_type), game_info(_game_info), engine(_engine), keyboard(_keyboard)
   {
-    std::cout << "Type: " << _type << std::endl;
+    //std::cout << "Type: " << _type << std::endl;
     txt_on = engine.load_texture(name_file(_type));
     if (_is_changeable)
     {
@@ -120,7 +119,7 @@ public:
     {
       engine.quit();
     }
-    else if (button_type == Utils::CONFIGURACION)
+    else if (button_type == Utils::SETTINGS)
     {
       game_info.set_do_transition(true);
       game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
@@ -136,17 +135,21 @@ public:
 
       if (button_type != game_info.get_last_button() || !game_info.get_is_button_conf())
       { // Si no concuerda con el ultimo pulsado
-        // std::cout << "HABILITADO BOTON  " << button_type-6 << std::endl;
+        // std::cout << "HABILITADO BOTON  " << button_type-8 << std::endl;
         game_info.set_is_button_conf(true);
         game_info.set_last_button(button_type);
       }
       else
       { // Si pulsamos dos veces seguida el mismo es como dejar de seleccionar el boton
-        // std::cout << "DESHABILITADO BOTON  " << button_type-6 << std::endl;
+        // std::cout << "DESHABILITADO BOTON  " << button_type-8 << std::endl;
         game_info.set_is_button_conf(false);
       }
     }
-    else if (button_type >= Utils::SAVE)
+    else if(button_type == Utils::RESET)
+    {
+      game_info.set_default_keys();
+    }
+    else if(button_type >= Utils::SAVE)
     {
       // Guardar configuración de botones actual
       EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS];

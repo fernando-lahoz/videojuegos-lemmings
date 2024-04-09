@@ -104,9 +104,9 @@ public:
       return;
     }
     if(type == 4 && ( ( last_text.compare(KeyBindings().InEvenToCh(game_info.get_conf_buttons(index))) != 0) || 
-                      ( last_text != "..." && game_info.get_is_button_conf() && index == game_info.get_last_button()-6) ) )
+                      ( last_text != "..." && game_info.get_is_button_conf() && index == game_info.get_last_button()-8) ) )
     {//No coincide el mensaje de tecla actual con el anterior
-      if(game_info.get_is_button_conf() && index == game_info.get_last_button()-6)
+      if(game_info.get_is_button_conf() && index == game_info.get_last_button()-8)
       {
         last_text = "...";
       }
