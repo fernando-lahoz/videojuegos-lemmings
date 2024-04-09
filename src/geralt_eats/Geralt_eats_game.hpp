@@ -83,7 +83,7 @@ public:
         auto energy_ball_txt = engine.load_texture("assets/energy_ball.png");
 
         auto geralt = std::make_shared<Geralt>(Point2f(2, 0), Vector2f(0.5, 0.6), engine);
-        auto ground = std::make_shared<Entity>(Point2f(0, 1.75), 1, Vector2f(4, 0.5), terrain, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::AABB, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
+        auto ground = std::make_shared<Entity>(Point2f(-10, 1.75), 1, Vector2f(20, 0.5), terrain, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::AABB, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
         auto cielo = std::make_shared<Entity>(Point2f(0, 0), 10, Vector2f(4, 2.24), cielo_txt, engine, "Cielo", Entity::Physics_type::NONE, Entity::Collision_check::NONE, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Cielo");
         ground->disable_gravity();
         cielo->disable_gravity();

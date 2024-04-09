@@ -16,6 +16,22 @@ class Electric_field : public Entity
 
     bool destroying = false;
 
+    Float internal_energy = 100; 
+    Float emision_per_second = 0.1;
+
+    void emit_charge(Engine& engine, Float dt)
+    {
+        internal_energy -= std::min(emision_per_second*dt, internal_energy);
+
+        
+
+        if (internal_energy <= 0)
+        {
+            start_destruction(engine);
+        }
+    }
+
+
     public:
 
     Electric_field(Engine& engine, Point2f position, Vector2f size, Float charge) 
