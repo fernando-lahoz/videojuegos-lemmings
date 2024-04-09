@@ -41,6 +41,7 @@ public:
       }
       else
       {
+        relevantDigit = relevantDigit < 0 ? 0 : relevantDigit;
         newPath = "assets/text/text_" + std::to_string(text_type) + "_" + std::to_string(relevantDigit) + ".png";
       }
 

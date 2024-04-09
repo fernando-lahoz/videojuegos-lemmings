@@ -1213,6 +1213,19 @@ public:
             current_frame = 4;
           }
       }
+
+      //std::cout << "Posicion de Lemming: " << position.y << std::endl;
+
+      //Si se salen fuera del mapa
+      if(position.y > 320.0f){
+
+        //Obten el sonido de un Lemming gritando por su vida
+        engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::DIE_SOUND));
+
+        //Destruye el lemming
+        destroy_lemming(engine);
+        return;
+      }
     }
     else
     {
