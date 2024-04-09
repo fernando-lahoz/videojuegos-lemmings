@@ -31,7 +31,6 @@ class Lemming : public Rigid_body
   bool do_action_in_frame = false;
   bool is_hovered = false;
   float velocity = 50;
-  bool primera_animacion = false;
 
   int skills = Utils::NO_SKILLS;
 
@@ -94,7 +93,6 @@ class Lemming : public Rigid_body
 
   void go_fall()
   {
-    current_frame = 0;
     state = Utils::FALLING;
     if (skills & Utils::FLOAT && skills & Utils::CLIMB)
     {
@@ -117,7 +115,6 @@ class Lemming : public Rigid_body
 
   void go_block()
   {
-    current_frame = 0;
     state = Utils::BLOCKING;
     type = Utils::LEMMING_TYPE[Utils::BLOCKING];
 
@@ -126,7 +123,6 @@ class Lemming : public Rigid_body
 
   void go_build()
   {
-    current_frame = 0;
     state = Utils::BUILDING;
     // std::cout << "GO BUILDING\n";
     type = Utils::LEMMING_TYPE[Utils::BUILDING];
@@ -134,7 +130,6 @@ class Lemming : public Rigid_body
 
   void go_climb()
   {
-    current_frame = 0;
     state = Utils::CLIMBING;
     if (skills & Utils::FLOAT && skills & Utils::CLIMB)
     {
@@ -172,7 +167,6 @@ class Lemming : public Rigid_body
 
   void go_explode()
   {
-    current_frame = 0;
     state = Utils::EXPLODING;
     type = Utils::LEMMING_TYPE[Utils::EXPLODING];
     // std::cout << "GO EXPLODING\n";
@@ -180,7 +174,6 @@ class Lemming : public Rigid_body
 
   void go_dig()
   {
-    current_frame = 0;
     state = Utils::DIGGING;
     type = Utils::LEMMING_TYPE[Utils::DIGGING];
     // std::cout << "GO DIGGING\n";
@@ -188,7 +181,6 @@ class Lemming : public Rigid_body
 
   void go_bash()
   {
-    current_frame = 0;
     state = Utils::BASHING;
     type = Utils::LEMMING_TYPE[Utils::BASHING];
     // std::cout << "GO BASHING\n";
@@ -196,7 +188,6 @@ class Lemming : public Rigid_body
 
   void go_mine()
   {
-    current_frame = 0;
     state = Utils::MINING;
     type = Utils::LEMMING_TYPE[Utils::MINING];
     // std::cout << "GO MINING\n";
@@ -204,7 +195,7 @@ class Lemming : public Rigid_body
 
   void go_escape()
   {
-    current_frame = 0;
+
     //Hacemos que suene el yipee
     if(play_death_sound){
       engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::YIPEE_SOUND));
@@ -218,7 +209,6 @@ class Lemming : public Rigid_body
 
   void go_drown()
   {
-    current_frame = 0;
     state = Utils::DROWNING;
     type = Utils::LEMMING_TYPE[Utils::DROWNING];
 
@@ -233,7 +223,6 @@ class Lemming : public Rigid_body
 
   void go_crash()
   {
-    current_frame = 0;
     state = Utils::CRASHING;
     type = Utils::LEMMING_TYPE[Utils::CRASHING];
 
