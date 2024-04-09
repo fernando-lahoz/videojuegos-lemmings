@@ -78,7 +78,7 @@ tengamos que hacer una entrega.
             "-i"
             ],
             "env": {
-            "MSYSTEM": "MINGW64",
+            "MSYSTEM": "UCRT64",
             "CHERE_INVOKING": "1"
             }
         }
