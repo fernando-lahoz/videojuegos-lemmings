@@ -42,13 +42,15 @@ class Physics_engine
 
     void on_collision(Engine& engine,
             Float delta_time,
-            bool first_collided, bool second_collided,
-            bool compute_physics1, bool compute_physics2,
             EntityPtr entity1, EntityPtr entity2, 
             bool is_alpha, 
             size_t collision_point_id1, size_t collision_point_id2);
 
-    
+    void correct_collision(double delta_time, 
+            EntityPtr body1, 
+            EntityPtr body2, 
+            Collision_point collision_point);
+
 public:
 
     Physics_engine() = default;

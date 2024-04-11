@@ -67,6 +67,7 @@ protected:
     Vector2f speed = Vector2f(0, 0);
     Vector2f acceleration = Vector2f(0, 0);
     Vector2f force = Vector2f(0, 0);
+    Vector2f previous_force = Vector2f(0, 0);
     Vector2f max_speed = Vector2f(INFINITY, INFINITY);
 
     Float charge = 0;
@@ -194,10 +195,17 @@ public:
 
     void clear_forces(Float gravity)
     {
+        previous_force = force;
+
         if (has_gravity())
             force = Vector2f(0, mass * gravity);
         else
             force = Vector2f(0, 0);
+    }
+
+    Vector2f get_previous_forces() const
+    {
+        return previous_force;
     }
 
     void apply_force(Vector2f new_force)

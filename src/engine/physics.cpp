@@ -37,31 +37,96 @@ void Physics_engine::inelastic_collision(Float mass1, Float mass2,
 
 }
 
-void undo_movement(double delta_time, EntityPtr body, EntityPtr other, Collision_point collision_point)
+
+void apply_friction(Vector2f normal_force, EntityPtr body, EntityPtr ground, double dt)
 {
-    auto body_speed = body->get_speed();
-    auto body_acceleration = body->get_acceleration();
-    auto body_centroid = body->centroid();
-    auto body_position = body->get_position();
+    auto speed = body->get_speed();
 
-    Vector2f collision_tangent = normal(collision_point.normal);
+    /************ Align friction with tangent speed **********/
+    Vector2f friction = normal(ground->get_friction_coefficient() * normal_force);
+    Vector2f acc = friction / body->get_mass();
 
-    Vector2f collision_to_body = body_centroid - collision_point.point;
-    collision_point.normal = face_forward(collision_point.normal, collision_to_body);
+    acc.x = -math::copy_sign(acc.x, speed.x);
+    acc.y = -math::copy_sign(acc.y, speed.y);
     
-    // Speed and acceleration in the direction of the normal
-    auto speed_normal = abs(dot(body_speed, collision_point.normal));
-    auto acc_normal = abs(dot(body_acceleration, collision_point.normal));
-    auto acc_tangent = abs(dot(body_acceleration, collision_tangent));
+    /*************** Apply fricton and stop body **************/
+    Vector2f new_speed = clamp(speed + acc*dt, -body->get_max_speed(), body->get_max_speed());
 
-    // Undo the movement
-    body_position += collision_point.normal * speed_normal * delta_time;
+    // If the body has changed direction because of the friction, stop it
+    if (!math::same_sign(speed.x, new_speed.x))
+        new_speed.x = 0;
 
-    // Undo acceleration
-    body_speed += collision_point.normal * acc_normal * delta_time;
+    if (!math::same_sign(speed.y, new_speed.y))
+        new_speed.y = 0;
 
-    body->set_position(body_position);
-    body->set_speed(body_speed);
+
+    body->set_speed(new_speed);
+}
+
+void Physics_engine::correct_collision(double delta_time, EntityPtr body1, EntityPtr body2, Collision_point collision_point)
+{
+    /******************* Undo all the movement ********************/
+    body1->set_position(body1->get_position() - body1->get_speed() * delta_time);
+    body2->set_position(body2->get_position() - body2->get_speed() * delta_time);
+
+    auto body_acceleration1 = body1->get_acceleration();
+    auto body_acceleration2 = body2->get_acceleration();
+    auto body_centroid1 = body1->centroid();
+    auto body_centroid2 = body2->centroid();
+
+    Vector2f collision_to_body1 = body_centroid1 - collision_point.point;
+    Vector2f collision_normal1 = face_forward(collision_point.normal, collision_to_body1);
+    Vector2f collision_normal2 = -collision_normal1;
+
+    /********** Remove acceleration in the nomal direction **********/
+    auto acc_normal1 = abs(dot(body_acceleration1, collision_normal1));
+    auto acc_normal2 = abs(dot(body_acceleration2, collision_normal2));
+    auto body_speed1 = body1->get_speed();
+    auto body_speed2 = body2->get_speed();
+
+    // Undo acceleration in the collision normal
+    body_speed1 += collision_normal1 * acc_normal1 * delta_time;
+    body_speed2 += collision_normal2 * acc_normal2 * delta_time;
+
+    /****************** Compute collision physics *************/
+    elastic_collision(body1->get_mass(), body2->get_mass(),
+            body_speed1, body_speed2,
+            collision_point.point, collision_point.normal,
+            body_speed1, body_speed2);
+
+    if (body1->get_collision_type() != Entity::Collision_type::STATIC_BODY)
+        body1->set_speed(body_speed1);
+    
+    if (body2->get_collision_type() != Entity::Collision_type::STATIC_BODY)
+        body2->set_speed(body_speed2);
+
+    /************** Apply friction ***************/
+    auto previous_forces1 = body1->get_previous_forces();
+    auto previous_forces2 = body2->get_previous_forces();
+
+    // Forces normal to the collision
+    auto normal_force_modulus1 = dot(previous_forces1, collision_normal1);
+    auto normal_force_modulus2 = dot(previous_forces2, collision_normal2);
+    Vector2f normal_force1 = collision_normal1 * normal_force_modulus1;
+    Vector2f normal_force2 = collision_normal2 * normal_force_modulus2;
+
+
+    // Update the speed with the friction
+    if (body1->get_collision_type() != Entity::Collision_type::STATIC_BODY)
+        apply_friction(normal_force1, body1, body2, delta_time);
+    
+    if (body2->get_collision_type() != Entity::Collision_type::STATIC_BODY)
+        apply_friction(normal_force2, body2, body1, delta_time);
+
+    /****** Redo the movement without normal speed and friction ******/
+    auto position1 = body1->get_position();
+    auto position2 = body2->get_position();
+
+    position1 += body1->get_speed() * delta_time;
+    position2 += body2->get_speed() * delta_time;
+
+    body1->set_position(position1);
+    body2->set_position(position2);
 }
 
 
@@ -75,34 +140,6 @@ void Physics_engine::add_entity(EntityPtr entity)
 
     if (entity->get_physics_type() == Entity::Physics_type::CHARGE_EMITTER)
         charge_emitters.push_back(entity);
-}
-
-
-void Physics_engine::rigid_body_collision(
-        bool collided1, bool collided2,
-        bool compute_physics1, bool compute_physics2,
-        EntityPtr entity1, EntityPtr entity2)
-{
-    bool compute_physics = compute_physics1 || compute_physics2;
-
-    if (compute_physics && 
-        entity1->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
-        &&
-        entity2->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY)
-    {
-        Vector2f new_speed1, new_speed2;
-
-        elastic_collision(entity1->get_mass(), entity2->get_mass(),
-            entity1->get_speed(), entity2->get_speed(),
-            Point2f(0, 0), Vector2f(0, 0),
-            new_speed1, new_speed2);
-
-        if (collided1 && compute_physics1)
-            entity1->set_speed(new_speed1);
-        
-        if (collided2 && compute_physics2)
-            entity2->set_speed(new_speed2);
-    }
 }
 
 void electric_force(Engine &engine, EntityPtr emitter, EntityPtr aabb)
@@ -135,30 +172,28 @@ void electric_force(Engine &engine, EntityPtr emitter, EntityPtr aabb)
 
 void Physics_engine::on_collision(Engine& engine,
         Float delta_time,
-        bool first_collided, bool second_collided,
-        bool compute_physics1, bool compute_physics2,
         EntityPtr entity1, EntityPtr entity2, 
         bool is_alpha, 
         size_t collision_point_id1, size_t collision_point_id2)
 {
-    if (first_collided)
-    {
-        entity1->entity_collision(engine, entity2, is_alpha, collision_point_id1);
-        entity1->on_collision(engine, entity2, is_alpha, collision_point_id1);
-    }
+    bool is_transparent = entity1->get_collision_type() == Entity::Collision_type::TRANSPARENT_BODY
+                        || entity2->get_collision_type() == Entity::Collision_type::TRANSPARENT_BODY;
+    
+    bool is_dynamic = entity1->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
+                    || entity2->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY;
 
-    if (second_collided)
-    {
-        entity2->entity_collision(engine, entity1, is_alpha, collision_point_id2);
-        entity2->on_collision(engine, entity1, is_alpha, collision_point_id2);
-    }
+    if (is_transparent && is_dynamic)
+        return;
 
-    if (first_collided || second_collided)
-    {
-        rigid_body_collision(first_collided, second_collided, 
-                compute_physics1, compute_physics2,
-                entity1, entity2);
-    }
+
+    correct_collision(delta_time, entity1, entity2, collision_point);
+
+
+    entity1->entity_collision(engine, entity2, is_alpha, collision_point_id1);
+    entity1->on_collision(engine, entity2, is_alpha, collision_point_id1);
+
+    entity2->entity_collision(engine, entity1, is_alpha, collision_point_id2);
+    entity2->on_collision(engine, entity1, is_alpha, collision_point_id2);
 }
 
 
@@ -182,50 +217,7 @@ void Physics_engine::compute_collisions(Engine& engine)
                 size_t collision_point_id1 = aabb->bound2f().closest_side(collision_point.point);
                 size_t collision_point_id2 = other->bound2f().closest_side(collision_point.point);
 
-                bool first_collided = 
-                    (
-                        aabb->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
-                        || 
-                        aabb->get_collision_type() == Entity::Collision_type::TRANSPARENT_BODY
-                    )
-                    &&
-                    (
-                        other->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
-                        || 
-                        other->get_collision_type() == Entity::Collision_type::STATIC_BODY
-                    );
-
-                bool second_collided = 
-                    (
-                        other->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
-                        || 
-                        other->get_collision_type() == Entity::Collision_type::TRANSPARENT_BODY
-                    )
-                    &&
-                    (
-                        aabb->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
-                        || 
-                        aabb->get_collision_type() == Entity::Collision_type::STATIC_BODY
-                    );
-
-                bool compute_physics1 = aabb->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
-                                        || (aabb->get_collision_type() == Entity::Collision_type::TRANSPARENT_BODY
-                                            && other->get_collision_type() == Entity::Collision_type::STATIC_BODY);
-
-                bool compute_physics2 = other->get_collision_type() == Entity::Collision_type::DYNAMIC_BODY
-                                        || (other->get_collision_type() == Entity::Collision_type::TRANSPARENT_BODY
-                                            && aabb->get_collision_type() == Entity::Collision_type::STATIC_BODY);
-
-
-                if (first_collided && compute_physics1)
-                    undo_movement(delta_time, aabb, other, collision_point);
-
-                if (second_collided && compute_physics2)
-                    undo_movement(delta_time, other, aabb, collision_point);
-                
-
-                on_collision(engine, delta_time, first_collided, second_collided, 
-                            compute_physics1, compute_physics2,
+                on_collision(engine, delta_time, 
                             aabb, other, false, 
                             collision_point_id1, collision_point_id2);
             }
@@ -284,8 +276,7 @@ void Physics_engine::compute_collisions(Engine& engine)
                                             && aabb->get_collision_type() == Entity::Collision_type::STATIC_BODY);
 
 
-                on_collision(engine, delta_time, first_collided, second_collided, 
-                        compute_physics1, compute_physics2,
+                on_collision(engine, delta_time,
                         aabb, other, false, 
                         collision_point_id, collision_point_id);
             }
@@ -343,8 +334,7 @@ void Physics_engine::compute_collisions(Engine& engine)
                                             && alpha->get_collision_type() == Entity::Collision_type::STATIC_BODY);
 
 
-                on_collision(engine, delta_time, first_collided, second_collided, 
-                    compute_physics1, compute_physics2,
+                on_collision(engine, delta_time,
                     alpha, other, true, 
                     collision_point_id, collision_point_id);
             }

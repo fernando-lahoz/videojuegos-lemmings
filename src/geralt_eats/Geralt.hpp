@@ -116,22 +116,7 @@ public:
 
         if (colliding_down() && force.y > 0)
         {
-            Float friction = ground->get_friction_coefficient() * force.y;
-            Float acc_x = friction / get_mass();
-
-            if (speed.x > 0)
-            {
-                acc_x *= -1;
-            }
-
-            Float new_speed_x = math::clamp(speed.x + acc_x * dt, -max_speed.x, max_speed.x);
-
-            if (math::sign(speed.x) != math::sign(new_speed_x)) {
-                speed.x = 0;
-            }
-            else {
-                speed.x = new_speed_x;
-            }
+            
         }
     }
 
@@ -158,7 +143,7 @@ public:
                 std::unique_lock lock(mtx_electric_fields);
 
                 // Create electric field
-                auto electric_field = std::make_shared<Electric_field>(engine, get_position(), Vector2f(0.34, 0.3), 20, 10000);
+                auto electric_field = std::make_shared<Electric_field>(engine, get_position(), Vector2f(0.34, 0.3), 0, 10000);
                 engine.create_entity(electric_field);
                 electric_fields.push_back(electric_field);
 

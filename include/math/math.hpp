@@ -59,6 +59,15 @@ inline constexpr int sign(Float x) {
     return (x > 0) - (x < 0);
 }
 
+// Returns a magnitude with the sign of b
+inline constexpr Float copy_sign(Float a, Float b) {
+    return std::copysign(a, b);
+}
+
+inline constexpr bool same_sign(Float a, Float b) {
+    return (a * b) > 0;
+}
+
 inline Float next_float_up(Float x);
 
 inline Float next_float_down(Float x);
