@@ -11,6 +11,7 @@ class Geralt : public Entity
     Sound oof;
     EntityPtr ground;
     std::vector<std::shared_ptr<Electric_field>> electric_fields;
+    std::mutex mtx_electric_fields;
 
     size_t COLLISION_POINT_DOWN, COLLISION_POINT_UP, COLLISION_POINT_LEFT, COLLISION_POINT_RIGHT;
 
@@ -154,8 +155,10 @@ public:
         {
             if (wasd_pressed(engine))
             {
+                std::unique_lock lock(mtx_electric_fields);
+
                 // Create electric field
-                auto electric_field = std::make_shared<Electric_field>(engine, get_position(), Vector2f(0.34, 0.3), 20);
+                auto electric_field = std::make_shared<Electric_field>(engine, get_position(), Vector2f(0.34, 0.3), 20, 10000);
                 engine.create_entity(electric_field);
                 electric_fields.push_back(electric_field);
 
@@ -165,6 +168,8 @@ public:
         }
         else if (event == EngineIO::InputEvent::BACKSPACE)
         {
+            std::unique_lock lock(mtx_electric_fields);
+
             for (auto& electric_field : electric_fields)
             {
                 electric_field->start_destruction(engine);
@@ -172,12 +177,21 @@ public:
 
             engine.start_timer(std::chrono::milliseconds(200), [this, &engine]()
             {
-                for (auto& electric_field : electric_fields)
-                {
-                    electric_field->destroy(engine);
-                }
+                this->destroy_electric_fields(engine);
             });
         }
+    }
+
+    void destroy_electric_fields(Engine &engine)
+    {
+        std::unique_lock lock(mtx_electric_fields);
+    
+        for (auto& electric_field : electric_fields)
+        {
+            electric_field->start_destruction(engine);
+        }
+        
+        electric_fields.clear();
     }
 
 

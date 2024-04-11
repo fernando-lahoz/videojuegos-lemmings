@@ -70,6 +70,9 @@ protected:
     Vector2f max_speed = Vector2f(INFINITY, INFINITY);
 
     Float charge = 0;
+    Float energy = 0;
+
+
 
     Entity(Point2f position, Float depth,
             Vector2f diagonal, 
@@ -127,11 +130,16 @@ public:
 
     Collision_check get_collision_check_type() const { return collision_check_type; }
 
-
     Point2f centroid() const
     {
         return get_position() + diagonal/2;
     }
+
+
+    virtual void on_electric_field_interaction(
+            Engine &engine, std::shared_ptr<Entity> other, 
+            Float distance, Float squared_distance, 
+            Float delta_time) {}
 
     Point2f get_position() const
     {

@@ -107,21 +107,30 @@ void Physics_engine::rigid_body_collision(
 
 void electric_force(Engine &engine, EntityPtr emitter, EntityPtr aabb)
 {
+    // Force vector
+    Vector2f force_vector = (aabb->centroid() - emitter->centroid());
+
     // Force direction
-    Vector2f force_direction = normalize(aabb->centroid() - emitter->centroid());
+    Vector2f force_direction = normalize(force_vector);
     
 
     Float charge1 = emitter->get_charge();
     Float charge2 = aabb->get_charge();
+    
+    Float force_length = force_vector.length();
+    Float force_length_squared = force_vector.length_squared();
 
     // Force magnitude
     Float force_magnitude = charge1 * charge2 
-            / (aabb->centroid() - emitter->centroid()).length_squared();
+            / force_length_squared;
 
     //std::cout << "Electric force on " << aabb->get_class() << ": " << force_direction*force_magnitude << std::endl;
 
     // Apply force
     aabb->apply_force(force_direction * force_magnitude);
+    emitter->on_electric_field_interaction(engine, aabb, 
+            force_length, force_length_squared, 
+            engine.get_delta_time());
 }
 
 void Physics_engine::on_collision(Engine& engine,
