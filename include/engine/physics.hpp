@@ -44,6 +44,7 @@ class Physics_engine
             Float delta_time,
             EntityPtr entity1, EntityPtr entity2, 
             bool is_alpha, 
+            Collision_point collision_point,
             size_t collision_point_id1, size_t collision_point_id2);
 
     void correct_collision(double delta_time, 

@@ -29,7 +29,7 @@ public:
     // Transparent_body: Other bodies can pass through it, but it can collide with them. Has physics only with static body
     // Static_body: Other bodies collide with it, but it does not get affected physically by them
     // Dynamic_body: Collides with other bodies and they collide with it
-    enum class Collision_type {TRIGGER, TRANSPARENT_BODY, STATIC_BODY, DYNAMIC_BODY};
+    enum class Collision_type {TRIGGER=0, TRANSPARENT_BODY=1, STATIC_BODY=2, DYNAMIC_BODY=3};
 
     // Rigid_body: Moves according to physics
     // Charge_emitter: Emits a charge field
