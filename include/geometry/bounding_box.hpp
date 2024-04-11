@@ -120,6 +120,8 @@ public:
     // Same as contains, but the borders are not included
     constexpr bool contains_exclusively(const Point2<T> &p);
 
+    constexpr BoundingBox2<T> &intersection(const BoundingBox2<T> &b) const;
+
     enum class Border { TOP, BOTTOM, RIGHT, LEFT };
     constexpr T is_near_border(const Point2<T> &p, Border border, T distance);
     constexpr T is_past_border(const Point2<T> &p, Border border);
@@ -161,7 +163,22 @@ public:
 template <typename T>
 std::ostream &operator<<(std::ostream &os, const BoundingBox2<T> &b);
 
+template <typename T>
+constexpr BoundingBox2<T> &intersection(const BoundingBox2<T> &a, const BoundingBox2<T> &b)
+{
+    return BoundingBox2<T>
+        (
+            Point2<T>(std::max(a.pMin.x, b.pMin.x),
+                    std::max(a.pMin.y, b.pMin.y)),
+            Point2<T>(std::min(a.pMax.x, b.pMax.x),
+                    std::min(a.pMax.y, b.pMax.y))
+        );
+}
+
+
 using Bound2f = BoundingBox2<Float>;
 using Bound2i = BoundingBox2<int>;
 
 #include "geometry/bounding_box.ipp"
+
+

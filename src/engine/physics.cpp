@@ -209,6 +209,68 @@ void Physics_engine::on_collision(Engine& engine,
     }
 }
 
+bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collision_point)
+{
+    auto txt1 = e1->get_active_texture();
+    auto txt2 = e2->get_active_texture();
+
+    auto box_intersect = intersection(e1->bound2f(), e2->bound2f());
+
+    auto txt1_mask = txt1.get_alpha_mask();
+    auto txt2_mask = txt2.get_alpha_mask();    
+
+    Point2i initial_pixel1 = e1->world_to_texture(box_intersect.pMin);
+    Point2i initial_pixel2 = e2->world_to_texture(box_intersect.pMin);
+
+    Point2i final_pixel1 = e1->world_to_texture(box_intersect.pMax);
+    Point2i final_pixel2 = e2->world_to_texture(box_intersect.pMax);
+
+    int box_width = final_pixel1.x - initial_pixel1.x;
+    int box_height = final_pixel1.y - initial_pixel1.y;
+
+    // Apply compression to the coordinates
+    
+    
+
+
+
+
+
+    Point2i collision_pixel1(-1);
+
+    for (int i = 0; i < box_width; i++)
+    {
+        for (int j = 0; j < box_height; j++)
+        {
+            Point2i compressed_pixel1 = initial_pixel1 + Point2i(i, j);
+            Point2i compressed_pixel2 = initial_pixel2 + Point2i(i, j);
+
+            long long alpha1 = txt1_mask[pixel1.y * txt1_mask.get_width() + pixel1.x];
+            long long alpha2 = txt2_mask[pixel2.y * txt2_mask.get_width() + pixel2.x];
+
+            long long collision = alpha1 & alpha2;
+
+            if (collision)
+            {
+                // clz, g++ only
+                unsigned int bit_id = __builtin_clz(collision);
+
+                collision_pixel1 = compressed_pixel1;
+                collision_pixel1.x = collision_pixel1.x*64 + bit_id; 
+            }
+        }
+    }
+
+    if (collision_pixel1.x != -1)
+    {
+        collision_point.point = e1->texture_to_world(collision_pixel1);
+        //collision_point.normal = e1->get_alpha_normal(collision_pixel1);
+        return true;
+    }
+
+    return false;
+}
+
 
 void Physics_engine::compute_collisions(Engine& engine)
 {
@@ -240,27 +302,32 @@ void Physics_engine::compute_collisions(Engine& engine)
     
 
     // Check for collisions between AABB and alpha entities
-    for (size_t i = 0; i < aabb_entities.size(); i++)
+    for (size_t i = 0; i < alpha_entities.size(); i++)
     {
-        for (size_t j = 0; j < alpha_entities.size(); j++)
+        auto &alpha = alpha_entities[i];
+
+        for (size_t j = 0; j < aabb_entities.size(); j++)
         {
-            auto &aabb = aabb_entities[i];
-            auto &other = alpha_entities[j];
+            auto &aabb = aabb_entities[j];
 
             size_t collision_point_id;
 
-            if (aabb->aabb_check_collision(other))
+            if (alpha->aabb_check_collision(aabb))
             {
-                bool first_collided = aabb->alpha_check_collision(other, collision_point_id);
-                bool second_collided = other->alpha_check_collision(aabb, collision_point_id);
+                Collision_point collision_point;
 
+                bool first_collided = check_alpha_collision(aabb, alpha, collision_point);
+
+                size_t collision_point_id1 = aabb->bound2f().closest_side(collision_point.point);
+                size_t collision_point_id2 = alpha->bound2f().closest_side(collision_point.point);
+
+                on_collision(engine, delta_time, 
+                            alpha, aabb, false,
+                            collision_point, 
+                            collision_point_id1, collision_point_id2);
             }
         }
-    }
 
-    // Check for collisions between alpha entities
-    for (size_t i = 0; i < alpha_entities.size(); i++)
-    {
         for (size_t j = i + 1; j < alpha_entities.size(); j++)
         {
             auto &alpha = alpha_entities[i];
@@ -271,7 +338,6 @@ void Physics_engine::compute_collisions(Engine& engine)
             if (alpha->aabb_check_collision(other))
             {
                 bool first_collided = alpha->alpha_check_collision(other, collision_point_id);
-                bool second_collided = other->alpha_check_collision(alpha, collision_point_id);
 
             }
         }

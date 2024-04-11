@@ -211,11 +211,7 @@ bool Texture::set_alpha_box(Bound2f box, uint8_t alpha, SDL_Renderer *renderer)
 
 bool Texture::is_alpha_pixel(Point2f lpixel) const
 {
-    Point2i pixel;
-    lpixel = clamp(lpixel, Point2f(0.00000001, 0.00000001), Point2f(0.999999, 0.999999));
-
-    pixel.x = lpixel.x * get_width();
-    pixel.y = lpixel.y * get_height();
+    Point2i pixel = local_to_texture(lpixel);
 
     if (!surface)
         throw std::runtime_error("No surface loaded");
@@ -252,6 +248,27 @@ bool Texture::is_alpha_pixel(Point2f lpixel) const
     SDL_GetRGBA(pixel_value, surface->format, &r, &g, &b, &a);
 
     return a < 16;
+}
+
+Point2i Texture::local_to_texture(Point2f lpixel) const
+{
+    Point2i pixel;
+
+    lpixel = clamp(lpixel, Point2f(0, 0), Point2f(0.999999, 0.999999));
+    pixel.x = lpixel.x * width;
+    pixel.y = lpixel.y * height;
+
+    return pixel;
+}
+
+Point2f Texture::texture_to_local(Point2i pixel) const
+{
+    Point2f lpixel;
+
+    lpixel.x = (float)pixel.x / width;
+    lpixel.y = (float)pixel.y / height;
+
+    return lpixel;
 }
 
 // Returns the raw SDL_Texture pointer

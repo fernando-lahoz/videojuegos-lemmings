@@ -42,6 +42,9 @@ public:
     bool set_alpha_pixel(Point2i ipixel, uint8_t alpha, SDL_Renderer *renderer);
     bool set_alpha_box(Bound2f box, uint8_t alpha, SDL_Renderer *renderer);
 
+    Point2i local_to_texture(Point2f local) const;
+    Point2f texture_to_local(Point2i texture) const;
+
     int get_width() const;
     int get_height() const;
 };

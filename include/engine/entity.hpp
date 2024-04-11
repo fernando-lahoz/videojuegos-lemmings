@@ -110,6 +110,8 @@ public:
     Bound2f world_to_local(Bound2f box) const;
 
 
+    Point2i world_to_texture(Point2f w_p) const;
+    Point2f texture_to_world(Point2i t_p) const;
     Point2f local_to_world(Point2f l_p) const;
 
     // Returns the type of the entity

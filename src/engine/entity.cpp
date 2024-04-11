@@ -64,6 +64,19 @@ Entity::Physics_type Entity::get_physics_type() const
     return physics_type;
 }
 
+Point2i Entity::world_to_texture(Point2f w_p) const
+{
+    auto l_p = world_to_local(w_p);
+    return active_texture.local_to_texture(l_p);
+}
+
+Point2f Entity::texture_to_world(Point2i t_p) const
+{
+    auto l_p = active_texture.texture_to_local(t_p);
+    return local_to_world(l_p);
+}
+
+
 
 void Entity::set_depth(Engine &engine, Float new_depth)
 {
