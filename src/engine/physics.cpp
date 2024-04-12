@@ -209,6 +209,40 @@ void Physics_engine::on_collision(Engine& engine,
     }
 }
 
+void handle_end_cases(
+    long long txt1_mask[], long long txt2_mask[],
+    int h1, int nBlocks, 
+    Point2i block1, Point2i block2, 
+    long long final_block_mask1, long long final_block_mask2,
+    long long initial_offset1, long long initial_offset2,
+    Point2i &collision_pixel1)
+{
+    /****************** Handle final block case ***********************/
+    int w1 = block1.x + nBlocks-1;
+    int w2 = block2.x + nBlocks-1;
+
+    long long alpha1 = txt1_mask[w1];
+    long long alpha2 = txt2_mask[w2];
+
+    alpha1 &= final_block_mask1;
+    alpha2 &= final_block_mask2;
+
+    alpha1 <<= initial_offset1;
+    alpha2 <<= initial_offset2;
+
+    long long collision = alpha1 & alpha2;
+
+    if (collision)
+    {
+        // clz, g++ only
+        unsigned int bit_id = __builtin_clz(collision);
+        unsigned int offset = initial_offset1 + bit_id;
+
+        collision_pixel1 = Point2i(w1, h1);
+        collision_pixel1.x = collision_pixel1.x*64 + offset; 
+    }
+}
+
 bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collision_point)
 {
     auto txt1 = e1->get_active_texture();
@@ -245,9 +279,6 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
     initial_pixel1.x -= initial_offset1;
     initial_pixel2.x -= initial_offset2;
 
-    final_pixel1.x -= final_offset1;
-    final_pixel2.x -= final_offset2;
-
     Point2i block1 = initial_pixel1;
     Point2i block2 = initial_pixel2;
     block1.x /= 64;
@@ -260,6 +291,13 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
     // Generate final block mask
     final_offset1 = final_offset1 - initial_offset1;
 
+    long long final_block_mask1 = (1 << (64-final_offset1)) - 1;
+    long long final_block_mask2 = (1 << (64-final_offset2)) - 1;
+
+    int nBlocks = box_width / 64;
+    if (box_width % 64 != 0)
+        nBlocks++;
+
     Point2i collision_pixel1(-1);
 
     for (int h = 0; h < box_height; h++)
@@ -267,7 +305,7 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
         int h1 = block1.y + h;
         int h2 = block2.y + h;
 
-        for (int w = 0; w < nBlocks; w++)
+        for (int w = 0; w < nBlocks-1; w++)
         {
             int w1 = block1.x + w;
             int w2 = block2.x + w;
@@ -281,31 +319,28 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
             /****** Generate paddings ******/
             long long alpha1_padding = 0;
             long long alpha2_padding = 0;
+            
+            alpha1_padding = txt1_mask[w1+1];
+            alpha2_padding = txt2_mask[w2+1];
 
-            if (w != (nBlocks-1)) 
+            if (w1+1 == nBlocks-1)
             {
-                alpha1_padding = txt1_mask[w1+1];
-                alpha2_padding = txt2_mask[w2+1];
-
-                // Get padding 1
-                alpha1_padding >>= 64 - initial_offset1;
-                alpha1_padding &= right_padding_mask1;
-
-                // Get padding 2
-                alpha2_padding >>= 64 - initial_offset2;
-                alpha2_padding &= right_padding_mask2;
-
-                // Add padding to alpha
-                alpha1 |= alpha1_padding;
-                alpha2 |= alpha2_padding;
-            }
-            else    // Final block
-            {
-                alpha1 &= final_block_mask;
-                alpha2 &= final_block_mask;
+                alpha1_padding &= final_block_mask1;
+                alpha2_padding &= final_block_mask2;
             }
 
+            // Get padding 1
+            alpha1_padding >>= 64 - initial_offset1;
+            alpha1_padding &= right_padding_mask1;
 
+            // Get padding 2
+            alpha2_padding >>= 64 - initial_offset2;
+            alpha2_padding &= right_padding_mask2;
+
+            // Add padding to alpha
+            alpha1 |= alpha1_padding;
+            alpha2 |= alpha2_padding;
+            
             
             /************** Alpha comparison ***************/
             long long collision = alpha1 & alpha2;
@@ -320,6 +355,13 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
                 collision_pixel1.x = collision_pixel1.x*64 + offset; 
             }
         }
+
+        handle_end_cases(txt1_mask, txt2_mask,
+            h1, nBlocks, 
+            block1, block2, 
+            final_block_mask1, final_block_mask2,
+            initial_offset1, initial_offset2,
+            collision_pixel1);
     }
 
     if (collision_pixel1.x != -1)
