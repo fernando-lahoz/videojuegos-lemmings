@@ -217,7 +217,14 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
     auto box_intersect = intersection(e1->bound2f(), e2->bound2f());
 
     auto txt1_mask = txt1.get_alpha_mask();
-    auto txt2_mask = txt2.get_alpha_mask();    
+    auto txt2_mask = txt2.get_alpha_mask();
+
+    auto txt1_width = txt1.get_alpha_mask_width();
+    auto txt2_width = txt2.get_alpha_mask_width();
+    
+    auto txt1_height = txt1.get_alpha_mask_height();
+    auto txt2_height = txt2.get_alpha_mask_height();
+
 
     Point2i initial_pixel1 = e1->world_to_texture(box_intersect.pMin);
     Point2i initial_pixel2 = e2->world_to_texture(box_intersect.pMin);
@@ -229,34 +236,88 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
     int box_height = final_pixel1.y - initial_pixel1.y;
 
     // Apply compression to the coordinates
-    
-    
+    size_t initial_offset1 = initial_pixel1.x % 64;
+    size_t initial_offset2 = initial_pixel2.x % 64;
 
+    size_t final_offset1 = final_pixel1.x % 64;
+    size_t final_offset2 = final_pixel2.x % 64;
 
+    initial_pixel1.x -= initial_offset1;
+    initial_pixel2.x -= initial_offset2;
 
+    final_pixel1.x -= final_offset1;
+    final_pixel2.x -= final_offset2;
 
+    Point2i block1 = initial_pixel1;
+    Point2i block2 = initial_pixel2;
+    block1.x /= 64;
+    block2.x /= 64;
+
+    // Generate right padding mask
+    long long right_padding_mask1 = (1 << initial_offset1) - 1; 
+    long long right_padding_mask2 = (1 << initial_offset2) - 1;
+
+    // Generate final block mask
+    final_offset1 = final_offset1 - initial_offset1;
 
     Point2i collision_pixel1(-1);
 
-    for (int i = 0; i < box_width; i++)
+    for (int h = 0; h < box_height; h++)
     {
-        for (int j = 0; j < box_height; j++)
+        int h1 = block1.y + h;
+        int h2 = block2.y + h;
+
+        for (int w = 0; w < nBlocks; w++)
         {
-            Point2i compressed_pixel1 = initial_pixel1 + Point2i(i, j);
-            Point2i compressed_pixel2 = initial_pixel2 + Point2i(i, j);
+            int w1 = block1.x + w;
+            int w2 = block2.x + w;
 
-            long long alpha1 = txt1_mask[pixel1.y * txt1_mask.get_width() + pixel1.x];
-            long long alpha2 = txt2_mask[pixel2.y * txt2_mask.get_width() + pixel2.x];
+            long long alpha1 = txt1_mask[w1];
+            long long alpha2 = txt2_mask[w2];
 
+            alpha1 <<= initial_offset1;
+            alpha2 <<= initial_offset2;
+
+            /****** Generate paddings ******/
+            long long alpha1_padding = 0;
+            long long alpha2_padding = 0;
+
+            if (w != (nBlocks-1)) 
+            {
+                alpha1_padding = txt1_mask[w1+1];
+                alpha2_padding = txt2_mask[w2+1];
+
+                // Get padding 1
+                alpha1_padding >>= 64 - initial_offset1;
+                alpha1_padding &= right_padding_mask1;
+
+                // Get padding 2
+                alpha2_padding >>= 64 - initial_offset2;
+                alpha2_padding &= right_padding_mask2;
+
+                // Add padding to alpha
+                alpha1 |= alpha1_padding;
+                alpha2 |= alpha2_padding;
+            }
+            else    // Final block
+            {
+                alpha1 &= final_block_mask;
+                alpha2 &= final_block_mask;
+            }
+
+
+            
+            /************** Alpha comparison ***************/
             long long collision = alpha1 & alpha2;
 
             if (collision)
             {
                 // clz, g++ only
                 unsigned int bit_id = __builtin_clz(collision);
+                unsigned int offset = initial_offset1 + bit_id;
 
-                collision_pixel1 = compressed_pixel1;
-                collision_pixel1.x = collision_pixel1.x*64 + bit_id; 
+                collision_pixel1 = Point2i(w1, h1);
+                collision_pixel1.x = collision_pixel1.x*64 + offset; 
             }
         }
     }
