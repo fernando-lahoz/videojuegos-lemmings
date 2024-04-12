@@ -22,11 +22,13 @@ Texture::Texture(SDL_Texture *sdl_texture)
     : texture{sdl_texture, SDL_DestroyTexture}
 {
     SDL_QueryTexture(sdl_texture, nullptr, nullptr, &width, &height);
+    generate_alpha_mask();
 }
 
 Texture::Texture(const Texture &other)
     : texture{other.texture}, surface{other.surface},
-      width{other.width}, height{other.height}
+      width{other.width}, height{other.height},
+      alpha_mask{other.alpha_mask}
 {
 }
 
@@ -37,13 +39,35 @@ Texture &Texture::operator=(const Texture &other)
     this->width = other.width;
     this->height = other.height;
 
+    this->alpha_mask = other.alpha_mask;
+
     return *this;
+}
+
+void Texture::generate_alpha_mask()
+{
+    for (int y = 0; y < surface->h; y++)
+    {
+        for (int x = 0; x < surface->w; x++)
+        {
+            // If there is an active pixel
+            if (!is_alpha_pixel(Point2f(x, y)))
+            {
+                if (!alpha_mask)
+                    alpha_mask = std::make_shared<std::vector<long long>>(get_alpha_mask_width() * get_alpha_mask_height(), 0);
+
+                size_t index = y * get_alpha_mask_width() + x / 64;
+                (*alpha_mask)[index] |= 1LL << (x % 64);
+            }
+        }
+    }
 }
 
 void Texture::load(const std::string &file, SDL_Renderer *renderer)
 {
     load_image(file, renderer);
     SDL_QueryTexture(texture.get(), nullptr, nullptr, &width, &height);
+    generate_alpha_mask();
 }
 
 void Texture::change_pixel(Point2i pixel, Uint8 rgba[4])
@@ -269,6 +293,26 @@ Point2f Texture::texture_to_local(Point2i pixel) const
     lpixel.y = (float)pixel.y / height;
 
     return lpixel;
+}
+
+size_t Texture::get_alpha_mask_width() const
+{
+    size_t size = surface->w / 64;
+    if (surface->w % 64 != 0)
+        size++;
+
+    return size;
+}
+
+size_t Texture::get_alpha_mask_height() const
+{
+    return surface->h;
+}
+
+std::shared_ptr<std::vector<long long>> 
+    Texture::get_alpha_mask() const
+{
+    return alpha_mask;
 }
 
 // Returns the raw SDL_Texture pointer

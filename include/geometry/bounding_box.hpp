@@ -164,7 +164,7 @@ template <typename T>
 std::ostream &operator<<(std::ostream &os, const BoundingBox2<T> &b);
 
 template <typename T>
-constexpr BoundingBox2<T> &intersection(const BoundingBox2<T> &a, const BoundingBox2<T> &b)
+constexpr BoundingBox2<T> intersection(const BoundingBox2<T> &a, const BoundingBox2<T> &b)
 {
     return BoundingBox2<T>
         (

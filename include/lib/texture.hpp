@@ -20,6 +20,8 @@ private:
     int height{};
     bool modified = false;
 
+    std::shared_ptr<std::vector<long long>> alpha_mask;
+
     void load_image(const std::string &file, SDL_Renderer *renderer);
 
 public:
@@ -42,8 +44,14 @@ public:
     bool set_alpha_pixel(Point2i ipixel, uint8_t alpha, SDL_Renderer *renderer);
     bool set_alpha_box(Bound2f box, uint8_t alpha, SDL_Renderer *renderer);
 
+    void generate_alpha_mask();
+
     Point2i local_to_texture(Point2f local) const;
     Point2f texture_to_local(Point2i texture) const;
+
+    size_t get_alpha_mask_width() const;
+    size_t get_alpha_mask_height() const;
+    std::shared_ptr<std::vector<long long>> get_alpha_mask() const;
 
     int get_width() const;
     int get_height() const;
