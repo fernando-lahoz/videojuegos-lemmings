@@ -211,6 +211,7 @@ void Physics_engine::on_collision(Engine& engine,
 
 void handle_end_cases(
     long long txt1_mask[], long long txt2_mask[],
+    int h1_offset, int h2_offset,  
     int h1, int nBlocks, 
     Point2i block1, Point2i block2, 
     long long final_block_mask1, long long final_block_mask2,
@@ -221,8 +222,8 @@ void handle_end_cases(
     int w1 = block1.x + nBlocks-1;
     int w2 = block2.x + nBlocks-1;
 
-    long long alpha1 = txt1_mask[w1];
-    long long alpha2 = txt2_mask[w2];
+    long long alpha1 = txt1_mask[h1_offset + w1];
+    long long alpha2 = txt2_mask[h2_offset + w2];
 
     alpha1 &= final_block_mask1;
     alpha2 &= final_block_mask2;
@@ -303,15 +304,18 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
     for (int h = 0; h < box_height; h++)
     {
         int h1 = block1.y + h;
+        int h1_offset = h1 * txt1_width;  
+
         int h2 = block2.y + h;
+        int h2_offset = h2 * txt2_width;
 
         for (int w = 0; w < nBlocks-1; w++)
         {
             int w1 = block1.x + w;
             int w2 = block2.x + w;
 
-            long long alpha1 = txt1_mask[w1];
-            long long alpha2 = txt2_mask[w2];
+            long long alpha1 = txt1_mask[h1_offset + w1];
+            long long alpha2 = txt2_mask[h2_offset + w2];
 
             alpha1 <<= initial_offset1;
             alpha2 <<= initial_offset2;
@@ -320,8 +324,8 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
             long long alpha1_padding = 0;
             long long alpha2_padding = 0;
             
-            alpha1_padding = txt1_mask[w1+1];
-            alpha2_padding = txt2_mask[w2+1];
+            alpha1_padding = txt1_mask[h1_offset + w1+1];
+            alpha2_padding = txt2_mask[h2_offset + w2+1];
 
             if (w1+1 == nBlocks-1)
             {
@@ -357,6 +361,7 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
         }
 
         handle_end_cases(txt1_mask, txt2_mask,
+            h1_offset, h2_offset,
             h1, nBlocks, 
             block1, block2, 
             final_block_mask1, final_block_mask2,
