@@ -28,6 +28,7 @@ include_directories(include src test)
 
 set(Executables
     "geralt_eats/geralt_eats"
+    "geralt_eats/prueba"
     #"lemmings/lemmings"
 )
 

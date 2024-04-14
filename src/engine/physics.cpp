@@ -308,9 +308,6 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
     auto txt1_width = txt1.get_alpha_mask_width();
     auto txt2_width = txt2.get_alpha_mask_width();
     
-    auto txt1_height = txt1.get_alpha_mask_height();
-    auto txt2_height = txt2.get_alpha_mask_height();
-
 
     Point2i initial_pixel1 = e1->world_to_texture(box_intersect.pMin);
     Point2i initial_pixel2 = e2->world_to_texture(box_intersect.pMin);
@@ -350,6 +347,11 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
     if (box_width % 64 != 0)
         nBlocks++;
 
+    if (e1->get_entity_name() == "Geralt")
+    {
+        std::cout << "Initial offset: " << initial_offset1 << std::endl;
+    }
+
     Point2i collision_pixel1(-1);
 
     for (int h = 0; h < box_height; h++)
@@ -378,12 +380,6 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
             alpha1_padding = txt1_mask[h1_offset + w1+1];
             alpha2_padding = txt2_mask[h2_offset + w2+1];
 
-            if (w1+1 == nBlocks-1)
-            {
-                alpha1_padding &= final_block_mask1;
-                alpha2_padding &= final_block_mask2;
-            }
-
             // Get padding 1
             alpha1_padding >>= 64 - initial_offset1;
             alpha1_padding &= right_padding_mask1;
@@ -402,6 +398,8 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
 
             if (collision)
             {
+                std::cout << "Collision\n";
+
                 // clz, g++ only
                 unsigned int bit_id = __builtin_clz(collision);
                 unsigned int offset = initial_offset1 + bit_id;
@@ -432,6 +430,7 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
         return true;
     }
 
+    //std::cout << "No collision\n";
     return false;
 }
 
@@ -473,17 +472,13 @@ void Physics_engine::compute_collisions(Engine& engine)
         for (size_t j = 0; j < aabb_entities.size(); j++)
         {
             auto &aabb = aabb_entities[j];
+            Collision_point collision_point;
 
-            size_t collision_point_id;
-
-            if (alpha->aabb_check_collision(aabb))
+            if (alpha->aabb_check_collision(aabb)
+                && check_alpha_collision(aabb, alpha, collision_point))
             {
-                Collision_point collision_point;
-
-                bool first_collided = check_alpha_collision(aabb, alpha, collision_point);
-
-                size_t collision_point_id1 = aabb->bound2f().closest_side(collision_point.point);
-                size_t collision_point_id2 = alpha->bound2f().closest_side(collision_point.point);
+                size_t collision_point_id1 = alpha->bound2f().closest_side(collision_point.point);
+                size_t collision_point_id2 = aabb->bound2f().closest_side(collision_point.point);
 
                 on_collision(engine, delta_time, 
                             alpha, aabb, false,
@@ -544,7 +539,7 @@ void Physics_engine::update_physics(Engine& engine)
 
             if (entity->get_entity_name() == "Geralt")
             {
-                std::cout << "Speed: " << speed << std::endl;
+                //std::cout << "Speed: " << speed << std::endl;
             }
 
             speed = clamp(speed + acc * delta_time, -max_speed, max_speed);

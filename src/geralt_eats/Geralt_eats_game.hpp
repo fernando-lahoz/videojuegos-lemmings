@@ -82,17 +82,18 @@ public:
         auto t3 = engine.load_texture("assets/dehecho.png");
         auto cielo_txt = engine.load_texture("assets/cielo.jpeg");
         auto energy_ball_txt = engine.load_texture("assets/energy_ball.png");
+        auto wall_txt = engine.load_texture("assets/wall_alpha.png");
 
         auto geralt = std::make_shared<Geralt>(Point2f(1, 0.3), Vector2f(0.25, 0.3), engine);
         //auto ground = std::make_shared<Entity>(Point2f(-2, 0), 1, Vector2f(7, 2.25), lemmings_terrain, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::ALPHA, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
-        auto ground = std::make_shared<Entity>(Point2f(-10, 1.5), 1, Vector2f(20, 0.75), flat_ground, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::ALPHA, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
-        //auto wall = std::make_shared<Entity>(Point2f(3.5, 0), 1, Vector2f(0.5, 2.25), flat_ground, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::AABB, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
+        auto ground = std::make_shared<Entity>(Point2f(-10, 1.5), 1, Vector2f(20, 0.75), flat_ground, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::AABB, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
+        auto wall = std::make_shared<Entity>(Point2f(3.5, 0), 1, Vector2f(0.5, 2.25), wall_txt, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::ALPHA, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
 
 
         auto cielo = std::make_shared<Entity>(Point2f(0, 0), 10, Vector2f(4, 2.24), cielo_txt, engine, "Cielo", Entity::Physics_type::NONE, Entity::Collision_check::NONE, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Cielo");
         ground->disable_gravity();
         cielo->disable_gravity();
-        //wall->disable_gravity();
+        wall->disable_gravity();
 
         auto &mixer = engine.get_sound_mixer();
         Music canon = mixer.load_music("assets/music/02_Lemming 1 (Pachebel's Canon).mp3");
@@ -108,7 +109,7 @@ public:
         engine.create_entity(geralt);
         engine.create_entity(ground);
         engine.create_entity(cielo);
-        //engine.create_entity(wall);
+        engine.create_entity(wall);
         //engine.create_entity(field);
 
         create_camera(std::make_shared<Geralt_camera>());
