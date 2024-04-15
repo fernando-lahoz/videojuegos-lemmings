@@ -23,7 +23,8 @@
 // TODO: add sound effects
 // TODO: change assets more similar to original amiga
 // TODO: hud more friendly
-// TODO: add some structures to levels (CHOF, WALL, ICE, ELECT, TONS WEIGHT)
+// TODO: add some structures to levels (Thumper, Rock_crusher, Bear_trap, WALL, TONS WEIGHT)
+// TODO: add traps logic
 
 // TODO: add particles when lemming die
 
@@ -36,7 +37,7 @@ private:
 
 public:
   Lemmings_game()
-      : Game("Lemmings", /*INITIAL WINDOW SIZE*/Vector2i{1280, 800}), screen(game_info, keyboard), keyboard(game_info)
+      : Game("Lemmings", /*INITIAL WINDOW SIZE*/ Vector2i{1280, 800}), screen(game_info, keyboard), keyboard(game_info)
   {
   }
 
@@ -85,7 +86,7 @@ public:
     create_entity(cursor_menu);
     game_info.set_cursor_menu(cursor_menu);
     screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
-    // screen.go_level(engine, 14, 3);
+    // screen.go_level(engine, 28, 2);
   }
 
   void on_loop_start(Engine &engine) override

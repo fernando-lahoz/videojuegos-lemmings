@@ -15,6 +15,9 @@
 #include "lemmings/structure/Brick.hpp"
 #include "lemmings/structure/Directional_wall.hpp"
 #include "lemmings/structure/Liquid_trigger.hpp"
+#include "lemmings/structure/Ball_zapper.hpp"
+#include "lemmings/structure/Pin.hpp"
+#include "lemmings/structure/Antimatter_beam.hpp"
 #include "lemmings/hud/HUDs.hpp"
 
 #include "lemmings/Game_info.hpp"
@@ -35,7 +38,6 @@ public:
 
   void update_sounds()
   {
-    
   }
 
   void setup_level(Engine &engine, int level_number, int difficulty_number = 0)
@@ -991,7 +993,9 @@ public:
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
         engine.get_game().create_entity(std::make_shared<Door>(Point3f(1626.22, 199.952, 500), engine, Utils::LEVEL_DOOR_TYPE[difficulty_number][level_number], 1.0f, level_number, game_info, difficulty_number));
 
-        engine.get_game().create_entity(std::make_shared<Chain>(Point3f(1777.46, 214.24, 301), engine, 0.8f, game_info));
+        // engine.get_game().create_entity(std::make_shared<Chain>(Point3f(1777.46, 214.24, 301), engine, 0.8f, game_info));
+        engine.get_game().create_entity(std::make_shared<Pin>(Point3f(1363.65, 142.55, 301), engine, true, 0.8f, game_info));
+        engine.get_game().create_entity(std::make_shared<Pin>(Point3f(1392.9, 96.3817, 301), engine, false, 0.8f, game_info));
         break;
       case 5:
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
@@ -1335,7 +1339,7 @@ public:
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2050, 261, 299), 1.01, engine, 0, 0.4f, game_info));
 
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(1776, 302.847, 100), Vector2f(417, 19), engine));
-        // ICE
+        engine.get_game().create_entity(std::make_shared<Antimatter_beam>(Point3f(1995.77, 126.242, 299), engine, 0.8f, game_info));
         break;
       case 29:
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1432.5, 260.931, 301), 1, engine, 1, 0.4f, game_info));
@@ -1625,7 +1629,8 @@ public:
         break;
       case 23:
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
-        // ELECTR
+        engine.get_game().create_entity(std::make_shared<Ball_zapper>(Point3f(1167.3, 0.0333582, 301), engine, 0.8f, game_info));
+
         break;
       case 24:
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
