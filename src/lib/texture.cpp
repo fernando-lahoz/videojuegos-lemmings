@@ -5,7 +5,6 @@ void Texture::load_image(const std::string &file, SDL_Renderer *renderer)
 {
     SDL_Surface *sdl_surface = nullptr;
     SDL_Texture *sdl_texture = nullptr;
-
     sdl_surface = IMG_Load(file.c_str());
     if (sdl_surface == nullptr)
         throw std::runtime_error("Failed to load image \"" + file + "\"");
@@ -16,8 +15,87 @@ void Texture::load_image(const std::string &file, SDL_Renderer *renderer)
 
     surface = std::shared_ptr<SDL_Surface>(sdl_surface, SDL_FreeSurface);
     texture = std::shared_ptr<SDL_Texture>(sdl_texture, SDL_DestroyTexture);
-    
+
+    SDL_QueryTexture(texture.get(), nullptr, nullptr, &width, &height);
+
+
     generate_alpha_mask();
+}
+
+void Texture::generate_alpha_mask()
+{
+    if (!surface)
+        throw std::runtime_error("No surface loaded");
+
+    if (!alpha_mask)
+        alpha_mask = std::make_shared<std::vector<BLOCK_TYPE>>(get_alpha_mask_width() * get_alpha_mask_height(), 0);
+
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            if (!is_alpha_pixel(Point2f(x, y)))
+            {
+                size_t block_x = x / BLOCK_SIZE;
+                size_t block_y = y / BLOCK_SIZE;
+
+                size_t block_index = block_y * get_alpha_mask_width() + block_x;
+                size_t block_offset = (y % BLOCK_SIZE) * BLOCK_SIZE + (x % BLOCK_SIZE);
+
+                (*alpha_mask)[block_index] |= 1 << block_offset;
+            }
+        }
+    }
+}
+
+std::shared_ptr<std::vector<Texture::BLOCK_TYPE>> Texture::get_alpha_mask() const
+{
+    return alpha_mask;
+}
+
+Point2i Texture::local_to_texture(Point2f local) const
+{
+    local = clamp(local, Point2f(0, 0), Point2f(1, 1));
+    return Point2i(local.x * width, local.y * height);
+}
+
+Point2f Texture::texture_to_local(Point2i texture) const
+{
+    return Point2f(texture.x / (float)width, texture.y / (float)height);
+}
+
+std::vector<bool> Texture::get_uncompressed_alpha_mask() const
+{
+    std::vector<bool> uncompressed_alpha_mask(width * height, false);
+
+    for (int i = 0; i < alpha_mask->size(); i++)
+    {
+        for (int j = BLOCK_SIZE-1; j >= 0; j--)
+        {
+            if ((*alpha_mask)[i] & (1 << j))
+            {
+                uncompressed_alpha_mask[i * BLOCK_SIZE + j] = true;
+            }
+        }
+    }
+
+    return uncompressed_alpha_mask;
+}
+
+
+
+size_t Texture::get_alpha_mask_width() const
+{
+    size_t w = width / BLOCK_SIZE;
+    if (width % BLOCK_SIZE)
+        w++;
+
+    return w;
+}
+
+size_t Texture::get_alpha_mask_height() const
+{
+    return height;
 }
 
 Texture::Texture(SDL_Texture *sdl_texture)
@@ -30,7 +108,7 @@ Texture::Texture(SDL_Texture *sdl_texture)
 Texture::Texture(const Texture &other)
     : texture{other.texture}, surface{other.surface},
       width{other.width}, height{other.height},
-      alpha_mask{other.alpha_mask}
+        modified{false}, alpha_mask{other.alpha_mask}
 {
 }
 
@@ -40,35 +118,15 @@ Texture &Texture::operator=(const Texture &other)
     this->surface = other.surface;
     this->width = other.width;
     this->height = other.height;
-
+    this->modified = false;
     this->alpha_mask = other.alpha_mask;
 
     return *this;
 }
 
-void Texture::generate_alpha_mask()
-{
-    if (!alpha_mask)
-        alpha_mask = std::make_shared<std::vector<BLOCK_TYPE>>(get_alpha_mask_width() * get_alpha_mask_height(), 0);
-
-    for (int y = 0; y < surface->h; y++)
-    {
-        for (int x = 0; x < surface->w; x++)
-        {
-            // If there is an active pixel
-            if (!is_alpha_pixel(Point2f(x, y)))
-            {
-                size_t index = y * get_alpha_mask_width() + x / BLOCK_SIZE;
-                (*alpha_mask)[index] |= BLOCK_TYPE(1) << (x % BLOCK_SIZE);
-            }
-        }
-    }
-}
-
 void Texture::load(const std::string &file, SDL_Renderer *renderer)
 {
     load_image(file, renderer);
-    SDL_QueryTexture(texture.get(), nullptr, nullptr, &width, &height);
 }
 
 void Texture::change_pixel(Point2i pixel, Uint8 rgba[4])
@@ -236,7 +294,11 @@ bool Texture::set_alpha_box(Bound2f box, uint8_t alpha, SDL_Renderer *renderer)
 
 bool Texture::is_alpha_pixel(Point2f lpixel) const
 {
-    Point2i pixel = local_to_texture(lpixel);
+    Point2i pixel;
+    lpixel = clamp(lpixel, Point2f(0.00000001, 0.00000001), Point2f(0.999999, 0.999999));
+
+    pixel.x = lpixel.x * get_width();
+    pixel.y = lpixel.y * get_height();
 
     if (!surface)
         throw std::runtime_error("No surface loaded");
@@ -275,47 +337,6 @@ bool Texture::is_alpha_pixel(Point2f lpixel) const
     return a < 16;
 }
 
-Point2i Texture::local_to_texture(Point2f lpixel) const
-{
-    Point2i pixel;
-
-    lpixel = clamp(lpixel, Point2f(0, 0), Point2f(0.999999, 0.999999));
-    pixel.x = lpixel.x * width;
-    pixel.y = lpixel.y * height;
-
-    return pixel;
-}
-
-Point2f Texture::texture_to_local(Point2i pixel) const
-{
-    Point2f lpixel;
-
-    lpixel.x = (float)pixel.x / width;
-    lpixel.y = (float)pixel.y / height;
-
-    return lpixel;
-}
-
-size_t Texture::get_alpha_mask_width() const
-{
-    size_t size = surface->w / BLOCK_SIZE;
-    if (surface->w % BLOCK_SIZE != 0)
-        size++;
-
-    return size;
-}
-
-size_t Texture::get_alpha_mask_height() const
-{
-    return surface->h;
-}
-
-std::shared_ptr<std::vector<Texture::BLOCK_TYPE>> 
-    Texture::get_alpha_mask() const
-{
-    return alpha_mask;
-}
-
 // Returns the raw SDL_Texture pointer
 SDL_Texture *Texture::get() const
 {
@@ -335,20 +356,4 @@ int Texture::get_width() const
 int Texture::get_height() const
 {
     return height;
-}
-
-std::vector<bool> Texture::get_uncompressed_alpha_mask() const
-{
-    std::vector<bool> mask;
-    mask.reserve(alpha_mask->size() * BLOCK_SIZE);
-
-    for (size_t i = 0; i < alpha_mask->size(); i++)
-    {
-        for (size_t j = BLOCK_SIZE-1; j > 0; j--)
-        {
-            mask.push_back((*alpha_mask)[i] & (BLOCK_TYPE(1) << j));
-        }
-    }
-
-    return mask;
 }

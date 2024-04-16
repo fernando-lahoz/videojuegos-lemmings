@@ -433,6 +433,8 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
 
     if (collision_pixel.x != -1)
     {
+        std::cout << "Collision at: " << collision_pixel << std::endl;
+        
         collision_point.point = e1->texture_to_world(collision_pixel);
         collision_point.normal = Vector2f(0, 0);
         
