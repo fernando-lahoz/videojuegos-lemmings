@@ -323,10 +323,10 @@ public:
 
     // gravity = 3;
     // enable_gravity();
-    override_down_point(Point2f(0.5, 0.75));
-    override_up_point(Point2f(0.5, 0.3));
-    override_left_point(Point2f(0.5, 0.45));
-    override_right_point(Point2f(0.5, 0.45));
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     disable_alpha_mouse();
   }
   ~Lemming()

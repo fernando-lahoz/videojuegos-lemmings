@@ -14,7 +14,7 @@ class Geralt_camera : public Camera2D
 public:
 
     Geralt_camera()
-        : Camera2D(Bound2f(Point2f(0, 0), Point2f(0.8, 0.7)), Bound2f(Point2f(0, 0), Point2f(800, 700)))
+        : Camera2D(Bound2f(Point2f(0, 0), Point2f(1, 1)), Bound2f(Point2f(0, 0), Point2f(800, 700)))
     { }
 
     Geralt_camera(Bound2f frame)

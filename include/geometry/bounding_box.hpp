@@ -87,7 +87,7 @@ public:
     Point2<T> pMin, pMax;
 
     constexpr BoundingBox2() = default;
-    constexpr BoundingBox2(const Point2<T> &p);
+    constexpr explicit BoundingBox2(const Point2<T> &p);
     constexpr BoundingBox2(const Point2<T> &p1, const Point2<T> &p2);
 
     template <typename U> 

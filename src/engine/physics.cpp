@@ -47,6 +47,38 @@ void Physics_engine::compute_collisions(Engine& engine)
     }
 }
 
+bool Physics_engine::alpha_box_collision(const Entity& entity, const Bound2f& box)
+{
+    Bound2f l_box = entity.world_to_local(box);
+    Texture active_texture = entity.get_active_texture();
+
+    l_box = Bound2f(clamp(l_box.pMin, Point2f(0, 0), Point2f(1, 1)),
+                    clamp(l_box.pMax, Point2f(0, 0), Point2f(1, 1)));
+
+    Vector2f diagonal = l_box.diagonal();
+
+    unsigned int n_tests_x = diagonal.x * active_texture.get_width();
+    unsigned int n_tests_y = diagonal.y * active_texture.get_height();
+
+    Float pixel_size_x = 1.0 / active_texture.get_width();
+    Float pixel_size_y = 1.0 / active_texture.get_height();
+
+
+    for (unsigned int x = 0; x < n_tests_x; x++)
+    {
+        for (unsigned int y = 0; y < n_tests_y; y++)
+        {
+            Point2f sample_point = l_box.pMin + Vector2f(x * pixel_size_x, y * pixel_size_y);
+            if (!active_texture.is_alpha_pixel(sample_point))
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 void Physics_engine::pre_physics(Engine& engine)
 {
     auto &entities = engine.get_entities();

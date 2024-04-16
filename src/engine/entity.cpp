@@ -1,5 +1,6 @@
 #include "engine/entity.hpp"
 #include "engine/engine.hpp"
+#include "engine/physics.hpp"
 
 Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture, 
             [[maybe_unused]]Engine &engine,
@@ -15,6 +16,11 @@ Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture,
 
     this->entity_name = _entity_name;
     this->class_name = _class_name;
+
+    right_point = default_right_point();
+    left_point = default_left_point();
+    up_point = default_up_point();
+    down_point = default_down_point();
 
     //engine.subscribe_to_events(this);
 }
@@ -140,6 +146,11 @@ void Entity::disable_alpha_mouse()
     alpha_mouse = false;
 }
 
+Bound2f Entity::local_to_world(Bound2f box) const
+{
+    return Bound2f(local_to_world(box.pMin), local_to_world(box.pMax));
+}
+
 Point2f Entity::max_corner2D() const
 {
     return get_position2D() + diagonal;
@@ -212,7 +223,7 @@ bool Entity::colliding_right() const
 }
 
 
-bool Entity::collides(std::shared_ptr<Entity> other, Point2f &collision_point) const
+bool Entity::collides(std::shared_ptr<Entity> other, Bound2f &collision_point) const
 {
     if (check_collision_right(other))
     {
@@ -241,65 +252,94 @@ bool Entity::collides(std::shared_ptr<Entity> other, Point2f &collision_point) c
 bool Entity::check_collision_right(std::shared_ptr<Entity> other) const
 {
     auto p = local_to_world(right_point);
-    return other->contains(p, false);
+
+    if (!p.overlaps(other->bound2f()))
+        return false;
+
+    return Physics_engine::alpha_box_collision(*other.get(), p);
 } 
 
 bool Entity::check_collision_left(std::shared_ptr<Entity> other) const
 {
     auto p = local_to_world(left_point);
-    return other->contains(p, false);
+
+    if (!p.overlaps(other->bound2f()))
+        return false;
+
+    return Physics_engine::alpha_box_collision(*other.get(), p);
 }
 
 bool Entity::check_collision_up(std::shared_ptr<Entity> other) const
 {
     auto p = local_to_world(up_point);
-    return other->contains(p, false);
+
+    if (!p.overlaps(other->bound2f()))
+        return false;
+
+    return Physics_engine::alpha_box_collision(*other.get(), p);
 }
 
 bool Entity::check_collision_down(std::shared_ptr<Entity> other) const
 {
     auto p = local_to_world(down_point);
-    return other->contains(p, false);
+
+    if (!p.overlaps(other->bound2f()))
+        return false;
+        
+    return Physics_engine::alpha_box_collision(*other.get(), p);
 }
 
-void Entity::override_right_point(Point2f new_p)
+void Entity::override_right_point(Bound2f new_p)
 {
     right_point = new_p;
 }
 
-void Entity::override_left_point(Point2f new_p)
+void Entity::override_left_point(Bound2f new_p)
 {
     left_point = new_p;
 }
 
-void Entity::override_up_point(Point2f new_p)
+void Entity::override_up_point(Bound2f new_p)
 {
     up_point = new_p;
 }
 
-void Entity::override_down_point(Point2f new_p)
+void Entity::override_down_point(Bound2f new_p)
 {
     down_point = new_p;
 }
 
-Point2f Entity::default_right_point() const
+Bound2f Entity::default_right_point() const
 {
-    return Point2f(1, 0.5);
+    Point2f l_p = Point2f (0.8, 0.2);
+    Point2f r_p = Point2f (1, 0.8);
+
+    return Bound2f(l_p, r_p);
+
 }
 
-Point2f Entity::default_left_point() const
+Bound2f Entity::default_left_point() const
 {
-    return Point2f(0, 0.5);
+    Point2f l_p = Point2f (0, 0.2);
+    Point2f r_p = Point2f (0.2, 0.8);
+
+    return Bound2f(l_p, r_p);
 }
 
-Point2f Entity::default_up_point() const
+Bound2f Entity::default_up_point() const
 {
-    return Point2f(0.5, 0);
+    Point2f l_p = Point2f (0.2, 0);
+    Point2f r_p = Point2f (0.8, 0.2);
+
+    return Bound2f(l_p, r_p);
 }
 
-Point2f Entity::default_down_point() const
+Bound2f Entity::default_down_point() const
 {
-    return Point2f(0.5, 1);
+    Point2f l_p = Point2f (0.2, 0.8);
+    Point2f r_p = Point2f (0.8, 1);
+
+    return Bound2f(l_p, r_p);
 }
 
 
@@ -313,7 +353,7 @@ bool Entity::collides(std::shared_ptr<Entity> other) const
         return bound2f().overlaps(other->bound2f());
     }
 
-    Point2f collision_point;
+    Bound2f collision_point;
     return collides(other, collision_point);
 }
 

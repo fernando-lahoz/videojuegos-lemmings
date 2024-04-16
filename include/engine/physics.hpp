@@ -21,5 +21,7 @@ public:
 
     void pre_physics(Engine& engine);
 
+    static bool alpha_box_collision(const Entity& entity, const Bound2f& box);
+
     void post_physics(Engine& engine);
 };

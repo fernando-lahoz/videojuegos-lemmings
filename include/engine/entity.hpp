@@ -43,7 +43,7 @@ protected:
     Point3f position;
     Vector2f diagonal;
 
-    Point2f down_point, up_point,
+    Bound2f down_point, up_point,
             left_point, right_point;
 
     std::string class_name;
@@ -82,6 +82,7 @@ public:
 
 
     Point2f local_to_world(Point2f l_p) const;
+    Bound2f local_to_world(Bound2f box) const;
 
     // Returns the type of the entity
     //  Ex: Rigid body, generic entity
@@ -172,15 +173,15 @@ public:
     bool check_collision_up(std::shared_ptr<Entity> other) const;
     bool check_collision_down(std::shared_ptr<Entity> other) const;
 
-    void override_right_point(Point2f new_p);
-    void override_left_point(Point2f new_p);
-    void override_up_point(Point2f new_p);
-    void override_down_point(Point2f new_p);
+    void override_right_point(Bound2f new_p);
+    void override_left_point(Bound2f new_p);
+    void override_up_point(Bound2f new_p);
+    void override_down_point(Bound2f new_p);
 
-    Point2f default_right_point() const;
-    Point2f default_left_point() const;
-    Point2f default_up_point() const;
-    Point2f default_down_point() const;
+    Bound2f default_right_point() const;
+    Bound2f default_left_point() const;
+    Bound2f default_up_point() const;
+    Bound2f default_down_point() const;
 
     Vector2f get_diagonal() const;
 
@@ -209,7 +210,7 @@ public:
 
     // Returns true if this entity collides with other.
     //  uses excusive comparisons
-    bool collides(std::shared_ptr<Entity> other, Point2f &collision_point) const;
+    bool collides(std::shared_ptr<Entity> other, Bound2f &collision_point) const;
     bool collides(std::shared_ptr<Entity> other) const;
     bool contains(Point2f point, bool is_mouse=false) const;
 
