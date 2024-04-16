@@ -166,6 +166,42 @@ SDL_Rect Render_2D::bound_to_rect(Bound2f bound, Camera2D& camera, Camera2D& mai
     return rect;
 }
 
+// Put to red pixels with alpha mask 1, green with 0
+void apply_alpha_mask_to_sdl_texture(SDL_Renderer *renderer, SDL_Texture *texture, const std::vector<bool>& alpha_mask)
+{
+    SDL_SetRenderTarget(renderer, texture);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
+    SDL_Rect rect;
+    rect.w = 1;
+    rect.h = 1;
+
+    int h, w;
+    SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
+
+    for (int y = 0; y < h; y++)
+    {
+        for (int x = 0; x < w; x++)
+        {
+            rect.x = x;
+            rect.y = y;
+
+            if (alpha_mask[y * w + x])
+            {
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            }
+            else
+            {
+                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+            }
+
+            SDL_RenderFillRect(renderer, &rect);
+        }
+    }
+    SDL_SetRenderTarget(renderer, nullptr);
+}
+
 bool Render_2D::render_entity(Entity& entity, Camera2D& camera, Camera2D& main_camera, bool always_visible)
 {
     if (entity.get_active_texture().get_surface() != nullptr &&
@@ -175,6 +211,11 @@ bool Render_2D::render_entity(Entity& entity, Camera2D& camera, Camera2D& main_c
         auto rect = bound_to_rect(e_bound, camera, main_camera);
         
         auto texture = entity.get_active_texture();
+
+        if (texture.get_alpha_mask() != nullptr)
+        {
+            apply_alpha_mask_to_sdl_texture(renderer, texture.get(), texture.get_uncompressed_alpha_mask());
+        }
 
         Shader *shader = camera.find_shader_for(entity.get_class());
         if (shader != nullptr)

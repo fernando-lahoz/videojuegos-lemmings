@@ -209,43 +209,41 @@ void Physics_engine::on_collision(Engine& engine,
     }
 }
 
-void handle_end_cases(
-    std::vector<long long> &txt1_mask, 
-    std::vector<long long> &txt2_mask,
+Point2i handle_end_cases(
+    const std::vector<Texture::BLOCK_TYPE> &txt1_mask, 
+    const std::vector<Texture::BLOCK_TYPE> &txt2_mask,
     int h1_offset, int h2_offset,  
     int h1, int nBlocks, 
     Point2i block1, Point2i block2, 
-    long long right_padding_mask1, long long right_padding_mask2,
-    long long final_block_mask1, long long final_block_mask2,
-    long long initial_offset1, long long initial_offset2,
-    Point2i &collision_pixel1)
+    Texture::BLOCK_TYPE right_padding_mask1, Texture::BLOCK_TYPE right_padding_mask2,
+    Texture::BLOCK_TYPE final_block_mask1, Texture::BLOCK_TYPE final_block_mask2,
+    Texture::BLOCK_TYPE initial_offset1, Texture::BLOCK_TYPE initial_offset2)
 {
+    Point2i collision_pixel1(-1, -1);
+
     int w1 = block1.x + nBlocks-2;
     int w2 = block2.x + nBlocks-2;
 
-    long long alpha1 = txt1_mask[h1_offset + w1];
-    long long alpha2 = txt2_mask[h2_offset + w2];
+    Texture::BLOCK_TYPE alpha1 = txt1_mask[h1_offset + w1];
+    Texture::BLOCK_TYPE alpha2 = txt2_mask[h2_offset + w2];
 
     alpha1 <<= initial_offset1;
     alpha2 <<= initial_offset2;
 
     /****** Generate paddings ******/
-    long long alpha1_padding = 0;
-    long long alpha2_padding = 0;
-    
-    alpha1_padding = txt1_mask[h1_offset + w1+1];
-    alpha2_padding = txt2_mask[h2_offset + w2+1];
+    Texture::BLOCK_TYPE alpha1_padding = txt1_mask[h1_offset + w1+1];
+    Texture::BLOCK_TYPE alpha2_padding = txt2_mask[h2_offset + w2+1];
 
     alpha1_padding &= final_block_mask1;
     alpha2_padding &= final_block_mask2;
 
 
     // Get padding 1
-    alpha1_padding >>= 64 - initial_offset1;
+    alpha1_padding >>= Texture::BLOCK_SIZE - initial_offset1;
     alpha1_padding &= right_padding_mask1;
 
     // Get padding 2
-    alpha2_padding >>= 64 - initial_offset2;
+    alpha2_padding >>= Texture::BLOCK_SIZE - initial_offset2;
     alpha2_padding &= right_padding_mask2;
 
     // Add padding to alpha
@@ -254,16 +252,18 @@ void handle_end_cases(
     
     
     /************** Alpha comparison ***************/
-    long long collision = alpha1 & alpha2;
+    Texture::BLOCK_TYPE collision = alpha1 & alpha2;
 
     if (collision)
     {
         // clz, g++ only
-        unsigned int bit_id = __builtin_clz(collision);
+        unsigned int bit_id = __builtin_clz(collision) - 24;
         unsigned int offset = initial_offset1 + bit_id;
 
         collision_pixel1 = Point2i(w1, h1);
-        collision_pixel1.x = collision_pixel1.x*64 + offset; 
+        collision_pixel1.x = collision_pixel1.x*Texture::BLOCK_SIZE + offset; 
+
+        return collision_pixel1;
     }
 
     /****************** Handle final block case ***********************/
@@ -284,77 +284,59 @@ void handle_end_cases(
     if (collision)
     {
         // clz, g++ only
-        unsigned int bit_id = __builtin_clz(collision);
+        unsigned int bit_id = __builtin_clz(collision) - 24;
         unsigned int offset = initial_offset1 + bit_id;
 
         collision_pixel1 = Point2i(w1, h1);
-        collision_pixel1.x = collision_pixel1.x*64 + offset; 
+        collision_pixel1.x = collision_pixel1.x*Texture::BLOCK_SIZE + offset; 
     }
+
+    return collision_pixel1;
 }
 
-bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collision_point)
+
+Point2i alpha_texture_collision(
+    Bound2i box1,
+    Bound2i box2,
+    int txt1_width,
+    int txt2_width,
+    const std::vector<Texture::BLOCK_TYPE> &txt1_mask,
+    const std::vector<Texture::BLOCK_TYPE> &txt2_mask)
 {
-    auto txt1 = e1->get_active_texture();
-    auto txt2 = e2->get_active_texture();
+    assert(box1.diagonal() == box2.diagonal());
 
-    auto box_intersect = intersection(e1->bound2f(), e2->bound2f());
-
-    auto txt1_mask_ptr = txt1.get_alpha_mask();
-    auto txt2_mask_ptr = txt2.get_alpha_mask();
-
-    auto &txt1_mask = *txt1_mask_ptr;
-    auto &txt2_mask = *txt2_mask_ptr;
-
-    auto txt1_width = txt1.get_alpha_mask_width();
-    auto txt2_width = txt2.get_alpha_mask_width();
-    
-
-    Point2i initial_pixel1 = e1->world_to_texture(box_intersect.pMin);
-    Point2i initial_pixel2 = e2->world_to_texture(box_intersect.pMin);
-
-    Point2i final_pixel1 = e1->world_to_texture(box_intersect.pMax);
-    Point2i final_pixel2 = e2->world_to_texture(box_intersect.pMax);
-
-    int box_width = final_pixel1.x - initial_pixel1.x;
-    int box_height = final_pixel1.y - initial_pixel1.y;
+    Vector2i box_diagonal = box1.diagonal();
 
     // Apply compression to the coordinates
-    size_t initial_offset1 = initial_pixel1.x % 64;
-    size_t initial_offset2 = initial_pixel2.x % 64;
+    size_t initial_offset1 = box1.pMin.x % Texture::BLOCK_SIZE;
+    size_t initial_offset2 = box2.pMin.x % Texture::BLOCK_SIZE;
 
-    size_t final_offset1 = final_pixel1.x % 64;
-    size_t final_offset2 = final_pixel2.x % 64;
+    size_t final_offset1 = box1.pMax.x % Texture::BLOCK_SIZE;
+    size_t final_offset2 = box2.pMax.x % Texture::BLOCK_SIZE;
 
-    initial_pixel1.x -= initial_offset1;
-    initial_pixel2.x -= initial_offset2;
+    Point2i block1 = Point2i(box1.pMin.x - initial_offset1, box1.pMin.y);
+    Point2i block2 = Point2i(box2.pMin.x - initial_offset2, box2.pMin.y);
 
-    Point2i block1 = initial_pixel1;
-    Point2i block2 = initial_pixel2;
-    block1.x /= 64;
-    block2.x /= 64;
+    block1.x /= Texture::BLOCK_SIZE;
+    block2.x /= Texture::BLOCK_SIZE;
 
     // Generate right padding mask
-    long long right_padding_mask1 = (1 << initial_offset1) - 1; 
-    long long right_padding_mask2 = (1 << initial_offset2) - 1;
+    Texture::BLOCK_TYPE right_padding_mask1 = (1 << initial_offset1) - 1; 
+    Texture::BLOCK_TYPE right_padding_mask2 = (1 << initial_offset2) - 1;
 
     // Generate final block mask
     final_offset1 = final_offset1 - initial_offset1;
 
-    long long final_block_mask1 = (1 << (64-final_offset1)) - 1;
-    long long final_block_mask2 = (1 << (64-final_offset2)) - 1;
+    Texture::BLOCK_TYPE final_block_mask1 = ~((1 << (Texture::BLOCK_SIZE-1-final_offset1)) - 1);
+    Texture::BLOCK_TYPE final_block_mask2 = ~((1 << (Texture::BLOCK_SIZE-1-final_offset2)) - 1);
 
-    int nBlocks = box_width / 64;
-    if (box_width % 64 != 0)
+    int nBlocks = (box_diagonal.x+1) / Texture::BLOCK_SIZE;
+    if ((box_diagonal.x+1) % Texture::BLOCK_SIZE != 0)
         nBlocks++;
 
-    if (e1->get_entity_name() == "Geralt")
-    {
-        std::cout << "Initial offset: " << initial_offset1 << std::endl;
-    }
+    Point2i collision_pixel1(-1, -1);
 
-    Point2i collision_pixel1(-1);
-
-    for (int h = 0; h < box_height; h++)
+    for (int h = 0; h <= box_diagonal.y; h++)
     {
         int h1 = block1.y + h;
         int h1_offset = h1 * txt1_width;  
@@ -367,25 +349,25 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
             int w1 = block1.x + w;
             int w2 = block2.x + w;
 
-            long long alpha1 = txt1_mask[h1_offset + w1];
-            long long alpha2 = txt2_mask[h2_offset + w2];
+            Texture::BLOCK_TYPE alpha1 = txt1_mask[h1_offset + w1];
+            Texture::BLOCK_TYPE alpha2 = txt2_mask[h2_offset + w2];
 
             alpha1 <<= initial_offset1;
             alpha2 <<= initial_offset2;
 
             /****** Generate paddings ******/
-            long long alpha1_padding = 0;
-            long long alpha2_padding = 0;
+            Texture::BLOCK_TYPE alpha1_padding = 0;
+            Texture::BLOCK_TYPE alpha2_padding = 0;
             
             alpha1_padding = txt1_mask[h1_offset + w1+1];
             alpha2_padding = txt2_mask[h2_offset + w2+1];
 
             // Get padding 1
-            alpha1_padding >>= 64 - initial_offset1;
+            alpha1_padding >>= Texture::BLOCK_SIZE - initial_offset1;
             alpha1_padding &= right_padding_mask1;
 
             // Get padding 2
-            alpha2_padding >>= 64 - initial_offset2;
+            alpha2_padding >>= Texture::BLOCK_SIZE - initial_offset2;
             alpha2_padding &= right_padding_mask2;
 
             // Add padding to alpha
@@ -394,43 +376,69 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
             
             
             /************** Alpha comparison ***************/
-            long long collision = alpha1 & alpha2;
+            Texture::BLOCK_TYPE collision = alpha1 & alpha2;
 
             if (collision)
             {
-                std::cout << "Collision\n";
-
                 // clz, g++ only
-                unsigned int bit_id = __builtin_clz(collision);
+                unsigned int bit_id = __builtin_clz(collision) - 24;
                 unsigned int offset = initial_offset1 + bit_id;
 
                 collision_pixel1 = Point2i(w1, h1);
-                collision_pixel1.x = collision_pixel1.x*64 + offset; 
+                collision_pixel1.x = collision_pixel1.x*Texture::BLOCK_SIZE + offset;
+                
+                return collision_pixel1;
             }
         }
 
-        handle_end_cases(txt1_mask, txt2_mask,
-            h1_offset, h2_offset,
-            h1, nBlocks, 
-            block1, block2, 
-            right_padding_mask1, right_padding_mask2,
-            final_block_mask1, final_block_mask2,
-            initial_offset1, initial_offset2,
-            collision_pixel1);
-    }
+        collision_pixel1 = 
+            handle_end_cases(txt1_mask, txt2_mask,
+                h1_offset, h2_offset,
+                h1, nBlocks, 
+                block1, block2, 
+                right_padding_mask1, right_padding_mask2,
+                final_block_mask1, final_block_mask2,
+                initial_offset1, initial_offset2);
 
-    if (collision_pixel1.x != -1)
-    {
-        collision_point.point = e1->texture_to_world(collision_pixel1);
-        //collision_point.normal = e1->get_alpha_normal(collision_pixel1);
-        std::cout << "Collision point for entity " << e1->get_entity_name() << ": " << collision_point.point << std::endl;
-        
-        std::this_thread::sleep_for(std::chrono::seconds(10000));
-        exit(0);
-        return true;
+        if (collision_pixel1.x != -1)
+            return collision_pixel1;
     }
 
     //std::cout << "No collision\n";
+    return collision_pixel1;
+}
+
+bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collision_point)
+{
+    auto w_bound1 = e1->bound2f();
+    auto w_bound2 = e2->bound2f();
+
+    Bound2f inters = intersection(w_bound1, w_bound2);
+
+    Bound2i txt_bound1 = e1->world_to_texture(inters);
+    Bound2i txt_bound2 = e2->world_to_texture(inters);
+
+    auto txt1 = e1->get_active_texture();
+    auto txt2 = e2->get_active_texture();
+
+    auto txt1_mask = txt1.get_alpha_mask();
+    auto txt2_mask = txt2.get_alpha_mask();
+
+    auto txt1_width = txt1.get_alpha_mask_width();
+    auto txt2_width = txt2.get_alpha_mask_width();
+
+    auto collision_pixel = alpha_texture_collision(
+        txt_bound1, txt_bound2, txt1_width, txt2_width, 
+        *txt1_mask, *txt2_mask);
+
+    if (collision_pixel.x != -1)
+    {
+        collision_point.point = e1->texture_to_world(collision_pixel);
+        collision_point.normal = Vector2f(0, 0);
+        
+        return true;
+    }
+
     return false;
 }
 

@@ -13,6 +13,12 @@
 
 class Texture
 {
+public:
+
+    const static size_t BLOCK_SIZE = 8;
+    using BLOCK_TYPE = u_int8_t;
+
+
 private:
     std::shared_ptr<SDL_Texture> texture{nullptr, SDL_DestroyTexture};
     std::shared_ptr<SDL_Surface> surface{nullptr, SDL_FreeSurface};
@@ -20,11 +26,12 @@ private:
     int height{};
     bool modified = false;
 
-    std::shared_ptr<std::vector<long long>> alpha_mask;
+    std::shared_ptr<std::vector<BLOCK_TYPE>> alpha_mask;
 
     void load_image(const std::string &file, SDL_Renderer *renderer);
 
 public:
+
     constexpr Texture() = default;
 
     Texture(SDL_Texture *sdl_texture);
@@ -51,7 +58,9 @@ public:
 
     size_t get_alpha_mask_width() const;
     size_t get_alpha_mask_height() const;
-    std::shared_ptr<std::vector<long long>> get_alpha_mask() const;
+    std::shared_ptr<std::vector<BLOCK_TYPE>> get_alpha_mask() const;
+
+    std::vector<bool> get_uncompressed_alpha_mask() const;
 
     int get_width() const;
     int get_height() const;

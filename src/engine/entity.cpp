@@ -70,10 +70,20 @@ Point2i Entity::world_to_texture(Point2f w_p) const
     return active_texture.local_to_texture(l_p);
 }
 
+Bound2i Entity::world_to_texture(Bound2f box) const
+{
+    return Bound2i(world_to_texture(box.pMin), world_to_texture(box.pMax));
+}
+
 Point2f Entity::texture_to_world(Point2i t_p) const
 {
     auto l_p = active_texture.texture_to_local(t_p);
     return local_to_world(l_p);
+}
+
+Bound2f Entity::texture_to_world(Bound2i box) const
+{
+    return Bound2f(texture_to_world(box.pMin), texture_to_world(box.pMax));
 }
 
 

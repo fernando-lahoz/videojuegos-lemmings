@@ -114,6 +114,9 @@ public:
     Point2f texture_to_world(Point2i t_p) const;
     Point2f local_to_world(Point2f l_p) const;
 
+    Bound2i world_to_texture(Bound2f box) const;
+    Bound2f texture_to_world(Bound2i box) const;
+
     // Returns the type of the entity
     //  Ex: Rigid body, generic entity
     std::string get_class() const;

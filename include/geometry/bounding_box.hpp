@@ -120,8 +120,6 @@ public:
     // Same as contains, but the borders are not included
     constexpr bool contains_exclusively(const Point2<T> &p);
 
-    constexpr BoundingBox2<T> &intersection(const BoundingBox2<T> &b) const;
-
     enum class Border { TOP, BOTTOM, RIGHT, LEFT };
     constexpr T is_near_border(const Point2<T> &p, Border border, T distance);
     constexpr T is_past_border(const Point2<T> &p, Border border);

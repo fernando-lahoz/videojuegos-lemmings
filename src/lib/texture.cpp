@@ -49,7 +49,7 @@ Texture &Texture::operator=(const Texture &other)
 void Texture::generate_alpha_mask()
 {
     if (!alpha_mask)
-        alpha_mask = std::make_shared<std::vector<long long>>(get_alpha_mask_width() * get_alpha_mask_height(), 0);
+        alpha_mask = std::make_shared<std::vector<BLOCK_TYPE>>(get_alpha_mask_width() * get_alpha_mask_height(), 0);
 
     for (int y = 0; y < surface->h; y++)
     {
@@ -58,8 +58,8 @@ void Texture::generate_alpha_mask()
             // If there is an active pixel
             if (!is_alpha_pixel(Point2f(x, y)))
             {
-                size_t index = y * get_alpha_mask_width() + x / 64;
-                (*alpha_mask)[index] |= 1LL << (x % 64);
+                size_t index = y * get_alpha_mask_width() + x / BLOCK_SIZE;
+                (*alpha_mask)[index] |= BLOCK_TYPE(1) << (x % BLOCK_SIZE);
             }
         }
     }
@@ -298,8 +298,8 @@ Point2f Texture::texture_to_local(Point2i pixel) const
 
 size_t Texture::get_alpha_mask_width() const
 {
-    size_t size = surface->w / 64;
-    if (surface->w % 64 != 0)
+    size_t size = surface->w / BLOCK_SIZE;
+    if (surface->w % BLOCK_SIZE != 0)
         size++;
 
     return size;
@@ -310,7 +310,7 @@ size_t Texture::get_alpha_mask_height() const
     return surface->h;
 }
 
-std::shared_ptr<std::vector<long long>> 
+std::shared_ptr<std::vector<Texture::BLOCK_TYPE>> 
     Texture::get_alpha_mask() const
 {
     return alpha_mask;
@@ -335,4 +335,20 @@ int Texture::get_width() const
 int Texture::get_height() const
 {
     return height;
+}
+
+std::vector<bool> Texture::get_uncompressed_alpha_mask() const
+{
+    std::vector<bool> mask;
+    mask.reserve(alpha_mask->size() * BLOCK_SIZE);
+
+    for (size_t i = 0; i < alpha_mask->size(); i++)
+    {
+        for (size_t j = BLOCK_SIZE-1; j > 0; j--)
+        {
+            mask.push_back((*alpha_mask)[i] & (BLOCK_TYPE(1) << j));
+        }
+    }
+
+    return mask;
 }
