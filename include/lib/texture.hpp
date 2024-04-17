@@ -44,8 +44,10 @@ public:
     SDL_Texture *get() const;
     SDL_Surface *get_surface() const;
 
-    // Returns true if the pixel has an alpha value > 128
+    // Returns true if the pixel is transparent
     bool is_alpha_pixel(Point2f pixel) const;
+    bool is_alpha_pixel(Point2i pixel) const;
+
 
     void change_pixel(Point2i ipixel, uint8_t rgb[3]);
     bool set_alpha_pixel(Point2i ipixel, uint8_t alpha, SDL_Renderer *renderer);

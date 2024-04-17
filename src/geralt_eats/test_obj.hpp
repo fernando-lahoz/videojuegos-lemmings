@@ -36,19 +36,19 @@ class Test_obj : public Entity
     {
         if (e == EngineIO::InputEvent::DOWN_ARROW)
         {
-            speed.y = 0.5;
+            apply_force(Vector2f(0, 3));
         }
         else if (e == EngineIO::InputEvent::UP_ARROW)
         {
-            speed.y = -0.5;
+            apply_force(Vector2f(0, -3));
         }
         else if (e == EngineIO::InputEvent::LEFT_ARROW)
         {
-            speed.x = -0.5;
+            apply_force(Vector2f(-3, 0));
         }
         else if (e == EngineIO::InputEvent::RIGHT_ARROW)
         {
-            speed.x = 0.5;
+            apply_force(Vector2f(3, 0));
         }
         else if (e == EngineIO::InputEvent::SPACE)
         {

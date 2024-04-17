@@ -78,40 +78,45 @@ public:
 
     void write_alpha_to_file(Texture txt)
     {
-        auto alpha_mask = txt.get_uncompressed_alpha_mask();
+        //auto alpha_mask = txt.get_uncompressed_alpha_mask();
+        auto alpha_mask = *txt.get_alpha_mask();
 
         //std::cout << alpha_mask << std::endl;
         std::ofstream file("alpha_mask.txt");
         for (size_t i = 0; i < alpha_mask.size(); i++)
         {
-            file << alpha_mask[i] << " ";
+
+            if (i % txt.get_alpha_mask_width() == 0)
+                file << std::endl;
+
+            file << (unsigned int)alpha_mask[i] << " ";
         }
         file.close();
     }
 
     void on_game_startup(Engine &engine) override
     {
-        auto ground_alpha = engine.load_texture("assets/ground_alpha.png");
+        //auto ground_alpha = engine.load_texture("assets/ground_alpha.png");
         auto lemmings_terrain = engine.load_texture("assets/maps/bkg/map_0_0.png");
         auto flat_ground = engine.load_texture("assets/terrain.png");
-        auto t3 = engine.load_texture("assets/dehecho.png");
-        auto cielo_txt = engine.load_texture("assets/cielo.jpeg");
-        auto energy_ball_txt = engine.load_texture("assets/energy_ball.png");
+        //auto t3 = engine.load_texture("assets/dehecho.png");
+        //auto cielo_txt = engine.load_texture("assets/cielo.jpeg");
+        //auto energy_ball_txt = engine.load_texture("assets/energy_ball.png");
         auto wall_txt = engine.load_texture("assets/wall_alpha.png");
         auto mini_alpha = engine.load_texture("assets/mini_alpha.png");
 
         auto geralt = std::make_shared<Geralt>(Point2f(1, 0.3), Vector2f(0.25, 0.3), engine);
-        //auto ground = std::make_shared<Entity>(Point2f(-2, 0), 1, Vector2f(7, 2.25), lemmings_terrain, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::ALPHA, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
-        auto ground = std::make_shared<Entity>(Point2f(-10, 1.5), 1, Vector2f(20, 0.75), flat_ground, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::AABB, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
-        auto wall = std::make_shared<Entity>(Point2f(3.5, 0), 1, Vector2f(0.5, 2.25), mini_alpha, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::ALPHA, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
+        auto ground = std::make_shared<Entity>(Point2f(-2, 0), 1, Vector2f(7, 2.25), lemmings_terrain, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::ALPHA, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
+        //auto ground = std::make_shared<Entity>(Point2f(-10, 1.5), 1, Vector2f(20, 0.75), flat_ground, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::AABB, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
+        auto wall = std::make_shared<Entity>(Point2f(3.5, 0), 1, Vector2f(0.5, 2.25), wall_txt, engine, "Ground", Entity::Physics_type::RIGID_BODY, Entity::Collision_check::ALPHA, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Ground");
         auto test = std::make_shared<Test_obj>(Point2f(0.5, 0.5), Vector2f(0.1, 0.1), mini_alpha, engine);
 
 
         write_alpha_to_file(wall_txt);
 
-        auto cielo = std::make_shared<Entity>(Point2f(0, 0), 10, Vector2f(4, 2.24), cielo_txt, engine, "Cielo", Entity::Physics_type::NONE, Entity::Collision_check::NONE, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Cielo");
+        //auto cielo = std::make_shared<Entity>(Point2f(0, 0), 10, Vector2f(4, 2.24), cielo_txt, engine, "Cielo", Entity::Physics_type::NONE, Entity::Collision_check::NONE, Entity::Collision_type::STATIC_BODY, Entity::Cursor_type::AABB, "Cielo");
         ground->disable_gravity();
-        cielo->disable_gravity();
+        //cielo->disable_gravity();
         wall->disable_gravity();
         test->disable_gravity();
 
@@ -126,12 +131,13 @@ public:
         //auto field = std::make_shared<Electric_field>(engine, Point2f(0.5, 0.7), Vector2f(0.44, 0.4), 10, 1000);
 
         
-        //engine.create_entity(geralt);
+        engine.create_entity(geralt);
         engine.create_entity(ground);
         //engine.create_entity(cielo);
-        engine.create_entity(wall);
         //engine.create_entity(field);
         engine.create_entity(test);
+        engine.create_entity(wall);
+
 
         create_camera(std::make_shared<Geralt_camera>());
     }

@@ -34,13 +34,14 @@ void Texture::generate_alpha_mask()
     {
         for (int x = 0; x < width; x++)
         {
-            if (!is_alpha_pixel(Point2f(x, y)))
+            //std::cout << x << ", " << y << ": " << !is_alpha_pixel(Point2i(x, y)) << std::endl; 
+            if (!is_alpha_pixel(Point2i(x, y)))
             {
                 size_t block_x = x / BLOCK_SIZE;
-                size_t block_y = y / BLOCK_SIZE;
+                size_t block_y = y;
 
                 size_t block_index = block_y * get_alpha_mask_width() + block_x;
-                size_t block_offset = (y % BLOCK_SIZE) * BLOCK_SIZE + (x % BLOCK_SIZE);
+                size_t block_offset = BLOCK_SIZE - 1 - (x % BLOCK_SIZE);
 
                 (*alpha_mask)[block_index] |= 1 << block_offset;
             }
@@ -300,11 +301,17 @@ bool Texture::is_alpha_pixel(Point2f lpixel) const
     pixel.x = lpixel.x * get_width();
     pixel.y = lpixel.y * get_height();
 
+    return is_alpha_pixel(pixel);
+}
+
+
+bool Texture::is_alpha_pixel(Point2i pixel) const
+{
     if (!surface)
         throw std::runtime_error("No surface loaded");
 
     if (pixel.x < 0 || pixel.y < 0 || pixel.x >= surface->w || pixel.y >= surface->h)
-        throw std::out_of_range("Pixel coordinates out of range on alpha check, lpixel: " + std::to_string(lpixel.x) + ", " + std::to_string(lpixel.y));
+        throw std::out_of_range("Pixel coordinates out of range on alpha check, pixel: " + std::to_string(pixel.x) + ", " + std::to_string(pixel.y));
 
     int bpp = surface->format->BytesPerPixel;
     Uint8 *p = (Uint8 *)surface->pixels + pixel.y * surface->pitch + pixel.x * bpp;
