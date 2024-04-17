@@ -65,6 +65,11 @@ Point2f Texture::texture_to_local(Point2i texture) const
     return Point2f(texture.x / (float)width, texture.y / (float)height);
 }
 
+Vector2f Texture::texture_to_local(Vector2f texture) const
+{
+    return Vector2f(texture.x / (float)width, texture.y / (float)height);
+}
+
 std::vector<bool> Texture::get_uncompressed_alpha_mask() const
 {
     std::vector<bool> uncompressed_alpha_mask(width * height, false);

@@ -57,6 +57,7 @@ public:
 
     Point2i local_to_texture(Point2f local) const;
     Point2f texture_to_local(Point2i texture) const;
+    Vector2f texture_to_local(Vector2f texture) const;
 
     size_t get_alpha_mask_width() const;
     size_t get_alpha_mask_height() const;

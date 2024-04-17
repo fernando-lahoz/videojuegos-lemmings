@@ -626,13 +626,12 @@ namespace math
     template <typename T>
     constexpr Vector2<T> min(const Vector2<T> &v1, const Vector2<T> &v2)
     {
-        return Vector2<T>(min(v1.x, v2.x), min(v1.y, v2.y));
+        return Vector2<T>(std::min(v1.x, v2.x), std::min(v1.y, v2.y));
     }
 
     template <typename T>
     constexpr Vector2<T> max(const Vector2<T> &v1, const Vector2<T> &v2)
     {
-        return Vector2<T>(max(v1.x, v2.x), max(v1.y, v2.y));
+        return Vector2<T>(std::max(v1.x, v2.x), std::max(v1.y, v2.y));
     }
-
 }

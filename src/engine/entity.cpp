@@ -86,6 +86,21 @@ Bound2f Entity::texture_to_world(Bound2i box) const
     return Bound2f(texture_to_world(box.pMin), texture_to_world(box.pMax));
 }
 
+Vector2f Entity::local_to_world(Vector2f l_p) const
+{
+    auto d = get_diagonal();
+    l_p.x = l_p.x * d.x;
+    l_p.y = l_p.y * d.y;
+
+    return l_p;
+}
+
+Vector2f Entity::texture_to_world(Vector2f t_p) const
+{
+    auto l_p = active_texture.texture_to_local(t_p);
+    return local_to_world(l_p);
+}
+
 
 
 void Entity::set_depth(Engine &engine, Float new_depth)

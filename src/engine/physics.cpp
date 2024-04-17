@@ -209,16 +209,76 @@ void Physics_engine::on_collision(Engine& engine,
     }
 }
 
-Point2i handle_end_cases(
+
+int alpha_mask_convolution(
+    const std::vector<Texture::BLOCK_TYPE> &txt_mask,
+    size_t alpha_width,
+    Point2i pixel,
+    int kernel[3][3])
+{
+    int convolution = 0;
+
+    for (int y = 0; y <= 2; y++)
+    {
+        for (int x = 0; x <= 2; x++)
+        {
+            size_t p_x = x + pixel.x-1;
+            size_t p_y = y + pixel.y-1;
+
+            int block_index = p_y * alpha_width + (p_x/Texture::BLOCK_SIZE);
+            size_t block_offset = Texture::BLOCK_SIZE - 1 - (p_x % Texture::BLOCK_SIZE);
+
+            if (block_index < 0 || block_index >= txt_mask.size())
+                continue;
+
+            bool value = txt_mask[block_index] & (1 << block_offset);
+            convolution += kernel[y][x] * value;
+        }
+    }
+
+    return convolution;
+}
+
+
+Vector2f generate_alpha_normal(const std::vector<Texture::BLOCK_TYPE> &txt_mask,
+    size_t alpha_width,
+    Point2i pixel)
+{
+    int kernel_x[3][3] = {
+        {1, 0, -1},
+        {2, 0, -2},
+        {1, 0, -1}
+    };
+
+    int dx = alpha_mask_convolution(txt_mask, alpha_width, pixel, kernel_x);
+
+    int kernel_y[3][3] = {
+        {1, 2, 1},
+        {0, 0, 0},
+        {-1, -2, -1}
+    };
+
+    int dy = alpha_mask_convolution(txt_mask, alpha_width, pixel, kernel_y);
+
+    if (dx == 0 && dy == 0)
+        return Vector2f(0, 0);
+    else
+        return normalize(Vector2f(dx, dy));
+
+}
+
+void handle_end_cases(
     const std::vector<Texture::BLOCK_TYPE> &txt_mask,
     int h1_offset, int h1, int nBlocks, 
+    int txt_width,
     Point2i block, 
     Texture::BLOCK_TYPE right_padding_mask,
     Texture::BLOCK_TYPE final_block_mask,
-    size_t initial_offset)
+    size_t initial_offset,
+    Point2i &collision_pixel,
+    Vector2f &collision_normal,
+    unsigned int &n_collisions)
 {
-    Point2i collision_pixel1(-1, -1);
-
     if (nBlocks > 1)
     {
         int w1 = block.x + nBlocks-2;
@@ -248,10 +308,11 @@ Point2i handle_end_cases(
             unsigned int bit_id = __builtin_clz(collision) - 24;
             unsigned int offset = initial_offset + bit_id;
 
-            collision_pixel1 = Point2i(w1, h1);
-            collision_pixel1.x = collision_pixel1.x*Texture::BLOCK_SIZE + offset; 
+            collision_pixel.y += h1;
+            collision_pixel.x += collision_pixel.x*Texture::BLOCK_SIZE + offset; 
+            n_collisions++;
 
-            return collision_pixel1;
+            collision_normal += generate_alpha_normal(txt_mask, txt_width, collision_pixel);
         }
     }
 
@@ -272,20 +333,26 @@ Point2i handle_end_cases(
         unsigned int bit_id = __builtin_clz(collision) - 24;
         unsigned int offset = initial_offset + bit_id;
 
-        collision_pixel1 = Point2i(w1, h1);
-        collision_pixel1.x = collision_pixel1.x*Texture::BLOCK_SIZE + offset; 
-    }
+        collision_pixel.y += h1;
+        collision_pixel.x += collision_pixel.x*Texture::BLOCK_SIZE + offset;
+        n_collisions++;
 
-    return collision_pixel1;
+        collision_normal += generate_alpha_normal(txt_mask, txt_width, collision_pixel);
+    }
 }
 
 
-Point2i alpha_texture_collision(
+bool alpha_texture_collision(
     Bound2i box,
     int txt_width,
-    const std::vector<Texture::BLOCK_TYPE> &txt_mask)
+    const std::vector<Texture::BLOCK_TYPE> &txt_mask,
+    Point2i &collision_pixel,
+    Vector2f &collision_normal)
 {
     //assert(box1.diagonal() == box2.diagonal());
+    collision_pixel = Point2i(0, 0);
+    collision_normal = Vector2f(0, 0);
+    unsigned int n_collisions = 0;
 
     Vector2i box_diagonal = box.diagonal();
 
@@ -307,8 +374,6 @@ Point2i alpha_texture_collision(
     int nBlocks = (box_diagonal.x+1) / Texture::BLOCK_SIZE;
     if ((box_diagonal.x+1) % Texture::BLOCK_SIZE != 0)
         nBlocks++;
-
-    Point2i collision_pixel1(-1, -1);
 
     for (int h = 0; h <= box_diagonal.y; h++)
     {
@@ -344,28 +409,39 @@ Point2i alpha_texture_collision(
                 unsigned int bit_id = __builtin_clz(collision) - 24;
                 unsigned int offset = initial_offset + bit_id;
 
-                collision_pixel1 = Point2i(w1, h1);
-                collision_pixel1.x = collision_pixel1.x*Texture::BLOCK_SIZE + offset;
-                
-                return collision_pixel1;
+                collision_pixel.y += h1;
+                collision_pixel.x += w1*Texture::BLOCK_SIZE + offset;
+                collision_normal += generate_alpha_normal(txt_mask, txt_width, collision_pixel);
+               
+                n_collisions++;
             }
         }
 
-        collision_pixel1 = 
-            handle_end_cases(txt_mask,
+        handle_end_cases(txt_mask,
                 h1_offset,
                 h1, nBlocks, 
+                txt_width,
                 block, 
                 right_padding_mask,
                 final_block_mask,
-                initial_offset);
-
-        if (collision_pixel1.x != -1)
-            return collision_pixel1;
+                initial_offset,
+                collision_pixel,
+                collision_normal,
+                n_collisions);
     }
 
-    //std::cout << "No collision\n";
-    return collision_pixel1;
+    if (n_collisions > 0)
+    {
+        collision_pixel = collision_pixel / n_collisions;
+
+        if (collision_normal.length_squared() > 0)
+            collision_normal = normalize(collision_normal / n_collisions);
+
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collision_point)
@@ -387,16 +463,18 @@ bool check_alpha_collision(EntityPtr e1, EntityPtr e2, Collision_point &collisio
     auto txt1_width = txt1.get_alpha_mask_width();
     auto txt2_width = txt2.get_alpha_mask_width();
 
-    auto collision_pixel = alpha_texture_collision(
+    Point2i collision_pixel;
+    bool collided = alpha_texture_collision(
         txt_bound2, txt2_width, 
-        *txt2_mask);
+        *txt2_mask,
+        collision_pixel, collision_point.normal);
 
-    if (collision_pixel.x != -1)
+    if (collided)
     {
-        std::cout << "Collision at: " << collision_pixel << std::endl;
-        
-        collision_point.point = e1->texture_to_world(collision_pixel);
-        collision_point.normal = Vector2f(0, 0);
+        std::cout << "Collision normal: " << collision_point.normal << std::endl;
+
+        collision_point.point = e1->texture_to_world(collision_pixel);        
+        collision_point.normal = e1->texture_to_world(collision_point.normal);
         
         return true;
     }

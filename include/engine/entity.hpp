@@ -108,11 +108,13 @@ public:
     Point2f world_to_local(Point2f w_p) const;
     Vector2f world_to_local(Vector2f w_p) const;
     Bound2f world_to_local(Bound2f box) const;
+    Vector2f local_to_world(Vector2f l_p) const;
 
 
     Point2i world_to_texture(Point2f w_p) const;
     Point2f texture_to_world(Point2i t_p) const;
     Point2f local_to_world(Point2f l_p) const;
+    Vector2f texture_to_world(Vector2f t_p) const;
 
     Bound2i world_to_texture(Bound2f box) const;
     Bound2f texture_to_world(Bound2i box) const;
