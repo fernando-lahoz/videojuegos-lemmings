@@ -44,6 +44,10 @@ public:
 
     Point2f world_to_screen(Point2f world_point);
     Vector2f world_to_screen(Vector2f world_vector);
+    Bound2f world_to_screen(Bound2f world_bound);
+
+    Bound2f world_to_local(Bound2f world_bound);
+    Bound2f local_to_world(Bound2f local_bound);
 
     Point2f screen_to_world(Point2f screen_point);
     Vector2f screen_to_world(Vector2f screen_vector);

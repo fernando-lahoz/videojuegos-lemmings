@@ -143,7 +143,7 @@ public:
                 std::unique_lock lock(mtx_electric_fields);
 
                 // Create electric field
-                auto electric_field = std::make_shared<Electric_field>(engine, get_position(), Vector2f(0.34, 0.3), 0, 10000);
+                auto electric_field = std::make_shared<Electric_field>(engine, get_position(), Vector2f(0.34, 0.3), 1, 10000);
                 engine.create_entity(electric_field);
                 electric_fields.push_back(electric_field);
 

@@ -39,6 +39,37 @@ Vector2f Camera2D::world_to_screen(Vector2f world_vector)
     return Vector2f(x, y);
 }
 
+Bound2f Camera2D::world_to_screen(Bound2f world_bound)
+{
+    return Bound2f(world_to_screen(world_bound.pMin), world_to_screen(world_bound.pMax));
+}
+
+Bound2f Camera2D::world_to_local(Bound2f world_bound)
+{
+    Vector2f inv_diagonal;
+    inv_diagonal.x = 1 / world_frame.width();
+    inv_diagonal.y = 1 / world_frame.height();
+
+    Point2f pMin = Point2f(world_bound.pMin - world_frame.pMin);
+    pMin.x *= inv_diagonal.x;
+    pMin.y *= inv_diagonal.y;
+
+    Point2f pMax = Point2f(world_bound.pMax - world_frame.pMin);
+    pMax.x *= inv_diagonal.x;
+    pMax.y *= inv_diagonal.y;
+
+    return Bound2f(pMin, pMax);
+}
+
+Bound2f Camera2D::local_to_world(Bound2f local_bound)
+{
+    Point2f pMin = Point2f(local_bound.pMin.x * world_frame.width(), local_bound.pMin.y * world_frame.height()) + world_frame.pMin;
+    Point2f pMax = Point2f(local_bound.pMax.x * world_frame.width(), local_bound.pMax.y * world_frame.height()) + world_frame.pMin;
+
+    return Bound2f(pMin, pMax);
+
+}
+
 Point2f Camera2D::screen_to_world(Point2f screen_point)
 {
     Float x = ((screen_point.x - window_frame.pMin.x) / window_frame.width()) * world_frame.width() + world_frame.pMin.x;

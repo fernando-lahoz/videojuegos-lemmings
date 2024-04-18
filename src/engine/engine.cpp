@@ -462,8 +462,7 @@ Engine::Engine(std::shared_ptr<Game> &&game)
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
         throw error::sdl_exception(ERROR_CONTEXT);
 
-    cameras.push_back(this->game->get_main_camera());
-    auto [w, h] = cameras[0]->get_window_frame().diagonal();
+    unsigned int w = 1260, h = 720;
 
     renderer = std::make_shared<Render_2D>(this->game->get_name(), (int)w, (int)h);
     physics = Physics_engine();
@@ -653,10 +652,10 @@ void Engine::set_ignored_events()
 void Engine::start()
 {
     set_ignored_events();
-
     start_async_workers();
 
     game->on_game_startup(*this);
+    process_cameras();
 
     bool quit = false;
     while (!quit && !quit_event)

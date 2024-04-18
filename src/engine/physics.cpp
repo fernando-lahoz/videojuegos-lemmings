@@ -264,7 +264,39 @@ Vector2f generate_alpha_normal(const std::vector<Texture::BLOCK_TYPE> &txt_mask,
         return Vector2f(0, 0);
     else
         return normalize(Vector2f(dx, dy));
+}
 
+
+void handle_collision(
+    Texture::BLOCK_TYPE collision,
+    const std::vector<Texture::BLOCK_TYPE> &txt_mask,
+    int h1, int w1, int txt_width,
+    size_t initial_offset,
+    Point2i &collision_pixel,
+    Vector2f &collision_normal,
+    unsigned int &n_collisions)
+{
+    while (collision)
+    {
+        // clz, g++ only
+        unsigned int bit_id = __builtin_clz(collision) - 24;
+        unsigned int offset = initial_offset + bit_id;
+
+        Point2i pixel = Point2i(w1*Texture::BLOCK_SIZE + offset, h1);
+
+        auto normal = generate_alpha_normal(txt_mask, txt_width, collision_pixel);
+
+        if (normal.length_squared() > 0)
+        {
+            std::cout << "Normal: " << normal << std::endl;
+            collision_pixel += pixel;
+            collision_normal += normal;
+            n_collisions++;
+        }
+
+        // Disable collision
+        collision &= ~(1 << (Texture::BLOCK_SIZE-1 - bit_id));
+    }
 }
 
 void handle_end_cases(
@@ -304,15 +336,7 @@ void handle_end_cases(
 
         if (collision)
         {
-            // clz, g++ only
-            unsigned int bit_id = __builtin_clz(collision) - 24;
-            unsigned int offset = initial_offset + bit_id;
-
-            collision_pixel.y += h1;
-            collision_pixel.x += collision_pixel.x*Texture::BLOCK_SIZE + offset; 
-            n_collisions++;
-
-            collision_normal += generate_alpha_normal(txt_mask, txt_width, collision_pixel);
+            handle_collision(collision, txt_mask, h1, w1, txt_width, initial_offset, collision_pixel, collision_normal, n_collisions);
         }
     }
 
@@ -329,15 +353,7 @@ void handle_end_cases(
 
     if (collision)
     {
-        // clz, g++ only
-        unsigned int bit_id = __builtin_clz(collision) - 24;
-        unsigned int offset = initial_offset + bit_id;
-
-        collision_pixel.y += h1;
-        collision_pixel.x += collision_pixel.x*Texture::BLOCK_SIZE + offset;
-        n_collisions++;
-
-        collision_normal += generate_alpha_normal(txt_mask, txt_width, collision_pixel);
+        handle_collision(collision, txt_mask, h1, w1, txt_width, initial_offset, collision_pixel, collision_normal, n_collisions);
     }
 }
 
@@ -405,15 +421,7 @@ bool alpha_texture_collision(
 
             if (collision)
             {
-                // clz, g++ only
-                unsigned int bit_id = __builtin_clz(collision) - 24;
-                unsigned int offset = initial_offset + bit_id;
-
-                collision_pixel.y += h1;
-                collision_pixel.x += w1*Texture::BLOCK_SIZE + offset;
-                collision_normal += generate_alpha_normal(txt_mask, txt_width, collision_pixel);
-               
-                n_collisions++;
+                handle_collision(collision, txt_mask, h1, w1, txt_width, initial_offset, collision_pixel, collision_normal, n_collisions);
             }
         }
 
