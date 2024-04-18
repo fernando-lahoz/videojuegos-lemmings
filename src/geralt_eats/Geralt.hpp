@@ -142,8 +142,29 @@ public:
             {
                 std::unique_lock lock(mtx_electric_fields);
 
+                Vector2f direction = Vector2f(0, 0);
+                Float offset_mod = 0.3;
+
+                if (engine.is_w_down()) {
+                    direction += Vector2f(0, -1);
+                    offset_mod *=2;
+                }
+
+                if (engine.is_s_down()) {
+                    direction += Vector2f(0, 1);
+                }
+
+                if (engine.is_a_down()) {
+                    direction += Vector2f(-1, 0);
+                    offset_mod *=2;
+                }
+
+                if (engine.is_d_down()) {
+                    direction += Vector2f(1, 0);
+                }
+
                 // Create electric field
-                auto electric_field = std::make_shared<Electric_field>(engine, get_position(), Vector2f(0.34, 0.3), 1, 10000);
+                auto electric_field = std::make_shared<Electric_field>(engine, get_position() + direction*offset_mod, Vector2f(0.34, 0.3), 1, 10000);
                 engine.create_entity(electric_field);
                 electric_fields.push_back(electric_field);
 
@@ -164,6 +185,28 @@ public:
             {
                 this->destroy_electric_fields(engine);
             });
+        }
+        else if (event == EngineIO::InputEvent::ALT)
+        {
+            std::unique_lock lock(mtx_electric_fields);
+
+            for (auto& electric_field : electric_fields)
+            {
+                electric_field->set_charge(10);
+            }
+        }
+    }
+
+    void on_event_up(Engine& engine, EngineIO::InputEvent event) override
+    {
+        if (event == EngineIO::InputEvent::ALT)
+        {
+            std::unique_lock lock(mtx_electric_fields);
+
+            for (auto& electric_field : electric_fields)
+            {
+                electric_field->set_charge(1);
+            }
         }
     }
 

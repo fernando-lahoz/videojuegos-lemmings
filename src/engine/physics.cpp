@@ -142,17 +142,17 @@ void Physics_engine::add_entity(EntityPtr entity)
         charge_emitters.push_back(entity);
 }
 
-void electric_force(Engine &engine, EntityPtr emitter, EntityPtr aabb)
+void Physics_engine::electric_force(Engine &engine, EntityPtr emitter, EntityPtr other) const
 {
     // Force vector
-    Vector2f force_vector = (aabb->centroid() - emitter->centroid());
+    Vector2f force_vector = (other->centroid() - emitter->centroid());
 
     // Force direction
     Vector2f force_direction = normalize(force_vector);
     
 
     Float charge1 = emitter->get_charge();
-    Float charge2 = aabb->get_charge();
+    Float charge2 = other->get_charge();
     
     Float force_length = force_vector.length();
     Float force_length_squared = force_vector.length_squared();
@@ -161,11 +161,13 @@ void electric_force(Engine &engine, EntityPtr emitter, EntityPtr aabb)
     Float force_magnitude = charge1 * charge2 
             / force_length_squared;
 
-    //std::cout << "Electric force on " << aabb->get_class() << ": " << force_direction*force_magnitude << std::endl;
+    force_magnitude = std::min(force_magnitude, max_electric_force);
+
+    //std::cout << "Electric force on " << other->get_class() << ": " << force_direction*force_magnitude << std::endl;
 
     // Apply force
-    aabb->apply_force(force_direction * force_magnitude);
-    emitter->on_electric_field_interaction(engine, aabb, 
+    other->apply_force(force_direction * force_magnitude);
+    emitter->on_electric_field_interaction(engine, other, 
             force_length, force_length_squared, 
             engine.get_delta_time());
 }
@@ -288,7 +290,6 @@ void handle_collision(
 
         if (normal.length_squared() > 0)
         {
-            std::cout << "Normal: " << normal << std::endl;
             collision_pixel += pixel;
             collision_normal += normal;
             n_collisions++;

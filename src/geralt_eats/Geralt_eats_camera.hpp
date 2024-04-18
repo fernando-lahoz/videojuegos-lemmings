@@ -29,7 +29,6 @@ public:
         Bound2f character = main_character->bound2f();
         Bound2f l_character = world_to_local(character);
 
-        std::cout << "l_character: " << l_character << std::endl;
         Vector2f offset = Vector2f(0, 0);
 
         // If the character is outside the margin, 

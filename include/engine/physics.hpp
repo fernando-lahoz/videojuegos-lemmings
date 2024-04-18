@@ -21,6 +21,8 @@ class Physics_engine
     size_t n_alpha_to_delete = 0;
     size_t n_charge_emitters_to_delete = 0;
 
+    Float max_electric_force = 1000;
+
 
     void update_physics(Engine& engine);
     void update_camera_positions(Engine& engine);
@@ -29,6 +31,8 @@ class Physics_engine
     void pre_physics(Engine& engine);
     void post_physics(Engine& engine);
     void update_entities_state(Engine &engine);
+
+    void electric_force(Engine&, EntityPtr emitter, EntityPtr other) const;
 
     void friction_collision(
         Float mass1, Float mass2,
