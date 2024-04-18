@@ -26,6 +26,7 @@ std::vector<EntityPtr> Trigger::get_asociated_entities() const
 void Trigger::on_collision([[maybe_unused]]Engine& engine, 
         [[maybe_unused]]EntityPtr other)
 {
+    std::cout<< "trigger colisionado" << std::endl;
     trigger_collision_event(engine, other);
 }
 

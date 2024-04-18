@@ -39,7 +39,7 @@ class Lemming : public Rigid_body
 
   int direction = 1; // Comienza moviéndose hacia la derecha
 
-  //Este booleano es para que solo se ejecute una vez el sonido de muerte
+  // Este booleano es para que solo se ejecute una vez el sonido de muerte
   bool play_death_sound = true;
 
   // Este booleano indica si un lemming es marcado para explotar
@@ -189,7 +189,7 @@ class Lemming : public Rigid_body
 
   void go_mine()
   {
-    if(state != Utils::MINING)//Cambia de estado a minar
+    if (state != Utils::MINING) // Cambia de estado a minar
     {
       change_state_mine = true;
       do_action_in_frame = false;
@@ -199,19 +199,20 @@ class Lemming : public Rigid_body
 
     state = Utils::MINING;
     type = Utils::LEMMING_TYPE[Utils::MINING];
-    //std::cout << "GO MINING: " << current_frame << std::endl;
-    // std::cout << "GO MINING\n";
+    // std::cout << "GO MINING: " << current_frame << std::endl;
+    //  std::cout << "GO MINING\n";
   }
 
   void go_escape()
   {
 
-    //Hacemos que suene el yipee
-    if(play_death_sound){
+    // Hacemos que suene el yipee
+    if (play_death_sound)
+    {
       engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::YIPEE_SOUND));
       play_death_sound = false;
     }
-    
+
     state = Utils::ESCAPING;
     type = Utils::LEMMING_TYPE[Utils::ESCAPING];
     // std::cout << "GO MINING\n";
@@ -222,12 +223,13 @@ class Lemming : public Rigid_body
     state = Utils::DROWNING;
     type = Utils::LEMMING_TYPE[Utils::DROWNING];
 
-    //Hacemos que suene el chapuzon que se dan
-    if(play_death_sound){
+    // Hacemos que suene el chapuzon que se dan
+    if (play_death_sound)
+    {
       engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SPLASH_SOUND));
       play_death_sound = false;
     }
-    
+
     // std::cout << "GO MINING\n";
   }
 
@@ -236,7 +238,7 @@ class Lemming : public Rigid_body
     state = Utils::CRASHING;
     type = Utils::LEMMING_TYPE[Utils::CRASHING];
 
-    //Hacemos que suene como se estrellan contra el suelo
+    // Hacemos que suene como se estrellan contra el suelo
     engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SPLAT_SOUND));
 
     // std::cout << "GO MINING\n";
@@ -510,27 +512,27 @@ public:
 
         engine.intersect_ray(ray_down, get_entity_id(),
                              force_entity_names, hit_offset_down, hit_entity_down);
-        bool cond = true;
-        if (hit_entity_down && hit_entity_down->get_entity_name() == "BRICKS")
+        // bool cond = true;
+        // if (hit_entity_down && hit_entity_down->get_entity_name() == "BRICKS")
+        // {
+        //   std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(hit_entity_down);
+        //   cond = bricks_ptr->get_direction() == direction;
+        // }
+        // if (cond)
+        // {
+        if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
         {
-          std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(hit_entity_down);
-          cond = bricks_ptr->get_direction() == direction;
-        }
-        if (cond)
-        {
-          if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
+          if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 80)
           {
-            if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 80)
-            {
-              // std::cout << "sube baja altura\n";
-              position.y += (hit_offset_down - diagonal.y / 4);
-            }
-          }
-          else if (hit_offset_down > diagonal.y / 2)
-          {
-            on_ground = false;
+            // std::cout << "sube baja altura\n";
+            position.y += (hit_offset_down - diagonal.y / 4);
           }
         }
+        else if (hit_offset_down > diagonal.y / 2)
+        {
+          on_ground = false;
+        }
+        // }
       }
 
       if (!Utils::STATE_IS_LOOP_ANIMATION[get_state()] && current_frame == 0)
@@ -614,7 +616,7 @@ public:
 
           destroy_lemming(engine);
 
-          //Hacemos que suene el pop al petar el lemming
+          // Hacemos que suene el pop al petar el lemming
           engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::EXPLODE_SOUND));
           return;
         }
@@ -625,7 +627,7 @@ public:
         }
         if (is_drowning())
         {
-          //Hacemos que suene como se ahogan
+          // Hacemos que suene como se ahogan
           engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::GLUG_SOUND));
 
           destroy_lemming(engine);
@@ -983,46 +985,52 @@ public:
     {
       if (current_frame == 7)
       {
-          if (!do_action_in_frame && !climb_now) { 
-            //position.y -= 0;
-            current_frame = -1;
-            on_ground = false;
-          }
+        if (!do_action_in_frame && !climb_now)
+        {
+          // position.y -= 0;
+          current_frame = -1;
+          on_ground = false;
+        }
       }
       else if (current_frame == 0)
       {
-        if (!do_action_in_frame && !climb_now) { position.y -= 3; }
+        if (!do_action_in_frame && !climb_now)
+        {
+          position.y -= 3;
+        }
       }
-      else{ do_action_in_frame = false;}
+      else
+      {
+        do_action_in_frame = false;
+      }
       return;
     }
 
-
     if (is_mining())
     {
-      if(change_state_mine)
+      if (change_state_mine)
       {
         current_frame = 0;
       }
 
       if (current_frame == 0)
       {
-        if(change_state_mine)
+        if (change_state_mine)
         {
           do_action_in_frame = false;
         }
 
         if (!do_action_in_frame)
         { // Hay que mover la posición 0 a la altura de la 23 para que no se teletransporte
-          if(!change_state_mine)
-          {// Actualizamos la posivion del Lemming
+          if (!change_state_mine)
+          {                                // Actualizamos la posivion del Lemming
             position.x += direction * 8.0; // Dirección indica el sentido de avance del Lemming
             position.y += 5.0;
           }
           do_action_in_frame = true;
         }
 
-        if(change_state_mine)
+        if (change_state_mine)
         {
           change_state_mine = false;
         }
@@ -1034,8 +1042,8 @@ public:
 
           Bound2f box;
           auto minC = 0.65;
-          box.pMin = local_to_world(Point2f(direction > 0 ? minC : 1-minC, 0.50));
-          box.pMax = box.pMin + Vector2f(7*direction, -9.0);//Extremo del vector para señalar tamaño de caja
+          box.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.50));
+          box.pMax = box.pMin + Vector2f(7 * direction, -9.0); // Extremo del vector para señalar tamaño de caja
 
           auto &entities = engine.get_entities();
 
@@ -1058,18 +1066,18 @@ public:
       {
         if (!do_action_in_frame)
         {
-          Bound2f box;//Cubo de arriba a la derecha
+          Bound2f box; // Cubo de arriba a la derecha
           auto minC = 0.65;
-          box.pMin = local_to_world(Point2f(direction > 0 ? minC : 1-minC, 0.75));
-          box.pMax = box.pMin + Vector2f(11*direction, -15);//Extremo del vector para señalar tamaño de caja
+          box.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.75));
+          box.pMax = box.pMin + Vector2f(11 * direction, -15); // Extremo del vector para señalar tamaño de caja
 
-          Bound2f box2;//Cubo de abajo a la derecha
-          box2.pMin = local_to_world(Point2f(direction > 0 ? minC : 1-minC, 0.80));
-          box2.pMax = box2.pMin + Vector2f(8*direction, -10);//Extremo del vector para señalar tamaño de caja
+          Bound2f box2; // Cubo de abajo a la derecha
+          box2.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.80));
+          box2.pMax = box2.pMin + Vector2f(8 * direction, -10); // Extremo del vector para señalar tamaño de caja
 
-          Bound2f box3;//Cubo central a la derecha
-          box3.pMin = local_to_world(Point2f(direction > 0 ? minC : 1-minC, 0.65));
-          box3.pMax = box3.pMin + Vector2f(13*direction, -7);//Extremo del vector para señalar tamaño de caja
+          Bound2f box3; // Cubo central a la derecha
+          box3.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.65));
+          box3.pMax = box3.pMin + Vector2f(13 * direction, -7); // Extremo del vector para señalar tamaño de caja
 
           Bound2f box4; // Destruimos un cubo en la posición del lemming
           position.x -= direction * 9.0;
@@ -1086,8 +1094,8 @@ public:
           position.y -= 2.5;
 
           minC = 0.6;
-          box5.pMin = local_to_world(Point2f(direction > 0 ? minC : 1-minC, 0.80));
-          box5.pMax = box5.pMin + Vector2f(14*direction, -17);
+          box5.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.80));
+          box5.pMax = box5.pMin + Vector2f(14 * direction, -17);
 
           position.x += direction * 4.0; // Volvemos a poner el Lemming donde estaba
           position.y += 2.5;
@@ -1124,8 +1132,8 @@ public:
         set_speed(speed);
         do_action_in_frame = false;
       }
-      //Comprobamos que haya suelo
-      Ray ray_down = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1-0.65, 0.5)), Vector2f(0, 1));
+      // Comprobamos que haya suelo
+      Ray ray_down = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0.5)), Vector2f(0, 1));
       Float hit_offset_down;
       EntityPtr hit_entity_down;
 
@@ -1140,18 +1148,17 @@ public:
         on_ground = false;
       }
 
-      //Comprobamos si hay suelo en diagonal
-      Ray ray_dia = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1-0.65, 0.5)), Vector2f(direction*1, 1));
+      // Comprobamos si hay suelo en diagonal
+      Ray ray_dia = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0.5)), Vector2f(direction * 1, 1));
 
       engine.intersect_ray(ray_dia, get_entity_id(),
                            force_entity_names, hit_offset_down, hit_entity_down);
 
-      if (hit_offset_down > (diagonal.y/1.8)) // Detectamos que no hay suelo
+      if (hit_offset_down > (diagonal.y / 1.8)) // Detectamos que no hay suelo
       {
         remove_skill(Utils::Lemming_Skills::MINE);
         on_ground = false;
       }
-
 
       return;
     }
@@ -1178,10 +1185,12 @@ public:
         if ((check_collision_left(other) && direction == -1) || (check_collision_right(other) && direction == 1))
         {
 
-          if (skills & Utils::CLIMB){
+          if (skills & Utils::CLIMB)
+          {
             go_climb();
           }
-          else{
+          else
+          {
             position.x -= 3 * direction;
             direction *= -1;
           }
@@ -1193,19 +1202,25 @@ public:
         // Se aleja virtualmente el Lemming de la pared para que no interfiera
         // con la comprobación de si hay techo. Luego se revierte.
         position.x -= 2 * direction;
-        if(check_collision_up(other)){
-            std::cout << "Techo\n";
-            go_fall();
-            //position.x += 2 * direction;
-            direction *= -1;
+        if (check_collision_up(other))
+        {
+          std::cout << "Techo\n";
+          go_fall();
+          // position.x += 2 * direction;
+          direction *= -1;
         }
-        else {
+        else
+        {
           position.x += 2 * direction;
           if ((!check_collision_left(other) && direction == -1) || (!check_collision_right(other) && direction == 1))
           {
             std::cout << "No hay pared\n";
-            if (!climb_now){ climb_now = true;}
-            else if (current_frame == 15){
+            if (!climb_now)
+            {
+              climb_now = true;
+            }
+            else if (current_frame == 15)
+            {
               climb_now = false;
               go_walk();
             }
@@ -1238,8 +1253,9 @@ public:
       }
     }
 
-    if (other->get_entity_name() == "Gate hitbox")
+    if (other->get_entity_name() == "GATE TRIGGER")
     {
+      // std::cout << "Gate hitbox" << std::endl;
       on_ground = true;
       go_escape();
       speed.x = 0;
@@ -1291,21 +1307,24 @@ public:
     if (is_falling() || is_floating())
     {
       distance_fall = distance_fall + (position.y - last_y);
-      if (is_floating()){
-        if (current_frame == 10){
-            current_frame = 4;
-          }
+      if (is_floating())
+      {
+        if (current_frame == 10)
+        {
+          current_frame = 4;
+        }
       }
 
-      //std::cout << "Posicion de Lemming: " << position.y << std::endl;
+      // std::cout << "Posicion de Lemming: " << position.y << std::endl;
 
-      //Si se salen fuera del mapa
-      if(position.y > 320.0f){
+      // Si se salen fuera del mapa
+      if (position.y > 320.0f)
+      {
 
-        //Obten el sonido de un Lemming gritando por su vida
+        // Obten el sonido de un Lemming gritando por su vida
         engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::DIE_SOUND));
 
-        //Destruye el lemming
+        // Destruye el lemming
         destroy_lemming(engine);
         return;
       }
@@ -1377,7 +1396,6 @@ public:
     // Evita que se puedan seleccionar desde el minimapa
     if (engine.get_camera_in_which_hovered(*this) != game_info.get_game_camera_id())
       return;
-    
 
     if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && !game_info.get_level_is_paused())
     {
@@ -1389,7 +1407,7 @@ public:
         bool res = add_skill(Utils::HUD_TO_SKILL[game_info.get_option_selected()]);
         if (res)
         {
-          //Realizamos el sonido de presion sobre el lemming
+          // Realizamos el sonido de presion sobre el lemming
           engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::MOUSE_PRESS_SOUND));
 
           game_info.action_done();

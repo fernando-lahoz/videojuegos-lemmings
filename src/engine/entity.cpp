@@ -2,13 +2,12 @@
 #include "engine/engine.hpp"
 #include "engine/physics.hpp"
 
-Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture, 
-            [[maybe_unused]]Engine &engine,
-            std::string_view _entity_name, 
-            std::string_view _class_name)
-    :
-    speed(Vector2f(0, 0)),
-    max_speed(Vector2f(INFINITY, INFINITY))
+Entity::Entity(Point3f position, Vector2f diagonal, const Texture &texture,
+               [[maybe_unused]] Engine &engine,
+               std::string_view _entity_name,
+               std::string_view _class_name)
+    : speed(Vector2f(0, 0)),
+      max_speed(Vector2f(INFINITY, INFINITY))
 {
     this->position = position;
     this->diagonal = diagonal;
@@ -22,7 +21,7 @@ Entity::Entity(Point3f position, Vector2f diagonal, const Texture& texture,
     up_point = default_up_point();
     down_point = default_down_point();
 
-    //engine.subscribe_to_events(this);
+    // engine.subscribe_to_events(this);
 }
 
 Entity::Collision_type Entity::get_collision_type() const
@@ -47,7 +46,7 @@ void Entity::change_collision_type(Engine &engine, Collision_type new_type)
 Point2f Entity::world_to_local(Point2f w_p) const
 {
     w_p -= get_position2D();
-    
+
     auto d = get_diagonal();
     w_p.x = w_p.x / d.x;
     w_p.y = w_p.y / d.y;
@@ -222,7 +221,6 @@ bool Entity::colliding_right() const
     return _collides_right;
 }
 
-
 bool Entity::collides(std::shared_ptr<Entity> other, Bound2f &collision_point) const
 {
     if (check_collision_right(other))
@@ -257,7 +255,7 @@ bool Entity::check_collision_right(std::shared_ptr<Entity> other) const
         return false;
 
     return Physics_engine::alpha_box_collision(*other.get(), p);
-} 
+}
 
 bool Entity::check_collision_left(std::shared_ptr<Entity> other) const
 {
@@ -285,7 +283,7 @@ bool Entity::check_collision_down(std::shared_ptr<Entity> other) const
 
     if (!p.overlaps(other->bound2f()))
         return false;
-        
+
     return Physics_engine::alpha_box_collision(*other.get(), p);
 }
 
@@ -311,37 +309,35 @@ void Entity::override_down_point(Bound2f new_p)
 
 Bound2f Entity::default_right_point() const
 {
-    Point2f l_p = Point2f (0.8, 0.2);
-    Point2f r_p = Point2f (1, 0.8);
+    Point2f l_p = Point2f(0.8, 0.2);
+    Point2f r_p = Point2f(1, 0.8);
 
     return Bound2f(l_p, r_p);
-
 }
 
 Bound2f Entity::default_left_point() const
 {
-    Point2f l_p = Point2f (0, 0.2);
-    Point2f r_p = Point2f (0.2, 0.8);
+    Point2f l_p = Point2f(0, 0.2);
+    Point2f r_p = Point2f(0.2, 0.8);
 
     return Bound2f(l_p, r_p);
 }
 
 Bound2f Entity::default_up_point() const
 {
-    Point2f l_p = Point2f (0.2, 0);
-    Point2f r_p = Point2f (0.8, 0.2);
+    Point2f l_p = Point2f(0.2, 0);
+    Point2f r_p = Point2f(0.8, 0.2);
 
     return Bound2f(l_p, r_p);
 }
 
 Bound2f Entity::default_down_point() const
 {
-    Point2f l_p = Point2f (0.2, 0.8);
-    Point2f r_p = Point2f (0.8, 1);
+    Point2f l_p = Point2f(0.2, 0.8);
+    Point2f r_p = Point2f(0.8, 1);
 
     return Bound2f(l_p, r_p);
 }
-
 
 bool Entity::collides(std::shared_ptr<Entity> other) const
 {
@@ -350,6 +346,7 @@ bool Entity::collides(std::shared_ptr<Entity> other) const
 
     if (!alpha_collision)
     {
+        std::cout << this->get_entity_name() << " - " << bound2f().overlaps(other->bound2f()) << std::endl;
         return bound2f().overlaps(other->bound2f());
     }
 
@@ -390,22 +387,22 @@ bool Entity::destroy_box_alpha(Engine &engine, Bound2f box)
     return active_texture.set_alpha_box(world_to_local(box), 0, engine.get_renderer());
 }
 
-bool Entity::contains_the_mouse(Engine& engine)
+bool Entity::contains_the_mouse(Engine &engine)
 {
     return engine.is_entity_hovered(*this);
 }
 
-void Entity::on_event_down(Engine&, EngineIO::InputEvent)
+void Entity::on_event_down(Engine &, EngineIO::InputEvent)
 {
     // Do nothing by default
 }
 
-void Entity::on_event_up(Engine&, EngineIO::InputEvent)
+void Entity::on_event_up(Engine &, EngineIO::InputEvent)
 {
     // Do nothing by default
 }
 
-void Entity::pre_physics(Engine&)
+void Entity::pre_physics(Engine &)
 {
     _collides_up = false;
     _collides_down = false;
@@ -413,12 +410,12 @@ void Entity::pre_physics(Engine&)
     _collides_right = false;
 }
 
-void Entity::update_state(Engine&)
+void Entity::update_state(Engine &)
 {
     // Do nothing by default
 }
 
-void Entity::on_collision(Engine&, std::shared_ptr<Entity> other)
+void Entity::on_collision(Engine &, std::shared_ptr<Entity> other)
 {
     if (check_collision_down(other))
         _collides_down = true;
@@ -433,24 +430,24 @@ void Entity::on_collision(Engine&, std::shared_ptr<Entity> other)
         _collides_right = true;
 }
 
-void Entity::post_physics(Engine&)
+void Entity::post_physics(Engine &)
 {
     // Do nothing by default
 }
 
 // Called right after the entity has been inserted
 //  into the engine runtime
-void Entity::on_creation(Engine&)
+void Entity::on_creation(Engine &)
 {
     // Do nothing by default
 }
 
-void Entity::on_trigger_collision_event(Engine&, Entity*, EntityPtr)
+void Entity::on_trigger_collision_event(Engine &, Entity *, EntityPtr)
 {
     // Do nothing by default
 }
 
-void Entity::on_trigger_IO_event(Engine&, Entity*, EngineIO::InputEvent)
+void Entity::on_trigger_IO_event(Engine &, Entity *, EngineIO::InputEvent)
 {
     // Do nothing by default
 }
