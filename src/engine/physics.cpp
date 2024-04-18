@@ -52,10 +52,8 @@ bool Physics_engine::alpha_box_collision(const Entity& entity, const Bound2f& bo
     Bound2f l_box = entity.world_to_local(box);
     Texture active_texture = entity.get_active_texture();
 
-    if (!entity.is_alpha_collision()
-        && entity.bound2f().overlaps(box))
-    {
-        return true;
+    if (!entity.is_alpha_collision()) {
+        return entity.bound2f().overlaps(box);
     }
 
     l_box = Bound2f(clamp(l_box.pMin, Point2f(0, 0), Point2f(1, 1)),
