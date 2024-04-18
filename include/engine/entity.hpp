@@ -94,6 +94,8 @@ public:
     void set_position2D(Point2f p);
     void set_position3D(Point3f p);
 
+    bool is_alpha_collision() const { return alpha_collision; }
+
 
     void set_gravity(Float new_gravity)
     {
