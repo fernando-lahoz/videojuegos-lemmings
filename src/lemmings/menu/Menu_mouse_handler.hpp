@@ -60,10 +60,10 @@ public:
       }
       if (menu_type == Utils::MENU_TYPE::LEVEL_SELECTOR && !game_info.get_is_arrow_hovered())
       {
-        game_info.set_do_transition(true);
-        game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level_selected(), game_info.get_difficulty_selected());
-        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        return;
+        // game_info.set_do_transition(true);
+        // game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level_selected(), game_info.get_difficulty_selected());
+        // game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        // return;
       }
       if (menu_type == Utils::MENU_TYPE::INTRO)
       {
@@ -107,34 +107,11 @@ public:
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
-      if (menu_type == Utils::MENU_TYPE::LEVEL_SELECTOR)
-      {
-        game_info.set_build_menu(Utils::MENU_TYPE::TITLE);
-        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        game_info.set_do_transition(true);
-        return;
-      }
       if (menu_type == Utils::MENU_TYPE::INTRO)
       {
         game_info.set_do_transition(true);
         game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        return;
-      }
-      if (menu_type == Utils::MENU_TYPE::CONFIG)
-      {
-        game_info.set_build_menu(Utils::MENU_TYPE::TITLE);
-        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        game_info.set_do_transition(true);
-        game_info.set_is_button_conf(false); // No hay boton seleccionado en menu configuración
-        return;
-      }
-      if (menu_type == Utils::MENU_TYPE::IA)
-      {
-        game_info.set_build_menu(Utils::MENU_TYPE::TITLE);
-        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        game_info.set_do_transition(true);
-        game_info.set_is_button_conf(false); // No hay boton seleccionado en menu configuración
         return;
       }
     }

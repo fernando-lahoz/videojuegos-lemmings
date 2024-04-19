@@ -122,5 +122,27 @@ public:
       engine.get_game().create_entity(text);
       return;
     }
+    if (type == 5 && last_text != game_info.get_selected_level_best_perc())
+    {
+      last_text = game_info.get_selected_level_best_perc();
+      text->destroy();
+
+      text = std::make_shared<Text_displayer>(position, letter_size, game_info, justified, font_texture,
+                                              texture_letter_size, map, last_text, engine,
+                                              "TEXT");
+      engine.get_game().create_entity(text);
+      return;
+    }
+    if (type == 6 && last_text != game_info.get_selected_level_best_time())
+    {
+      last_text = game_info.get_selected_level_best_time();
+      text->destroy();
+
+      text = std::make_shared<Text_displayer>(position, letter_size, game_info, justified, font_texture,
+                                              texture_letter_size, map, last_text, engine,
+                                              "TEXT");
+      engine.get_game().create_entity(text);
+      return;
+    }
   }
 };

@@ -18,15 +18,14 @@ private:
 
 public:
 
-    void load(const std::string& file)
+    void load(const std::string& file, int volume)
     {
         
             std::cout << "OA" << std::endl;
         auto raw = Mix_LoadMUS(file.c_str());
-        if (raw == nullptr) {
+        if (raw == nullptr)
             throw error::sdl_exception(ERROR_CONTEXT);
-        }
-            
+        Mix_VolumeMusic(volume);
         music = std::shared_ptr<Mix_Music>{raw, Mix_FreeMusic};
     }
 
@@ -45,11 +44,12 @@ private:
     std::shared_ptr<Mix_Chunk> sound {nullptr, Mix_FreeChunk};
 
 public:
-    void load(const std::string& file)
+    void load(const std::string& file, int volume)
     {
         auto raw = Mix_LoadWAV(file.c_str());
         if (!raw)
             throw error::sdl_exception(ERROR_CONTEXT);
+        Mix_VolumeChunk(raw, volume);
         sound = std::shared_ptr<Mix_Chunk>{raw, Mix_FreeChunk};
     }
 
@@ -88,7 +88,7 @@ public:
         }
     }
 
-    inline Music load_music(const std::string& file)
+    inline Music load_music(const std::string& file, int volume)
     {
         auto it = music_cache.find(file);
         if (it != music_cache.end()) {
@@ -96,14 +96,14 @@ public:
         }
         else {
             Music music;
-            music.load(file);
+            music.load(file, volume);
             music_cache[file] = music;
 
             return music;
         }
     }
 
-    inline Sound load_sound(const std::string& file)
+    inline Sound load_sound(const std::string& file, int volume)
     {
         auto it = sound_cache.find(file);
         if (it != sound_cache.end()) {
@@ -111,7 +111,7 @@ public:
         }
         else {
             Sound sound;
-            sound.load(file);
+            sound.load(file, volume);
             sound_cache[file] = sound;
 
             return sound;

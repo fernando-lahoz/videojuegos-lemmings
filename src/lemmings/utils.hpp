@@ -392,7 +392,9 @@ namespace Utils
 		SPAWN_UP = 22,
 		SPAWN_DOWN = 23,
     MAP_LEFT = 24,
-    MAP_RIGHT = 25
+    MAP_RIGHT = 25,
+    BACK = 26,
+    PLAY = 27
   };
   enum ACTIONS
   {

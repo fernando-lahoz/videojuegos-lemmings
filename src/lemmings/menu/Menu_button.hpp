@@ -77,6 +77,14 @@ private:
       {
         n_file = "assets/menu/menu_conf_save.png";
       }
+      else if (_type == Utils::BACK)
+      {
+        n_file = "assets/menu/back_button.png";
+      }
+      else if (_type == Utils::PLAY)
+      {
+        n_file = "assets/menu/play_button.png";
+      }
     }
     return n_file;
   }
@@ -99,7 +107,21 @@ public:
 
   void button_handler(int button_type)
   {
-    if (button_type == Utils::PLAYER_SOLO)
+    if (button_type == Utils::BACK)
+    {
+      game_info.menu_back();
+      game_info.set_build_menu(Utils::MENU_TYPE::TITLE);
+      game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+      game_info.set_do_transition(true);
+      game_info.set_is_button_conf(false);
+    }
+    else if (button_type == Utils::PLAY)
+    {
+      game_info.set_do_transition(true);
+      game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level_selected(), game_info.get_difficulty_selected());
+      game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+    }
+    else if (button_type == Utils::PLAYER_SOLO)
     {
       game_info.set_do_transition(true);
       game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_SELECTOR, 0, 0);
@@ -111,10 +133,10 @@ public:
       game_info.set_build_menu(Utils::MENU_TYPE::IA, 0, 0);
       game_info.set_do_action(Utils::ACTIONS::GO_MENU);
     }
-    else if (button_type == Utils::SOUND_EFFECTS)
+    /*else if (button_type == Utils::SOUND_EFFECTS)
     {
       game_info.set_sound_effects(!game_info.get_sound_effects());
-    }
+    }*/
     else if (button_type == Utils::EXIT)
     {
       engine.quit();
@@ -155,11 +177,15 @@ public:
       EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS];
       game_info.get_conf_buttons(conf_buttons);
       KeyBindings().setKeyBindings(conf_buttons); // Modificamos el fichero
-
       keyboard.set_key_bindings(); // Actualizamos botones de partida
-
       // Actualiza teclas de movimiento de mapa en partida
       dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
+
+      std::cout << game_info.get_conf_var(0) << std::endl;
+      std::cout << game_info.get_conf_var(1) << std::endl;
+      game_info.set_volume_aspect(game_info.get_conf_var(0), game_info.get_conf_var(1), game_info.get_conf_var(2));
+
+      game_info.start_sound_assets(engine);
       std::cout << "CONFIGURACION GUARDADA" << std::endl;
     }
   }

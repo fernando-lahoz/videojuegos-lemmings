@@ -6,6 +6,8 @@
 #include "engine/entity.hpp"
 #include "math/math.hpp"
 #include "memory/keyBindings.hpp"
+#include "memory/levelsInfo.hpp"
+#include "memory/volumeAndAspect.hpp"
 
 class Game_info
 {
@@ -37,6 +39,9 @@ private:
   bool level_is_paused = false;
   bool all_die = false;
 
+  // level info
+  LevelsInfo levelsInfo;
+
   // camera settings
   bool do_restart_camera = false;
   bool is_camera_stopped = false;
@@ -51,6 +56,7 @@ private:
   bool is_button_conf = false; //indica si está pulsado un botón del menu de configuración
   int last_button = -1; //indica el ultimo boton pulsado en el menu de configuración
   EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS]; //Guarda la configuración de teclas del fichero para modificarlo
+  uint8_t conf_values[3];
 
   // cursor
   Texture cursor_txt;
@@ -75,7 +81,7 @@ private:
   bool let_lemmings_spawn = false;
 
   // key bindings
-
+  
 
   // sound effects
   Sound SOUND_EFFECT[19];
@@ -84,6 +90,9 @@ private:
   bool play_letsgo_sound = false;
   bool play_music = false;
   bool is_door_open = false;
+
+  // volume
+  VolumeAndAspect volumeAndAspect;
 
 public:
 
@@ -110,26 +119,26 @@ public:
   };
 
   // Inicializa los efectos de sonido
-  void start_sound_assets(Engine& engine){
-    SOUND_EFFECT[CHAIN_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/chain.wav");
-    SOUND_EFFECT[CHANGE_OP_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/changeop.wav");
-    SOUND_EFFECT[CHINK_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/chink.wav");
-    SOUND_EFFECT[DIE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/die.wav");
-    SOUND_EFFECT[DOOR_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/door.wav");
-    SOUND_EFFECT[ELECTRIC_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/electric.wav");
-    SOUND_EFFECT[EXPLODE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/explode.wav");
-    SOUND_EFFECT[FIRE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/fire.wav");
-    SOUND_EFFECT[GLUG_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/glug.wav");
-    SOUND_EFFECT[LETS_GO_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/letsgo.wav");
-    SOUND_EFFECT[MOUSE_PRESS_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/mousepre.wav");
-    SOUND_EFFECT[OH_NO_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/ohno.wav");
-    SOUND_EFFECT[SPLASH_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/splash.wav");
-    SOUND_EFFECT[SPLAT_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/splat.wav");
-    SOUND_EFFECT[TENTON_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/tenton.wav");
-    SOUND_EFFECT[THUD_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/thud.wav");
-    SOUND_EFFECT[THUNK_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/thunk.wav");
-    SOUND_EFFECT[TING_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/ting.wav");
-    SOUND_EFFECT[YIPEE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/yipee.wav");
+  void start_sound_assets(Engine& engine) {
+    SOUND_EFFECT[CHAIN_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/chain.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[CHANGE_OP_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/changeop.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[CHINK_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/chink.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[DIE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/die.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[DOOR_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/door.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[ELECTRIC_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/electric.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[EXPLODE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/explode.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[FIRE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/fire.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[GLUG_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/glug.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[LETS_GO_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/letsgo.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[MOUSE_PRESS_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/mousepre.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[OH_NO_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/ohno.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[SPLASH_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/splash.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[SPLAT_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/splat.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[TENTON_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/tenton.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[THUD_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/thud.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[THUNK_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/thunk.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[TING_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/ting.wav", volumeAndAspect.getEffectsVol());
+    SOUND_EFFECT[YIPEE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/yipee.wav", volumeAndAspect.getEffectsVol());
   }
 
   // Devuelve el sonido asociado al asset correspondiente
@@ -425,6 +434,9 @@ public:
 
   EngineIO::InputEvent get_conf_buttons(int idx) { return conf_buttons[idx]; }
 
+  uint8_t get_conf_var(uint8_t idx) { return conf_values[idx]; }
+  void set_conf_var(uint8_t idx, uint8_t value) { conf_values[idx] = value; }
+
   bool get_let_lemmings_spawn()
   {
     return let_lemmings_spawn;
@@ -472,4 +484,54 @@ public:
   {
     is_door_open = value;
   }
+
+  void menu_back()
+  {
+    set_build_menu(Utils::MENU_TYPE::TITLE);
+    set_do_action(Utils::ACTIONS::GO_MENU);
+    set_do_transition(true);
+    if (build_menu == Utils::MENU_TYPE::CONFIG)
+    {
+      set_is_button_conf(false);
+    }
+  }
+
+  std::string get_selected_level_best_time()
+  {
+    int m = levelsInfo.getMin(difficulty_selected, level_selected-1);
+    int s = levelsInfo.getSec(difficulty_selected, level_selected-1);
+    return std::to_string(m) + (s < 10 ? "-0" : "-") + std::to_string(s);
+  }
+
+  std::string get_selected_level_best_perc()
+  {
+    return std::to_string(levelsInfo.getPerc(difficulty_selected, level_selected)) + "%";
+  }
+
+  void manage_level_results()
+  {
+    int needed = Utils::LEVEL_SAVE_LEMMINGS[difficulty][level] * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level];
+    int rescued = get_percen_lemmings_in();
+    int limit_time = Utils::LEVEL_TIME_LIMIT[difficulty][level];
+    int left_time = get_actual_minutes_left()*60 + get_actual_seconds_left();
+    if (rescued >= needed && left_time > 0)
+    {
+      int game_time = limit_time - left_time;
+      LevelInfo wonLevel(true, game_time/60, game_time%60, rescued);
+      levelsInfo.setNewLevelInfo(difficulty, level, wonLevel);
+    }
+  }
+
+  void set_volume_aspect(uint8_t _music, uint8_t _effects, uint8_t _aspect)
+  {
+    volumeAndAspect.setMusicVol(_music);
+    volumeAndAspect.setEffectsVol(_effects);
+    volumeAndAspect.setAspect(_aspect);
+    volumeAndAspect.writeVolAspFile();
+  }
+
+  uint8_t get_music_volume() { return volumeAndAspect.getMusicVol(); }
+  uint8_t get_effects_volume() { return volumeAndAspect.getEffectsVol(); }
+  uint8_t get_aspect_ratio() { return volumeAndAspect.getAspect(); }
+
 };

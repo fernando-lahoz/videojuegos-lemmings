@@ -93,6 +93,7 @@ public:
           std::cout << "LEMMINGS OUT: " << game_info.get_n_lemmings_out() << std::endl;
           std::cout << "GAME OVER" << std::endl;
           game_info.set_do_transition(true);
+          game_info.manage_level_results();
           game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_OUTRO);
           game_info.set_do_action(Utils::ACTIONS::GO_MENU);
           // game_info.set_build_level(game_info.get_build_level() + 1);
@@ -170,7 +171,7 @@ public:
           }
         }();
         
-        mixer.play_music(mixer.load_music(music_file), true /*play on loop*/);
+        mixer.play_music(mixer.load_music(music_file, game_info.get_music_volume()), true /*play on loop*/);
       }
     }
   }
