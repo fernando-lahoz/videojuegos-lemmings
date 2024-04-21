@@ -38,7 +38,7 @@ public:
 
     // Entities are processed after physics 
     //  and before deleting old entities
-    void create_entity(EntityPtr entity);
+    virtual void create_entity(EntityPtr entity);
 
     void create_camera(std::shared_ptr<Camera2D> camera);
     void replace_main_camera(std::shared_ptr<Camera2D> camera);

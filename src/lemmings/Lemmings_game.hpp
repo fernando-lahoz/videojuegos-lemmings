@@ -15,6 +15,7 @@
 #include "lemmings/utils.hpp"
 #include "lemmings/screen/Screen_manager.hpp"
 #include "lemmings/keyboard/Keyboard_manager.hpp"
+#include "lemmings/AI_autoplay.cpp"
 
 // ASK: change _collides_up from bool to EntityPtr
 
@@ -35,6 +36,10 @@ private:
   Screen_manager screen;
   Keyboard_manager keyboard;
 
+  AI_autoplay ai;
+  std::vector<std::shared_ptr<Lemming>> lemmings;
+  EntityPtr map;
+
 public:
   Lemmings_game()
       : Game("Lemmings", /*INITIAL WINDOW SIZE*/ Vector2i{1280, 800}), screen(game_info, keyboard), keyboard(game_info)
@@ -47,6 +52,18 @@ public:
     auto ptr = std::make_shared<Static_camera>(Bound2f(Point2f(10000, 0), Point2f(10640, 400)), Bound2f(Point2f(0, 0), Point2f(640, 400)), 8);
 
     return std::dynamic_pointer_cast<Camera2D>(ptr);
+  }
+
+  void create_entity(EntityPtr entity) override
+  {
+    if (entity->get_entity_name() == "Lemming") {
+      lemmings.push_back(std::dynamic_pointer_cast<Lemming>(entity));
+    }
+    else if (entity->get_entity_name() == "MAP") {
+      map = entity;
+    }
+    
+    Game::create_entity(entity);
   }
 
   void on_game_startup(Engine &engine) override
@@ -91,6 +108,7 @@ public:
 
   void on_loop_start(Engine &engine) override
   {
+    ai.update_execution(engine, map, lemmings);
     // std::cout << engine.get_delta_time() << std::endl;
     screen.update_game(engine);
   }
