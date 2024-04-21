@@ -38,7 +38,7 @@ public:
   void update_animation(Engine &engine)
   {
 
-    float delta_time = engine.get_delta_time() * game_info.get_game_speed();
+    float delta_time = engine.get_delta_time();
     if (time_frame_wait > 0)
     {
       time_frame_wait -= delta_time;

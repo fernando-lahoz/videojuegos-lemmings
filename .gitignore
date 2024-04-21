@@ -18,3 +18,4 @@ Makefile
 CMakeFiles
 
 *.conf
+levelsInfo.txt
