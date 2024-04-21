@@ -434,7 +434,7 @@ public:
 
   EngineIO::InputEvent get_conf_buttons(int idx) { return conf_buttons[idx]; }
 
-  uint8_t get_conf_var(uint8_t idx) { return conf_values[idx]; }
+  uint8_t &get_conf_var(uint8_t idx) { return conf_values[idx]; }
   void set_conf_var(uint8_t idx, uint8_t value) { conf_values[idx] = value; }
 
   bool get_let_lemmings_spawn()
@@ -522,6 +522,13 @@ public:
     }
   }
 
+  void set_config_screen()
+  {
+    conf_values[0] = volumeAndAspect.getMusicVol();
+    conf_values[1] = volumeAndAspect.getEffectsVol();
+    conf_values[2] = volumeAndAspect.getAspect();
+  }
+
   void set_volume_aspect(uint8_t _music, uint8_t _effects, uint8_t _aspect)
   {
     volumeAndAspect.setMusicVol(_music);
@@ -533,5 +540,32 @@ public:
   uint8_t get_music_volume() { return volumeAndAspect.getMusicVol(); }
   uint8_t get_effects_volume() { return volumeAndAspect.getEffectsVol(); }
   uint8_t get_aspect_ratio() { return volumeAndAspect.getAspect(); }
+
+  void set_window_size(Engine &engine)
+  {
+    uint8_t aspect = volumeAndAspect.getAspect();
+    if (aspect == 3)
+    {
+      engine.set_fullscreen();
+    } else {
+      engine.set_windowmode();
+      switch (aspect)
+      {
+        case 0: engine.set_window_size(Vector2i{640, 400}); break;
+        case 1: engine.set_window_size(Vector2i{960, 600}); break;
+        case 2: engine.set_window_size(Vector2i{1280, 800}); break;
+      }
+    }
+  }
+
+  void reset_levels_info()
+  {
+    levelsInfo.setDefaultLevelsInfo();
+  }
+
+  void reset_volume_aspect_info()
+  {
+    volumeAndAspect.setDefaultVolAsp();
+  }
 
 };

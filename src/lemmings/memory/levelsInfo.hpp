@@ -43,15 +43,15 @@ class LevelsInfo {
 public:
 
 	LevelsInfo() {
-		readLevelsInfoFile(won, levels);
+		readLevelsInfoFile();
 	}
 
-	void readLevelsInfoFile(uint8_t won[NUMBER_OF_MODS], LevelInfo levels[NUMBER_OF_MODS][LEVELS_PER_MOD]) {
+	void readLevelsInfoFile() {
 
 		std::ifstream file("levelsInfo.txt");
 		if (!file.is_open()) {
 			std::cerr << "Error opening levels info file. Creating it." << std::endl;
-			setDefaultLevelsInfo(won, levels);
+			setDefaultLevelsInfo();
 			return;
 		}
 
@@ -80,7 +80,7 @@ public:
 
 	}
 
-	void setDefaultLevelsInfo(uint8_t won[NUMBER_OF_MODS], LevelInfo levels[NUMBER_OF_MODS][LEVELS_PER_MOD]) {
+	void setDefaultLevelsInfo() {
 
 		for (int i = 0; i < NUMBER_OF_MODS; i++) {
 			won[i] = 0;
@@ -112,13 +112,13 @@ public:
 		}
 
 		for (int i = 0; i < NUMBER_OF_MODS; i++)
-				file << won[i] << std::endl;
+				file << (int)won[i] << std::endl;
 		for (int i = 0; i < NUMBER_OF_MODS; i++) {
 			for (int j = 0; j < LEVELS_PER_MOD; j++) {
 				file << levels[i][j].isWon() << " "
-					 << levels[i][j].getMin() << " "
-					 << levels[i][j].getSec() << " "
-					 << levels[i][j].getPerc() << std::endl;
+					 << (int)levels[i][j].getMin() << " "
+					 << (int)levels[i][j].getSec() << " "
+					 << (int)levels[i][j].getPerc() << std::endl;
 			}
 		}
 

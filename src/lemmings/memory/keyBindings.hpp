@@ -16,7 +16,7 @@ std::map<EngineIO::InputEvent, std::string> keyName;
 class KeyBindings
 {
 
-	const EngineIO::InputEvent defaultKeyBindings[18] = {
+	const EngineIO::InputEvent defaultKeyBindings[NUM_KEYBINDINGS] = {
 		EngineIO::InputEvent::ENTER,
 		EngineIO::charToInputEvent('1'),
 		EngineIO::charToInputEvent('2'),

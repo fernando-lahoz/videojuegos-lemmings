@@ -358,13 +358,14 @@ namespace Utils
 
   enum MENU_TYPE
   {
-    TITLE = 0,
-    LEVEL_SELECTOR = 1,
-    LEVEL_INTRO = 2,
-    LEVEL_OUTRO = 3,
-    INTRO = 4,
-    CONFIG = 5, // Muestra menú de configuración
-    IA = 6      // Menú placeholder para la IA
+    TITLE = 0,              // Pantalla principal
+    LEVEL_SELECTOR = 1,     // Selector de nivel para 1 jugador
+    LEVEL_INTRO = 2,        // Pantalla de introducción a nivel
+    LEVEL_OUTRO = 3,        // Pantalla de finalización de nivel
+    INTRO = 4,              // Pantalla de introducción
+    CONFIG = 5,             // Muestra configuración
+    IA = 6,                 // Selector de nivel de IA
+    RESET_DATA = 7          // Pantalla para confirmar reset
   };
   enum BUTTON_TYPE
   {
@@ -372,29 +373,32 @@ namespace Utils
     PLAYER_VS_IA = 1,
     SETTINGS = 2, //Botón que lleva a pantalla de configuración
     EXIT = 3,
-    SOUND_EFFECTS = 4,
-    RESET = 6,
-    SAVE = 7,
-    PAUSE = 8, //Botón para modificar tecla de pausa
-    ABILITY_1 = 9,
-    ABILITY_2 = 10,
-    ABILITY_3 = 11,
-    ABILITY_4 = 12,
-    ABILITY_5 = 13,
-    ABILITY_6 = 14,
-    ABILITY_7 = 15,
-    ABILITY_8 = 16,
-		EXPLODE_ALL = 17,
-		ABILITY_UP = 18,
-		ABILITY_DOWN = 19,
-		SPEED_UP = 20,
-		SPEED_DOWN = 21,
-		SPAWN_UP = 22,
-		SPAWN_DOWN = 23,
-    MAP_LEFT = 24,
-    MAP_RIGHT = 25,
-    BACK = 26,
-    PLAY = 27
+    BACK = 4,
+    PLAY = 5,
+    RESET_KEYB = 6,
+    RESET_ALL = 7,
+    SAVE = 8,
+    PAUSE = 9,
+    ABILITY_1 = 10,
+    ABILITY_2 = 11,
+    ABILITY_3 = 12,
+    ABILITY_4 = 13,
+    ABILITY_5 = 14,
+    ABILITY_6 = 15,
+    ABILITY_7 = 16,
+    ABILITY_8 = 17,
+    EXPLODE_ALL = 18,
+    ABILITY_UP = 19,
+    ABILITY_DOWN = 20,
+    SPEED_UP = 21,
+    SPEED_DOWN = 22,
+    SPAWN_UP = 23,
+    SPAWN_DOWN = 24,
+    MAP_LEFT = 25,
+    MAP_RIGHT = 26,
+    BACK_TO_CONFIG = 27,
+    RESET_ALL_CONFIRM = 28
+    
   };
   enum ACTIONS
   {

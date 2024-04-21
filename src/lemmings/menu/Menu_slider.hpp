@@ -21,13 +21,13 @@ class Menu_slider : public Entity
         float last_position;
         uint8_t slider_var;
         Game_info &game_info;
+        Texture txt_hover, txt_off;
 
         Float last_mouse_position;
         bool holded = false;
 
         bool is_mouse_over_slider(Engine &engine)
         {
-            std::cout << "probando" << std::endl;
             return bound.contains(engine.get_mouse_position());
         }
 
@@ -39,7 +39,9 @@ class Menu_slider : public Entity
               box_xmin(_position.x), box_xmax(_position.x + _box_width), ratio (_box_width / 100.0f), size(_button_size.x),
               bound(Point2f(_position.x, _position.y), Point2f(_position.x + _box_width + _button_size.x, _position.y + _button_size.y)),
               slider_var(_var_value),
-              game_info(_game_info)
+              game_info(_game_info),
+              txt_hover(_engine.load_texture("assets/menu/slider_button_hover.png")),
+              txt_off(_engine.load_texture("assets/menu/slider_button.png"))
         {
             alpha_mouse = false;
         }
@@ -53,12 +55,15 @@ class Menu_slider : public Entity
 
             auto [x, y] = get_position2D();
             x = math::clamp(last_mouse_position - size/2, box_xmin, box_xmax);
+            set_active_texture(txt_hover);
             set_position2D(Point2f(x, y));
 
             uint8_t slider_value = (x - box_xmin) / ratio;
             game_info.set_conf_var(slider_var, slider_value);
             //   game_info.set_var(slider_var, slider_value);
             std::cout << game_info.get_conf_var(slider_var) << std::endl;
+        } else {
+            set_active_texture(txt_off);
         }
     }
 

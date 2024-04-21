@@ -36,7 +36,7 @@ public:
     void setDefaultVolAsp() {
         music = 100;
         effect = 100;
-        aspect = 0;
+        aspect = 1;
         writeVolAspFile();
     }
 

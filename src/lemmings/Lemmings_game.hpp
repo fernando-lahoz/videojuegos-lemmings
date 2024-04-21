@@ -71,6 +71,7 @@ public:
   void on_game_startup(Engine &engine) override
   {
     engine.set_window_icon("assets/icon.png");
+    game_info.set_window_size(engine);
 
     // Cargamos los efectos de sonido
     game_info.start_sound_assets(engine);
