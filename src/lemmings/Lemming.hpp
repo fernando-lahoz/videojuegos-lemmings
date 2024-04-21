@@ -1184,8 +1184,18 @@ public:
       {
         if ((check_collision_left(other) && direction == -1) || (check_collision_right(other) && direction == 1))
         {
-
-          if (skills & Utils::CLIMB)
+          if (other->get_entity_name() == "Lemming")
+          {
+            std::shared_ptr<Entity> lemming_ptr = std::dynamic_pointer_cast<Entity>(other);
+            float distance = lemming_ptr->get_position2D().x - position.x;
+            if ((direction == 1 && distance > 10) || (direction == -1 && distance < -10))
+            {
+              std::cout << "Cambio sentido: " << std::endl;
+              position.x -= 3 * direction;
+              direction *= -1;
+            }
+          }
+          else if (skills & Utils::CLIMB)
           {
             go_climb();
           }

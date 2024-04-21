@@ -56,13 +56,15 @@ public:
 
   void create_entity(EntityPtr entity) override
   {
-    if (entity->get_entity_name() == "Lemming") {
+    if (entity->get_entity_name() == "Lemming")
+    {
       lemmings.push_back(std::dynamic_pointer_cast<Lemming>(entity));
     }
-    else if (entity->get_entity_name() == "MAP") {
+    else if (entity->get_entity_name() == "MAP")
+    {
       map = entity;
     }
-    
+
     Game::create_entity(entity);
   }
 
@@ -102,14 +104,14 @@ public:
     std::cout << cursor_menu << std::endl;
     create_entity(cursor_menu);
     game_info.set_cursor_menu(cursor_menu);
-    screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
-    // screen.go_level(engine, 28, 2);
+    // screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
+    screen.go_level(engine, 14, 3); // Con este codigo accedes al nivel sin tener que pasar por los menus
   }
 
   void on_loop_start(Engine &engine) override
   {
-    //ai.update_execution(engine, map, lemmings);
-    // std::cout << engine.get_delta_time() << std::endl;
+    // ai.update_execution(engine, map, lemmings);
+    //  std::cout << engine.get_delta_time() << std::endl;
     screen.update_game(engine);
   }
 
