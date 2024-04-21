@@ -535,6 +535,24 @@ public:
         // }
       }
 
+      if (is_blocking() && current_frame == 0)
+      {
+        Ray ray_down = Ray(local_to_world(Point2f(0.45, 0.5)), Vector2f(0, 1));
+        Float hit_offset_down;
+        EntityPtr hit_entity_down;
+
+        std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"};
+
+        engine.intersect_ray(ray_down, get_entity_id(),
+                             force_entity_names, hit_offset_down, hit_entity_down);
+        if (hit_offset_down > diagonal.y / 2)
+        {
+          std::cout << "Estaba bloqueando pero me cai" << std::endl;
+          remove_skill(Utils::Lemming_Skills::BLOCK);
+          on_ground = false;
+        }
+      }
+
       if (!Utils::STATE_IS_LOOP_ANIMATION[get_state()] && current_frame == 0)
       {
         is_playing = false; // Detiene la animación si no es en bucle
@@ -1188,10 +1206,9 @@ public:
           {
             std::shared_ptr<Entity> lemming_ptr = std::dynamic_pointer_cast<Entity>(other);
             float distance = lemming_ptr->get_position2D().x - position.x;
-            if ((direction == 1 && distance > 10) || (direction == -1 && distance < -10))
+            if ((direction == 1 && distance > 8) || (direction == -1 && distance < -8))
             {
-              std::cout << "Cambio sentido: " << std::endl;
-              position.x -= 3 * direction;
+              position.x -= 2 * direction;
               direction *= -1;
             }
           }

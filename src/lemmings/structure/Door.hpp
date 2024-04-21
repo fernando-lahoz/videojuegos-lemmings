@@ -13,12 +13,10 @@ private:
   bool is_debug;
   bool change = false;
 
-  //Esto es para que solo suene una vez tanto el sonido de apertura de puertas como el lets go
+  // Esto es para que solo suene una vez tanto el sonido de apertura de puertas como el lets go
   bool play_open_sound = true;
   bool play_letsgo_sound = true;
   bool play_music = true;
-
-
 
 public:
   Door(Point3f position, Engine &engine, int structure_type, float animation_duration, int level, Game_info &game_info, bool is_debug = false)
@@ -47,7 +45,7 @@ public:
     if (!is_playing)
     {
       game_info.set_is_door_opening(false);
-      
+
       spawn_timer += engine.get_delta_time() * game_info.get_game_speed();
       if (spawn_timer >= 0.1 + (game_info.get_spawn_velocity() / 50.0f) && game_info.get_spawned_lemmings() < Utils::LEVEL_N_LEMMINGS[difficulty][level] && !game_info.get_all_die())
       {
@@ -72,6 +70,6 @@ public:
     // Calcula la posición central en el eje X de la estructura y ajusta en Y para que el Lemming aparezca encima
     float spawn_x = pos.x + (diagonal.x / 2) - (lemming_size.x / 2);
     float spawn_y = pos.y + (diagonal.y / 2) - (lemming_size.y / 2);
-    return Point3f(int(spawn_x), int(spawn_y), game_info.get_spawned_lemmings());
+    return Point3f((static_cast<int>(spawn_x) / 2) * 2, (static_cast<int>(spawn_y) / 2) * 2, game_info.get_spawned_lemmings());
   }
 };
