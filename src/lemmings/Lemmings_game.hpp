@@ -108,7 +108,7 @@ public:
 
   void on_loop_start(Engine &engine) override
   {
-    ai.update_execution(engine, map, lemmings);
+    //ai.update_execution(engine, map, lemmings);
     // std::cout << engine.get_delta_time() << std::endl;
     screen.update_game(engine);
   }
