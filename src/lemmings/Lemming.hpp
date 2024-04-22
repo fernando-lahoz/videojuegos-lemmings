@@ -493,7 +493,7 @@ public:
 
       if (is_falling())
       {
-        position.y += 2;
+        position.y += 4;
       }
 
       if (is_floating())
