@@ -496,10 +496,15 @@ public:
     }
   }
 
+  bool is_selected_level_won()
+  {
+    return levelsInfo.isLevelWon(difficulty_selected, level_selected);
+  }
+
   std::string get_selected_level_best_time()
   {
-    int m = levelsInfo.getMin(difficulty_selected, level_selected-1);
-    int s = levelsInfo.getSec(difficulty_selected, level_selected-1);
+    int m = levelsInfo.getMin(difficulty_selected, level_selected);
+    int s = levelsInfo.getSec(difficulty_selected, level_selected);
     return std::to_string(m) + (s < 10 ? "-0" : "-") + std::to_string(s);
   }
 

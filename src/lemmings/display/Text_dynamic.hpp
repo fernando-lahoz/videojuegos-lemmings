@@ -22,7 +22,7 @@ private:
   Vector2i texture_letter_size;
   MappingFunction map;
 
-  std::string last_text;
+  std::string last_text, original_text;
   std::shared_ptr<Text_displayer> text;
   int type;
   int index;
@@ -42,9 +42,25 @@ public:
         texture_letter_size(_texture_letter_size),
         map(_map),
         last_text(_text),
+        original_text(_text),
         type(_type),
         index(_index)
   {
+    switch (type)
+    {
+      case 5:
+        last_text = game_info.is_selected_level_won() ? game_info.get_selected_level_best_perc() : "";
+        break;
+      case 6:
+        last_text = game_info.is_selected_level_won() ? game_info.get_selected_level_best_time() : "";
+        break;
+      case 7:
+        last_text = game_info.is_selected_level_won() ? original_text : "";
+        break;
+      case 8:
+        last_text = game_info.is_selected_level_won() ? "" : original_text;
+        break;
+    }
     text = std::make_shared<Text_displayer>(position, letter_size, game_info, _justified, font_texture,
                                             texture_letter_size, map, _text, engine,
                                             "TEXT");
@@ -124,7 +140,7 @@ public:
     }
     if (type == 5 && last_text != game_info.get_selected_level_best_perc())
     {
-      last_text = game_info.get_selected_level_best_perc();
+      last_text = game_info.is_selected_level_won() ? game_info.get_selected_level_best_perc() : "";
       text->destroy();
 
       text = std::make_shared<Text_displayer>(position, letter_size, game_info, justified, font_texture,
@@ -135,7 +151,29 @@ public:
     }
     if (type == 6 && last_text != game_info.get_selected_level_best_time())
     {
-      last_text = game_info.get_selected_level_best_time();
+      last_text = game_info.is_selected_level_won() ? game_info.get_selected_level_best_time() : "";
+      text->destroy();
+
+      text = std::make_shared<Text_displayer>(position, letter_size, game_info, justified, font_texture,
+                                              texture_letter_size, map, last_text, engine,
+                                              "TEXT");
+      engine.get_game().create_entity(text);
+      return;
+    }
+    if (type == 7)
+    {
+      last_text = game_info.is_selected_level_won() ? original_text : "";
+      text->destroy();
+
+      text = std::make_shared<Text_displayer>(position, letter_size, game_info, justified, font_texture,
+                                              texture_letter_size, map, last_text, engine,
+                                              "TEXT");
+      engine.get_game().create_entity(text);
+      return;
+    }
+    if (type == 8)
+    {
+      last_text = game_info.is_selected_level_won() ? "" : original_text;
       text->destroy();
 
       text = std::make_shared<Text_displayer>(position, letter_size, game_info, justified, font_texture,
