@@ -346,7 +346,6 @@ bool Entity::collides(std::shared_ptr<Entity> other) const
 
     if (!alpha_collision)
     {
-        std::cout << this->get_entity_name() << " - " << bound2f().overlaps(other->bound2f()) << std::endl;
         return bound2f().overlaps(other->bound2f());
     }
 

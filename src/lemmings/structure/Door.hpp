@@ -47,7 +47,7 @@ public:
       game_info.set_is_door_opening(false);
 
       spawn_timer += engine.get_delta_time() * game_info.get_game_speed();
-      if (spawn_timer >= 0.1 + (game_info.get_spawn_velocity() / 50.0f) && game_info.get_spawned_lemmings() < Utils::LEVEL_N_LEMMINGS[difficulty][level] && !game_info.get_all_die())
+      if (spawn_timer >= 0.4 + ((100 - game_info.get_spawn_velocity()) / 50.0f) && game_info.get_spawned_lemmings() < Utils::LEVEL_N_LEMMINGS[difficulty][level] && !game_info.get_all_die())
       {
         // Lógica para invocar Lemmings
         spawn_timer = 0.0f;

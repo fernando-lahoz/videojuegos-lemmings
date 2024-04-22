@@ -1,11 +1,10 @@
 #include "engine/trigger.hpp"
 #include "lib/texture.hpp"
 
-
 Trigger::Trigger(Point3f position, Vector2f diagonal,
-        Engine& engine,
-        std::string _entity_name, 
-        std::string _class_name)
+                 Engine &engine,
+                 std::string _entity_name,
+                 std::string _class_name)
     : Entity(position, diagonal, Texture(), engine, _entity_name, _class_name)
 {
     disable_alpha_collision();
@@ -23,40 +22,38 @@ std::vector<EntityPtr> Trigger::get_asociated_entities() const
     return asociated_entities;
 }
 
-void Trigger::on_collision([[maybe_unused]]Engine& engine, 
-        [[maybe_unused]]EntityPtr other)
+void Trigger::on_collision([[maybe_unused]] Engine &engine,
+                           [[maybe_unused]] EntityPtr other)
 {
-    std::cout<< "trigger colisionado" << std::endl;
     trigger_collision_event(engine, other);
 }
 
-void Trigger::update_state([[maybe_unused]]Engine& engine)
+void Trigger::update_state([[maybe_unused]] Engine &engine)
 {
     // Do nothing
 }
 
-void Trigger::pre_physics([[maybe_unused]]Engine& engine)
+void Trigger::pre_physics([[maybe_unused]] Engine &engine)
 {
     // Do nothing
 }
 
-void Trigger::on_creation([[maybe_unused]]Engine& engine)
+void Trigger::on_creation([[maybe_unused]] Engine &engine)
 {
     // Do nothing
 }
 
-
-void Trigger::on_event_down(Engine& engine, EngineIO::InputEvent event)
+void Trigger::on_event_down(Engine &engine, EngineIO::InputEvent event)
 {
     trigger_IO_event(engine, event);
 }
 
-void Trigger::on_event_up(Engine& engine, EngineIO::InputEvent event)
+void Trigger::on_event_up(Engine &engine, EngineIO::InputEvent event)
 {
     trigger_IO_event(engine, event);
 }
 
-void Trigger::trigger_collision_event(Engine& engine, EntityPtr other)
+void Trigger::trigger_collision_event(Engine &engine, EntityPtr other)
 {
     for (auto asociated_entity : asociated_entities)
     {
@@ -64,7 +61,7 @@ void Trigger::trigger_collision_event(Engine& engine, EntityPtr other)
     }
 }
 
-void Trigger::trigger_IO_event(Engine& engine, EngineIO::InputEvent event)
+void Trigger::trigger_IO_event(Engine &engine, EngineIO::InputEvent event)
 {
     for (auto asociated_entity : asociated_entities)
     {
