@@ -830,9 +830,7 @@ public:
           }
 
           do_action_in_frame = true;
-          speed.x = 0;
-          speed.y = velocity;
-          set_speed(speed);
+          position.y += 5.75;//Desplazamos el Lemming hacia abajo
         }
       }
       else
