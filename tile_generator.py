@@ -3,9 +3,9 @@ import cv2
 
 
 # Load image
-img = cv2.imread('map1.png')
+img = cv2.imread('assets/map3.png')
 
-n_rows = 5
+n_rows = 6
 n_cols = 10
 
 # Draw a grid

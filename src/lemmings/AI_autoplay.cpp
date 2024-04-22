@@ -37,10 +37,21 @@ class AI_autoplay
     std::vector<ACTION> actions;
     std::vector<uint2> path_coordinates;
 
+    std::vector<std::vector<TILE>> map1 = 
+    {
+        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
+        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::INIT, TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
+        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::DIRT, TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
+        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
+        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::GOAL, TILE::DIRT, TILE::EMPTY},
+        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT},
+    };
+
     std::vector<std::vector<TILE>> map = 
     {
         {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
         {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::INIT, TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
+        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::DIRT, TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
         {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
         {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::GOAL, TILE::DIRT, TILE::EMPTY},
         {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT},
@@ -367,6 +378,7 @@ class AI_autoplay
         uint2 init_tile = get_init_tile();
         actions.clear();
         executing_action = 0;
+        actions.push_back(ACTION::FALL);
 
         bool goal_reached = add_step(init_tile, initial_direction);
 
@@ -394,7 +406,6 @@ class AI_autoplay
         uint2 current_tile = get_init_tile();
         path_coordinates.clear();
         std::vector<ACTION> l_actions;
-
 
         for (auto action : actions)
         {
@@ -435,10 +446,23 @@ class AI_autoplay
         return performed;
     }
 
+    bool is_executed_by_engine(ACTION action)
+    {
+        if (action == ACTION::FALL || action == ACTION::SWAP_DIRECTION
+            || action == ACTION::MOVE_LEFT || action == ACTION::MOVE_RIGHT)
+            return true;
+        else
+            return false;
+    }
+
     void update_execution(Engine &engine,
             EntityPtr e_map,
             std::vector<std::shared_ptr<Lemming>>& lemmings)
     {
+        while (is_executed_by_engine(actions[executing_action])) {
+            executing_action++;
+        }
+
         for (auto lemming : lemmings)
         {
             auto position = lemming->get_position2D();
@@ -448,9 +472,14 @@ class AI_autoplay
             // Round the position to the tile
             uint2 map_p ((unsigned int)fmap_p.y, 
                         (unsigned int)fmap_p.x);
-            
-            //std::cout << "Expected: " << path_coordinates[executing_action].first << " " << path_coordinates[executing_action].second << std::endl;
-            if (map_p == path_coordinates[executing_action])
+
+            Float tile_init_x = path_coordinates[executing_action].second * 1.0f / n_cols;
+            Float tile_init_y = path_coordinates[executing_action].first * 1.0f / n_rows;
+
+            Float distance = l_p.x - tile_init_x;
+            Float mid_offset = (0.5f / n_cols);
+                       
+            if (map_p == path_coordinates[executing_action] && std::abs(distance-mid_offset) < 0.01f)
             {
                 std::cout << "Executing action: " << to_string(actions[executing_action]) << std::endl;
                 if (execute_action(lemming, actions[executing_action]))
