@@ -46,9 +46,14 @@ public:
     bool destroy = false;
     if (is_same_direction(direction))
     {
+      float fraction = (12.0f - bricks) / 12.0f;
+      float affectedHeight = diagonal.y * fraction;
+      Bound2f affectedBox = box;
+      affectedBox.pMin.y = position.y + affectedHeight;
+
       for (int i = 0; i < max_frames; i++)
       {
-        if (textures[i].set_alpha_box(world_to_local(box), 0, engine.get_renderer()))
+        if (textures[i].set_alpha_box(world_to_local(affectedBox), 0, engine.get_renderer()))
           destroy = true;
       }
       if (destroy)
