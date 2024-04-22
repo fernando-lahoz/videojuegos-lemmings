@@ -207,7 +207,7 @@ public:
       // (number) % To Be Saved
       text = std::make_shared<Text_displayer>(Point3f(10160, 221, 2), Vector2f(16, 30), game_info, "left",
                                               engine.load_texture("assets/font/font-green.png"),
-                                              Vector2i(16, 30), lemmings_font_map, std::to_string(Utils::LEVEL_SAVE_LEMMINGS[difficulty][level] / Utils::LEVEL_N_LEMMINGS[difficulty][level]) + "% To Be Saved", engine,
+                                              Vector2i(16, 30), lemmings_font_map, std::to_string(Utils::LEVEL_SAVE_LEMMINGS[difficulty][level] * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level]) + "% To Be Saved", engine,
                                               "TEXT");
       engine.get_game().create_entity(text);
 
