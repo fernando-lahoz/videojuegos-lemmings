@@ -581,6 +581,7 @@ public:
           {
             // std::cout << "sube baja altura\n";
             position.y += (hit_offset_down - diagonal.y / 4);
+            position.y = (static_cast<int>(position.y) / 2) * 2;
           }
         }
         else if (hit_offset_down > diagonal.y / 2)
@@ -722,7 +723,7 @@ public:
           if (!brick_ptr)
           {
             auto point = direction == -1 ? local_to_world(Point2f(-0.85, 0.15)) : local_to_world(Point2f(0.45, 0.15));
-            brick_ptr = std::make_shared<Brick>(Point3f(int(point.x), int(point.y), 250), engine, game_info, direction);
+            brick_ptr = std::make_shared<Brick>(Point3f((static_cast<int>(point.x) / 2) * 2, (static_cast<int>(point.y) / 2) * 2, 250), engine, game_info, direction);
             engine.get_game().create_entity(brick_ptr);
           }
           else
@@ -1327,7 +1328,8 @@ public:
           }
           else
           {
-            position.y -= 1;
+            position.y -= 2;
+            position.y = (static_cast<int>(position.y) / 2) * 2;
             distance_fall = 0.0f;
             go_walk();
           }
