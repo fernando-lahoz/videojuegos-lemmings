@@ -65,6 +65,10 @@ class Lemming : public Rigid_body
 
   void go_idle()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     state = Utils::IDLE;
     type = Utils::LEMMING_TYPE[Utils::IDLE];
     // std::cout << "GO IDLE\n";
@@ -72,6 +76,10 @@ class Lemming : public Rigid_body
 
   void go_walk()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     state = Utils::WALKING;
     if (skills & Utils::FLOAT && skills & Utils::CLIMB)
     {
@@ -94,6 +102,10 @@ class Lemming : public Rigid_body
 
   void go_fall()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     state = Utils::FALLING;
     if (skills & Utils::FLOAT && skills & Utils::CLIMB)
     {
@@ -116,6 +128,10 @@ class Lemming : public Rigid_body
 
   void go_block()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     state = Utils::BLOCKING;
     type = Utils::LEMMING_TYPE[Utils::BLOCKING];
 
@@ -124,6 +140,10 @@ class Lemming : public Rigid_body
 
   void go_build()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     state = Utils::BUILDING;
     // std::cout << "GO BUILDING\n";
     type = Utils::LEMMING_TYPE[Utils::BUILDING];
@@ -131,6 +151,10 @@ class Lemming : public Rigid_body
 
   void go_climb()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     state = Utils::CLIMBING;
     if (skills & Utils::FLOAT && skills & Utils::CLIMB)
     {
@@ -149,6 +173,10 @@ class Lemming : public Rigid_body
 
   void go_float()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     current_frame = 0;
     state = Utils::FLOATING;
     if (skills & Utils::FLOAT && skills & Utils::CLIMB)
@@ -168,6 +196,10 @@ class Lemming : public Rigid_body
 
   void go_explode()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     state = Utils::EXPLODING;
     type = Utils::LEMMING_TYPE[Utils::EXPLODING];
     // std::cout << "GO EXPLODING\n";
@@ -175,6 +207,10 @@ class Lemming : public Rigid_body
 
   void go_dig()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     state = Utils::DIGGING;
     type = Utils::LEMMING_TYPE[Utils::DIGGING];
     // std::cout << "GO DIGGING\n";
@@ -182,6 +218,10 @@ class Lemming : public Rigid_body
 
   void go_bash()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     state = Utils::BASHING;
     type = Utils::LEMMING_TYPE[Utils::BASHING];
     // std::cout << "GO BASHING\n";
@@ -189,6 +229,10 @@ class Lemming : public Rigid_body
 
   void go_mine()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     if (state != Utils::MINING) // Cambia de estado a minar
     {
       change_state_mine = true;
@@ -205,7 +249,10 @@ class Lemming : public Rigid_body
 
   void go_escape()
   {
-
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     // Hacemos que suene el yipee
     if (play_death_sound)
     {
@@ -220,6 +267,10 @@ class Lemming : public Rigid_body
 
   void go_drown()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     state = Utils::DROWNING;
     type = Utils::LEMMING_TYPE[Utils::DROWNING];
 
@@ -235,6 +286,10 @@ class Lemming : public Rigid_body
 
   void go_crash()
   {
+    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
+    override_right_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.6, 0.55)));
     state = Utils::CRASHING;
     type = Utils::LEMMING_TYPE[Utils::CRASHING];
 
@@ -830,7 +885,7 @@ public:
           }
 
           do_action_in_frame = true;
-          position.y += 5.75;//Desplazamos el Lemming hacia abajo
+          position.y += 6; // Desplazamos el Lemming hacia abajo
         }
       }
       else
@@ -1187,7 +1242,7 @@ public:
     Entity::on_collision(engine, other);
     auto speed = get_speed();
 
-    if (other->get_entity_name() == "MAP" || other->get_entity_name() == "DIRECTIONAL WALL" || other->get_entity_name() == "METAL" || other->get_entity_name() == "Lemming")
+    if (other->get_entity_name() == "MAP" || other->get_entity_name() == "DIRECTIONAL WALL" || other->get_entity_name() == "METAL" || other->get_entity_name() == "BRICKS" || other->get_entity_name() == "Lemming")
     {
       // if (other->get_entity_name() == "Lemming")
       // {
@@ -1214,7 +1269,7 @@ public:
           {
             go_climb();
           }
-          else
+          else if (other->get_entity_name() != "BRICKS")
           {
             position.x -= 3 * direction;
             direction *= -1;
@@ -1229,10 +1284,13 @@ public:
         position.x -= 2 * direction;
         if (check_collision_up(other))
         {
-          std::cout << "Techo\n";
-          go_fall();
-          // position.x += 2 * direction;
-          direction *= -1;
+          if (other->get_entity_name() != "BRICKS")
+          {
+            std::cout << "Techo\n";
+            go_fall();
+            // position.x += 2 * direction;
+            direction *= -1;
+          }
         }
         else
         {
@@ -1257,7 +1315,6 @@ public:
       {
         if (check_collision_down(other))
         {
-          // std::cout << "detect down\n";
           // std::cout << on_ground << std::endl;
 
           on_ground = true;
