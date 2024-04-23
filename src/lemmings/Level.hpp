@@ -47,6 +47,8 @@ public:
     txt = engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + ".png");
     size_map_x = (0.713 / txt.get_height()) * txt.get_width();
 
+    engine.get_game().on_level_startup(level_number);
+
     engine.get_game().create_entity(std::make_shared<Entity>(Point3f(0, 0, 1000), Vector2f(3168, 320), engine.load_texture("assets/maps/background_" + std::to_string(Utils::LEVEL_BACKGROUND_TYPE[difficulty_number][level_number]) + ".png"), engine, "BACKGROUND"));
     auto gate_type = Utils::LEVEL_GATE_TYPE[difficulty_number][level_number];
     engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), txt, engine, "MAP", "BkgMap"));

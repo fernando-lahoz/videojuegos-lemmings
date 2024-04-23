@@ -109,9 +109,24 @@ public:
     // screen.go_level(engine, 14, 3); // Con este codigo accedes al nivel sin tener que pasar por los menus
   }
 
+  void on_level_startup(int level_id) override
+  {
+    ai.init_executor();
+  }
+
+  void on_entity_destruction(Engine &engine, EntityPtr entity) override
+  {
+    if (entity->get_entity_name() == "Lemming")
+    {
+      lemmings.erase(std::remove_if(lemmings.begin(), lemmings.end(), [entity](std::shared_ptr<Lemming> lemming) {
+        return lemming->get_entity_id() == entity->get_entity_id();
+      }), lemmings.end());
+    }
+  }
+
   void on_loop_start(Engine &engine) override
   {
-    //ai.update_execution(engine, map, lemmings);
+    ai.update_execution(engine, game_info, map, lemmings);
     // std::cout << engine.get_delta_time() << std::endl;
     screen.update_game(engine);
   }

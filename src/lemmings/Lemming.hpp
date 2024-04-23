@@ -49,6 +49,8 @@ class Lemming : public Rigid_body
   int last_time_to_live = 6;
   std::shared_ptr<Dynamic_counter_image> counter;
 
+  std::chrono::time_point<std::chrono::steady_clock> last_falling = std::chrono::steady_clock::now();
+
   std::shared_ptr<Brick> brick_ptr;
 
   std::string get_type()
@@ -725,6 +727,11 @@ public:
     }
   }
 
+  int get_direction() const
+  {
+    return direction;
+  }
+
   void pre_physics(Engine &engine) override
   {
     if (game_info.get_level_is_paused())
@@ -736,8 +743,19 @@ public:
     update_counter(engine);
   }
 
+  std::chrono::time_point<std::chrono::steady_clock> get_last_falling()
+  {
+    return last_falling;
+  }
+
   void update_state(Engine &engine) override
   {
+    // If falling
+    if (is_falling())
+    {
+      last_falling = std::chrono::steady_clock::now();  
+    }
+
     if (game_info.get_level_is_paused())
       return;
 

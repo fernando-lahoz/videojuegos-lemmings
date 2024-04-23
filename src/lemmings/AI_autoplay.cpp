@@ -22,11 +22,12 @@ class AI_autoplay
     };
 
     enum class ACTION {
-        FALL,
-        DIG_DOWN,
-        MOVE_LEFT,
-        MOVE_RIGHT,
-        SWAP_DIRECTION
+        LEMMING_WALL=3,
+        DIG_DOWN=7,
+        FALL=8,
+        MOVE_LEFT=9,
+        MOVE_RIGHT=10,
+        SWAP_DIRECTION=11
     };
 
     using MAP = std::vector<std::vector<TILE>>;
@@ -36,6 +37,7 @@ class AI_autoplay
 
     std::vector<ACTION> actions;
     std::vector<uint2> path_coordinates;
+    unsigned int ability_charges[8] = {0, 0, 0, 10, 0, 0, 0, 0};
 
     std::vector<std::vector<TILE>> map1 = 
     {
@@ -49,12 +51,21 @@ class AI_autoplay
 
     std::vector<std::vector<TILE>> map = 
     {
-        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
-        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::INIT, TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
-        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::DIRT, TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
-        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
-        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::GOAL, TILE::DIRT, TILE::EMPTY},
-        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT},
+        {TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::INIT,  TILE::EMPTY, TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::DIRT,  TILE::DIRT,  TILE::DIRT,  TILE::EMPTY},
+        {TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::DIRT,  TILE::DIRT,  TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::DIRT,  TILE::DIRT,  TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::EMPTY, TILE::DIRT,  TILE::DIRT,  TILE::EMPTY, TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::DIRT,  TILE::DIRT,  TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::EMPTY, TILE::GOAL,  TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY},
+        {TILE::EMPTY, TILE::DIRT,  TILE::DIRT,  TILE::DIRT,  TILE::DIRT,  TILE::EMPTY, TILE::DIRT},
     };
 
     int n_rows = map.size();
@@ -63,6 +74,9 @@ class AI_autoplay
     DIRECTION initial_direction = DIRECTION::RIGHT;
 
     size_t executing_action = 0;
+
+    int n_falled = 0;
+    int death_by_fall_tiles = 6;
 
 
 
@@ -112,6 +126,8 @@ class AI_autoplay
                 return "MOVE_RIGHT";
             case ACTION::SWAP_DIRECTION:
                 return "SWAP_DIRECTION";
+            case ACTION::LEMMING_WALL:
+                return "LEMMING_WALL";
             default:
                 return "UNKNOWN";
         }
@@ -154,7 +170,7 @@ class AI_autoplay
 
     bool can_dig_down(uint2& current_tile, DIRECTION direction)
     {
-        if (current_tile.first == (map.size()-1)){
+        if (current_tile.first == (map.size()-1) || ability_charges[(int)ACTION::DIG_DOWN] == 0){
             return false;
         }
 
@@ -175,7 +191,8 @@ class AI_autoplay
         }
 
         if (map[current_tile.first][current_tile.second-1] == TILE::EMPTY
-            || map[current_tile.first][current_tile.second-1] == TILE::GOAL)
+            || map[current_tile.first][current_tile.second-1] == TILE::GOAL
+            || map[current_tile.first][current_tile.second-1] == TILE::INIT)
             return true;
         else
             return false;
@@ -188,7 +205,8 @@ class AI_autoplay
         }
 
         if (map[current_tile.first][current_tile.second+1] == TILE::EMPTY
-            || map[current_tile.first][current_tile.second+1] == TILE::GOAL)
+            || map[current_tile.first][current_tile.second+1] == TILE::GOAL
+            || map[current_tile.first][current_tile.second+1] == TILE::INIT)
             return true;
         else
             return false;
@@ -220,6 +238,23 @@ class AI_autoplay
         }
     }
 
+    bool can_become_wall(uint2& current_tile, DIRECTION direction)
+    {
+        if (ability_charges[(int)ACTION::LEMMING_WALL] == 0){
+            return false;
+        }
+
+        if (map[current_tile.first][current_tile.second] == TILE::EMPTY
+            && map[current_tile.first+1][current_tile.second] == TILE::DIRT)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     void apply_action(
             std::vector<ACTION>& l_actions,
             DIRECTION &direction, 
@@ -230,9 +265,11 @@ class AI_autoplay
             case ACTION::FALL:
                 current_tile.first++;
                 l_actions.push_back(ACTION::FALL);
+                n_falled++;
                 break;
             case ACTION::DIG_DOWN:
                 map[current_tile.first+1][current_tile.second] = TILE::EMPTY;
+                ability_charges[(int)ACTION::DIG_DOWN]--;
                 current_tile.first++;
                 l_actions.push_back(ACTION::DIG_DOWN);
                 break;
@@ -249,6 +286,12 @@ class AI_autoplay
                 direction = (direction == DIRECTION::LEFT) ? DIRECTION::RIGHT : DIRECTION::LEFT;
                 l_actions.push_back(ACTION::SWAP_DIRECTION);
                 break;
+
+            case ACTION::LEMMING_WALL:
+                ability_charges[(int)ACTION::LEMMING_WALL]--;
+                direction = (direction == DIRECTION::LEFT) ? DIRECTION::RIGHT : DIRECTION::LEFT;
+                l_actions.push_back(ACTION::LEMMING_WALL);
+                break;
             
             default:
                 break;
@@ -263,28 +306,32 @@ class AI_autoplay
         {
             case ACTION::FALL:
                 current_tile.first--;
-                l_actions.pop_back();
+                n_falled--;
                 break;
             case ACTION::DIG_DOWN:
                 map[current_tile.first][current_tile.second] = TILE::DIRT;
+                ability_charges[(int)ACTION::DIG_DOWN]++;
                 current_tile.first--;
-                l_actions.pop_back();
                 break;
             case ACTION::MOVE_LEFT:
                 current_tile.second++;
-                l_actions.pop_back();
                 break;
             case ACTION::MOVE_RIGHT:
                 current_tile.second--;
-                l_actions.pop_back();
                 break;
             case ACTION::SWAP_DIRECTION:
                 direction = (direction == DIRECTION::LEFT) ? DIRECTION::RIGHT : DIRECTION::LEFT;
-                l_actions.pop_back();
+                break;
+
+            case ACTION::LEMMING_WALL:
+                ability_charges[(int)ACTION::LEMMING_WALL]++;
+                direction = (direction == DIRECTION::LEFT) ? DIRECTION::RIGHT : DIRECTION::LEFT;
                 break;
             default:
                 break;
         }
+        
+        l_actions.pop_back();
     }
 
     bool add_step(uint2& current_tile, DIRECTION direction)
@@ -297,6 +344,16 @@ class AI_autoplay
             return false;
         }
 
+        // Death by falling
+        if (n_falled == death_by_fall_tiles) {
+            return false;
+        }
+
+        // If on ground
+        if (map[current_tile.first+1][current_tile.second] == TILE::DIRT) {
+            n_falled = 0;
+        }
+
         /**************** Mandatory actions *******************/
 
         if (can_fall(current_tile, direction))
@@ -307,7 +364,7 @@ class AI_autoplay
                 return true;
 
             undo_action(actions, direction, current_tile, ACTION::FALL);
-
+            
             return false;
         }
 
@@ -355,6 +412,16 @@ class AI_autoplay
             undo_action(actions, direction, current_tile, ACTION::MOVE_RIGHT);
         }
 
+        if (can_become_wall(current_tile, direction))
+        {
+            apply_action(actions, direction, current_tile, ACTION::LEMMING_WALL);
+
+            if (add_step(current_tile, direction))
+                return true;
+
+            undo_action(actions, direction, current_tile, ACTION::LEMMING_WALL);
+        }
+
         return false;
     }
 
@@ -371,6 +438,11 @@ class AI_autoplay
         }
 
         return init_tile;
+    }
+
+    void init_executor()
+    {
+        executing_action = 0;
     }
 
     void generate_path()
@@ -397,7 +469,6 @@ class AI_autoplay
         else
         {
             std::cout << "Goal not reached!" << std::endl;
-        
         }
     }
 
@@ -439,6 +510,10 @@ class AI_autoplay
                 //lemming->swap_direction();
                 performed = true;
                 break;
+            case ACTION::LEMMING_WALL:
+                performed = lemming->add_skill(Utils::BLOCK);
+                break;
+
             default:
                 break;
         }
@@ -456,17 +531,32 @@ class AI_autoplay
     }
 
     void update_execution(Engine &engine,
+            Game_info &game_info,
             EntityPtr e_map,
             std::vector<std::shared_ptr<Lemming>>& lemmings)
     {
+        int speed = game_info.get_game_speed();
+
         while (is_executed_by_engine(actions[executing_action])) {
             executing_action++;
         }
 
+        bool all_walls = true;
+
         for (auto lemming : lemmings)
         {
-            auto position = lemming->get_position2D();
+            if (!lemming->is_skill(Utils::BLOCK)) {
+                all_walls = false;
+            }
+
+            auto position = lemming->get_position2D() + lemming->get_diagonal()*0.75f;
             auto l_p = e_map->world_to_local(position);
+
+            std::chrono::time_point<std::chrono::steady_clock> last_falled = lemming->get_last_falling();
+
+            // Offset to adjust tiles
+            l_p.x += 0.5f / n_cols;
+
             Point2f fmap_p (l_p.x * n_cols, l_p.y * n_rows);
 
             // Round the position to the tile
@@ -474,18 +564,45 @@ class AI_autoplay
                         (unsigned int)fmap_p.x);
 
             Float tile_init_x = path_coordinates[executing_action].second * 1.0f / n_cols;
-            Float tile_init_y = path_coordinates[executing_action].first * 1.0f / n_rows;
+            Float tile_init_y = path_coordinates[executing_action].first * 1.0f / n_rows; 
 
             Float distance = l_p.x - tile_init_x;
             Float mid_offset = (0.5f / n_cols);
-                       
-            if (map_p == path_coordinates[executing_action] && std::abs(distance-mid_offset) < 0.01f)
+            Float to_center = distance-mid_offset;
+
+            //std::cout << "Map position: " << map_p.first << " " << map_p.second << " " << path_coordinates[executing_action].first << " " << path_coordinates[executing_action].second << std::endl;
+            //std::cout << "Distance: " << distance << " " << to_center << " " << lemming_speed.x << " " << tile_init_x << " " << mid_offset << std::endl;
+            //std::cout << executing_action << " " << to_string(actions[executing_action]) << " " << to_center << std::endl;
+
+            if (map_p == path_coordinates[executing_action] 
+                && 
+                (
+                    std::abs(to_center) < 0.03f
+                    ||
+                    // Going out from the block
+                    (to_center < 0.0f && lemming->get_direction() == 0)
+                    || 
+                    (to_center > 0.0f && lemming->get_direction() == 1)
+                )
+                &&
+                // Time since last fall
+                std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - last_falled).count() > (1000.0f/speed)
+                )
             {
-                std::cout << "Executing action: " << to_string(actions[executing_action]) << std::endl;
+                //std::cout << "Executing action: " << to_string(actions[executing_action]) << std::endl;
                 if (execute_action(lemming, actions[executing_action]))
                     executing_action++;
                     
                 return;
+            }
+        }
+
+        if (all_walls)
+        {
+            std::cout << "Level finished\n";
+            for (auto lemming : lemmings)
+            {
+                lemming->add_skill_explode_all();
             }
         }
     }
