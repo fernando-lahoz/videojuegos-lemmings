@@ -34,6 +34,7 @@ class Lemming : public Rigid_body
 
   int skills = Utils::NO_SKILLS;
   bool change_state_mine = false;
+  bool explosion_in_liquid = false;
 
   int state = Utils::FALLING;
 
@@ -495,6 +496,9 @@ public:
         {
           counter->set_position2D(Point2f(position.x + (diagonal.x / 2) - (counter->get_diagonal().x / 2), position.y - 2));
         }
+
+        if (is_crashing())//Eliminamos el contador de la cuenta regresiba cuando se muere por caida
+          counter->destroy();
       }
 
       if (is_falling())
@@ -774,7 +778,16 @@ public:
 
     // EXPLODING LOGIC
     if (update_explode_countdown(engine))
-      add_skill_explode_all();
+      if(!(is_crashing()))
+      {//Si no se está muriendo ya el Lemming de caida
+        if(is_drowning() && !explosion_in_liquid)
+        {//Posicionamos el Lemming explosivo donde se esta ahogando, una vez
+          position.x += ((int)(current_frame/4)*5);
+          position.y += 10;
+          explosion_in_liquid = true;
+        }
+        add_skill_explode_all();
+      }
 
     // STATES LOGIC
     auto speed = get_speed();
