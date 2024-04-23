@@ -506,21 +506,22 @@ public:
       {
         position.x += 2 * direction;
         Ray ray_down = Ray(local_to_world(Point2f(0.45, 0.5)), Vector2f(0, 1));
-        Float hit_offset_down;
+        float hit_offset_down = diagonal.y / 2;
         EntityPtr hit_entity_down;
 
         std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"};
 
-        engine.intersect_ray(ray_down, get_entity_id(),
-                             force_entity_names, hit_offset_down, hit_entity_down);
-        // bool cond = true;
-        // if (hit_entity_down && hit_entity_down->get_entity_name() == "BRICKS")
-        // {
-        //   std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(hit_entity_down);
-        //   cond = bricks_ptr->get_direction() == direction;
-        // }
-        // if (cond)
-        // {
+        if (get_entity_id() == 72)
+        {
+          engine.intersect_ray(ray_down, 999,
+                               force_entity_names, hit_offset_down, hit_entity_down);
+        }
+        else
+        {
+          engine.intersect_ray(ray_down, get_entity_id(),
+                               force_entity_names, hit_offset_down, hit_entity_down);
+        }
+
         if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
         {
           if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 80)
@@ -530,11 +531,11 @@ public:
             position.y = (static_cast<int>(position.y) / 2) * 2;
           }
         }
-        else if (hit_offset_down > diagonal.y / 2)
+        else if (hit_offset_down >= diagonal.y / 2)
         {
+          std::cout << "lemming nº" << get_entity_id() << " se cayó pq detecto dist: " << hit_offset_down << "\n";
           on_ground = false;
         }
-        // }
       }
 
       if (is_blocking() && current_frame == 0)
@@ -756,7 +757,7 @@ public:
     // If falling
     if (is_falling())
     {
-      last_falling = std::chrono::steady_clock::now();  
+      last_falling = std::chrono::steady_clock::now();
     }
 
     if (game_info.get_level_is_paused())
