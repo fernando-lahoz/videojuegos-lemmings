@@ -551,6 +551,7 @@ public:
           // std::cout << "Estaba bloqueando pero me cai" << std::endl;
           remove_skill(Utils::Lemming_Skills::BLOCK);
           change_collision_type(engine, Entity::Collision_type::CHARACTER);
+          enable_alpha_collision();
           on_ground = false;
         }
       }
@@ -1225,7 +1226,7 @@ public:
           {
             std::shared_ptr<Entity> lemming_ptr = std::dynamic_pointer_cast<Entity>(other);
             float distance = lemming_ptr->get_position2D().x - position.x;
-            if ((direction == 1 && distance > 8) || (direction == -1 && distance < -8))
+            if ((direction == 1 && 12 > distance && distance > 8) || (direction == -1 && -12 < distance && distance < -8))
             {
               position.x -= 2 * direction;
               direction *= -1;
@@ -1394,6 +1395,7 @@ public:
         restart_animation();
       go_block();
       change_collision_type(engine, Entity::Collision_type::STRUCTURE);
+      disable_alpha_collision();
       return;
     }
     if (skills & Utils::DIG)
@@ -1533,7 +1535,6 @@ public:
     destroy();
     if (counter)
       counter->destroy();
-
   }
 
   void on_creation(Engine &engine) override
