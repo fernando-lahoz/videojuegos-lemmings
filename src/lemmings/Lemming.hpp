@@ -208,7 +208,7 @@ class Lemming : public Rigid_body
     // Hacemos que suene el yipee
     if (play_death_sound)
     {
-      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::YIPEE_SOUND));
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::YIPEE_SOUND), game_info.get_effects_volume());
       play_death_sound = false;
     }
 
@@ -225,7 +225,7 @@ class Lemming : public Rigid_body
     // Hacemos que suene el chapuzon que se dan
     if (play_death_sound)
     {
-      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SPLASH_SOUND));
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SPLASH_SOUND), game_info.get_effects_volume());
       play_death_sound = false;
     }
 

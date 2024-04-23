@@ -83,7 +83,7 @@ public:
 			{
 				game_info.set_option_selected(i+1);
 				available[i] = false;
-				engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND));
+				engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND), game_info.get_effects_volume());
 			}
 		}
 
@@ -92,14 +92,14 @@ public:
 		{
 			int new_option = (game_info.get_option_selected() - 1) % 8 + 2;
 			game_info.set_option_selected(new_option);
-			engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND));
+			engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND), game_info.get_effects_volume());
 		}
 		if (event == actionKey[ABILITY_DOWN])
 		{
 			int new_option = game_info.get_option_selected() - 3;
 			new_option = new_option < 0 ? new_option + 10 : new_option + 2;
 			game_info.set_option_selected(new_option);
-			engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND));
+			engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND), game_info.get_effects_volume());
 		}
 
 		// Si es el botón de destrucción total, se espera a que se mantenga el botón pulsado
@@ -132,7 +132,7 @@ public:
         if(!isEveryOneDoomed)
         {
           //Hacemos que recen por su vida
-          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::OH_NO_SOUND));
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::OH_NO_SOUND), game_info.get_effects_volume());
         }
 
         if (j == 0)

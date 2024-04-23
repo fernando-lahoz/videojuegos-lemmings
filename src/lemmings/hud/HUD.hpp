@@ -78,7 +78,7 @@ public:
         if(n != Utils::HUD_ALL_EXPLODE){
 
           //FIXME: Dependiendo de la opcion elegida deberia sonar mas agudo o mas grave
-          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND));
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND), game_info.get_effects_volume());
         }
       }
 
@@ -111,7 +111,7 @@ public:
         if(!isEveryOneDoomed)
         {
           //Hacemos que recen por su vida
-          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::OH_NO_SOUND));
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::OH_NO_SOUND), game_info.get_effects_volume());
         }
 
         if (j == 0)

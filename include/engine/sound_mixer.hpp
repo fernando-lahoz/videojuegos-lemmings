@@ -18,14 +18,14 @@ private:
 
 public:
 
-    void load(const std::string& file, int volume)
+    void load(const std::string& file)
     {
         
             std::cout << "OA" << std::endl;
         auto raw = Mix_LoadMUS(file.c_str());
         if (raw == nullptr)
             throw error::sdl_exception(ERROR_CONTEXT);
-        Mix_VolumeMusic(volume);
+        // Mix_VolumeMusic(volume);
         music = std::shared_ptr<Mix_Music>{raw, Mix_FreeMusic};
     }
 
@@ -44,12 +44,11 @@ private:
     std::shared_ptr<Mix_Chunk> sound {nullptr, Mix_FreeChunk};
 
 public:
-    void load(const std::string& file, int volume)
+    void load(const std::string& file)
     {
         auto raw = Mix_LoadWAV(file.c_str());
         if (!raw)
             throw error::sdl_exception(ERROR_CONTEXT);
-        Mix_VolumeChunk(raw, volume);
         sound = std::shared_ptr<Mix_Chunk>{raw, Mix_FreeChunk};
     }
 
@@ -88,7 +87,7 @@ public:
         }
     }
 
-    inline Music load_music(const std::string& file, int volume)
+    inline Music load_music(const std::string& file)
     {
         auto it = music_cache.find(file);
         if (it != music_cache.end()) {
@@ -96,14 +95,14 @@ public:
         }
         else {
             Music music;
-            music.load(file, volume);
+            music.load(file);
             music_cache[file] = music;
 
             return music;
         }
     }
 
-    inline Sound load_sound(const std::string& file, int volume)
+    inline Sound load_sound(const std::string& file)
     {
         auto it = sound_cache.find(file);
         if (it != sound_cache.end()) {
@@ -111,7 +110,7 @@ public:
         }
         else {
             Sound sound;
-            sound.load(file, volume);
+            sound.load(file);
             sound_cache[file] = sound;
 
             return sound;
@@ -119,10 +118,11 @@ public:
     }
 
     //Plays music from the beginning
-    inline void play_music(Music music, bool loop = false)
+    inline void play_music(Music music, bool loop = false, uint8_t volume = 100)
     {
         std::cout << "PLAY" << std::endl;
         is_music_paused = false;
+        Mix_VolumeMusic(volume);
         Mix_PlayMusic(music.get(), loop ? -1 : 0);
     }
 
@@ -193,10 +193,10 @@ public:
     }
 
     //Plays sound on a free channel
-    inline void play_sound(Sound sound, bool loop = false)
+    inline void play_sound(Sound sound, uint8_t volume = 100, bool loop = false)
     {
+        Mix_VolumeChunk(sound.get(), volume);
         int channel = Mix_PlayChannel(-1, sound.get(), loop ? -1 : 0);
-
         is_channel_paused[channel] = false;
     }
 
