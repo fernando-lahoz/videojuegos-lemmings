@@ -334,8 +334,6 @@ public:
   }
   ~Lemming()
   {
-    if (counter)
-      counter->destroy();
   }
 
   void set_dead_marked(bool new_value) { dead_marked = new_value; }
@@ -1533,6 +1531,9 @@ public:
 
     game_info.sub_n_lemmings_out();
     destroy();
+    if (counter)
+      counter->destroy();
+
   }
 
   void on_creation(Engine &engine) override
