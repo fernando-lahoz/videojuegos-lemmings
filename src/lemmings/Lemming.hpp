@@ -487,7 +487,14 @@ public:
 
       if (counter)
       {
-        counter->set_position2D(Point2f(position.x + (diagonal.x / 2) - (counter->get_diagonal().x / 2), position.y - 2));
+        if(is_drowning())
+        {
+          counter->set_position2D(Point2f(position.x + ((int)(current_frame/4))*4 + (diagonal.x / 2) - (counter->get_diagonal().x / 2), position.y - 2));
+        }
+        else
+        {
+          counter->set_position2D(Point2f(position.x + (diagonal.x / 2) - (counter->get_diagonal().x / 2), position.y - 2));
+        }
       }
 
       if (is_falling())
