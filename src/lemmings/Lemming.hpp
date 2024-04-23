@@ -533,7 +533,7 @@ public:
         }
         else if (hit_offset_down >= diagonal.y / 2)
         {
-          std::cout << "lemming nº" << get_entity_id() << " se cayó pq detecto dist: " << hit_offset_down << "\n";
+          // std::cout << "lemming nº" << get_entity_id() << " se cayó pq detecto dist: " << hit_offset_down << "\n";
           on_ground = false;
         }
       }
@@ -550,8 +550,9 @@ public:
                              force_entity_names, hit_offset_down, hit_entity_down);
         if (hit_offset_down > diagonal.y / 2)
         {
-          std::cout << "Estaba bloqueando pero me cai" << std::endl;
+          // std::cout << "Estaba bloqueando pero me cai" << std::endl;
           remove_skill(Utils::Lemming_Skills::BLOCK);
+          change_collision_type(engine, Entity::Collision_type::CHARACTER);
           on_ground = false;
         }
       }
