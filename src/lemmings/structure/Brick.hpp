@@ -10,7 +10,7 @@ private:
 
 public:
   Brick(Point3f position, Engine &engine, Game_info &_game_info, int _direction, bool is_debug = false)
-      : Directional_structure(position, Vector2f(56, 24), engine, Utils::LEVEL_BRICKS_TYPE[_game_info.get_difficulty_selected()][_game_info.get_level_selected()] + 18, 12, 0.0f, "BRICKS", false, _game_info, _direction, is_debug)
+      : Directional_structure(position, Vector2f(56, 24.5), engine, Utils::LEVEL_BRICKS_TYPE[_game_info.get_difficulty_selected()][_game_info.get_level_selected()] + 18, 12, 0.0f, "BRICKS", false, _game_info, _direction, is_debug)
   {
     std::string frame_path = "assets/structure/structure_" + std::to_string(structure_type) + "_" + std::to_string(direc) + "_0.png";
     Texture txt = engine.load_texture(frame_path.c_str());
@@ -25,7 +25,7 @@ public:
   bool add_brick()
   {
     bool res = true;
-    if (bricks >= 11)
+    if (bricks >= 12)
       res = false;
     set_active_texture(textures[bricks - 1]);
     bricks++;
@@ -34,7 +34,7 @@ public:
 
   bool check_bricks()
   {
-    return !(bricks >= 11);
+    return !(bricks >= 12);
   }
 
   void pre_physics(Engine &) override
@@ -46,13 +46,18 @@ public:
     bool destroy = false;
     if (is_same_direction(direction))
     {
+      float fraction = (12.0f - bricks) / 12.0f;
+      float affectedHeight = diagonal.y * fraction;
+      Bound2f affectedBox = box;
+      affectedBox.pMin.y = position.y + affectedHeight;
+
       for (int i = 0; i < max_frames; i++)
       {
-        if (textures[i].set_alpha_box(world_to_local(box), 0, engine.get_renderer()))
+        if (textures[i].set_alpha_box(world_to_local(affectedBox), 0, engine.get_renderer()))
           destroy = true;
       }
       if (destroy)
-        set_active_texture(textures[bricks - 1]);
+        set_active_texture(textures[bricks - 2]);
     }
     return destroy;
   }

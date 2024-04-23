@@ -39,7 +39,7 @@ public:
     animation_duration = 36.0f;
 
     auto &mixer = engine.get_sound_mixer();
-    intro = mixer.load_music("assets/music/01_March of the Mods (Intro Theme).mp3", game_info.get_music_volume());
+    intro = mixer.load_music("assets/music/01_March of the Mods (Intro Theme).mp3");
   }
 
   void update_animation(Engine &engine)
@@ -54,7 +54,7 @@ public:
     if (!is_playing && game_info.get_sound_effects())
     {
       auto &mixer = engine.get_sound_mixer();
-      mixer.play_music(intro, false);
+      mixer.play_music(intro, false, game_info.get_music_volume());
       is_playing = true;
     }
     time_frame_sprite += delta_time;

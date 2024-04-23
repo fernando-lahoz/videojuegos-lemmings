@@ -26,7 +26,7 @@ public:
         txt_right = engine.load_texture("assets/geralt_right.png");
 
         auto& mixer = engine.get_sound_mixer();
-        oof = mixer.load_sound("assets/sounds/explode.wav", 128);
+        oof = mixer.load_sound("assets/sounds/explode.wav");
         disable_alpha_mouse();
         constructor_set_collision_type(Collision_type::CHARACTER);
     }

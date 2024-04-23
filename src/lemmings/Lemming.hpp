@@ -207,11 +207,10 @@ class Lemming : public Rigid_body
 
   void go_escape()
   {
-
     // Hacemos que suene el yipee
     if (play_death_sound)
     {
-      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::YIPEE_SOUND));
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::YIPEE_SOUND), game_info.get_effects_volume());
       play_death_sound = false;
     }
 
@@ -228,7 +227,7 @@ class Lemming : public Rigid_body
     // Hacemos que suene el chapuzon que se dan
     if (play_death_sound)
     {
-      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SPLASH_SOUND));
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SPLASH_SOUND), game_info.get_effects_volume());
       play_death_sound = false;
     }
 
@@ -528,6 +527,7 @@ public:
           {
             // std::cout << "sube baja altura\n";
             position.y += (hit_offset_down - diagonal.y / 4);
+            position.y = (static_cast<int>(position.y) / 2) * 2;
           }
         }
         else if (hit_offset_down > diagonal.y / 2)
@@ -669,7 +669,7 @@ public:
           if (!brick_ptr)
           {
             auto point = direction == -1 ? local_to_world(Point2f(-0.85, 0.15)) : local_to_world(Point2f(0.45, 0.15));
-            brick_ptr = std::make_shared<Brick>(Point3f(int(point.x), int(point.y), 250), engine, game_info, direction);
+            brick_ptr = std::make_shared<Brick>(Point3f((static_cast<int>(point.x) / 2) * 2, (static_cast<int>(point.y) / 2) * 2, 250), engine, game_info, direction);
             engine.get_game().create_entity(brick_ptr);
           }
           else
@@ -681,12 +681,15 @@ public:
         {
           position.y -= 2;
           position.x += 4 * direction;
+        }
+        else if (current_frame == 1)
+        {
           Ray ray_up = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, -1));
           Ray ray_dir = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(direction, 0));
           Float hit_offset;
           EntityPtr hit_entity;
           std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"};
-          if (!brick_ptr->check_bricks())
+          if (brick_ptr && !brick_ptr->check_bricks())
           {
             brick_ptr = NULL;
             remove_skill(Utils::Lemming_Skills::BUILD);
@@ -695,7 +698,7 @@ public:
           else if (engine.intersect_ray(ray_up, get_entity_id(),
                                         force_entity_names, hit_offset, hit_entity))
           {
-            if (hit_offset < diagonal.y / 4)
+            if (hit_offset < diagonal.y * 1.1 / 4)
             {
               brick_ptr = NULL;
               remove_skill(Utils::Lemming_Skills::BUILD);
@@ -848,9 +851,7 @@ public:
           }
 
           do_action_in_frame = true;
-          speed.x = 0;
-          speed.y = velocity;
-          set_speed(speed);
+          position.y += 6; // Desplazamos el Lemming hacia abajo
         }
       }
       else
@@ -1207,7 +1208,7 @@ public:
     Entity::on_collision(engine, other);
     auto speed = get_speed();
 
-    if (other->get_entity_name() == "MAP" || other->get_entity_name() == "DIRECTIONAL WALL" || other->get_entity_name() == "METAL" || other->get_entity_name() == "Lemming")
+    if (other->get_entity_name() == "MAP" || other->get_entity_name() == "DIRECTIONAL WALL" || other->get_entity_name() == "METAL" || other->get_entity_name() == "BRICKS" || other->get_entity_name() == "Lemming")
     {
       // if (other->get_entity_name() == "Lemming")
       // {
@@ -1234,7 +1235,7 @@ public:
           {
             go_climb();
           }
-          else
+          else if (other->get_entity_name() != "BRICKS")
           {
             position.x -= 3 * direction;
             direction *= -1;
@@ -1249,10 +1250,13 @@ public:
         position.x -= 2 * direction;
         if (check_collision_up(other))
         {
-          std::cout << "Techo\n";
-          go_fall();
-          // position.x += 2 * direction;
-          direction *= -1;
+          if (other->get_entity_name() != "BRICKS")
+          {
+            std::cout << "Techo\n";
+            go_fall();
+            // position.x += 2 * direction;
+            direction *= -1;
+          }
         }
         else
         {
@@ -1277,7 +1281,6 @@ public:
       {
         if (check_collision_down(other))
         {
-          // std::cout << "detect down\n";
           // std::cout << on_ground << std::endl;
 
           on_ground = true;
@@ -1290,7 +1293,8 @@ public:
           }
           else
           {
-            position.y -= 1;
+            position.y -= 2;
+            position.y = (static_cast<int>(position.y) / 2) * 2;
             distance_fall = 0.0f;
             go_walk();
           }
@@ -1386,27 +1390,37 @@ public:
     }
     if (skills & Utils::BLOCK)
     {
+      if (!is_blocking())
+        restart_animation();
       go_block();
       change_collision_type(engine, Entity::Collision_type::STRUCTURE);
       return;
     }
     if (skills & Utils::DIG)
     {
+      if (!is_digging())
+        restart_animation();
       go_dig();
       return;
     }
     if (skills & Utils::BASH)
     {
+      if (!is_bashing())
+        restart_animation();
       go_bash();
       return;
     }
     if (skills & Utils::MINE)
     {
+      if (!is_mining())
+        restart_animation();
       go_mine();
       return;
     }
     if (skills & Utils::BUILD)
     {
+      if (!is_building())
+        restart_animation();
       go_build();
       return;
     }

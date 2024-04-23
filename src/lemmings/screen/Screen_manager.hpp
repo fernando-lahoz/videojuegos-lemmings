@@ -117,7 +117,7 @@ public:
 
     //Hacemos sonar una puerta que chirria
     if(game_info.get_play_open_sound()) {
-        engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::DOOR_SOUND));
+        engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::DOOR_SOUND), game_info.get_effects_volume());
         game_info.set_play_open_sound(false);
     }
 
@@ -127,7 +127,7 @@ public:
       //Hacemos sonar el letsgo
       if(game_info.get_play_letsgo_sound())
       {
-        engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::LETS_GO_SOUND));
+        engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::LETS_GO_SOUND), game_info.get_effects_volume());
         
         //FIXME: Necesito una función para saber cuando no esta sonando nigun sonido, aunque parece no ser necesaria
         //UPDATE: Usa esta: SoundMixer::is_playing_any_sound()
@@ -170,8 +170,8 @@ public:
             return MUSIC_DIRECTORY + LEVEL_MUSIC[((30 * difficulty + level - 1) % 17)];
           }
         }();
-        
-        mixer.play_music(mixer.load_music(music_file, game_info.get_music_volume()), true /*play on loop*/);
+
+        mixer.play_music(mixer.load_music(music_file), true, game_info.get_music_volume());
       }
     }
   }
