@@ -49,6 +49,7 @@ class AI_autoplay
         {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::EMPTY},
         {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::EMPTY, TILE::GOAL, TILE::DIRT, TILE::EMPTY},
         {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT},
+        {TILE::EMPTY, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT, TILE::DIRT},
     };
 
     std::vector<std::vector<TILE>> map3 = 
@@ -88,14 +89,15 @@ class AI_autoplay
     };
 
 
-    unsigned int ability_charges1[8] = {0, 0, 0, 0, 0, 0, 0, 10};
+    unsigned int ability_charges1[8] = {0, 0, 0, 0, 0, 0, 0, 1};
     unsigned int ability_charges3[8] = {0, 0, 0, 10, 0, 0, 0, 0};
-    unsigned int ability_charges[8] = {0, 0, 0, 0, 10, 1, 0, 0};
+    unsigned int ability_charges11[8] = {0, 0, 0, 0, 10, 1, 0, 0};
+    unsigned int ability_charges[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
     std::vector<std::vector<TILE>> map_original = map11;
     std::vector<std::vector<TILE>> map = map_original;
 
-    bool ground_padding = true; // Map 3 and 11 have ground padding, others not
+    bool ground_padding = true;
 
     int n_rows = map.size();
     int n_cols = map[0].size();
@@ -107,6 +109,8 @@ class AI_autoplay
     int n_falled = 0;
     int death_by_fall_tiles = 6;
     int bob_the_builder = -1;
+
+    bool active_ai = false;
 
 
     public:
@@ -170,7 +174,6 @@ class AI_autoplay
 
     AI_autoplay()
     {
-        generate_path();
     }
 
     // Returns true if the current tile is at the border of the map
@@ -619,10 +622,53 @@ class AI_autoplay
         return init_tile;
     }
 
-    void init_executor()
+    void init_executor(int level_id)
     {
+        if (level_id == -1) {
+            active_ai = false;
+            return;
+        }
+        else {
+            active_ai = true;
+        }
+
         executing_action = 0;
         bob_the_builder = -1;
+        initial_direction = DIRECTION::RIGHT;
+
+
+        if (level_id == 1)
+        {
+            map = map1;
+            map_original = map1;
+
+            for (int i = 0; i < 8; i++)
+            {
+                ability_charges[i] = ability_charges1[i];
+            }
+        }
+        else if (level_id == 3)
+        {
+            map = map3;
+            map_original = map3;
+            
+            for (int i = 0; i < 8; i++)
+            {
+                ability_charges[i] = ability_charges3[i];
+            }
+        }
+        else if (level_id == 11)
+        {
+            map = map11;
+            map_original = map11;
+            
+            for (int i = 0; i < 8; i++)
+            {
+                ability_charges[i] = ability_charges11[i];
+            }
+        }
+
+        generate_path();
     }
 
     void generate_path()
@@ -639,17 +685,17 @@ class AI_autoplay
             map = map_original;
             generate_path_coordinates();
 
-            std::cout << "Goal reached!" << std::endl;
+            //std::cout << "Goal reached!" << std::endl;
 
-            std::cout << "Actions: ";
-            for (auto action : actions) {
-                std::cout << to_string(action) << " ";
-            }
-            std::cout << std::endl;
+            //std::cout << "Actions: ";
+            //for (auto action : actions) {
+            //    std::cout << to_string(action) << " ";
+            //}
+            //std::cout << std::endl;
         }
         else
         {
-            std::cout << "Goal not reached!" << std::endl;
+            std::cout << "WARNING: AI did not found a solution for the level" << std::endl;
         }
     }
 
@@ -726,6 +772,9 @@ class AI_autoplay
             EntityPtr e_map,
             std::vector<std::shared_ptr<Lemming>>& lemmings)
     {
+        if (!active_ai)
+            return;
+
         int speed = game_info.get_game_speed();
 
         while (is_executed_by_engine(actions[executing_action])) {
@@ -814,15 +863,9 @@ class AI_autoplay
 
                 if (Physics_engine::alpha_box_collision(*e_map, lemming_bound))
                 {
-                    std::cout << "Finished!" << std::endl;
                     if (execute_action(lemming, actions[executing_action]))
                         executing_action++;
                 }
-                else
-                {
-                    std::cout << "Not finished!" << std::endl;
-                }   
-
             }
             else if (actions[executing_action] == ACTION::BUILD)
             {

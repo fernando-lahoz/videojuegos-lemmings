@@ -109,9 +109,21 @@ public:
     // screen.go_level(engine, 14, 3); // Con este codigo accedes al nivel sin tener que pasar por los menus
   }
 
-  void on_level_startup(int level_id) override
+  void on_level_startup(int difficulty_number, int level_id) override
   {
-    ai.init_executor();
+    int executor_id = -1;
+
+    std::cout << "Starting level " << level_id << " of difficulty " << difficulty_number << std::endl;
+
+    if (difficulty_number == 0 && level_id == 1)
+      executor_id = 1;
+    else if (difficulty_number == 0 && level_id == 3)
+      executor_id = 3;
+    else if (difficulty_number == 1 && level_id == 1)
+      executor_id = 11;
+
+    // -1 if the ai should do nothing
+    ai.init_executor(executor_id);
   }
 
   void on_entity_destruction(Engine &engine, EntityPtr entity) override
