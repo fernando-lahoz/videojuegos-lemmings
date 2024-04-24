@@ -3,10 +3,10 @@ import cv2
 
 
 # Load image
-img = cv2.imread('assets/map3.png')
+img = cv2.imread('assets/map11.png')
 
-n_rows = 15
-n_cols = 8
+n_rows = 6
+n_cols = 15
 
 # Draw a grid
 for i in range(1, n_rows):
