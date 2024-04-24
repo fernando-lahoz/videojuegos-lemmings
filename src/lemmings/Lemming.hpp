@@ -1323,7 +1323,7 @@ public:
       }
     }
 
-    if (other->get_entity_name() == "GATE TRIGGER")
+    if (other->get_entity_name() == "GATE TRIGGER" && is_walking())
     {
       // std::cout << "Gate hitbox" << std::endl;
       on_ground = true;
