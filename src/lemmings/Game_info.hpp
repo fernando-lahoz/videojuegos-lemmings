@@ -25,9 +25,14 @@ private:
   // credits
   int credit_frame = 0;
 
+  //ia
+  bool ia = false;
+
   // level selector
   int level_selected = 1;
   int difficulty_selected = 0;
+  int level_selected_ia = 1;
+  int difficulty_selected_ia = 0;
   bool is_arrow_hovered = false;
 
   // principal level settings
@@ -38,6 +43,8 @@ private:
   bool spawn_ended = false;
   bool level_is_paused = false;
   bool all_die = false;
+  int level_ia = 0;
+  int difficulty_ia = 0;
 
   // level info
   LevelsInfo levelsInfo;
@@ -82,6 +89,8 @@ private:
 
   // key bindings
   
+  // ia
+
 
   // sound effects
   Sound SOUND_EFFECT[19];
@@ -180,9 +189,26 @@ public:
     play_music = true;
     is_door_open = false;
   }
-  int get_level() const { return level; }
-  int get_difficulty() const { return difficulty; }
 
+  int conversion_level_ia(){
+    if (ia){
+      if (difficulty_ia == 0){
+      if (level_selected_ia == 2){return 3;}
+      return level_selected_ia;
+    }
+    else{ return level_selected_ia;}
+    }
+    else{
+      return level_selected;
+    }
+  }
+
+  int get_level() const { if (ia) {return level_ia;} else {return level;} }
+  int get_difficulty() const { if (ia) return difficulty_ia; else {return difficulty;} }
+
+  void set_ia(bool ia_) { ia = ia_; }
+  int get_ia() const { return ia; }
+  
   void set_do_action(int action) { do_action = action; }
   int get_do_action() const { return do_action; }
 
@@ -192,30 +218,49 @@ public:
   void set_do_transition(bool new_value) { do_transition = new_value; }
   bool get_do_transition() const { return do_transition; }
 
-  void add_level_selected() { level_selected = math::min(level_selected + 1, 30); }
-  void sub_level_selected() { level_selected = math::max(level_selected - 1, 1); }
-  int get_level_selected() const { return level_selected; }
-  void set_level_selected(int new_level) { level_selected = new_level; }
+  void add_level_selected() { if (ia) {level_selected_ia = math::min(level_selected_ia + 1, 2);} else {level_selected = math::min(level_selected + 1, 30);} }
+  void sub_level_selected() { if (ia) level_selected_ia = math::max(level_selected_ia - 1, 1); else level_selected = math::max(level_selected - 1, 1); }
+  int get_level_selected() const { if (ia) {return level_selected_ia;} else {return level_selected;} }
+  void set_level_selected(int new_level) { if (ia) level_selected_ia = new_level; else level_selected = new_level; }
 
   void add_difficulty_selected()
   {
+    if (ia){
+      int aux = math::min(difficulty_selected_ia + 1, 1);
+      if (aux != difficulty_selected_ia)
+      {
+        difficulty_selected_ia = aux;
+        set_level_selected(1);
+      }
+    }
+    else{
     int aux = math::min(difficulty_selected + 1, 3);
     if (aux != difficulty_selected)
     {
       difficulty_selected = aux;
       set_level_selected(1);
-    }
+    }}
   }
   void sub_difficulty_selected()
   {
-    int aux = math::max(difficulty_selected - 1, 0);
-    if (aux != difficulty_selected)
-    {
-      difficulty_selected = aux;
-      set_level_selected(1);
+    if (ia){
+      int aux = math::max(difficulty_selected_ia - 1, 0);
+      if (aux != difficulty_selected_ia)
+      {
+        difficulty_selected_ia = aux;
+        set_level_selected(1);
+      }
+    }
+    else{
+      int aux = math::max(difficulty_selected - 1, 0);
+      if (aux != difficulty_selected)
+      {
+        difficulty_selected = aux;
+        set_level_selected(1);
+      }
     }
   }
-  int get_difficulty_selected() const { return difficulty_selected; }
+  int get_difficulty_selected() const { if (ia) return difficulty_selected_ia; else return difficulty_selected; }
 
   void add_game_speed() { game_speed = math::min(game_speed + 1, 4); }
   void sub_game_speed() { game_speed = math::max(game_speed - 1, 1); }
@@ -261,11 +306,23 @@ public:
   void set_build_menu(int _menu, int _level = -1, int _difficulty = -1)
   {
     build_menu = _menu;
-    if (_level != -1 && _difficulty != -1)
-    {
-      level = _level;
-      difficulty = _difficulty;
+    if (ia){
+      if (_level != -1 && _difficulty != -1)
+        {
+          //std::cout << "Level " << level << " : " << _level << std::endl; 
+          level_ia = _level;
+          difficulty_ia = _difficulty;
+        }
     }
+    else{
+      if (_level != -1 && _difficulty != -1)
+      {
+        //std::cout << "Level " << level << " : " << _level << std::endl; 
+        level = _level;
+        difficulty = _difficulty;
+      }
+    }
+    
   }
   int get_build_menu() const { return build_menu; }
 
@@ -348,12 +405,13 @@ public:
   void add_n_lemmings_in()
   {
     n_lemmings_in++;
-    percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level], 100);
+    if (ia){percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS_IA[difficulty_ia][level_ia], 100); } else{percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level], 100);}
+    
   }
   void sub_n_lemmings_in()
   {
     n_lemmings_in--;
-    percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level], 100);
+    if (ia) percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS_IA[difficulty_ia][level_ia], 100); else percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level], 100);
   }
 
   int get_n_lemmings_in() const { return n_lemmings_in; }
@@ -497,33 +555,56 @@ public:
   }
 
   bool is_selected_level_won()
-  {
-    return levelsInfo.isLevelWon(difficulty_selected, level_selected);
+  { 
+    if (ia) return levelsInfo.isLevelWon(difficulty_selected_ia, level_selected_ia);
+    else return levelsInfo.isLevelWon(difficulty_selected, level_selected);
   }
 
   std::string get_selected_level_best_time()
   {
-    int m = levelsInfo.getMin(difficulty_selected, level_selected);
-    int s = levelsInfo.getSec(difficulty_selected, level_selected);
-    return std::to_string(m) + (s < 10 ? "-0" : "-") + std::to_string(s);
+    if (ia){
+      int m = levelsInfo.getMin(difficulty_selected_ia, level_selected_ia);
+      int s = levelsInfo.getSec(difficulty_selected_ia, level_selected_ia);
+      return std::to_string(m) + (s < 10 ? "-0" : "-") + std::to_string(s);
+    }
+    else{
+      int m = levelsInfo.getMin(difficulty_selected, level_selected);
+      int s = levelsInfo.getSec(difficulty_selected, level_selected);
+      return std::to_string(m) + (s < 10 ? "-0" : "-") + std::to_string(s);
+    }
   }
 
   std::string get_selected_level_best_perc()
   {
-    return std::to_string(levelsInfo.getPerc(difficulty_selected, level_selected)) + "%";
+    if (ia) return std::to_string(levelsInfo.getPerc(difficulty_selected_ia, level_selected_ia)) + "%";
+    else return std::to_string(levelsInfo.getPerc(difficulty_selected, level_selected)) + "%";
   }
 
   void manage_level_results()
   {
-    int needed = Utils::LEVEL_SAVE_LEMMINGS[difficulty][level] * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level];
-    int rescued = get_percen_lemmings_in();
-    int limit_time = Utils::LEVEL_TIME_LIMIT[difficulty][level];
-    int left_time = get_actual_minutes_left()*60 + get_actual_seconds_left();
-    if (rescued >= needed && left_time > 0)
-    {
-      int game_time = limit_time - left_time;
-      LevelInfo wonLevel(true, game_time/60, game_time%60, rescued);
-      levelsInfo.setNewLevelInfo(difficulty, level, wonLevel);
+    if (ia){
+      int needed = Utils::LEVEL_SAVE_LEMMINGS_IA[difficulty_ia][level_ia] * 100 / Utils::LEVEL_N_LEMMINGS_IA[difficulty_ia][level_ia];
+      int rescued = get_percen_lemmings_in();
+      int limit_time = Utils::LEVEL_TIME_LIMIT_IA[difficulty_ia][level_ia];
+      int left_time = get_actual_minutes_left()*60 + get_actual_seconds_left();
+      if (rescued >= needed && left_time > 0)
+      {
+        int game_time = limit_time - left_time;
+        LevelInfo wonLevel(true, game_time/60, game_time%60, rescued);
+        levelsInfo.setNewLevelInfo(difficulty_ia, level_ia, wonLevel);
+      }
+    }
+    else{
+      int needed = Utils::LEVEL_SAVE_LEMMINGS[difficulty][level] * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level];
+      int rescued = get_percen_lemmings_in();
+      int limit_time = Utils::LEVEL_TIME_LIMIT[difficulty][level];
+      int left_time = get_actual_minutes_left()*60 + get_actual_seconds_left();
+      if (rescued >= needed && left_time > 0)
+      {
+        int game_time = limit_time - left_time;
+        LevelInfo wonLevel(true, game_time/60, game_time%60, rescued);
+        levelsInfo.setNewLevelInfo(difficulty, level, wonLevel);
+      }
     }
   }
 

@@ -97,9 +97,20 @@ public:
       engine.get_game().create_entity(text);
       return;
     }
-    if (type == 2 && last_text != Utils::LEVEL_NAME[game_info.get_difficulty_selected()][game_info.get_level_selected()])
+    if (!game_info.get_ia() && type == 2 && last_text != Utils::LEVEL_NAME[game_info.get_difficulty_selected()][game_info.get_level_selected()])
     {
       last_text = Utils::LEVEL_NAME[game_info.get_difficulty_selected()][game_info.get_level_selected()];
+      text->destroy();
+
+      text = std::make_shared<Text_displayer>(position, letter_size, game_info, justified, font_texture,
+                                              texture_letter_size, map, last_text, engine,
+                                              "TEXT");
+      engine.get_game().create_entity(text);
+      return;
+    }
+    if (game_info.get_ia() && type == 2 && last_text != Utils::LEVEL_NAME_IA[game_info.get_difficulty_selected()][game_info.get_level_selected()])
+    {
+      last_text = Utils::LEVEL_NAME_IA[game_info.get_difficulty_selected()][game_info.get_level_selected()];
       text->destroy();
 
       text = std::make_shared<Text_displayer>(position, letter_size, game_info, justified, font_texture,

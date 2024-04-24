@@ -104,12 +104,37 @@ namespace Utils
     MAYHEM = 3
   };
 
+  //IA LEVELS
+  const std::string DIFFICULTY_NAME_IA[2] = {"Fun", "Tricky"};
+  const std::string LEVEL_NAME_IA[2][3] = {{"Este mapa es de prueba", "Just dig!", "Tailor-made for blockers"},
+                                         {"?", "This should be a doddle!", "We all fall down"}};
+  const int LEVEL_N_LEMMINGS_IA[2][3] = {{120, 10, 50},
+                                        {120, 100, 40}}; 
+  const int LEVEL_SAVE_LEMMINGS_IA[2][3] = {{7, 1, 5,},
+                                        {120, 50, 40}};  
+  const double LEVEL_TIME_LIMIT_IA[2][3] = {{60.f, 300.f, 300.f},
+                                        {999.f, 240.f, 180.f}};
+
+  const int LEVEL_SPAWN_VELOCITY_IA[2][3] = {{1, 50, 50},
+                                        {1, 50, 1}};     
+  const float LEVEL_CAMERA_POS_INI_IA[4][31] = {{320, 1630.62, 1510.69},
+                                        {1584, 1027.6, 1034.38,}};       
+  const std::vector<int> LEVEL_SKILLS_AMOUNT_IA[4][31] = {{
+                                                          {99, 99, 99, 99, 99, 99, 99, 99},
+                                                          {0, 0, 0, 0, 0, 0, 0, 10},
+                                                          {0, 0, 0, 10, 0, 0, 0, 0}     
+                                                          },
+                                                          {
+                                                          {99, 99, 99, 99, 99, 99, 99, 99},
+                                                          {10, 10, 10, 10, 10, 10, 10, 10},
+                                                          {0, 0, 0, 0, 0, 0, 0, 40}
+                                                          }};                                                  
+
   const std::string DIFFICULTY_NAME[4] = {"Fun", "Tricky", "Taxing", "Mayhem"};
   const std::string LEVEL_NAME[4][31] = {{"Este mapa es de prueba", "Just dig!", "Only floaters can survive this", "Tailor-made for blockers", "Now use miners and climbers", "You need bashers this time", "A task for blockers and bombers", "Builders will help you here", "Not as complicated as it looks", "As long as you try your best", "Smile if you love Lemmings", "Keep your hair on Mr. Lemming", "Patience", "We all fall down", "Origins and Lemmings", "Don't let your eyes deceive you", "Don't do anything too hasty", "Easy when you know how", "Let's block and blow", "Take good care of my Lemmings", "We are now at LEMCON ONE", "You Live and Lem", "A Beast of a level", "I've lost that Lemming feeling", "Konbanwa Lemming San", "Lemmings Lemmings everywhere", "Nightmare on Lem Street", "Let's be careful out there", "If only they could fly", "worra lorra Lemmings", "Lock up your Lemmings"},
                                          {"?", "This should be a doddle!", "We all fall down", "A ladder would be handy", "Here's one I prepared earlier", "Careless clicking costs lives", "Lemmingology", "Been there, seen it, done it", "Lemming sanctuary in sight", "They just keep on coming", "There's a lot of them about", "Lemmings in the attic", "Bitter Lemming", "Lemming Drops", "MENACING !!", "Ozone friendly Lemmings", "Luvly Jubly", "Diet Lemmingaid", "It's Lemmingentry Watson", "Postcard from Lemmingland", "One-way digging to freedom", "All the 6's", "Turn around young lemmings!", "From The Boundary Line", "Tightrope City", "Cascade", "I have a cunning plan", "The Island of the Wicker people", "Lost something?", "Rainbow Island", "The Crankshaft"},
                                          {"?", "If at first you don't succeed..", "Watch out, there's traps about", "Heaven can wait (we hope!!!!)", "Lend a helping hand....", "The Prison!", "Compression Method 1", "Every Lemming for himself!!!", "The Art Gallery", "Perseverance", "Izzie Wizzie lemmings get busy", "The ascending pillar scenario", "Livin' On The Edge", "Upsidedown World", "Hunt the Nessy....", "What an AWESOME level", "Mary Poppins' land", "X marks the spot", "Tribute to M.C.Escher", "Bomboozal", "Walk the web rope", "Feel the heat!", "Come on over to my place", "King of the castle", "Take a running jump.....", "Follow the leader...", "Triple Trouble", "Call in the bomb squad", "POOR WEE CREATURES!", "How do I dig up the way?", "We all fall down"},
                                          {"?", "Steel Works", "The Boiler Room", "It's hero time!", "The Crossroads", "Down, along, up. In that order", "One way or another", "Poles Apart", "Last one out is a rotten egg!", "Curse of the Pharaohs", "Pillars of Hercules", "We all fall down", "The Far Side", "The Great Lemming Caper", "Pea Soup", "The Fast Food Kitchen...", "Just a Minute...", "Stepping Stones", "And then there were four....", "Time to get up!", "No added colours or Lemmings", "With a twist of lemming please", "A BeastII of a level", "Going up...", "All or Nothing", "Have a nice day!", "The Steel Mines of Kessel", "Just a Minute (Part Two)", "Mind the step.....", "Save Me", "Rendezvous at the Mountain"}};
-
   // LEVEL DATA
   const int LEVEL_N_LEMMINGS[4][31] = {{120, 10, 10, 50, 10, 50, 50, 50, 100, 100, 20, 60, 80, 20, 80, 100, 80, 50, 70, 100, 50, 100, 100, 80, 30, 100, 2, 50, 100, 100, 60},
                                        {120, 100, 40, 100, 100, 100, 5, 75, 100, 75, 100, 50, 50, 100, 80, 10, 50, 50, 10, 50, 100, 66, 100, 100, 80, 100, 100, 100, 100, 100, 100},

@@ -58,6 +58,9 @@ public:
       game_info.set_cursor_menu_visible();
       game_info.set_is_transition_done(false);
       clear_screen(engine);
+      if (game_info.get_build_menu() == Utils::MENU_TYPE::IA){
+        game_info.set_ia(true);
+      }
       std::cout << "GO TO MENU" << std::endl;
       go_menu(engine, game_info.get_build_menu(), game_info.get_level(), game_info.get_difficulty());
     }
