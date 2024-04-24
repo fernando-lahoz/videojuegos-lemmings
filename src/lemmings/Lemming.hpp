@@ -488,16 +488,16 @@ public:
 
       if (counter)
       {
-        if(is_drowning())
+        if (is_drowning())
         {
-          counter->set_position2D(Point2f(position.x + ((int)(current_frame/4))*4 + (diagonal.x / 2) - (counter->get_diagonal().x / 2), position.y - 2));
+          counter->set_position2D(Point2f(position.x + ((int)(current_frame / 4)) * 4 + (diagonal.x / 2) - (counter->get_diagonal().x / 2), position.y - 2));
         }
         else
         {
           counter->set_position2D(Point2f(position.x + (diagonal.x / 2) - (counter->get_diagonal().x / 2), position.y - 2));
         }
 
-        if (is_crashing())//Eliminamos el contador de la cuenta regresiba cuando se muere por caida
+        if (is_crashing()) // Eliminamos el contador de la cuenta regresiba cuando se muere por caida
           counter->destroy();
       }
 
@@ -514,7 +514,7 @@ public:
       if (is_walking())
       {
         position.x += 2 * direction;
-        Ray ray_down = Ray(local_to_world(Point2f(0.45, 0.5)), Vector2f(0, 1));
+        Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.4)), Vector2f(0, 1));
         float hit_offset_down = diagonal.y / 2;
         EntityPtr hit_entity_down;
 
@@ -531,17 +531,20 @@ public:
                                force_entity_names, hit_offset_down, hit_entity_down);
         }
 
-        if (hit_offset_down < diagonal.y / 2 && hit_offset_down > 0)
+        if (hit_offset_down < diagonal.y * (14. / 20.))
         {
-          if (std::abs(hit_offset_down - diagonal.y / 4) > diagonal.y / 80)
+          if (hit_offset_down > 0 && (hit_offset_down > diagonal.y * (8. / 20.) || hit_offset_down < diagonal.y * (6. / 20.)))
           {
-            // std::cout << "sube baja altura\n";
-            position.y += (hit_offset_down - diagonal.y / 4);
-            position.y = (static_cast<int>(position.y) / 2) * 2;
+            std::cout << "sube baja altura " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << " - " << static_cast<int>(round(hit_offset_down / 2.) * 2) << "\n";
+            hit_offset_down = (static_cast<int>(round(hit_offset_down / 2.) * 2));
+            position.y += (hit_offset_down - diagonal.y * (8. / 20.));
+            // position.y = (static_cast<int>(position.y) / 2) * 2;
+            // position.y = static_cast<int>(position.y);
           }
         }
-        else if (hit_offset_down >= diagonal.y / 2)
+        else
         {
+          std::cout << "cae " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << "\n";
           // std::cout << "lemming nº" << get_entity_id() << " se cayó pq detecto dist: " << hit_offset_down << "\n";
           on_ground = false;
         }
@@ -778,11 +781,11 @@ public:
 
     // EXPLODING LOGIC
     if (update_explode_countdown(engine))
-      if(!(is_crashing()))
-      {//Si no se está muriendo ya el Lemming de caida
-        if(is_drowning() && !explosion_in_liquid)
-        {//Posicionamos el Lemming explosivo donde se esta ahogando, una vez
-          position.x += ((int)(current_frame/4)*5);
+      if (!(is_crashing()))
+      { // Si no se está muriendo ya el Lemming de caida
+        if (is_drowning() && !explosion_in_liquid)
+        { // Posicionamos el Lemming explosivo donde se esta ahogando, una vez
+          position.x += ((int)(current_frame / 4) * 5);
           position.y += 10;
           explosion_in_liquid = true;
         }

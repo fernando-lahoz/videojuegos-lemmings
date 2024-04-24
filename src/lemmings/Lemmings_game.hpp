@@ -105,8 +105,8 @@ public:
     std::cout << cursor_menu << std::endl;
     create_entity(cursor_menu);
     game_info.set_cursor_menu(cursor_menu);
-    screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
-    // screen.go_level(engine, 14, 3); // Con este codigo accedes al nivel sin tener que pasar por los menus
+    // screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
+    screen.go_level(engine, 18, 0); // Con este codigo accedes al nivel sin tener que pasar por los menus
   }
 
   void on_level_startup(int difficulty_number, int level_id) override
@@ -130,9 +130,9 @@ public:
   {
     if (entity->get_entity_name() == "Lemming")
     {
-      lemmings.erase(std::remove_if(lemmings.begin(), lemmings.end(), [entity](std::shared_ptr<Lemming> lemming) {
-        return lemming->get_entity_id() == entity->get_entity_id();
-      }), lemmings.end());
+      lemmings.erase(std::remove_if(lemmings.begin(), lemmings.end(), [entity](std::shared_ptr<Lemming> lemming)
+                                    { return lemming->get_entity_id() == entity->get_entity_id(); }),
+                     lemmings.end());
     }
   }
 
