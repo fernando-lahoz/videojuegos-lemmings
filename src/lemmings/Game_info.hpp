@@ -190,16 +190,29 @@ public:
     is_door_open = false;
   }
 
-  int conversion_level_ia(){
+  int conversion_level_selected_ia(){
     if (ia){
       if (difficulty_ia == 0){
       if (level_selected_ia == 2){return 3;}
       return level_selected_ia;
-    }
-    else{ return level_selected_ia;}
-    }
+      }
+      else{ return level_selected_ia;}
+      }
     else{
       return level_selected;
+    }
+  }
+
+  int conversion_level_ia(){
+    if (ia){
+      if (difficulty_ia == 0){
+      if (level_ia == 2){return 3;}
+      return level_ia;
+      }
+      else{ return level_ia;}
+    }
+    else{
+      return level;
     }
   }
 

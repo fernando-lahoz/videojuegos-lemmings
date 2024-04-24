@@ -188,7 +188,7 @@ public:
     {
       auto background = std::make_shared<Entity>(Point3f(10000, 0, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_green.png"), engine, "Background");
       engine.get_game().create_entity(background);
-      int level_map_num = game_info.get_ia() ? game_info.conversion_level_ia() : level;
+      int level_map_num = game_info.get_ia() ? game_info.conversion_level_selected_ia() : level;
       std::cout << "Nivel mapa: " << level_map_num << "\n";
       Texture txt = engine.load_texture("assets/maps/raw/map_" + std::to_string(difficulty) + "_" + std::to_string(level_map_num) + ".png");
 
@@ -563,7 +563,7 @@ public:
       game_info.set_ia(true);
       auto background = std::make_shared<Entity>(Point3f(10000, 0, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_brown.png"), engine, "Background", "Background");
       engine.get_game().create_entity(background);
-      int level_map_num = game_info.get_ia() ? game_info.conversion_level_ia() : level;
+      int level_map_num = game_info.get_ia() ? game_info.conversion_level_selected_ia() : level;
       std::cout << "Nivel mapa: " << level_map_num << "\n";
       Texture txt = engine.load_texture("assets/maps/raw/map_0_" + std::to_string(level_map_num) + ".png");
 

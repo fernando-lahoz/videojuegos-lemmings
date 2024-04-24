@@ -35,7 +35,7 @@ public:
       if (menu_type == Utils::MENU_TYPE::LEVEL_INTRO)
       {
         game_info.set_do_transition(true);
-        game_info.set_build_level(game_info.get_level());
+        game_info.set_build_level(game_info.conversion_level_ia());
         game_info.set_build_difficulty(game_info.get_difficulty());
         game_info.set_do_action(Utils::ACTIONS::GO_LEVEL);
         return;
@@ -85,7 +85,7 @@ public:
       if (menu_type == Utils::MENU_TYPE::LEVEL_INTRO)
       {
         game_info.set_do_transition(true);
-        game_info.set_build_level(game_info.get_level());
+        game_info.set_build_level(game_info.conversion_level_ia());
         game_info.set_build_difficulty(game_info.get_difficulty());
         game_info.set_do_action(Utils::ACTIONS::GO_LEVEL);
         return;
