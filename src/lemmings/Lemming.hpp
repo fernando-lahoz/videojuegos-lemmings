@@ -329,8 +329,8 @@ public:
     // enable_gravity();
     override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
     override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
-    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.45, 0.55)));
-    override_right_point(Bound2f(Point2f(0.55, 0.35), Point2f(0.6, 0.55)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.5, 0.55)));
+    override_right_point(Bound2f(Point2f(0.5, 0.35), Point2f(0.6, 0.55)));
     disable_alpha_mouse();
   }
   ~Lemming()
@@ -793,7 +793,6 @@ public:
       }
 
     // STATES LOGIC
-    auto speed = get_speed();
 
     if (is_walking())
       return;
@@ -805,31 +804,16 @@ public:
       return;
 
     if (is_exploding())
-    {
-      speed.x = 0;
-      speed.y = 0;
-      set_speed(speed);
       return;
-    }
 
     if (is_idle())
-    {
-      speed.x = 0;
-      speed.y = 0;
-      set_speed(speed);
       return;
-    }
 
     if (is_escaping())
       return;
 
     if (is_blocking())
-    {
-      speed.x = 0;
-      speed.y = 0;
-      set_speed(speed);
       return;
-    }
 
     if (is_digging())
     {
@@ -840,7 +824,7 @@ public:
 
           Bound2f box;
           box.pMin = local_to_world(Point2f(0.25, 0.65));
-          box.pMax = box.pMin + Vector2f(18, 8);
+          box.pMax = box.pMin + Vector2f(18, 6);
 
           bool destroyed = false;
           auto &entities = engine.get_entities();
@@ -875,15 +859,12 @@ public:
           }
 
           do_action_in_frame = true;
-          position.y += 6; // Desplazamos el Lemming hacia abajo
+          position.y += 2; // Desplazamos el Lemming hacia abajo
         }
       }
       else
       {
         do_action_in_frame = false;
-        speed.x = 0;
-        speed.y = 0;
-        set_speed(speed);
       }
       return;
     }
@@ -1188,9 +1169,6 @@ public:
       }
       else
       {
-        speed.x = 0;
-        speed.y = 0;
-        set_speed(speed);
         do_action_in_frame = false;
       }
       // Comprobamos que haya suelo
@@ -1230,7 +1208,6 @@ public:
     if (game_info.get_level_is_paused())
       return;
     Entity::on_collision(engine, other);
-    auto speed = get_speed();
 
     if (other->get_entity_name() == "MAP" || other->get_entity_name() == "DIRECTIONAL WALL" || other->get_entity_name() == "METAL" || other->get_entity_name() == "BRICKS" || other->get_entity_name() == "Lemming")
     {
@@ -1310,7 +1287,6 @@ public:
           on_ground = true;
           // std::cout << "Distance falling: " << distance_fall << std::endl;
 
-          speed.y = 0;
           if (distance_fall >= Utils::MAX_DISTANCE_FALL && !is_floating())
           {
             go_crash();
@@ -1331,31 +1307,23 @@ public:
       // std::cout << "Gate hitbox" << std::endl;
       on_ground = true;
       go_escape();
-      speed.x = 0;
-      speed.y = 0;
     }
 
     if (other->get_entity_name() == "LIQUID TRIGGER")
     {
       on_ground = true;
       go_drown();
-      speed.x = 0;
-      speed.y = 0;
     }
 
     if (other->get_entity_name() == "Fire")
     {
       on_ground = true;
       go_crash();
-      speed.x = 0;
-      speed.y = 0;
     }
 
     if (other->get_entity_name() == "Spinner" || other->get_entity_name() == "Flamethrower")
     {
       on_ground = true;
-      speed.x = 0;
-      speed.y = 0;
       destroy_lemming(engine);
     }
 
@@ -1366,11 +1334,8 @@ public:
       if (chain_ptr && chain_ptr->get_is_playing())
         return;
       chain_ptr->trigger_event_animation();
-      speed.x = 0;
-      speed.y = 0;
       destroy_lemming(engine);
     }
-    set_speed(speed);
   }
 
   void post_physics(Engine &) override
