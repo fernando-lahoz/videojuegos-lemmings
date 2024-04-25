@@ -1473,7 +1473,7 @@ public:
       // std::cout << "LEMMING PULSADO" << std::endl;
       int skill = Utils::HUD_TO_SKILL[game_info.get_option_selected()];
       std::cout << skill << std::endl;
-      if (skill != Utils::NO_SKILLS && game_info.get_action_possible())
+      if (skill != Utils::NO_SKILLS && game_info.get_action_possible() && !game_info.get_ia())
       {
         bool res = add_skill(Utils::HUD_TO_SKILL[game_info.get_option_selected()]);
         if (res)
@@ -1503,7 +1503,9 @@ public:
       if (game_info.get_is_cursor_hover() == false && !((is_escaping() || is_crashing() || is_exploding() || is_drowning())))
       {
         game_info.set_cursor_txt("assets/cursor_hover.png", engine);
-        game_info.set_is_cursor_hover(true);
+        if (!game_info.get_ia()){
+          game_info.set_is_cursor_hover(true);
+        }
       }
     }
   }

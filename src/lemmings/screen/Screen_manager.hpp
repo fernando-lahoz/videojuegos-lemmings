@@ -79,7 +79,7 @@ public:
 
         if (actual_lemmings_hovered != last_lemmings_hovered)
         {
-          // std::cout << "Lemmings hovered: " << actual_lemmings_hovered << std::endl;
+          std::cout << "Lemmings hovered: " << actual_lemmings_hovered << std::endl;
           last_lemmings_hovered = actual_lemmings_hovered;
         }
 

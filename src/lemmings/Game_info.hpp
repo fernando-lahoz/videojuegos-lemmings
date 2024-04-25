@@ -341,7 +341,7 @@ public:
 
   void set_spawn_ended() { spawn_ended = true; }
 
-  void set_option_selected(int option) { option_selected = option; }
+  void set_option_selected(int option) { if (ia) option_selected = Utils::NO_OPTION_SELECTED; else option_selected = option; }
   int get_option_selected() const { return option_selected; }
 
   void sub_skill_amount(int i) { skill_amount[i]--; }
