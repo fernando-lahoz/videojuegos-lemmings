@@ -708,7 +708,7 @@ public:
           }
           else
           {
-            brick_ptr->add_brick();
+            brick_ptr->add_brick(engine);
           }
         }
         else if (current_frame == 0)
