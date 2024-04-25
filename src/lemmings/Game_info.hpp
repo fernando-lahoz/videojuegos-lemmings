@@ -569,15 +569,15 @@ public:
 
   bool is_selected_level_won()
   { 
-    if (ia) return levelsInfo.isLevelWon(difficulty_selected_ia, level_selected_ia);
+    if (ia) return levelsInfo.isAiLevelWon(difficulty_selected_ia, level_selected_ia);
     else return levelsInfo.isLevelWon(difficulty_selected, level_selected);
   }
 
   std::string get_selected_level_best_time()
   {
     if (ia){
-      int m = levelsInfo.getMin(difficulty_selected_ia, level_selected_ia);
-      int s = levelsInfo.getSec(difficulty_selected_ia, level_selected_ia);
+      int m = levelsInfo.getMin_Ai(difficulty_selected_ia, level_selected_ia);
+      int s = levelsInfo.getSec_Ai(difficulty_selected_ia, level_selected_ia);
       return std::to_string(m) + (s < 10 ? "-0" : "-") + std::to_string(s);
     }
     else{
@@ -589,7 +589,7 @@ public:
 
   std::string get_selected_level_best_perc()
   {
-    if (ia) return std::to_string(levelsInfo.getPerc(difficulty_selected_ia, level_selected_ia)) + "%";
+    if (ia) return std::to_string(levelsInfo.getPerc_Ai(difficulty_selected_ia, level_selected_ia)) + "%";
     else return std::to_string(levelsInfo.getPerc(difficulty_selected, level_selected)) + "%";
   }
 
@@ -604,7 +604,7 @@ public:
       {
         int game_time = limit_time - left_time;
         LevelInfo wonLevel(true, game_time/60, game_time%60, rescued);
-        levelsInfo.setNewLevelInfo(difficulty_ia, level_ia, wonLevel);
+        levelsInfo.setNewAiLevelInfo(difficulty_ia, level_ia, wonLevel);
       }
     }
     else{

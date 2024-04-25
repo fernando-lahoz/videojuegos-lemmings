@@ -10,6 +10,10 @@
 
 #define NUMBER_OF_MODS 4
 #define LEVELS_PER_MOD 30
+#define AI_MODS 2
+#define AI_LEVELS_MOD_1 2
+#define AI_LEVELS_MOD_2 1
+#define AI_LEVELS_MOD_MAX 2
 
 class LevelInfo {
 
@@ -38,7 +42,9 @@ public:
 class LevelsInfo {
 
 	uint8_t won[NUMBER_OF_MODS];
+	uint8_t aiWon[AI_MODS];
 	LevelInfo levels[NUMBER_OF_MODS][LEVELS_PER_MOD];
+	LevelInfo aiLevels[AI_MODS][AI_LEVELS_MOD_MAX];
 
 public:
 
@@ -71,10 +77,25 @@ public:
 				std::getline(file, line);
 				std::stringstream ss(line);
 				ss >> wonLv >> min >> sec >> perc;
-				// std::cout << "Read level " << i << " " << j << " " << wonLv << " " << min << " " << sec << " " << perc << std::endl;
+				std::cout << "Read level " << i << " " << j << " " << wonLv << " " << min << " " << sec << " " << perc << std::endl;
 				levels[i][j] = LevelInfo(wonLv, min, sec, perc);
 			}
 		}
+		for (int i = 0; i < AI_LEVELS_MOD_1; i++) {
+			std::getline(file, line);
+			std::stringstream ss(line);
+			ss >> wonLv >> min >> sec >> perc;
+			std::cout << "Read AI level " << 1 << " " << i << " " << wonLv << " " << min << " " << sec << " " << perc << std::endl;
+			aiLevels[0][i] = LevelInfo(wonLv, min, sec, perc);
+		}
+		for (int i = 0; i < AI_LEVELS_MOD_2; i++) {
+			std::getline(file, line);
+			std::stringstream ss(line);
+			ss >> wonLv >> min >> sec >> perc;
+			std::cout << "Read AI level " << 2 << " " << i << " " << wonLv << " " << min << " " << sec << " " << perc << std::endl;
+			aiLevels[1][i] = LevelInfo(wonLv, min, sec, perc);
+		}
+
 
 		file.close();
 
@@ -98,6 +119,8 @@ public:
 				file << false << std::endl;
 		for (int i = 0; i < NUMBER_OF_MODS * LEVELS_PER_MOD; i++)
 				file << false << " " << 0 << " " << 0 << " " << 0 << std::endl;
+		for (int i = 0; i < AI_LEVELS_MOD_1 + AI_LEVELS_MOD_2; i++)
+				file << false << " " << 0 << " " << 0 << " " << 0 << std::endl;
 
 		file.close();
 
@@ -120,6 +143,18 @@ public:
 					 << (int)levels[i][j].getSec() << " "
 					 << (int)levels[i][j].getPerc() << std::endl;
 			}
+		}
+		for (int i = 0; i < AI_LEVELS_MOD_1; i++) {
+			file << aiLevels[0][i].isWon() << " "
+				 << (int)aiLevels[0][i].getMin() << " "
+				 << (int)aiLevels[0][i].getSec() << " "
+				 << (int)aiLevels[0][i].getPerc() << std::endl;
+		}
+		for (int i = 0; i < AI_LEVELS_MOD_2; i++) {
+			file << aiLevels[1][i].isWon() << " "
+				 << (int)aiLevels[1][i].getMin() << " "
+				 << (int)aiLevels[1][i].getSec() << " "
+				 << (int)aiLevels[1][i].getPerc() << std::endl;
 		}
 
 		file.close();
@@ -149,6 +184,29 @@ public:
 		if (changes) setLevelsInfo(won, levels);
 	}
 
+	void setNewAiLevelInfo(int mod, int level, LevelInfo newScore) {
+		
+		LevelInfo oldScore = aiLevels[mod][level];
+		bool changes = false;
+		if (!oldScore.isWon()) {
+			aiLevels[mod][level] = newScore;
+			changes = true;
+		}
+		else {
+			if (newScore.getMin() < oldScore.getMin() ||
+			   (newScore.getMin() == oldScore.getMin() && newScore.getSec() < oldScore.getSec())) {
+				aiLevels[mod][level].setMin(newScore.getMin());
+				aiLevels[mod][level].setSec(newScore.getSec());
+				changes = true;
+			}
+			if (newScore.getPerc() > oldScore.getPerc()) {
+				aiLevels[mod][level].setPerc(newScore.getPerc());
+				changes = true;
+			}
+		}
+		if (changes) setLevelsInfo(won, levels);
+	}
+
 	uint8_t getWonLevels(int mod) const { return won[mod]; }
 	bool isLevelWon(int mod, int level) const { return levels[mod][level].isWon(); }
 	void setWon(int mod, int level) { levels[mod][level].setWon(true); won[mod]++; }
@@ -161,6 +219,19 @@ public:
 	
 	uint8_t getPerc(int mod, int level) const { return levels[mod][level].getPerc(); }
 	void setPerc(int mod, int level, uint8_t perc) { levels[mod][level].setPerc(perc); }
+
+	uint8_t getAiWonLevels(int mod) const { return aiWon[mod]; }
+	bool isAiLevelWon(int mod, int level) const { return aiLevels[mod][level].isWon(); }
+	void setWon_Ai(int mod, int level) { aiLevels[mod][level].setWon(true); aiWon[mod]++; }
+
+	uint8_t getMin_Ai(int mod, int level) const { return aiLevels[mod][level].getMin(); }
+	void setMin_Ai(int mod, int level, uint8_t min) { aiLevels[mod][level].setMin(min); }
+
+	uint8_t getSec_Ai(int mod, int level) const { return aiLevels[mod][level].getSec(); }
+	void setSec_Ai(int mod, int level, uint8_t sec) { aiLevels[mod][level].setSec(sec); }
+
+	uint8_t getPerc_Ai(int mod, int level) const { return aiLevels[mod][level].getPerc(); }
+	void setPerc_Ai(int mod, int level, uint8_t perc) { aiLevels[mod][level].setPerc(perc); }
 
 };
 

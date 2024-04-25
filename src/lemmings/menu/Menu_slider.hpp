@@ -61,7 +61,6 @@ class Menu_slider : public Entity
             uint8_t slider_value = (x - box_xmin) / ratio;
             game_info.set_conf_var(slider_var, slider_value);
             //   game_info.set_var(slider_var, slider_value);
-            std::cout << game_info.get_conf_var(slider_var) << std::endl;
         } else {
             set_active_texture(txt_off);
         }
@@ -82,7 +81,6 @@ class Menu_slider : public Entity
             uint8_t slider_value = (x - box_xmin) / ratio;
             game_info.set_conf_var(slider_var, slider_value);
             //   game_info.set_var(slider_var, slider_value);
-            std::cout << "Slider value: " << (int)slider_var << std::endl;
         }
     }
 
