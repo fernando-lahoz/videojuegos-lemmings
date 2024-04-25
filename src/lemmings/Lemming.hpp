@@ -535,7 +535,7 @@ public:
         {
           if (hit_offset_down > 0 && (hit_offset_down > diagonal.y * (8. / 20.) || hit_offset_down < diagonal.y * (6. / 20.)))
           {
-            std::cout << "sube baja altura " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << " - " << static_cast<int>(round(hit_offset_down / 2.) * 2) << "\n";
+            // std::cout << "sube baja altura " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << " - " << static_cast<int>(round(hit_offset_down / 2.) * 2) << "\n";
             hit_offset_down = (static_cast<int>(round(hit_offset_down / 2.) * 2));
             position.y += (hit_offset_down - diagonal.y * (8. / 20.));
             // position.y = (static_cast<int>(position.y) / 2) * 2;
@@ -1329,11 +1329,33 @@ public:
 
     if (other->get_entity_name() == "Chain")
     {
+      other->get_entity_id();
+      auto entities = engine.get_entities();
+      std::shared_ptr<Chain> chain_ptr;
+      for (auto &entity : entities)
+      {
+        if (other->get_entity_name() == entity->get_entity_name() && other->get_entity_id() == entity->get_entity_id())
+        {
+          chain_ptr = std::dynamic_pointer_cast<Chain>(entity);
+          std::cout << "  - " << entity->get_entity_id() << std::endl;
+          std::cout << "  - " << chain_ptr->get_is_playing() << std::endl;
+          break;
+        }
+      }
       on_ground = true;
-      std::shared_ptr<Chain> chain_ptr = std::dynamic_pointer_cast<Chain>(other);
+      // auto chain_ptr8 = std::dynamic_pointer_cast<Entity>(other);
+      // auto ptr = dynamic_cast<Structure *>(other.get());
+      // auto chain_ptr2 = std::dynamic_pointer_cast<Rigid_body>(other);
+      // auto chain_ptr3 = std::dynamic_pointer_cast<Structure>(other);
+      // auto chain_ptr4 = std::dynamic_pointer_cast<Chain>(other);
+      // auto chain_ptr5 = std::static_pointer_cast<Chain>(other);
+      // std::cout << "  - " << chain_ptr4->get_is_playing() << std::endl;
+      if (!chain_ptr)
+        return;
       if (chain_ptr && chain_ptr->get_is_playing())
         return;
       chain_ptr->trigger_event_animation();
+      std::cout << " trigger_event_animation " << chain_ptr->get_is_playing() << std::endl;
       destroy_lemming(engine);
     }
   }
