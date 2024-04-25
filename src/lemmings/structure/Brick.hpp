@@ -28,7 +28,7 @@ public:
     if (bricks >= 12)
       res = false;
     if (bricks >= 9)
-      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::TING_SOUND)); //, game_info.get_effects_volume());
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::TING_SOUND), game_info.get_effects_volume());
 
     set_active_texture(textures[bricks - 1]);
     bricks++;
