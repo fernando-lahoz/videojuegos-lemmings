@@ -192,9 +192,9 @@ public:
 
   int conversion_level_selected_ia(){
     if (ia){
-      if (difficulty_ia == 0){
-      if (level_selected_ia == 2){return 3;}
-      return level_selected_ia;
+      if (difficulty_selected_ia == 0){
+        if (level_selected_ia == 2){return 3;}
+        return level_selected_ia;
       }
       else{ return level_selected_ia;}
       }
@@ -322,7 +322,7 @@ public:
     if (ia){
       if (_level != -1 && _difficulty != -1)
         {
-          //std::cout << "Level " << level << " : " << _level << std::endl; 
+          std::cout << "Level " << difficulty_ia << " : " << _difficulty << std::endl; 
           level_ia = _level;
           difficulty_ia = _difficulty;
         }
