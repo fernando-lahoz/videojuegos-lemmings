@@ -6,6 +6,7 @@
 #include "geometry/point.hpp"
 
 #include "lemmings/structure/Chain.hpp"
+#include "lemmings/structure/Thumper.hpp"
 #include "lemmings/structure/Directional_wall.hpp"
 #include "lemmings/structure/Brick.hpp"
 #include "lemmings/Game_info.hpp"
@@ -241,7 +242,7 @@ class Lemming : public Rigid_body
     type = Utils::LEMMING_TYPE[Utils::CRASHING];
 
     // Hacemos que suene como se estrellan contra el suelo
-    engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SPLAT_SOUND));
+    engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SPLAT_SOUND), game_info.get_effects_volume());
 
     // std::cout << "GO MINING\n";
   }
@@ -530,6 +531,24 @@ public:
           engine.intersect_ray(ray_down, get_entity_id(),
                                force_entity_names, hit_offset_down, hit_entity_down);
         }
+        if (hit_entity_down->get_entity_name() == "BRICKS")
+        {
+          std::shared_ptr<Brick> ptr = std::dynamic_pointer_cast<Brick>(hit_entity_down);
+          if (direction != ptr->get_direction())
+          {
+            force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
+            if (get_entity_id() == 72)
+            {
+              engine.intersect_ray(ray_down, 999,
+                                   force_entity_names, hit_offset_down, hit_entity_down);
+            }
+            else
+            {
+              engine.intersect_ray(ray_down, get_entity_id(),
+                                   force_entity_names, hit_offset_down, hit_entity_down);
+            }
+          }
+        }
 
         if (hit_offset_down < diagonal.y * (14. / 20.))
         {
@@ -652,7 +671,7 @@ public:
           destroy_lemming(engine);
 
           // Hacemos que suene el pop al petar el lemming
-          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::EXPLODE_SOUND));
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::EXPLODE_SOUND), game_info.get_effects_volume());
           return;
         }
         if (is_crashing())
@@ -663,7 +682,7 @@ public:
         if (is_drowning())
         {
           // Hacemos que suene como se ahogan
-          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::GLUG_SOUND));
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::GLUG_SOUND), game_info.get_effects_volume());
 
           destroy_lemming(engine);
           return;
@@ -717,6 +736,7 @@ public:
             {
               brick_ptr = NULL;
               remove_skill(Utils::Lemming_Skills::BUILD);
+              restart_animation();
               go_idle();
             }
           }
@@ -727,8 +747,16 @@ public:
             {
               brick_ptr = NULL;
               remove_skill(Utils::Lemming_Skills::BUILD);
+              restart_animation();
               go_idle();
             }
+          }
+          if (position.y < -10)
+          {
+            brick_ptr = NULL;
+            remove_skill(Utils::Lemming_Skills::BUILD);
+            restart_animation();
+            go_idle();
           }
         }
       }
@@ -1261,6 +1289,13 @@ public:
         }
         else
         {
+          if (position.y < -8)
+          {
+            std::cout << "Techo\n";
+            go_fall();
+            // position.x += 2 * direction;
+            direction *= -1;
+          }
           position.x += 2 * direction;
           if ((!check_collision_left(other) && direction == -1) || (!check_collision_right(other) && direction == 1))
           {
@@ -1337,25 +1372,36 @@ public:
         if (other->get_entity_name() == entity->get_entity_name() && other->get_entity_id() == entity->get_entity_id())
         {
           chain_ptr = std::dynamic_pointer_cast<Chain>(entity);
-          std::cout << "  - " << entity->get_entity_id() << std::endl;
-          std::cout << "  - " << chain_ptr->get_is_playing() << std::endl;
           break;
         }
       }
       on_ground = true;
-      // auto chain_ptr8 = std::dynamic_pointer_cast<Entity>(other);
-      // auto ptr = dynamic_cast<Structure *>(other.get());
-      // auto chain_ptr2 = std::dynamic_pointer_cast<Rigid_body>(other);
-      // auto chain_ptr3 = std::dynamic_pointer_cast<Structure>(other);
-      // auto chain_ptr4 = std::dynamic_pointer_cast<Chain>(other);
-      // auto chain_ptr5 = std::static_pointer_cast<Chain>(other);
-      // std::cout << "  - " << chain_ptr4->get_is_playing() << std::endl;
-      if (!chain_ptr)
-        return;
       if (chain_ptr && chain_ptr->get_is_playing())
         return;
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::CHAIN_SOUND), game_info.get_effects_volume());
       chain_ptr->trigger_event_animation();
-      std::cout << " trigger_event_animation " << chain_ptr->get_is_playing() << std::endl;
+      destroy_lemming(engine);
+    }
+
+    if (other->get_entity_name() == "Thumper")
+    {
+      other->get_entity_id();
+      auto entities = engine.get_entities();
+      std::shared_ptr<Thumper> ptr;
+      for (auto &entity : entities)
+      {
+        if (other->get_entity_name() == entity->get_entity_name() && other->get_entity_id() == entity->get_entity_id())
+        {
+          ptr = std::dynamic_pointer_cast<Thumper>(entity);
+          break;
+        }
+      }
+      on_ground = true;
+      if (ptr && ptr->get_is_playing())
+        return;
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::THUNK_SOUND), game_info.get_effects_volume());
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::DIE_SOUND), game_info.get_effects_volume());
+      ptr->trigger_event_animation();
       destroy_lemming(engine);
     }
   }
@@ -1364,6 +1410,12 @@ public:
   {
     if (game_info.get_level_is_paused())
       return;
+    if (is_walking() && position.y < -8)
+    {
+      position.y = -8;
+      position.x -= 2 * direction;
+      direction *= -1;
+    }
     if (is_falling() || is_floating())
     {
       distance_fall = distance_fall + (position.y - last_y);
@@ -1382,7 +1434,7 @@ public:
       {
 
         // Obten el sonido de un Lemming gritando por su vida
-        engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::DIE_SOUND));
+        engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::DIE_SOUND), game_info.get_effects_volume());
 
         // Destruye el lemming
         destroy_lemming(engine);
@@ -1479,7 +1531,8 @@ public:
         if (res)
         {
           // Realizamos el sonido de presion sobre el lemming
-          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::MOUSE_PRESS_SOUND));
+
+          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::MOUSE_PRESS_SOUND), game_info.get_effects_volume());
 
           game_info.action_done();
           std::cout << "DAD AÑADIDA" << std::endl;
@@ -1503,7 +1556,8 @@ public:
       if (game_info.get_is_cursor_hover() == false && !((is_escaping() || is_crashing() || is_exploding() || is_drowning())))
       {
         game_info.set_cursor_txt("assets/cursor_hover.png", engine);
-        if (!game_info.get_ia()){
+        if (!game_info.get_ia())
+        {
           game_info.set_is_cursor_hover(true);
         }
       }

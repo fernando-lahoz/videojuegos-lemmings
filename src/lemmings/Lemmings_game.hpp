@@ -24,8 +24,7 @@
 // TODO: add sound effects
 // TODO: change assets more similar to original amiga
 // TODO: hud more friendly
-// TODO: add some structures to levels (Thumper, Rock_crusher, Bear_trap, WALL, TONS WEIGHT)
-// TODO: add traps logic
+// TODO: add some structures to levels (Rock_crusher, Bear_trap, WALL, TONS WEIGHT)
 
 // TODO: add particles when lemming die
 
@@ -105,8 +104,8 @@ public:
     std::cout << cursor_menu << std::endl;
     create_entity(cursor_menu);
     game_info.set_cursor_menu(cursor_menu);
-    screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
-    // screen.go_level(engine, 1, 0); // Con este codigo accedes al nivel sin tener que pasar por los menus
+    // screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
+    screen.go_level(engine, 24, 0); // Con este codigo accedes al nivel sin tener que pasar por los menus
   }
 
   void on_level_startup(int difficulty_number, int level_id) override
