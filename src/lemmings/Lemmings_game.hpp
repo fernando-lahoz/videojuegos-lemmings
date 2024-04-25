@@ -122,6 +122,10 @@ public:
     else if (difficulty_number == 1 && level_id == 1)
       executor_id = 11;
 
+    if (!game_info.get_ia())
+    {
+      executor_id = -1;
+    }
     // -1 if the ai should do nothing
     ai.init_executor(executor_id);
   }
