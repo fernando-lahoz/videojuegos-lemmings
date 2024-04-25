@@ -79,7 +79,7 @@ namespace Utils
   const int HUD_TO_SKILL[21] = {NO_SKILLS, NO_SKILLS, CLIMB, FLOAT, EXPLODE, BLOCK, BUILD, BASH, MINE, DIG, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS};
 
   // CREDITS CONSTANTS
-  const std::string CREDIT_NAMES = "                                                                                        LEMMINGS CLON by                                                Hugo Mateo Trejo                                             Juan Lorente Guarnieri                                          Fernando Lahoz Bernad                                             Jaime Bielsa Uche                                            Eryka Rimacuna Castillo                                           Saul Daniel Soriano                       ";
+  const std::string CREDIT_NAMES = "                                                                                        LEMMINGS CLON by                                                Hugo Mateo Trejo                                             Juan Lorente Guarnieri                                          Fernando Lahoz Bernad                                             Jaime Bielsa Uche                                            Eryka Rimacuna Castillo                                           Saul Daniel Soriano                       ""                     Ismael Perbech Gallego                     ";
 
   // TEXT CONSTANTS
   enum TEXT_TYPE
