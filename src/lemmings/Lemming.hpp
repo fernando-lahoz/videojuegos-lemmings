@@ -328,10 +328,10 @@ public:
 
     // gravity = 3;
     // enable_gravity();
-    override_down_point(Bound2f(Point2f(0.4, 0.65), Point2f(0.6, 0.85)));
+    override_down_point(Bound2f(Point2f(0.45, 0.65), Point2f(0.55, 0.85)));
     override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
-    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.5, 0.55)));
-    override_right_point(Bound2f(Point2f(0.5, 0.35), Point2f(0.6, 0.55)));
+    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.5, 0.45)));
+    override_right_point(Bound2f(Point2f(0.5, 0.35), Point2f(0.6, 0.45)));
     disable_alpha_mouse();
   }
   ~Lemming()
@@ -531,7 +531,7 @@ public:
           engine.intersect_ray(ray_down, get_entity_id(),
                                force_entity_names, hit_offset_down, hit_entity_down);
         }
-        if (hit_entity_down->get_entity_name() == "BRICKS")
+        if (hit_entity_down && hit_entity_down->get_entity_name() == "BRICKS")
         {
           std::shared_ptr<Brick> ptr = std::dynamic_pointer_cast<Brick>(hit_entity_down);
           if (direction != ptr->get_direction())
@@ -563,7 +563,7 @@ public:
         }
         else
         {
-          std::cout << "cae " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << "\n";
+          // std::cout << "cae " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << "\n";
           // std::cout << "lemming nº" << get_entity_id() << " se cayó pq detecto dist: " << hit_offset_down << "\n";
           on_ground = false;
         }
