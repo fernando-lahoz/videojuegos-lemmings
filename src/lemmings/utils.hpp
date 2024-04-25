@@ -390,7 +390,8 @@ namespace Utils
     INTRO = 4,              // Pantalla de introducción
     CONFIG = 5,             // Muestra configuración
     IA = 6,                 // Selector de nivel de IA
-    RESET_DATA = 7          // Pantalla para confirmar reset
+    RESET_DATA = 7,         // Pantalla para confirmar reset
+    GAME_COMPLETE = 8       // Pantalla para confirmar reset
   };
   enum BUTTON_TYPE
   {

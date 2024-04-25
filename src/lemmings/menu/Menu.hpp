@@ -324,6 +324,11 @@ public:
       game_info.set_ia(false);
       engine.get_game().create_entity(std::make_shared<Intro>(engine, game_info));
     }
+    else if (type == Utils::MENU_TYPE::GAME_COMPLETE)
+    {
+      game_info.set_ia(false);
+      engine.get_game().create_entity(std::make_shared<Entity>(Point3f(10000, 0, 3), Vector2f(640, 400), engine.load_texture("assets/menu/win.png"), engine, "GAME COMPLETED", "GAME COMPLETED"));
+    }
     else if (type == Utils::MENU_TYPE::CONFIG)
     {
       game_info.set_ia(false);
