@@ -11,8 +11,8 @@ namespace Utils
 
   // LEMMINGS CONSTANTS
   const int STATE_IS_LOOP_ANIMATION[14] = {false, true, true, true, true, true, true, false, true, true, true, false, false, false}; // indicates if the animation is loop
-  const int STATE_N_FRAMES[14] = {8, 9, 4, 16, 16, 16, 11, 30, 16, 32, 24, 8, 16, 16};                                                // number of frames of each animation
-  const float STATE_ANIMATION_DURATION[14] = {1.0f, 0.7f, 0.2f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.3f, 1.0f, 1.5f, 1.0f, 1.0f, 1.0f};   // duration of each animation in seconds
+  const int STATE_N_FRAMES[14] = {8, 9, 4, 16, 16, 16, 11, 30, 16, 32, 24, 8, 16, 16};                                               // number of frames of each animation
+  const float STATE_ANIMATION_DURATION[14] = {1.0f, 0.7f, 0.2f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.3f, 2.0f, 1.5f, 1.0f, 1.0f, 1.0f};   // duration of each animation in seconds
   const float MAX_DISTANCE_FALL = 130.0f;
 
   enum Lemming_Skills
@@ -79,7 +79,8 @@ namespace Utils
   const int HUD_TO_SKILL[21] = {NO_SKILLS, NO_SKILLS, CLIMB, FLOAT, EXPLODE, BLOCK, BUILD, BASH, MINE, DIG, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS, NO_SKILLS};
 
   // CREDITS CONSTANTS
-  const std::string CREDIT_NAMES = "                                                                                        LEMMINGS CLON by                                                Hugo Mateo Trejo                                             Juan Lorente Guarnieri                                          Fernando Lahoz Bernad                                             Jaime Bielsa Uche                                            Eryka Rimacuna Castillo                                           Saul Daniel Soriano                       ""                     Ismael Perbech Gallego                     ";
+  const std::string CREDIT_NAMES = "                                                                                        LEMMINGS CLON by                                                Hugo Mateo Trejo                                             Juan Lorente Guarnieri                                          Fernando Lahoz Bernad                                             Jaime Bielsa Uche                                            Eryka Rimacuna Castillo                                           Saul Daniel Soriano                       "
+                                   "                     Ismael Perbech Gallego                     ";
 
   // TEXT CONSTANTS
   enum TEXT_TYPE
@@ -104,32 +105,36 @@ namespace Utils
     MAYHEM = 3
   };
 
-  //IA LEVELS
+  // IA LEVELS
   const int LEVEL_MAX_IA_DIFFICULTY[4] = {2, 1, 0, 0};
   const std::string DIFFICULTY_NAME_IA[2] = {"Fun", "Tricky"};
   const std::string LEVEL_NAME_IA[2][3] = {{"Este mapa es de prueba", "Just dig!", "Tailor-made for blockers"},
-                                         {"?", "This should be a doddle!", "We all fall down"}};
+                                           {"?", "This should be a doddle!", "We all fall down"}};
   const int LEVEL_N_LEMMINGS_IA[2][3] = {{120, 10, 50},
-                                        {120, 100, 40}}; 
-  const int LEVEL_SAVE_LEMMINGS_IA[2][3] = {{7, 1, 5,},
-                                        {120, 50, 40}};  
+                                         {120, 100, 40}};
+  const int LEVEL_SAVE_LEMMINGS_IA[2][3] = {{
+                                                7,
+                                                1,
+                                                5,
+                                            },
+                                            {120, 50, 40}};
   const double LEVEL_TIME_LIMIT_IA[2][3] = {{60.f, 300.f, 300.f},
-                                        {999.f, 240.f, 180.f}};
+                                            {999.f, 240.f, 180.f}};
 
   const int LEVEL_SPAWN_VELOCITY_IA[2][3] = {{1, 50, 50},
-                                        {1, 50, 1}};     
+                                             {1, 50, 1}};
   const float LEVEL_CAMERA_POS_INI_IA[4][31] = {{320, 1630.62, 1510.69},
-                                        {1584, 1027.6, 1034.38,}};       
-  const std::vector<int> LEVEL_SKILLS_AMOUNT_IA[4][31] = {{
-                                                          {99, 99, 99, 99, 99, 99, 99, 99},
-                                                          {0, 0, 0, 0, 0, 0, 0, 10},
-                                                          {0, 0, 0, 10, 0, 0, 0, 0}     
-                                                          },
-                                                          {
-                                                          {99, 99, 99, 99, 99, 99, 99, 99},
-                                                          {10, 10, 10, 10, 10, 10, 10, 10},
-                                                          {0, 0, 0, 0, 0, 0, 0, 40}
-                                                          }};                                                  
+                                                {
+                                                    1584,
+                                                    1027.6,
+                                                    1034.38,
+                                                }};
+  const std::vector<int> LEVEL_SKILLS_AMOUNT_IA[4][31] = {{{99, 99, 99, 99, 99, 99, 99, 99},
+                                                           {0, 0, 0, 0, 0, 0, 0, 10},
+                                                           {0, 0, 0, 10, 0, 0, 0, 0}},
+                                                          {{99, 99, 99, 99, 99, 99, 99, 99},
+                                                           {10, 10, 10, 10, 10, 10, 10, 10},
+                                                           {0, 0, 0, 0, 0, 0, 0, 40}}};
 
   const std::string DIFFICULTY_NAME[4] = {"Fun", "Tricky", "Taxing", "Mayhem"};
   const std::string LEVEL_NAME[4][31] = {{"Este mapa es de prueba", "Just dig!", "Only floaters can survive this", "Tailor-made for blockers", "Now use miners and climbers", "You need bashers this time", "A task for blockers and bombers", "Builders will help you here", "Not as complicated as it looks", "As long as you try your best", "Smile if you love Lemmings", "Keep your hair on Mr. Lemming", "Patience", "We all fall down", "Origins and Lemmings", "Don't let your eyes deceive you", "Don't do anything too hasty", "Easy when you know how", "Let's block and blow", "Take good care of my Lemmings", "We are now at LEMCON ONE", "You Live and Lem", "A Beast of a level", "I've lost that Lemming feeling", "Konbanwa Lemming San", "Lemmings Lemmings everywhere", "Nightmare on Lem Street", "Let's be careful out there", "If only they could fly", "worra lorra Lemmings", "Lock up your Lemmings"},
@@ -384,21 +389,21 @@ namespace Utils
 
   enum MENU_TYPE
   {
-    TITLE = 0,              // Pantalla principal
-    LEVEL_SELECTOR = 1,     // Selector de nivel para 1 jugador
-    LEVEL_INTRO = 2,        // Pantalla de introducción a nivel
-    LEVEL_OUTRO = 3,        // Pantalla de finalización de nivel
-    INTRO = 4,              // Pantalla de introducción
-    CONFIG = 5,             // Muestra configuración
-    IA = 6,                 // Selector de nivel de IA
-    RESET_DATA = 7,         // Pantalla para confirmar reset
-    GAME_COMPLETE = 8       // Pantalla para confirmar reset
+    TITLE = 0,          // Pantalla principal
+    LEVEL_SELECTOR = 1, // Selector de nivel para 1 jugador
+    LEVEL_INTRO = 2,    // Pantalla de introducción a nivel
+    LEVEL_OUTRO = 3,    // Pantalla de finalización de nivel
+    INTRO = 4,          // Pantalla de introducción
+    CONFIG = 5,         // Muestra configuración
+    IA = 6,             // Selector de nivel de IA
+    RESET_DATA = 7,     // Pantalla para confirmar reset
+    GAME_COMPLETE = 8   // Pantalla para confirmar reset
   };
   enum BUTTON_TYPE
   {
     PLAYER_SOLO = 0,
     PLAYER_VS_IA = 1,
-    SETTINGS = 2, //Botón que lleva a pantalla de configuración
+    SETTINGS = 2, // Botón que lleva a pantalla de configuración
     EXIT = 3,
     BACK = 4,
     PLAY = 5,
@@ -425,7 +430,7 @@ namespace Utils
     MAP_RIGHT = 26,
     BACK_TO_CONFIG = 27,
     RESET_ALL_CONFIRM = 28
-    
+
   };
   enum ACTIONS
   {
