@@ -260,7 +260,12 @@ public:
       engine.get_game().create_entity(text);
 
       int rescued = game_info.get_percen_lemmings_in();
-      int needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_difficulty()][game_info.get_level()];
+      int needed;
+      if (game_info.get_ia()){
+        needed = Utils::LEVEL_SAVE_LEMMINGS_IA[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS_IA[game_info.get_difficulty()][game_info.get_level()];
+      } else {
+        needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_difficulty()][game_info.get_level()];
+      }
 
       text = std::make_shared<Text_displayer>(Point3f(10320, 75, 2), Vector2f(16, 30), game_info, "center",
                                               engine.load_texture("assets/font/font-purple.png"),

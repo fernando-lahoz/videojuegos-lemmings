@@ -105,6 +105,7 @@ namespace Utils
   };
 
   //IA LEVELS
+  const int LEVEL_MAX_IA_DIFFICULTY[4] = {2, 1, 0, 0};
   const std::string DIFFICULTY_NAME_IA[2] = {"Fun", "Tricky"};
   const std::string LEVEL_NAME_IA[2][3] = {{"Este mapa es de prueba", "Just dig!", "Tailor-made for blockers"},
                                          {"?", "This should be a doddle!", "We all fall down"}};

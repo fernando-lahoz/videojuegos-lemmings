@@ -231,7 +231,7 @@ public:
   void set_do_transition(bool new_value) { do_transition = new_value; }
   bool get_do_transition() const { return do_transition; }
 
-  void add_level_selected() { if (ia) {level_selected_ia = math::min(level_selected_ia + 1, 2);} else {level_selected = math::min(level_selected + 1, 30);} }
+  void add_level_selected() { if (ia) {level_selected_ia = math::min(level_selected_ia + 1, Utils::LEVEL_MAX_IA_DIFFICULTY[difficulty_selected_ia]);} else {level_selected = math::min(level_selected + 1, 30);} }
   void sub_level_selected() { if (ia) level_selected_ia = math::max(level_selected_ia - 1, 1); else level_selected = math::max(level_selected - 1, 1); }
   int get_level_selected() const { if (ia) {return level_selected_ia;} else {return level_selected;} }
   void set_level_selected(int new_level) { if (ia) level_selected_ia = new_level; else level_selected = new_level; }
