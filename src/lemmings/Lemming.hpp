@@ -751,10 +751,19 @@ public:
       std::string frame_path;
 
       if (state == Utils::Lemming_State::BUILDING)
-        frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty_selected()][game_info.get_level_selected()]) + "_" + std::to_string(current_frame) + ".png";
+        if (game_info.get_ia()) {
+          frame_path = "assets/levvil/levvil_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty_selected()][game_info.get_level_selected()]) + "_" + std::to_string(current_frame) + ".png";
+        } else {
+          frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty_selected()][game_info.get_level_selected()]) + "_" + std::to_string(current_frame) + ".png";
+        }
       else
-        frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
-
+        if (game_info.get_ia()) {
+          frame_path = "assets/levvil/levvil_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
+        }
+        else{
+          frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
+        }
+        
       Texture txt = engine.load_texture(frame_path.c_str());
       set_active_texture(txt);
     }
