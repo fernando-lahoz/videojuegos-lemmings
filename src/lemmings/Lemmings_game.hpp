@@ -17,13 +17,6 @@
 #include "lemmings/keyboard/Keyboard_manager.hpp"
 #include "lemmings/AI_autoplay.cpp"
 
-// ASK: change _collides_up from bool to EntityPtr
-
-// TODO: refine movements of the lemming to be more similar to original
-// TODO: add player vs IA mode
-// TODO: add sound effects
-// TODO: change assets more similar to original amiga
-// TODO: hud more friendly
 // TODO: add some structures to levels (Rock_crusher, Bear_trap, WALL, TONS WEIGHT)
 
 // TODO: add particles when lemming die

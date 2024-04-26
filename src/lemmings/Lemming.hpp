@@ -6,6 +6,7 @@
 #include "geometry/point.hpp"
 
 #include "lemmings/structure/Chain.hpp"
+#include "lemmings/structure/Ball_zapper.hpp"
 #include "lemmings/structure/Thumper.hpp"
 #include "lemmings/structure/Directional_wall.hpp"
 #include "lemmings/structure/Brick.hpp"
@@ -1400,6 +1401,28 @@ public:
       if (ptr && ptr->get_is_playing())
         return;
       engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::THUNK_SOUND), game_info.get_effects_volume());
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::DIE_SOUND), game_info.get_effects_volume());
+      ptr->trigger_event_animation();
+      destroy_lemming(engine);
+    }
+
+    if (other->get_entity_name() == "Ball_zapper")
+    {
+      other->get_entity_id();
+      auto entities = engine.get_entities();
+      std::shared_ptr<Ball_zapper> ptr;
+      for (auto &entity : entities)
+      {
+        if (other->get_entity_name() == entity->get_entity_name() && other->get_entity_id() == entity->get_entity_id())
+        {
+          ptr = std::dynamic_pointer_cast<Ball_zapper>(entity);
+          break;
+        }
+      }
+      on_ground = true;
+      if (ptr && ptr->get_is_playing())
+        return;
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::ELECTRIC_SOUND), game_info.get_effects_volume());
       engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::DIE_SOUND), game_info.get_effects_volume());
       ptr->trigger_event_animation();
       destroy_lemming(engine);

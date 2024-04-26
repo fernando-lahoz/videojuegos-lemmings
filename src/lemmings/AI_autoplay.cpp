@@ -1,7 +1,7 @@
 #include <vector>
 #include <utility>
 #include <iostream>
-#include "Lemming.hpp"
+#include "lemmings/Lemming.hpp"
 #include "geometry/point.hpp"
 #include "engine/physics.hpp"
 
