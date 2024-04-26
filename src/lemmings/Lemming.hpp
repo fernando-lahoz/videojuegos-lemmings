@@ -751,10 +751,19 @@ public:
       std::string frame_path;
 
       if (state == Utils::Lemming_State::BUILDING)
-        frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty_selected()][game_info.get_level_selected()]) + "_" + std::to_string(current_frame) + ".png";
+        if (game_info.get_ia()) {
+          frame_path = "assets/levvil/levvil_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty_selected()][game_info.get_level_selected()]) + "_" + std::to_string(current_frame) + ".png";
+        } else {
+          frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty_selected()][game_info.get_level_selected()]) + "_" + std::to_string(current_frame) + ".png";
+        }
       else
-        frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
-
+        if (game_info.get_ia()) {
+          frame_path = "assets/levvil/levvil_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
+        }
+        else{
+          frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
+        }
+        
       Texture txt = engine.load_texture(frame_path.c_str());
       set_active_texture(txt);
     }
@@ -893,27 +902,27 @@ public:
           Bound2f box, box1, box2;
           if (direction > 0)
           {
-            box.pMin = local_to_world(Point2f(0.50, 0.30));
+            box.pMin = local_to_world(Point2f(0.50, 0.25));
             box.pMax = box.pMin + Vector2f(9, 4);
             box2.pMin = local_to_world(Point2f(0.50, 0.35));
             box2.pMax = box2.pMin + Vector2f(11, 4);
-            box1.pMin = local_to_world(Point2f(0.50, 0.40));
+            box1.pMin = local_to_world(Point2f(0.50, 0.45));
             box1.pMax = box1.pMin + Vector2f(13, 4);
             if (current_frame == 3)
             {
               box.pMax = box.pMin + Vector2f(7, 4);
               box2.pMax = box2.pMin + Vector2f(9, 4);
-              box1.pMax = box1.pMin + Vector2f(11, 4);
+              box1.pMax = box1.pMin + Vector2f(11, 4.5);
             }
           }
           else
           {
-            box.pMin = local_to_world(Point2f(0.25, 0.30));
+            box.pMin = local_to_world(Point2f(0.25, 0.25));
             box.pMax = box.pMin + Vector2f(9, 4);
             box2.pMin = local_to_world(Point2f(0.20, 0.35));
             box2.pMax = box2.pMin + Vector2f(11, 4);
-            box1.pMin = local_to_world(Point2f(0.15, 0.40));
-            box1.pMax = box1.pMin + Vector2f(13, 4);
+            box1.pMin = local_to_world(Point2f(0.15, 0.45));
+            box1.pMax = box1.pMin + Vector2f(13, 4.5);
           }
           std::cout << current_frame << " " << box << box1 << std::endl;
           bool destroyed = false;
