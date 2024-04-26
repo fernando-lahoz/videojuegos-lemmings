@@ -30,6 +30,8 @@ public:
     using CameraCollection = std::vector<std::shared_ptr<Camera2D>>;
 
 private:
+    static int last_entity_id;
+
     void send_event_down(EngineIO::InputEvent key);
     void send_event_up(EngineIO::InputEvent key);
     bool process_events();

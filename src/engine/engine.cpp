@@ -380,13 +380,18 @@ void Engine::delete_dead_entities()
     entities.resize(std::distance(entities.begin(), iterator));
 }
 
+int Engine::last_entity_id = 0;
+
 void Engine::process_new_entities()
 {
     auto new_entities = game->get_new_entities();
 
     for (auto &entity : new_entities)
     {
-        entity->set_entity_id(entities.size());
+        entity->set_entity_id(last_entity_id++);
+        if (last_entity_id == std::numeric_limits<int>::max()) {
+            last_entity_id = 0;
+        }
         entities.push_back(entity);
         entity->on_creation(*this);
 

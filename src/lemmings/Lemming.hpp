@@ -521,32 +521,19 @@ public:
 
         std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"};
 
-        if (get_entity_id() == 72)
-        {
-          engine.intersect_ray(ray_down, 999,
-                               force_entity_names, hit_offset_down, hit_entity_down);
-        }
-        else
-        {
-          engine.intersect_ray(ray_down, get_entity_id(),
-                               force_entity_names, hit_offset_down, hit_entity_down);
-        }
+        engine.intersect_ray(ray_down, get_entity_id(),
+                              force_entity_names, hit_offset_down, hit_entity_down);
+
         if (hit_entity_down && hit_entity_down->get_entity_name() == "BRICKS")
         {
           std::shared_ptr<Brick> ptr = std::dynamic_pointer_cast<Brick>(hit_entity_down);
           if (direction != ptr->get_direction())
           {
             force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
-            if (get_entity_id() == 72)
-            {
-              engine.intersect_ray(ray_down, 999,
-                                   force_entity_names, hit_offset_down, hit_entity_down);
-            }
-            else
-            {
-              engine.intersect_ray(ray_down, get_entity_id(),
-                                   force_entity_names, hit_offset_down, hit_entity_down);
-            }
+
+            engine.intersect_ray(ray_down, get_entity_id(),
+                                  force_entity_names, hit_offset_down, hit_entity_down);
+
           }
         }
 
@@ -1088,6 +1075,7 @@ public:
         if (change_state_mine)
         {
           do_action_in_frame = false;
+          
         }
 
         if (!do_action_in_frame)
@@ -1109,7 +1097,6 @@ public:
       {
         if (do_action_in_frame)
         { // Destruimos el cubo de mapa
-
           Bound2f box;
           auto minC = 0.65;
           box.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.50));
@@ -1134,6 +1121,7 @@ public:
       }
       else if (current_frame == 2)
       {
+        std::cout << "MINING 2\n";
         if (!do_action_in_frame)
         {
           Bound2f box; // Cubo de arriba a la derecha
@@ -1206,7 +1194,9 @@ public:
 
       std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
 
-      engine.intersect_ray(ray_down, get_entity_id(),
+
+      const int id = get_entity_id();
+      engine.intersect_ray(ray_down, id,
                            force_entity_names, hit_offset_down, hit_entity_down);
 
       if (hit_offset_down > (diagonal.y / 2)) // Detectamos que no hay suelo
