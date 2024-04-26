@@ -59,8 +59,12 @@ public:
         if (textures[i].set_alpha_box(world_to_local(affectedBox), 0, engine.get_renderer()))
           destroy = true;
       }
-      if (destroy)
+      if (destroy && bricks > 1) {
         set_active_texture(textures[bricks - 2]);
+      } else if (destroy) {
+        this->destroy();
+      }
+        
     }
     return destroy;
   }
