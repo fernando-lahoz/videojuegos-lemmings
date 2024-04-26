@@ -10,7 +10,7 @@ private:
 
 public:
   Directional_wall(Point3f position, Vector2f diagonal, Engine &engine, int structure_type, Game_info &_game_info, bool is_debug = false)
-      : Directional_structure(position, diagonal, engine, structure_type + 7, structure_type == 0 ? 4 : 5, 0.3f, "DIRECTIONAL WALL", true, _game_info, (structure_type % 2 == 0 && structure_type != 6) || structure_type == 5 ? -1 : 1, is_debug)
+      : Directional_structure(position, diagonal, engine, structure_type + 7, structure_type == 0 ? 4 : 5, 0.3f, "DIRECTIONAL WALL", true, _game_info, (structure_type == 1 && structure_type == 3 && structure_type == 6 && structure_type >= 8) ? 1 : -1, is_debug)
   {
     for (int i = 0; i < max_frames; i++)
     {
