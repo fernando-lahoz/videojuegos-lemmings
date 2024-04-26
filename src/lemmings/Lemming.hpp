@@ -893,27 +893,27 @@ public:
           Bound2f box, box1, box2;
           if (direction > 0)
           {
-            box.pMin = local_to_world(Point2f(0.50, 0.30));
+            box.pMin = local_to_world(Point2f(0.50, 0.25));
             box.pMax = box.pMin + Vector2f(9, 4);
             box2.pMin = local_to_world(Point2f(0.50, 0.35));
             box2.pMax = box2.pMin + Vector2f(11, 4);
-            box1.pMin = local_to_world(Point2f(0.50, 0.40));
+            box1.pMin = local_to_world(Point2f(0.50, 0.45));
             box1.pMax = box1.pMin + Vector2f(13, 4);
             if (current_frame == 3)
             {
               box.pMax = box.pMin + Vector2f(7, 4);
               box2.pMax = box2.pMin + Vector2f(9, 4);
-              box1.pMax = box1.pMin + Vector2f(11, 4);
+              box1.pMax = box1.pMin + Vector2f(11, 4.5);
             }
           }
           else
           {
-            box.pMin = local_to_world(Point2f(0.25, 0.30));
+            box.pMin = local_to_world(Point2f(0.25, 0.25));
             box.pMax = box.pMin + Vector2f(9, 4);
             box2.pMin = local_to_world(Point2f(0.20, 0.35));
             box2.pMax = box2.pMin + Vector2f(11, 4);
-            box1.pMin = local_to_world(Point2f(0.15, 0.40));
-            box1.pMax = box1.pMin + Vector2f(13, 4);
+            box1.pMin = local_to_world(Point2f(0.15, 0.45));
+            box1.pMax = box1.pMin + Vector2f(13, 4.5);
           }
           std::cout << current_frame << " " << box << box1 << std::endl;
           bool destroyed = false;
