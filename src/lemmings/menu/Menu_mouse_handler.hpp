@@ -43,8 +43,12 @@ public:
       if (menu_type == Utils::MENU_TYPE::LEVEL_OUTRO)
       {
         int rescued = game_info.get_percen_lemmings_in();
-        int needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_difficulty()][game_info.get_level()];
-
+        int needed;
+        if (game_info.get_ia()){
+          needed = Utils::LEVEL_SAVE_LEMMINGS_IA[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS_IA[game_info.get_difficulty()][game_info.get_level()];
+        } else{
+          needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_difficulty()][game_info.get_level()];
+        }
         if (rescued < needed)
         {
           game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level(), game_info.get_difficulty());
@@ -54,6 +58,16 @@ public:
           if (game_info.get_level() == 30)
           {
             if (game_info.get_difficulty() == 3)
+            {
+              game_info.set_build_menu(Utils::MENU_TYPE::GAME_COMPLETE, 0, 0);
+            }
+            else
+            {
+              game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, 1, game_info.get_difficulty() + 1);
+            }
+          }
+          else if(game_info.get_ia() && game_info.get_level() == Utils::LEVEL_MAX_IA_DIFFICULTY[game_info.get_difficulty()]){
+            if (game_info.get_difficulty() == 1)
             {
               game_info.set_build_menu(Utils::MENU_TYPE::GAME_COMPLETE, 0, 0);
             }
@@ -114,7 +128,12 @@ public:
       if (menu_type == Utils::MENU_TYPE::LEVEL_OUTRO)
       {
         int rescued = game_info.get_percen_lemmings_in();
-        int needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_difficulty()][game_info.get_level()];
+        int needed;
+        if (game_info.get_ia()){
+          needed = Utils::LEVEL_SAVE_LEMMINGS_IA[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS_IA[game_info.get_difficulty()][game_info.get_level()];
+        } else{
+          needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_difficulty()][game_info.get_level()];
+        }
 
         if (rescued < needed)
         {
