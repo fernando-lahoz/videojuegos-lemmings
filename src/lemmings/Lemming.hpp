@@ -330,8 +330,8 @@ public:
     // enable_gravity();
     override_down_point(Bound2f(Point2f(0.45, 0.65), Point2f(0.55, 0.85)));
     override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
-    override_left_point(Bound2f(Point2f(0.4, 0.35), Point2f(0.5, 0.45)));
-    override_right_point(Bound2f(Point2f(0.5, 0.35), Point2f(0.6, 0.45)));
+    override_left_point(Bound2f(Point2f(0.4, 0.45), Point2f(0.5, 0.55)));
+    override_right_point(Bound2f(Point2f(0.5, 0.45), Point2f(0.6, 0.55)));
     disable_alpha_mouse();
   }
   ~Lemming()
@@ -522,7 +522,7 @@ public:
         std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"};
 
         engine.intersect_ray(ray_down, get_entity_id(),
-                              force_entity_names, hit_offset_down, hit_entity_down);
+                             force_entity_names, hit_offset_down, hit_entity_down);
 
         if (hit_entity_down && hit_entity_down->get_entity_name() == "BRICKS")
         {
@@ -532,8 +532,7 @@ public:
             force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
 
             engine.intersect_ray(ray_down, get_entity_id(),
-                                  force_entity_names, hit_offset_down, hit_entity_down);
-
+                                 force_entity_names, hit_offset_down, hit_entity_down);
           }
         }
 
@@ -751,19 +750,23 @@ public:
       std::string frame_path;
 
       if (state == Utils::Lemming_State::BUILDING)
-        if (game_info.get_ia()) {
+        if (game_info.get_ia())
+        {
           frame_path = "assets/levvil/levvil_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty_selected()][game_info.get_level_selected()]) + "_" + std::to_string(current_frame) + ".png";
-        } else {
+        }
+        else
+        {
           frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty_selected()][game_info.get_level_selected()]) + "_" + std::to_string(current_frame) + ".png";
         }
+      else if (game_info.get_ia())
+      {
+        frame_path = "assets/levvil/levvil_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
+      }
       else
-        if (game_info.get_ia()) {
-          frame_path = "assets/levvil/levvil_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
-        }
-        else{
-          frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
-        }
-        
+      {
+        frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
+      }
+
       Texture txt = engine.load_texture(frame_path.c_str());
       set_active_texture(txt);
     }
@@ -1084,7 +1087,6 @@ public:
         if (change_state_mine)
         {
           do_action_in_frame = false;
-          
         }
 
         if (!do_action_in_frame)
@@ -1202,7 +1204,6 @@ public:
       EntityPtr hit_entity_down;
 
       std::vector<std::string> force_entity_names = {"MAP", "METAL", "DIRECTIONAL WALL"};
-
 
       const int id = get_entity_id();
       engine.intersect_ray(ray_down, id,
