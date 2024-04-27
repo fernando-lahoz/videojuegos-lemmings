@@ -544,7 +544,7 @@ public:
           if (hit_offset_down > 0 && (hit_offset_down > diagonal.y * (8. / 20.) || hit_offset_down < diagonal.y * (6. / 20.)))
           { // std::cout << "sube baja altura " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << " - " << static_cast<int>(round(hit_offset_down / 2.) * 2) << "\n";
             hit_offset_down = (static_cast<int>(round(hit_offset_down / 2.) * 2));
-            position.y += (hit_offset_down - diagonal.y * (8. / 20.));
+            position.y += (hit_offset_down - diagonal.y * (7. / 20.));
             // position.y = (static_cast<int>(position.y) / 2) * 2;
             // position.y = static_cast<int>(position.y);
           }
@@ -1029,10 +1029,25 @@ public:
             go_crash();
           else
           {
-            position.y -= 2;
-            position.y = (static_cast<int>(position.y) / 2) * 2;
-            distance_fall = 0.0f;
-            go_walk();
+            //Lanzamos un rayo hacia abajo con el fin de saber cuanto se a metido en el suelo
+                        // Comprobamos que haya suelo
+            Ray ray_down = Ray(local_to_world(Point2f(0.5, 0)), Vector2f(0, 1));
+            Float hit_offset_down;
+            EntityPtr hit_entity_down;
+            engine.intersect_ray(ray_down, get_entity_id(),
+                                {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
+            
+            if(hit_offset_down < 34)
+            { //El impacto con el suelo ocurre cuando el offset es menor a 34 que es lo que mide el Lemming
+              //std::cout << "Offset down: " << hit_offset_down << std::endl;
+              if(hit_offset_down >= 30)
+              {
+                position.y += hit_offset_down - 30;
+                position.y = (static_cast<int>(position.y) / 2) * 2;
+              }
+              distance_fall = 0.0f;
+              go_walk();
+            }
           }
         }
       }
