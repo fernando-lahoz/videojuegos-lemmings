@@ -17,8 +17,6 @@
 #include "lemmings/keyboard/Keyboard_manager.hpp"
 #include "lemmings/AI_autoplay.cpp"
 
-// TODO: add some structures to levels (Rock_crusher, Bear_trap, WALL, TONS WEIGHT)
-
 // TODO: add particles when lemming die
 
 class Lemmings_game : public Game
@@ -97,8 +95,8 @@ public:
     std::cout << cursor_menu << std::endl;
     create_entity(cursor_menu);
     game_info.set_cursor_menu(cursor_menu);
-    screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
-    // screen.go_level(engine, 30, 3); // Con este codigo accedes al nivel sin tener que pasar por los menus
+    // screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
+    screen.go_level(engine, 4, 2); // Con este codigo accedes al nivel sin tener que pasar por los menus
   }
 
   void on_level_startup(int difficulty_number, int level_id) override
@@ -122,7 +120,7 @@ public:
     ai.init_executor(executor_id);
   }
 
-  void on_entity_destruction(Engine &engine, EntityPtr entity) override
+  void on_entity_destruction(Engine &, EntityPtr entity) override
   {
     if (entity->get_entity_name() == "Lemming")
     {

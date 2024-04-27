@@ -9,6 +9,9 @@
 #include "lemmings/structure/Gate.hpp"
 #include "lemmings/structure/Liquid.hpp"
 #include "lemmings/structure/Fire.hpp"
+#include "lemmings/structure/Tons.hpp"
+#include "lemmings/structure/Rock_crusher.hpp"
+#include "lemmings/structure/Bear_trap.hpp"
 #include "lemmings/structure/Flamethrower.hpp"
 #include "lemmings/structure/Spinner.hpp"
 #include "lemmings/structure/Chain.hpp"
@@ -359,6 +362,7 @@ public:
       case 21:
       {
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
+        engine.get_game().create_entity(std::make_shared<Bear_trap>(Point3f(1952, 260.2, 301), engine, 1.5f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(578.884, 263.607, 301), 1, engine, 1, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1025.9, 263.607, 301), 1, engine, 1, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2335.95, 263.607, 301), 1, engine, 1, 0.4f, game_info));
@@ -864,7 +868,7 @@ public:
 
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(583, 301.847, 100), Vector2f(275, 24), engine));
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(1724, 301.847, 100), Vector2f(510, 24), engine));
-        engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(808.5, 128, 300), Vector2f(68.2, 192), engine, 6, game_info, true));
+        engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(808.5, 128, 300), Vector2f(68.2, 192), engine, 6, game_info));
         engine.get_game().create_entity(std::make_shared<Chain>(Point3f(1972.88, 146.452, 301), engine, 1.5f, game_info));
         break;
       case 26:
@@ -976,7 +980,9 @@ public:
 
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(1578, 113.847, 100), Vector2f(133, 15), engine));
         engine.get_game().create_entity(std::make_shared<Door>(Point3f(1782.08, 16.2617, 500), engine, Utils::LEVEL_DOOR_TYPE[difficulty_number][level_number], 1.0f, level_number, game_info, difficulty_number));
-        // TONS WEIGHT
+        engine.get_game().create_entity(std::make_shared<Tons>(Point3f(2192.01, 9, 299), engine, 0.8f, game_info));
+        engine.get_game().create_entity(std::make_shared<Bear_trap>(Point3f(2032.47, 62.2468, 301), engine, 1.5f, game_info));
+        engine.get_game().create_entity(std::make_shared<Bear_trap>(Point3f(1136, 252, 301), engine, 1.5f, game_info));
         break;
       case 3:
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(880, 260.04, 301), 1, engine, 3, 0.4f, game_info));
@@ -998,8 +1004,8 @@ public:
         engine.get_game().create_entity(std::make_shared<Door>(Point3f(1626.22, 199.952, 500), engine, Utils::LEVEL_DOOR_TYPE[difficulty_number][level_number], 1.0f, level_number, game_info, difficulty_number));
 
         engine.get_game().create_entity(std::make_shared<Chain>(Point3f(1777.46, 214.24, 301), engine, 1.5f, game_info));
-        engine.get_game().create_entity(std::make_shared<Pin>(Point3f(1363.65, 142.55, 301), engine, true, 0.8f, game_info));
-        engine.get_game().create_entity(std::make_shared<Pin>(Point3f(1392.9, 96.3817, 301), engine, false, 0.8f, game_info));
+        engine.get_game().create_entity(std::make_shared<Pin>(Point3f(1363.65, 142.55, 301), engine, true, 0.4f, game_info));
+        engine.get_game().create_entity(std::make_shared<Pin>(Point3f(1392.9, 96.3817, 301), engine, false, 0.4f, game_info));
         break;
       case 5:
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 298), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
@@ -1182,6 +1188,7 @@ public:
       case 13:
         engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(1906.76, 68.5899, 301), Vector2f(116, 130), engine, 8, game_info));
         engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(1098.57, 30, 301), Vector2f(114, 192), engine, 9, game_info));
+        engine.get_game().create_entity(std::make_shared<Bear_trap>(Point3f(1516, 212.5, 301), engine, 1.5f, game_info));
         break;
       case 14:
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(0, 261, 299), 1, engine, 1, 0.4f, game_info));
@@ -1692,6 +1699,7 @@ public:
         break;
       case 26:
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
+        engine.get_game().create_entity(std::make_shared<Bear_trap>(Point3f(1952, 260.2, 301), engine, 1.5f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(578.884, 263.607, 301), 1, engine, 1, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1025.9, 263.607, 301), 1, engine, 1, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2335.95, 263.607, 301), 1, engine, 1, 0.4f, game_info));
@@ -1724,8 +1732,10 @@ public:
 
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(1219, 302.847, 100), Vector2f(114, 21), engine));
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(1788, 302.847, 100), Vector2f(271, 21), engine));
-        // TONS WEIGHT
-        engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(2505, 190, 299), Vector2f(62, 130), engine, 10, game_info, true));
+        engine.get_game().create_entity(std::make_shared<Tons>(Point3f(2304, 209, 299), engine, 0.8f, game_info));
+        engine.get_game().create_entity(std::make_shared<Rock_crusher>(Point3f(224, 224.446, 301), engine, 1.5f, game_info));
+        engine.get_game().create_entity(std::make_shared<Bear_trap>(Point3f(960, 237, 301), engine, 1.5f, game_info));
+        engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(2505, 190, 299), Vector2f(62, 130), engine, 10, game_info));
         break;
       default:
         break;

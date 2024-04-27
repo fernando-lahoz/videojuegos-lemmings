@@ -68,7 +68,7 @@ public:
 
     virtual void on_preload_finished(Engine& engine, int batch_id);
 
-    virtual void on_level_startup(int difficulty_number, int level_id) {};
+    virtual void on_level_startup(int , int ) {};
 
     friend class Engine;
 };

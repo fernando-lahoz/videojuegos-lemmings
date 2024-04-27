@@ -7,6 +7,11 @@
 
 #include "lemmings/structure/Chain.hpp"
 #include "lemmings/structure/Ball_zapper.hpp"
+#include "lemmings/structure/Tons_trigger.hpp"
+#include "lemmings/structure/Rock_crusher_trigger.hpp"
+#include "lemmings/structure/Bear_trap_trigger.hpp"
+#include "lemmings/structure/Antimatter_beam_trigger.hpp"
+#include "lemmings/structure/Pin_trigger.hpp"
 #include "lemmings/structure/Thumper.hpp"
 #include "lemmings/structure/Directional_wall.hpp"
 #include "lemmings/structure/Brick.hpp"
@@ -815,6 +820,7 @@ public:
           for (auto &entity : entities)
           {
             if (entity->get_entity_name() == "MAP")
+            {
               if (entity->destroy_box_alpha(engine, box))
               {
                 // std::cout << "HE CAVADO" << std::endl;
@@ -832,6 +838,7 @@ public:
                 if (bricks_ptr->destroy_box_alpha(engine, box, 0))
                   destroyed = true;
               }
+            }
           }
           if (!destroyed)
           {
@@ -1029,18 +1036,18 @@ public:
             go_crash();
           else
           {
-            //Lanzamos un rayo hacia abajo con el fin de saber cuanto se a metido en el suelo
-                        // Comprobamos que haya suelo
+            // Lanzamos un rayo hacia abajo con el fin de saber cuanto se a metido en el suelo
+            //  Comprobamos que haya suelo
             Ray ray_down = Ray(local_to_world(Point2f(0.5, 0)), Vector2f(0, 1));
             Float hit_offset_down;
             EntityPtr hit_entity_down;
             engine.intersect_ray(ray_down, get_entity_id(),
-                                {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
-            
-            if(hit_offset_down < 34)
-            { //El impacto con el suelo ocurre cuando el offset es menor a 34 que es lo que mide el Lemming
-              //std::cout << "Offset down: " << hit_offset_down << std::endl;
-              if(hit_offset_down >= 30)
+                                 {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
+
+            if (hit_offset_down < 34)
+            { // El impacto con el suelo ocurre cuando el offset es menor a 34 que es lo que mide el Lemming
+              // std::cout << "Offset down: " << hit_offset_down << std::endl;
+              if (hit_offset_down >= 30)
               {
                 position.y += hit_offset_down - 30;
                 position.y = (static_cast<int>(position.y) / 2) * 2;
@@ -1114,7 +1121,7 @@ public:
       on_ground = true;
       if (ptr && ptr->get_is_playing())
         return;
-      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::THUNK_SOUND), game_info.get_effects_volume());
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::TENTON_SOUND), game_info.get_effects_volume());
       engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::DIE_SOUND), game_info.get_effects_volume());
       ptr->trigger_event_animation();
       destroy_lemming(engine);
@@ -1139,6 +1146,116 @@ public:
       engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::ELECTRIC_SOUND), game_info.get_effects_volume());
       engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::DIE_SOUND), game_info.get_effects_volume());
       ptr->trigger_event_animation();
+      destroy_lemming(engine);
+    }
+
+    if (other->get_entity_name() == "TONS TRIGGER")
+    {
+      other->get_entity_id();
+      auto entities = engine.get_entities();
+      std::shared_ptr<Tons_trigger> ptr;
+      for (auto &entity : entities)
+      {
+        if (other->get_entity_name() == entity->get_entity_name() && other->get_entity_id() == entity->get_entity_id())
+        {
+          ptr = std::dynamic_pointer_cast<Tons_trigger>(entity);
+          break;
+        }
+      }
+      on_ground = true;
+      if (ptr && ptr->trap.get_is_playing())
+        return;
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::TENTON_SOUND), game_info.get_effects_volume());
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::DIE_SOUND), game_info.get_effects_volume());
+      ptr->trap.trigger_event_animation();
+      destroy_lemming(engine);
+    }
+
+    if (other->get_entity_name() == "ROCK CRUSHER TRIGGER")
+    {
+      other->get_entity_id();
+      auto entities = engine.get_entities();
+      std::shared_ptr<Rock_crusher_trigger> ptr;
+      for (auto &entity : entities)
+      {
+        if (other->get_entity_name() == entity->get_entity_name() && other->get_entity_id() == entity->get_entity_id())
+        {
+          ptr = std::dynamic_pointer_cast<Rock_crusher_trigger>(entity);
+          break;
+        }
+      }
+      on_ground = true;
+      if (ptr && ptr->trap.get_is_playing())
+        return;
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::THUD_SOUND), game_info.get_effects_volume());
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::DIE_SOUND), game_info.get_effects_volume());
+      ptr->trap.trigger_event_animation();
+      destroy_lemming(engine);
+    }
+
+    if (other->get_entity_name() == "BEAR TRAP TRIGGER")
+    {
+      other->get_entity_id();
+      auto entities = engine.get_entities();
+      std::shared_ptr<Bear_trap_trigger> ptr;
+      for (auto &entity : entities)
+      {
+        if (other->get_entity_name() == entity->get_entity_name() && other->get_entity_id() == entity->get_entity_id())
+        {
+          ptr = std::dynamic_pointer_cast<Bear_trap_trigger>(entity);
+          break;
+        }
+      }
+      on_ground = true;
+      if (ptr && ptr->trap.get_is_playing())
+        return;
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::THUNK_SOUND), game_info.get_effects_volume());
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::DIE_SOUND), game_info.get_effects_volume());
+      ptr->trap.trigger_event_animation();
+      destroy_lemming(engine);
+    }
+
+    if (other->get_entity_name() == "ANTIMATTER BEAM TRIGGER")
+    {
+      other->get_entity_id();
+      auto entities = engine.get_entities();
+      std::shared_ptr<Antimatter_beam_trigger> ptr;
+      for (auto &entity : entities)
+      {
+        if (other->get_entity_name() == entity->get_entity_name() && other->get_entity_id() == entity->get_entity_id())
+        {
+          ptr = std::dynamic_pointer_cast<Antimatter_beam_trigger>(entity);
+          break;
+        }
+      }
+      on_ground = true;
+      if (ptr && ptr->trap.get_is_playing())
+        return;
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::ELECTRIC_SOUND), game_info.get_effects_volume());
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::DIE_SOUND), game_info.get_effects_volume());
+      ptr->trap.trigger_event_animation();
+      destroy_lemming(engine);
+    }
+
+    if (other->get_entity_name() == "PIN TRIGGER")
+    {
+      other->get_entity_id();
+      auto entities = engine.get_entities();
+      std::shared_ptr<Pin_trigger> ptr;
+      for (auto &entity : entities)
+      {
+        if (other->get_entity_name() == entity->get_entity_name() && other->get_entity_id() == entity->get_entity_id())
+        {
+          ptr = std::dynamic_pointer_cast<Pin_trigger>(entity);
+          break;
+        }
+      }
+      on_ground = true;
+      if (ptr && ptr->trap.get_is_playing())
+        return;
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::THUNK_SOUND), game_info.get_effects_volume());
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::DIE_SOUND), game_info.get_effects_volume());
+      ptr->trap.trigger_event_animation();
       destroy_lemming(engine);
     }
   }
@@ -1189,6 +1306,7 @@ public:
     else if (is_falling() && distance_fall > Utils::MAX_DISTANCE_FALL / 4 && skills & Utils::FLOAT)
       go_float();
     if (!(is_floating() || is_falling() || is_climbing()))
+    {
       if (!on_ground)
         go_fall();
       else if (is_hovered)
@@ -1198,6 +1316,7 @@ public:
         if (game_info.get_lemmings_hovered() == 0)
           game_info.set_lemming_hovered_type("");
       }
+    }
   }
 
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override

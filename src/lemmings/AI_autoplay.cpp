@@ -187,7 +187,7 @@ public:
         }
     }
 
-    bool can_fall(uint2 &current_tile, DIRECTION direction)
+    bool can_fall(uint2 &current_tile, DIRECTION)
     {
         if (current_tile.first == (map.size() - 1))
         {
@@ -204,7 +204,7 @@ public:
         }
     }
 
-    bool can_dig_down(uint2 &current_tile, DIRECTION direction)
+    bool can_dig_down(uint2 &current_tile, DIRECTION)
     {
         if (current_tile.first == (map.size() - 1) || ability_charges[(int)ACTION::DIG_DOWN] == 0)
         {
@@ -273,7 +273,7 @@ public:
         }
     }
 
-    bool can_become_wall(uint2 &current_tile, DIRECTION direction)
+    bool can_become_wall(uint2 &current_tile, DIRECTION)
     {
         if (ability_charges[(int)ACTION::LEMMING_WALL] == 0)
         {
@@ -589,9 +589,9 @@ public:
     {
         uint2 init_tile;
 
-        for (int i = 0; i < map.size(); i++)
+        for (size_t i = 0; i < map.size(); i++)
         {
-            for (int j = 0; j < map[i].size(); j++)
+            for (size_t j = 0; j < map[i].size(); j++)
             {
                 if (map[i][j] == TILE::INIT)
                 {
@@ -795,7 +795,7 @@ public:
                         (unsigned int)fmap_p.x);
 
             Float tile_init_x = path_coordinates[executing_action].second * 1.0f / l_n_cols;
-            Float tile_init_y = path_coordinates[executing_action].first * 1.0f / l_n_rows;
+            // Float tile_init_y = path_coordinates[executing_action].first * 1.0f / l_n_rows;
 
             Float distance = l_p.x - tile_init_x;
             Float mid_offset = (0.5f / l_n_cols);
