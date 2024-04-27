@@ -53,16 +53,17 @@ public:
 
   bool destroy_box_alpha(Engine &engine, Bound2f box, int direction)
   {
+    bool res = false;
     if (is_same_direction(direction))
     {
       for (int i = 0; i < max_frames; i++)
       {
         if (textures[i].set_alpha_box(world_to_local(box), 0, engine.get_renderer()))
         {
-          return false;
+          res = true;
         }
       }
     }
-    return true;
+    return res;
   }
 };
