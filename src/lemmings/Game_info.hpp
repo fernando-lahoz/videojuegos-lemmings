@@ -38,7 +38,7 @@ private:
   // principal level settings
   int level = 0;
   int difficulty = 0;
-  float game_speed = 0.5;
+  float game_speed = 1;
   bool level_ended = false;
   bool spawn_ended = false;
   bool level_is_paused = false;
@@ -159,7 +159,7 @@ public:
   void start_game_info(int _level, int _difficulty)
   {
     credit_frame = 0;
-    game_speed = 0.5;
+    game_speed = 1;
     level_is_paused = false;
     do_restart_camera = true;
     is_camera_stopped = false;

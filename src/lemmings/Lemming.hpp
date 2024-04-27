@@ -508,6 +508,12 @@ public:
               if (dir_wall_ptr->destroy_box_alpha(engine, box, direction))
                 bashing_destroyed_map = true;
             }
+            else if (entity->get_entity_name() == "BRICKS")
+            {
+              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
+              if (bricks_ptr->destroy_box_alpha(engine, box, 0))
+                bashing_destroyed_map = true;
+            }
           }
         }
         if (current_frame == 31 || current_frame == 14)
@@ -538,7 +544,10 @@ public:
       {
         position.x += 2 * direction;
         Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.4)), Vector2f(0, 1));
+        Ray ray_mid_down = Ray(local_to_world(Point2f(0.5, 0.75)), Vector2f(0, 1));
         float hit_offset_down = diagonal.y / 2;
+        float offset_fall = 0.7;
+        float offset_adjust = 0.35;
         EntityPtr hit_entity_down;
 
         engine.intersect_ray(ray_down, get_entity_id(),
@@ -548,16 +557,22 @@ public:
         {
           std::shared_ptr<Brick> ptr = std::dynamic_pointer_cast<Brick>(hit_entity_down);
           if (direction != ptr->get_direction())
-            engine.intersect_ray(ray_down, get_entity_id(),
+            engine.intersect_ray(ray_mid_down, get_entity_id(),
                                  {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset_down, hit_entity_down);
         }
-
-        if (hit_offset_down < diagonal.y * (14. / 20.))
+        if (hit_offset_down == 0)
+        {
+          offset_fall = 0.35;
+          offset_adjust = 0;
+          engine.intersect_ray(ray_mid_down, get_entity_id(),
+                               {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
+        }
+        if (hit_offset_down < diagonal.y * offset_fall)
         {
           if (hit_offset_down > 0 && (hit_offset_down > diagonal.y * (8. / 20.) || hit_offset_down < diagonal.y * (6. / 20.)))
           { // std::cout << "sube baja altura " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << " - " << static_cast<int>(round(hit_offset_down / 2.) * 2) << "\n";
             hit_offset_down = (static_cast<int>(round(hit_offset_down / 2.) * 2));
-            position.y += (hit_offset_down - diagonal.y * (7. / 20.));
+            position.y += (hit_offset_down - diagonal.y * offset_adjust);
             // position.y = (static_cast<int>(position.y) / 2) * 2;
             // position.y = static_cast<int>(position.y);
           }
@@ -623,15 +638,15 @@ public:
             else if (entity->get_entity_name() == "DIRECTIONAL WALL")
             {
               std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
-              if (dir_wall_ptr->destroy_box_alpha(engine, box, direction))
+              if (dir_wall_ptr->destroy_box_alpha(engine, box, 0))
                 destroyed = true;
-              if (dir_wall_ptr->destroy_box_alpha(engine, box2, direction))
+              if (dir_wall_ptr->destroy_box_alpha(engine, box2, 0))
                 destroyed = true;
-              if (dir_wall_ptr->destroy_box_alpha(engine, box3, direction))
+              if (dir_wall_ptr->destroy_box_alpha(engine, box3, 0))
                 destroyed = true;
-              if (dir_wall_ptr->destroy_box_alpha(engine, box4, direction))
+              if (dir_wall_ptr->destroy_box_alpha(engine, box4, 0))
                 destroyed = true;
-              if (dir_wall_ptr->destroy_box_alpha(engine, box5, direction))
+              if (dir_wall_ptr->destroy_box_alpha(engine, box5, 0))
                 destroyed = true;
             }
             else if (entity->get_entity_name() == "BRICKS")
@@ -906,7 +921,12 @@ public:
             else if (entity->get_entity_name() == "DIRECTIONAL WALL")
             {
               std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
-              dir_wall_ptr->destroy_box_alpha(engine, box, 0);
+              dir_wall_ptr->destroy_box_alpha(engine, box, direction);
+            }
+            else if (entity->get_entity_name() == "BRICKS")
+            {
+              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
+              bricks_ptr->destroy_box_alpha(engine, box, 0);
             }
           }
           do_action_in_frame = false;
@@ -965,11 +985,20 @@ public:
             else if (entity->get_entity_name() == "DIRECTIONAL WALL")
             {
               std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
-              dir_wall_ptr->destroy_box_alpha(engine, box, 0);
-              dir_wall_ptr->destroy_box_alpha(engine, box2, 0);
-              dir_wall_ptr->destroy_box_alpha(engine, box3, 0);
-              dir_wall_ptr->destroy_box_alpha(engine, box4, 0);
-              dir_wall_ptr->destroy_box_alpha(engine, box5, 0);
+              dir_wall_ptr->destroy_box_alpha(engine, box, direction);
+              dir_wall_ptr->destroy_box_alpha(engine, box2, direction);
+              dir_wall_ptr->destroy_box_alpha(engine, box3, direction);
+              dir_wall_ptr->destroy_box_alpha(engine, box4, direction);
+              dir_wall_ptr->destroy_box_alpha(engine, box5, direction);
+            }
+            else if (entity->get_entity_name() == "BRICKS")
+            {
+              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
+              bricks_ptr->destroy_box_alpha(engine, box, 0);
+              bricks_ptr->destroy_box_alpha(engine, box2, 0);
+              bricks_ptr->destroy_box_alpha(engine, box3, 0);
+              bricks_ptr->destroy_box_alpha(engine, box4, 0);
+              bricks_ptr->destroy_box_alpha(engine, box5, 0);
             }
           }
           do_action_in_frame = true;
@@ -988,6 +1017,11 @@ public:
       {
         remove_skill(Utils::Lemming_Skills::MINE);
         on_ground = false;
+      }
+      else if (hit_entity_down->get_entity_name() == "METAL")
+      {
+        remove_skill(Utils::Lemming_Skills::MINE);
+        go_walk();
       }
       // Comprobamos si hay suelo en diagonal
       Ray ray_dia = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0.5)), Vector2f(direction * 1, 1));
