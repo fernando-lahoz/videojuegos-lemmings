@@ -1057,8 +1057,8 @@ public:
               // std::cout << "Offset down: " << hit_offset_down << std::endl;
               if (hit_offset_down >= 30)
               {
-                position.y += hit_offset_down - 30;
-                position.y = (static_cast<int>(position.y) / 2) * 2;
+                position.y += hit_offset_down - 30;//El offset que deberían tener los Lemmmings es 32
+                position.y = (static_cast<int>(position.y) / 2) * 2 + (((float)position.y > (int)position.y)? 1 : 0);
               }
               distance_fall = 0.0f;
               go_walk();
