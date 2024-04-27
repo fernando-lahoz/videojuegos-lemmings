@@ -477,13 +477,13 @@ public:
         }
         else if (current_frame == 6)
         {
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.65))), Point2f(local_to_world(Point2f(0.7, 0.75)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.65))), Point2f(local_to_world(Point2f(0.6, 0.75))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.65))), Point2f(local_to_world(Point2f(0.7, 0.7)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.65))), Point2f(local_to_world(Point2f(0.6, 0.7))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 22)
         {
           position.x += 4 * direction;
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.65))), Point2f(local_to_world(Point2f(0.7, 0.75)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.65))), Point2f(local_to_world(Point2f(0.6, 0.75))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.65))), Point2f(local_to_world(Point2f(0.7, 0.7)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.65))), Point2f(local_to_world(Point2f(0.6, 0.7))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 10 || current_frame == 4 || current_frame == 15 || current_frame == 26)
