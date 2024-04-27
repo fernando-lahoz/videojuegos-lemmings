@@ -219,7 +219,7 @@ public:
             7,                               // digitWidth
             16,                              // digitHeight
             1,                               // paddingX
-            &Game_info::get_game_speed       // Función miembro de Game_info
+            &Game_info::get_game_speed_hud   // Función miembro de Game_info
         );
 
         Dynamic_value_display display_spawn_velocity(

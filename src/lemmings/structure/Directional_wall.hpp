@@ -57,7 +57,7 @@ public:
     {
       for (int i = 0; i < max_frames; i++)
       {
-        if (!textures[i].set_alpha_box(world_to_local(box), 0, engine.get_renderer()))
+        if (textures[i].set_alpha_box(world_to_local(box), 0, engine.get_renderer()))
         {
           return false;
         }

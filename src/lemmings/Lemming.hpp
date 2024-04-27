@@ -498,8 +498,16 @@ public:
           for (auto &entity : entities)
           {
             if (entity->get_entity_name() == "MAP")
+            {
               if (entity->destroy_box_alpha(engine, box))
                 bashing_destroyed_map = true;
+            }
+            else if (entity->get_entity_name() == "DIRECTIONAL WALL")
+            {
+              std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
+              if (dir_wall_ptr->destroy_box_alpha(engine, box, direction))
+                bashing_destroyed_map = true;
+            }
           }
         }
         if (current_frame == 31 || current_frame == 14)
@@ -615,15 +623,15 @@ public:
             else if (entity->get_entity_name() == "DIRECTIONAL WALL")
             {
               std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
-              if (dir_wall_ptr->destroy_box_alpha(engine, box, 0))
+              if (dir_wall_ptr->destroy_box_alpha(engine, box, direction))
                 destroyed = true;
-              if (dir_wall_ptr->destroy_box_alpha(engine, box2, 0))
+              if (dir_wall_ptr->destroy_box_alpha(engine, box2, direction))
                 destroyed = true;
-              if (dir_wall_ptr->destroy_box_alpha(engine, box3, 0))
+              if (dir_wall_ptr->destroy_box_alpha(engine, box3, direction))
                 destroyed = true;
-              if (dir_wall_ptr->destroy_box_alpha(engine, box4, 0))
+              if (dir_wall_ptr->destroy_box_alpha(engine, box4, direction))
                 destroyed = true;
-              if (dir_wall_ptr->destroy_box_alpha(engine, box5, 0))
+              if (dir_wall_ptr->destroy_box_alpha(engine, box5, direction))
                 destroyed = true;
             }
             else if (entity->get_entity_name() == "BRICKS")

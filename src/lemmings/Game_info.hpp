@@ -25,7 +25,7 @@ private:
   // credits
   int credit_frame = 0;
 
-  //ia
+  // ia
   bool ia = false;
 
   // level selector
@@ -38,7 +38,7 @@ private:
   // principal level settings
   int level = 0;
   int difficulty = 0;
-  int game_speed = 1;
+  float game_speed = 0.5;
   bool level_ended = false;
   bool spawn_ended = false;
   bool level_is_paused = false;
@@ -60,9 +60,9 @@ private:
   int option_selected = Utils::NO_OPTION_SELECTED;
 
   // Variables de configuración
-  bool is_button_conf = false; //indica si está pulsado un botón del menu de configuración
-  int last_button = -1; //indica el ultimo boton pulsado en el menu de configuración
-  EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS]; //Guarda la configuración de teclas del fichero para modificarlo
+  bool is_button_conf = false;                        // indica si está pulsado un botón del menu de configuración
+  int last_button = -1;                               // indica el ultimo boton pulsado en el menu de configuración
+  EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS]; // Guarda la configuración de teclas del fichero para modificarlo
   uint8_t conf_values[3];
 
   // cursor
@@ -88,9 +88,8 @@ private:
   bool let_lemmings_spawn = false;
 
   // key bindings
-  
-  // ia
 
+  // ia
 
   // sound effects
   Sound SOUND_EFFECT[19];
@@ -104,8 +103,8 @@ private:
   VolumeAndAspect volumeAndAspect;
 
 public:
-
-  enum SoundAssets{
+  enum SoundAssets
+  {
     CHAIN_SOUND,
     CHANGE_OP_SOUND,
     CHINK_SOUND,
@@ -128,7 +127,8 @@ public:
   };
 
   // Inicializa los efectos de sonido
-  void start_sound_assets(Engine& engine) {
+  void start_sound_assets(Engine &engine)
+  {
     SOUND_EFFECT[CHAIN_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/chain.wav");
     SOUND_EFFECT[CHANGE_OP_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/changeop.wav");
     SOUND_EFFECT[CHINK_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/chink.wav");
@@ -151,14 +151,15 @@ public:
   }
 
   // Devuelve el sonido asociado al asset correspondiente
-  Sound get_sound_asset(SoundAssets asset){
+  Sound get_sound_asset(SoundAssets asset)
+  {
     return SOUND_EFFECT[asset];
   }
 
   void start_game_info(int _level, int _difficulty)
   {
     credit_frame = 0;
-    game_speed = 1;
+    game_speed = 0.5;
     level_is_paused = false;
     do_restart_camera = true;
     is_camera_stopped = false;
@@ -190,38 +191,76 @@ public:
     is_door_open = false;
   }
 
-  int conversion_level_selected_ia(){
-    if (ia){
-      if (difficulty_selected_ia == 0){
-        if (level_selected_ia == 2){return 3;}
+  int conversion_level_selected_ia()
+  {
+    if (ia)
+    {
+      if (difficulty_selected_ia == 0)
+      {
+        if (level_selected_ia == 2)
+        {
+          return 3;
+        }
         return level_selected_ia;
       }
-      else{ return level_selected_ia;}
+      else
+      {
+        return level_selected_ia;
       }
-    else{
+    }
+    else
+    {
       return level_selected;
     }
   }
 
-  int conversion_level_ia(){
-    if (ia){
-      if (difficulty_ia == 0){
-      if (level_ia == 2){return 3;}
-      return level_ia;
+  int conversion_level_ia()
+  {
+    if (ia)
+    {
+      if (difficulty_ia == 0)
+      {
+        if (level_ia == 2)
+        {
+          return 3;
+        }
+        return level_ia;
       }
-      else{ return level_ia;}
+      else
+      {
+        return level_ia;
+      }
     }
-    else{
+    else
+    {
       return level;
     }
   }
 
-  int get_level() const { if (ia) {return level_ia;} else {return level;} }
-  int get_difficulty() const { if (ia) return difficulty_ia; else {return difficulty;} }
+  int get_level() const
+  {
+    if (ia)
+    {
+      return level_ia;
+    }
+    else
+    {
+      return level;
+    }
+  }
+  int get_difficulty() const
+  {
+    if (ia)
+      return difficulty_ia;
+    else
+    {
+      return difficulty;
+    }
+  }
 
   void set_ia(bool ia_) { ia = ia_; }
   int get_ia() const { return ia; }
-  
+
   void set_do_action(int action) { do_action = action; }
   int get_do_action() const { return do_action; }
 
@@ -231,14 +270,47 @@ public:
   void set_do_transition(bool new_value) { do_transition = new_value; }
   bool get_do_transition() const { return do_transition; }
 
-  void add_level_selected() { if (ia) {level_selected_ia = math::min(level_selected_ia + 1, Utils::LEVEL_MAX_IA_DIFFICULTY[difficulty_selected_ia]);} else {level_selected = math::min(level_selected + 1, 30);} }
-  void sub_level_selected() { if (ia) level_selected_ia = math::max(level_selected_ia - 1, 1); else level_selected = math::max(level_selected - 1, 1); }
-  int get_level_selected() const { if (ia) {return level_selected_ia;} else {return level_selected;} }
-  void set_level_selected(int new_level) { if (ia) level_selected_ia = new_level; else level_selected = new_level; }
+  void add_level_selected()
+  {
+    if (ia)
+    {
+      level_selected_ia = math::min(level_selected_ia + 1, Utils::LEVEL_MAX_IA_DIFFICULTY[difficulty_selected_ia]);
+    }
+    else
+    {
+      level_selected = math::min(level_selected + 1, 30);
+    }
+  }
+  void sub_level_selected()
+  {
+    if (ia)
+      level_selected_ia = math::max(level_selected_ia - 1, 1);
+    else
+      level_selected = math::max(level_selected - 1, 1);
+  }
+  int get_level_selected() const
+  {
+    if (ia)
+    {
+      return level_selected_ia;
+    }
+    else
+    {
+      return level_selected;
+    }
+  }
+  void set_level_selected(int new_level)
+  {
+    if (ia)
+      level_selected_ia = new_level;
+    else
+      level_selected = new_level;
+  }
 
   void add_difficulty_selected()
   {
-    if (ia){
+    if (ia)
+    {
       int aux = math::min(difficulty_selected_ia + 1, 1);
       if (aux != difficulty_selected_ia)
       {
@@ -246,17 +318,20 @@ public:
         set_level_selected(1);
       }
     }
-    else{
-    int aux = math::min(difficulty_selected + 1, 3);
-    if (aux != difficulty_selected)
+    else
     {
-      difficulty_selected = aux;
-      set_level_selected(1);
-    }}
+      int aux = math::min(difficulty_selected + 1, 3);
+      if (aux != difficulty_selected)
+      {
+        difficulty_selected = aux;
+        set_level_selected(1);
+      }
+    }
   }
   void sub_difficulty_selected()
   {
-    if (ia){
+    if (ia)
+    {
       int aux = math::max(difficulty_selected_ia - 1, 0);
       if (aux != difficulty_selected_ia)
       {
@@ -264,7 +339,8 @@ public:
         set_level_selected(1);
       }
     }
-    else{
+    else
+    {
       int aux = math::max(difficulty_selected - 1, 0);
       if (aux != difficulty_selected)
       {
@@ -273,11 +349,18 @@ public:
       }
     }
   }
-  int get_difficulty_selected() const { if (ia) return difficulty_selected_ia; else return difficulty_selected; }
+  int get_difficulty_selected() const
+  {
+    if (ia)
+      return difficulty_selected_ia;
+    else
+      return difficulty_selected;
+  }
 
-  void add_game_speed() { game_speed = math::min(game_speed + 1, 4); }
-  void sub_game_speed() { game_speed = math::max(game_speed - 1, 1); }
-  int get_game_speed() const { return game_speed; }
+  void add_game_speed() { game_speed = math::min(game_speed + 0.5, 2); }
+  void sub_game_speed() { game_speed = math::max(game_speed - 0.5, 0.5); }
+  float get_game_speed() const { return game_speed; }
+  int get_game_speed_hud() const { return game_speed * 2; }
 
   void add_spawned_lemmings() { spawned_lemmings++; }
   void set_spawned_lemmings(int new_value) { spawned_lemmings = new_value; }
@@ -319,29 +402,36 @@ public:
   void set_build_menu(int _menu, int _level = -1, int _difficulty = -1)
   {
     build_menu = _menu;
-    if (ia){
-      if (_level != -1 && _difficulty != -1)
-        {
-          std::cout << "Level " << difficulty_ia << " : " << _difficulty << std::endl; 
-          level_ia = _level;
-          difficulty_ia = _difficulty;
-        }
-    }
-    else{
+    if (ia)
+    {
       if (_level != -1 && _difficulty != -1)
       {
-        //std::cout << "Level " << level << " : " << _level << std::endl; 
+        std::cout << "Level " << difficulty_ia << " : " << _difficulty << std::endl;
+        level_ia = _level;
+        difficulty_ia = _difficulty;
+      }
+    }
+    else
+    {
+      if (_level != -1 && _difficulty != -1)
+      {
+        // std::cout << "Level " << level << " : " << _level << std::endl;
         level = _level;
         difficulty = _difficulty;
       }
     }
-    
   }
   int get_build_menu() const { return build_menu; }
 
   void set_spawn_ended() { spawn_ended = true; }
 
-  void set_option_selected(int option) { if (ia) option_selected = Utils::NO_OPTION_SELECTED; else option_selected = option; }
+  void set_option_selected(int option)
+  {
+    if (ia)
+      option_selected = Utils::NO_OPTION_SELECTED;
+    else
+      option_selected = option;
+  }
   int get_option_selected() const { return option_selected; }
 
   void sub_skill_amount(int i) { skill_amount[i]--; }
@@ -418,13 +508,22 @@ public:
   void add_n_lemmings_in()
   {
     n_lemmings_in++;
-    if (ia){percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS_IA[difficulty_ia][level_ia], 100); } else{percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level], 100);}
-    
+    if (ia)
+    {
+      percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS_IA[difficulty_ia][level_ia], 100);
+    }
+    else
+    {
+      percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level], 100);
+    }
   }
   void sub_n_lemmings_in()
   {
     n_lemmings_in--;
-    if (ia) percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS_IA[difficulty_ia][level_ia], 100); else percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level], 100);
+    if (ia)
+      percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS_IA[difficulty_ia][level_ia], 100);
+    else
+      percen_lemmings_in = math::min(n_lemmings_in * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level], 100);
   }
 
   int get_n_lemmings_in() const { return n_lemmings_in; }
@@ -463,7 +562,7 @@ public:
   void set_game_camera_id(Camera2D::ID id) { game_camera_id = id; }
   Camera2D::ID get_game_camera_id() { return game_camera_id; }
 
-  void set_dynamic_camera(Camera2D& cam) { dynamic_camera = &cam; }
+  void set_dynamic_camera(Camera2D &cam) { dynamic_camera = &cam; }
   Camera2D &get_dynamic_camera() { return *dynamic_camera; }
   Camera2D *get_dynamic_camera_ptr() { return dynamic_camera; }
 
@@ -480,27 +579,28 @@ public:
 
   void set_conf_buttons(EngineIO::InputEvent _conf_buttons[])
   {
-    for(int i = 0; i < NUM_KEYBINDINGS; i++){
-      conf_buttons[i] = _conf_buttons[i]; 
+    for (int i = 0; i < NUM_KEYBINDINGS; i++)
+    {
+      conf_buttons[i] = _conf_buttons[i];
     }
   }
 
   void set_conf_buttons(EngineIO::InputEvent _conf_button, int idx)
   {
-    if(idx >= 0 && idx <= NUM_KEYBINDINGS)
+    if (idx >= 0 && idx <= NUM_KEYBINDINGS)
     {
       for (int i = 0; i < NUM_KEYBINDINGS; i++)
-          if (conf_buttons[i] == _conf_button)
-              conf_buttons[i] = conf_buttons[idx];
+        if (conf_buttons[i] == _conf_button)
+          conf_buttons[i] = conf_buttons[idx];
       conf_buttons[idx] = _conf_button;
     }
     set_is_button_conf(false);
   }
 
   void get_conf_buttons(EngineIO::InputEvent _conf_buttons[])
-  { 
-    for(int i = 0; i < NUM_KEYBINDINGS; i++)
-        _conf_buttons[i] = conf_buttons[i];
+  {
+    for (int i = 0; i < NUM_KEYBINDINGS; i++)
+      _conf_buttons[i] = conf_buttons[i];
   }
 
   EngineIO::InputEvent get_conf_buttons(int idx) { return conf_buttons[idx]; }
@@ -568,19 +668,23 @@ public:
   }
 
   bool is_selected_level_won()
-  { 
-    if (ia) return levelsInfo.isAiLevelWon(difficulty_selected_ia, level_selected_ia);
-    else return levelsInfo.isLevelWon(difficulty_selected, level_selected);
+  {
+    if (ia)
+      return levelsInfo.isAiLevelWon(difficulty_selected_ia, level_selected_ia);
+    else
+      return levelsInfo.isLevelWon(difficulty_selected, level_selected);
   }
 
   std::string get_selected_level_best_time()
   {
-    if (ia){
+    if (ia)
+    {
       int m = levelsInfo.getMin_Ai(difficulty_selected_ia, level_selected_ia);
       int s = levelsInfo.getSec_Ai(difficulty_selected_ia, level_selected_ia);
       return std::to_string(m) + (s < 10 ? "-0" : "-") + std::to_string(s);
     }
-    else{
+    else
+    {
       int m = levelsInfo.getMin(difficulty_selected, level_selected);
       int s = levelsInfo.getSec(difficulty_selected, level_selected);
       return std::to_string(m) + (s < 10 ? "-0" : "-") + std::to_string(s);
@@ -589,33 +693,37 @@ public:
 
   std::string get_selected_level_best_perc()
   {
-    if (ia) return std::to_string(levelsInfo.getPerc_Ai(difficulty_selected_ia, level_selected_ia)) + "%";
-    else return std::to_string(levelsInfo.getPerc(difficulty_selected, level_selected)) + "%";
+    if (ia)
+      return std::to_string(levelsInfo.getPerc_Ai(difficulty_selected_ia, level_selected_ia)) + "%";
+    else
+      return std::to_string(levelsInfo.getPerc(difficulty_selected, level_selected)) + "%";
   }
 
   void manage_level_results()
   {
-    if (ia){
+    if (ia)
+    {
       int needed = Utils::LEVEL_SAVE_LEMMINGS_IA[difficulty_ia][level_ia] * 100 / Utils::LEVEL_N_LEMMINGS_IA[difficulty_ia][level_ia];
       int rescued = get_percen_lemmings_in();
       int limit_time = Utils::LEVEL_TIME_LIMIT_IA[difficulty_ia][level_ia];
-      int left_time = get_actual_minutes_left()*60 + get_actual_seconds_left();
+      int left_time = get_actual_minutes_left() * 60 + get_actual_seconds_left();
       if (rescued >= needed && left_time > 0)
       {
         int game_time = limit_time - left_time;
-        LevelInfo wonLevel(true, game_time/60, game_time%60, rescued);
+        LevelInfo wonLevel(true, game_time / 60, game_time % 60, rescued);
         levelsInfo.setNewAiLevelInfo(difficulty_ia, level_ia, wonLevel);
       }
     }
-    else{
+    else
+    {
       int needed = Utils::LEVEL_SAVE_LEMMINGS[difficulty][level] * 100 / Utils::LEVEL_N_LEMMINGS[difficulty][level];
       int rescued = get_percen_lemmings_in();
       int limit_time = Utils::LEVEL_TIME_LIMIT[difficulty][level];
-      int left_time = get_actual_minutes_left()*60 + get_actual_seconds_left();
+      int left_time = get_actual_minutes_left() * 60 + get_actual_seconds_left();
       if (rescued >= needed && left_time > 0)
       {
         int game_time = limit_time - left_time;
-        LevelInfo wonLevel(true, game_time/60, game_time%60, rescued);
+        LevelInfo wonLevel(true, game_time / 60, game_time % 60, rescued);
         levelsInfo.setNewLevelInfo(difficulty, level, wonLevel);
       }
     }
@@ -646,13 +754,21 @@ public:
     if (aspect == 3)
     {
       engine.set_fullscreen();
-    } else {
+    }
+    else
+    {
       engine.set_windowmode();
       switch (aspect)
       {
-        case 0: engine.set_window_size(Vector2i{640, 400}); break;
-        case 1: engine.set_window_size(Vector2i{960, 600}); break;
-        case 2: engine.set_window_size(Vector2i{1280, 800}); break;
+      case 0:
+        engine.set_window_size(Vector2i{640, 400});
+        break;
+      case 1:
+        engine.set_window_size(Vector2i{960, 600});
+        break;
+      case 2:
+        engine.set_window_size(Vector2i{1280, 800});
+        break;
       }
     }
   }
@@ -666,5 +782,4 @@ public:
   {
     volumeAndAspect.setDefaultVolAsp();
   }
-
 };
