@@ -27,7 +27,6 @@ class Lemming : public Rigid_body
 
   bool is_playing = true; // Indica si la animación está actualmente en reproducción
   int current_frame = 0;  // Frame actual de la animación
-  bool climb_now = false;
   float distance_fall = 0.0f;
   float last_y = 0.0f;
   bool do_action_in_frame = false;
@@ -379,6 +378,51 @@ public:
         position.y += 4;
       if (is_floating())
         position.y += 2;
+      if (is_climbing())
+      {
+        if (current_frame == 8)
+        {
+          Ray ray_down = Ray(local_to_world(Point2f(0.5 + (0.15 * direction), 0.25)), Vector2f(0, 1));
+          Ray ray_up = Ray(local_to_world(Point2f(0.5 - (0.15 * direction), 0.5)), Vector2f(0, -1));
+          float hit_offset;
+          EntityPtr hit_entity;
+          engine.intersect_ray(ray_up, get_entity_id(),
+                               {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset, hit_entity);
+          if (hit_offset < diagonal.y * (10. / 20.))
+          {
+            std::cout << "Lemming choco con techo\n";
+            position.y -= 6;
+            go_fall();
+            direction *= -1;
+            return;
+          }
+          engine.intersect_ray(ray_down, get_entity_id(),
+                               {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset, hit_entity);
+          if (hit_offset < diagonal.y * (1. / 20.))
+          {
+            current_frame = 0;
+            position.y -= 6;
+            on_ground = false;
+          }
+        }
+        else if (current_frame == 9)
+        {
+          position.y -= 8;
+        }
+        else if (current_frame == 0)
+        {
+          position.y -= 10;
+          position.x += 4 * direction;
+          go_walk();
+        }
+
+        if (position.y < -8)
+        {
+          std::cout << "Lemming escalador llegó al límite de altura del mapa\n";
+          go_fall();
+          direction *= -1;
+        }
+      }
       if (is_bashing())
       {
         Bound2f box;
@@ -803,31 +847,6 @@ public:
       return;
     }
 
-    if (is_climbing())
-    {
-      if (current_frame == 7)
-      {
-        if (!do_action_in_frame && !climb_now)
-        {
-          // position.y -= 0;
-          current_frame = -1;
-          on_ground = false;
-        }
-      }
-      else if (current_frame == 0)
-      {
-        if (!do_action_in_frame && !climb_now)
-        {
-          position.y -= 3;
-        }
-      }
-      else
-      {
-        do_action_in_frame = false;
-      }
-      return;
-    }
-
     if (is_mining())
     {
       if (change_state_mine)
@@ -997,45 +1016,6 @@ public:
           {
             position.x -= 3 * direction;
             direction *= -1;
-          }
-        }
-      }
-      if (is_climbing())
-      {
-        // Se aleja virtualmente el Lemming de la pared para que no interfiera
-        // con la comprobación de si hay techo. Luego se revierte.
-        position.x -= 2 * direction;
-        if (check_collision_up(other))
-        {
-          if (other->get_entity_name() != "BRICKS")
-          {
-            std::cout << "Techo\n";
-            go_fall();
-            // position.x += 2 * direction;
-            direction *= -1;
-          }
-        }
-        else
-        {
-          if (position.y < -8)
-          {
-            std::cout << "Techo\n";
-            go_fall();
-            direction *= -1;
-          }
-          position.x += 2 * direction;
-          if ((!check_collision_left(other) && direction == -1) || (!check_collision_right(other) && direction == 1))
-          {
-            std::cout << "No hay pared\n";
-            if (!climb_now)
-            {
-              climb_now = true;
-            }
-            else if (current_frame == 15)
-            {
-              climb_now = false;
-              go_walk();
-            }
           }
         }
       }
