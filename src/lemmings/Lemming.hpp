@@ -550,6 +550,12 @@ public:
         float offset_adjust = 0.35;
         EntityPtr hit_entity_down;
 
+        Ray ray_up = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0)), Vector2f(0, -1));
+        Float hit_offset_up;
+        EntityPtr hit_entity_up;
+        engine.intersect_ray(ray_up, get_entity_id(),
+                            {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_up, hit_entity_up);
+
         engine.intersect_ray(ray_down, get_entity_id(),
                              {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
 
@@ -572,9 +578,13 @@ public:
           if (hit_offset_down > 0 && (hit_offset_down > diagonal.y * (8. / 20.) || hit_offset_down < diagonal.y * (6. / 20.)))
           { // std::cout << "sube baja altura " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << " - " << static_cast<int>(round(hit_offset_down / 2.) * 2) << "\n";
             hit_offset_down = (static_cast<int>(round(hit_offset_down / 2.) * 2));
-            position.y += (hit_offset_down - diagonal.y * offset_adjust);
-            // position.y = (static_cast<int>(position.y) / 2) * 2;
-            // position.y = static_cast<int>(position.y);
+
+            if(((hit_offset_down - diagonal.y * offset_adjust) > 0) || hit_offset_up > 0)
+            {//En caso de que el Lemming ya toque el techo, no puede subir más su posición
+              position.y += (hit_offset_down - diagonal.y * offset_adjust);
+              // position.y = (static_cast<int>(position.y) / 2) * 2;
+              // position.y = static_cast<int>(position.y);
+            }
           }
         }
         else
