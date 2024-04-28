@@ -154,13 +154,13 @@ SDL_Rect Render_2D::bound_to_rect(Bound2f bound, Camera2D& camera, Camera2D& mai
     SDL_Rect rect;
 
     auto w_position = world_to_raster(bound.pMin, camera, main_camera);
-    rect.x = (int) (w_position.x);
-    rect.y = (int) (w_position.y);
+    rect.x = (int)std::round(w_position.x);
+    rect.y = (int)std::round(w_position.y);
 
 
     auto w_diag = world_to_raster(bound.diagonal(), camera, main_camera);
-    rect.w = (int) (w_diag.x);
-    rect.h = (int) (w_diag.y);
+    rect.w = (int)std::round(w_diag.x);
+    rect.h = (int)std::round(w_diag.y);
 
 
     return rect;
