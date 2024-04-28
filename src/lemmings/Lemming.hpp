@@ -579,7 +579,7 @@ public:
           { // std::cout << "sube baja altura " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << " - " << static_cast<int>(round(hit_offset_down / 2.) * 2) << "\n";
             hit_offset_down = (static_cast<int>(round(hit_offset_down / 2.) * 2));
 
-            if(((hit_offset_down - diagonal.y * offset_adjust) > 0) || hit_offset_up > 0)
+            if((abs(hit_offset_down - diagonal.y * offset_adjust) > 0) || hit_offset_up > 0)
             {//En caso de que el Lemming ya toque el techo, no puede subir más su posición
               position.y += (hit_offset_down - diagonal.y * offset_adjust);
               // position.y = (static_cast<int>(position.y) / 2) * 2;
@@ -1073,8 +1073,23 @@ public:
             go_climb();
           else if (other->get_entity_name() != "BRICKS")
           {
-            position.x -= 3 * direction;
-            direction *= -1;
+            //Usamos un rayo para comprobar si el muro de más adelante es como un escalón
+            Ray ray_lr = Ray(local_to_world(Point2f(direction > 0 ? 0.4 : 1 - 0.4, 0.40)), Vector2f(direction*1, 0));
+            Float hit_offset_lr;
+            EntityPtr hit_entity_lr;
+            engine.intersect_ray(ray_lr, get_entity_id(),
+                                {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_lr, hit_entity_lr);
+
+            Ray ray_up = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0)), Vector2f(0, -1));
+            Float hit_offset_up;
+            EntityPtr hit_entity_up;
+            engine.intersect_ray(ray_up, get_entity_id(),
+                                {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_up, hit_entity_up);
+            if(hit_offset_lr < 30 || hit_offset_up < 45)
+            {//Si no cabe un lemming de ancho o si no cabe de alto al subir el escalon, entonces cambia de dirección por ser muro
+              position.x -= 3 * direction;
+              direction *= -1;
+            }                    
           }
         }
       }
