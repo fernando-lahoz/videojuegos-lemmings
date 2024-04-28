@@ -543,7 +543,7 @@ public:
       if (is_walking())
       {
         position.x += 2 * direction;
-        Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.4)), Vector2f(0, 1));
+        Ray ray_down = Ray(local_to_world(Point2f(0.45, 0.4)), Vector2f(0, 1));
         Ray ray_mid_down = Ray(local_to_world(Point2f(0.5, 0.75)), Vector2f(0, 1));
         float hit_offset_down = diagonal.y / 2;
         float offset_fall = 0.7;
