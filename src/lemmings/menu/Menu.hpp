@@ -234,6 +234,14 @@ public:
                                               "TEXT");
       engine.get_game().create_entity(text);
 
+      if (game_info.get_ia()){
+          text = std::make_shared<Text_displayer>(Point3f(10050, 25, 2), Vector2f(8, 15), game_info, "center",
+                                                      engine.load_texture("assets/font/font-red.png"),
+                                                      Vector2i(16, 30), lemmings_font_map, "Autoplay", engine, "TEXT");
+
+        engine.get_game().create_entity(text);
+      }
+
       // Rating Fun
       text = std::make_shared<Text_displayer>(Point3f(10160, 314, 2), Vector2f(16, 30), game_info, "left",
                                               engine.load_texture("assets/font/font-purple.png"),
@@ -278,6 +286,16 @@ public:
                                               Vector2i(16, 30), lemmings_font_map, "You rescued " + std::to_string(rescued) + "%", engine,
                                               "TEXT");
       engine.get_game().create_entity(text);
+
+      engine.get_game().create_entity(text);
+
+      if (game_info.get_ia()){
+          text = std::make_shared<Text_displayer>(Point3f(10050, 25, 2), Vector2f(8, 15), game_info, "center",
+                                                      engine.load_texture("assets/font/font-red.png"),
+                                                      Vector2i(16, 30), lemmings_font_map, "Autoplay", engine, "TEXT");
+
+        engine.get_game().create_entity(text);
+      }
 
       if (rescued == 100)
       {
@@ -605,6 +623,12 @@ public:
       dynamic_text = std::make_shared<Text_dynamic>(Point3f(10170, 235, 2), Vector2f(8, 15), engine, game_info, "center",
                                                     engine.load_texture("assets/font/font-blue.png"),
                                                     Vector2i(16, 30), lemmings_font_map, "Saved Lemmings", 7);
+      engine.get_game().create_entity(dynamic_text);
+
+      dynamic_text = std::make_shared<Text_dynamic>(Point3f(10050, 25, 2), Vector2f(8, 15), engine, game_info, "center",
+                                                    engine.load_texture("assets/font/font-blue.png"),
+                                                    Vector2i(16, 30), lemmings_font_map, "Autoplay", 7);
+
       engine.get_game().create_entity(dynamic_text);
 
       dynamic_text = std::make_shared<Text_dynamic>(Point3f(10470, 235, 2), Vector2f(8, 15), engine, game_info, "center",
