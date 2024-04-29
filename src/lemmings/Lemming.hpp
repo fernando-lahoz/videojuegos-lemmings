@@ -812,6 +812,7 @@ public:
 
     // EXPLODING LOGIC
     if (update_explode_countdown(engine))
+    {
       if (!(is_crashing()))
       { // Si no se está muriendo ya el Lemming de caida
         if (is_drowning() && !explosion_in_liquid)
@@ -822,7 +823,7 @@ public:
         }
         add_skill_explode_all();
       }
-
+    }
     // STATES LOGIC
     if (is_walking())
       return;
@@ -1148,7 +1149,7 @@ public:
       go_escape();
     }
 
-    if (other->get_entity_name() == "LIQUID TRIGGER")
+    if (other->get_entity_name() == "LIQUID TRIGGER" && !is_exploding())//No puede ahogarse si explota
     {
       on_ground = true;
       go_drown();
@@ -1346,6 +1347,8 @@ public:
   {
     if (game_info.get_level_is_paused())
       return;
+    if (is_exploding())
+      return;
     if (is_walking() && position.y < -8)
     {
       position.y = -8;
@@ -1389,8 +1392,10 @@ public:
       go_float();
     if (!(is_floating() || is_falling() || is_climbing()))
     {
-      if (!on_ground)
+      if (!on_ground && !is_exploding())
+      {
         go_fall();
+      }
       else if (is_hovered)
       {
         game_info.sub_lemmings_hovered();
