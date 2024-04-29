@@ -250,10 +250,12 @@ bool Engine::process_events()
         case SDL_KEYDOWN:
         {
             auto IO_event = Engine::SDL_to_input_event(event.key);
-
             Engine::change_input_state(IO_event, true);
             Engine::send_event_down(IO_event);
 
+            /*
+            // Omitted since the feature should be included in game settings and
+            // the key could be used for other purposes.
             if (event.key.keysym.sym == SDLK_F11 && !pressedf11)
             {
                 static bool toggle = true;
@@ -264,16 +266,22 @@ bool Engine::process_events()
                 toggle = !toggle;
                 pressedf11 = true;
             }
+            */
         }
         break;
+
         case SDL_KEYUP:
         {
+            /*
+            // Omitted since the feature should be included in game settings and
+            // the key could be used for other purposes.
             if (event.key.keysym.sym == SDLK_F11 && pressedf11)
             {
                 pressedf11 = false;
             }
-            auto IO_event = Engine::SDL_to_input_event(event.key);
+            */
 
+            auto IO_event = Engine::SDL_to_input_event(event.key);
             Engine::change_input_state(IO_event, false);
             Engine::send_event_up(IO_event);
         }
