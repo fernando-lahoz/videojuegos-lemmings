@@ -543,7 +543,7 @@ public:
       if (is_walking())
       {
         position.x += 2 * direction;
-        Ray ray_down = Ray(local_to_world(Point2f((direction > 0)? 0.45 : 1-0.45, 0.4)), Vector2f(0, 1));
+        Ray ray_down = Ray(local_to_world(Point2f((direction > 0) ? 0.45 : 1 - 0.45, 0.4)), Vector2f(0, 1));
         Ray ray_mid_down = Ray(local_to_world(Point2f(0.5, 0.75)), Vector2f(0, 1));
         float hit_offset_down = diagonal.y / 2;
         float offset_fall = 0.7;
@@ -554,7 +554,7 @@ public:
         Float hit_offset_up;
         EntityPtr hit_entity_up;
         engine.intersect_ray(ray_up, get_entity_id(),
-                            {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_up, hit_entity_up);
+                             {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_up, hit_entity_up);
 
         engine.intersect_ray(ray_down, get_entity_id(),
                              {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
@@ -579,8 +579,8 @@ public:
           { // std::cout << "sube baja altura " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << " - " << static_cast<int>(round(hit_offset_down / 2.) * 2) << "\n";
             hit_offset_down = (static_cast<int>(round(hit_offset_down / 2.) * 2));
 
-            if((abs(hit_offset_down - diagonal.y * offset_adjust) > 0) || hit_offset_up > 0)
-            {//En caso de que el Lemming ya toque el techo, no puede subir más su posición
+            if ((abs(hit_offset_down - diagonal.y * offset_adjust) > 0) || hit_offset_up > 0)
+            { // En caso de que el Lemming ya toque el techo, no puede subir más su posición
               position.y += (hit_offset_down - diagonal.y * offset_adjust);
               // position.y = (static_cast<int>(position.y) / 2) * 2;
               // position.y = static_cast<int>(position.y);
@@ -771,9 +771,9 @@ public:
 
       if (state == Utils::Lemming_State::BUILDING)
         if (game_info.get_ia())
-          frame_path = "assets/levvil/levvil_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty_selected()][game_info.get_level_selected()]) + "_" + std::to_string(current_frame) + ".png";
+          frame_path = "assets/levvil/levvil_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty()][game_info.get_level()]) + "_" + std::to_string(current_frame) + ".png";
         else
-          frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty_selected()][game_info.get_level_selected()]) + "_" + std::to_string(current_frame) + ".png";
+          frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty()][game_info.get_level()]) + "_" + std::to_string(current_frame) + ".png";
       else if (game_info.get_ia())
         frame_path = "assets/levvil/levvil_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
       else
@@ -1074,23 +1074,23 @@ public:
             go_climb();
           else if (other->get_entity_name() != "BRICKS")
           {
-            //Usamos un rayo para comprobar si el muro de más adelante es como un escalón
-            Ray ray_lr = Ray(local_to_world(Point2f(direction > 0 ? 0.4 : 1 - 0.4, 0.40)), Vector2f(direction*1, 0));
+            // Usamos un rayo para comprobar si el muro de más adelante es como un escalón
+            Ray ray_lr = Ray(local_to_world(Point2f(direction > 0 ? 0.4 : 1 - 0.4, 0.40)), Vector2f(direction * 1, 0));
             Float hit_offset_lr;
             EntityPtr hit_entity_lr;
             engine.intersect_ray(ray_lr, get_entity_id(),
-                                {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_lr, hit_entity_lr);
+                                 {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_lr, hit_entity_lr);
 
             Ray ray_up = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0)), Vector2f(0, -1));
             Float hit_offset_up;
             EntityPtr hit_entity_up;
             engine.intersect_ray(ray_up, get_entity_id(),
-                                {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_up, hit_entity_up);
-            if(hit_offset_lr < 30 || hit_offset_up < 45)
-            {//Si no cabe un lemming de ancho o si no cabe de alto al subir el escalon, entonces cambia de dirección por ser muro
+                                 {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_up, hit_entity_up);
+            if (hit_offset_lr < 30 || hit_offset_up < 45)
+            { // Si no cabe un lemming de ancho o si no cabe de alto al subir el escalon, entonces cambia de dirección por ser muro
               position.x -= 3 * direction;
               direction *= -1;
-            }                    
+            }
           }
         }
       }
@@ -1117,22 +1117,22 @@ public:
               // std::cout << "Offset down: " << hit_offset_down << std::endl;
               if (hit_offset_down >= 30)
               {
-                if(current_frame == 2 )
+                if (current_frame == 2)
                 {
-                  position.y += hit_offset_down - 31;//El offset que deberían tener los Lemmmings es 32
-                  if(hit_offset_down - 31 > 0)
+                  position.y += hit_offset_down - 31; // El offset que deberían tener los Lemmmings es 32
+                  if (hit_offset_down - 31 > 0)
                   {
-                    position.y = (static_cast<int>(position.y) / 2) * 2 - (((float)position.y > (int)position.y)? 1 : 0);
+                    position.y = (static_cast<int>(position.y) / 2) * 2 - (((float)position.y > (int)position.y) ? 1 : 0);
                   }
                   else
                   {
-                    position.y = (static_cast<int>(position.y) / 2) * 2 + (((float)position.y > (int)position.y)? 1 : 0);
+                    position.y = (static_cast<int>(position.y) / 2) * 2 + (((float)position.y > (int)position.y) ? 1 : 0);
                   }
                 }
                 else
                 {
-                  position.y += hit_offset_down - 30;//El offset que deberían tener los Lemmmings es 32
-                  position.y = (static_cast<int>(position.y) / 2) * 2 + (((float)position.y > (int)position.y)? 1 : 0);
+                  position.y += hit_offset_down - 30; // El offset que deberían tener los Lemmmings es 32
+                  position.y = (static_cast<int>(position.y) / 2) * 2 + (((float)position.y > (int)position.y) ? 1 : 0);
                 }
               }
               distance_fall = 0.0f;
@@ -1149,7 +1149,7 @@ public:
       go_escape();
     }
 
-    if (other->get_entity_name() == "LIQUID TRIGGER" && !is_exploding())//No puede ahogarse si explota
+    if (other->get_entity_name() == "LIQUID TRIGGER" && !is_exploding()) // No puede ahogarse si explota
     {
       on_ground = true;
       go_drown();

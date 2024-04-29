@@ -237,7 +237,7 @@ public:
     }
   }
 
-  int get_level() const
+  int get_level()
   {
     if (ia)
     {
@@ -248,7 +248,7 @@ public:
       return level;
     }
   }
-  int get_difficulty() const
+  int get_difficulty()
   {
     if (ia)
       return difficulty_ia;

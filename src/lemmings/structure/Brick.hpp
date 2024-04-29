@@ -10,7 +10,7 @@ private:
 
 public:
   Brick(Point3f position, Engine &engine, Game_info &_game_info, int _direction, bool is_debug = false)
-      : Directional_structure(position, Vector2f(56, 24.5), engine, Utils::LEVEL_BRICKS_TYPE[_game_info.get_difficulty_selected()][_game_info.get_level_selected()] + 18, 12, 0.0f, "BRICKS", false, _game_info, _direction, is_debug)
+      : Directional_structure(position, Vector2f(56, 24.5), engine, Utils::LEVEL_BRICKS_TYPE[_game_info.get_difficulty()][_game_info.get_level()] + 18, 12, 0.0f, "BRICKS", false, _game_info, _direction, is_debug)
   {
     std::string frame_path = "assets/structure/structure_" + std::to_string(structure_type) + "_" + std::to_string(direc) + "_0.png";
     Texture txt = engine.load_texture(frame_path.c_str());
@@ -59,12 +59,14 @@ public:
         if (textures[i].set_alpha_box(world_to_local(affectedBox), 0, engine.get_renderer()))
           destroy = true;
       }
-      if (destroy && bricks > 1) {
+      if (destroy && bricks > 1)
+      {
         set_active_texture(textures[bricks - 2]);
-      } else if (destroy) {
+      }
+      else if (destroy)
+      {
         this->destroy();
       }
-        
     }
     return destroy;
   }
