@@ -180,13 +180,6 @@ class Lemming : public Rigid_body
   {
     if (!is_mining())
       restart_animation();
-    if (state != Utils::MINING) // Cambia de estado a minar
-    {
-      change_state_mine = true;
-      do_action_in_frame = false;
-      current_frame = 0;
-      std::cout << "va a minar" << std::endl;
-    }
     state = Utils::MINING;
     type = Utils::LEMMING_TYPE[Utils::MINING];
   }
@@ -611,6 +604,143 @@ public:
         }
       }
 
+      if (is_mining())
+      {
+        // Comprobamos que haya suelo
+        Ray ray_down = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0.5)), Vector2f(0, 1));
+        Float hit_offset_down;
+        EntityPtr hit_entity_down;
+        engine.intersect_ray(ray_down, get_entity_id(),
+                             {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
+
+        if (hit_offset_down > (diagonal.y / 2)) // Detectamos que no hay suelo
+        {
+          remove_skill(Utils::Lemming_Skills::MINE);
+          on_ground = false;
+          return;
+        }
+
+        engine.intersect_ray(ray_down, get_entity_id(),
+                             "METAL", hit_offset_down, hit_entity_down);
+        if (hit_entity_down && hit_offset_down < (diagonal.y / 2))
+        {
+          remove_skill(Utils::Lemming_Skills::MINE);
+          go_walk();
+          return;
+        }
+        // Comprobamos si hay suelo en diagonal
+        Ray ray_dia = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0.5)), Vector2f(direction * 1, 1));
+
+        engine.intersect_ray(ray_dia, get_entity_id(),
+                             {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
+
+        if (hit_offset_down > (diagonal.y / 1.8)) // Detectamos que no hay suelo
+        {
+          remove_skill(Utils::Lemming_Skills::MINE);
+          go_walk();
+        }
+
+        if (current_frame == 0)
+        {                                // Hay que mover la posición 0 a la altura de la 23 para que no se teletransporte
+                                         // Actualizamos la posivion del Lemming
+          position.x += direction * 8.0; // Dirección indica el sentido de avance del Lemming
+          position.y += 5.0;
+        }
+        else if (current_frame == 1)
+        {
+          // Destruimos el cubo de mapa
+          Bound2f box;
+          auto minC = 0.65;
+          box.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.50));
+          box.pMax = box.pMin + Vector2f(7 * direction, -9.0); // Extremo del vector para señalar tamaño de caja
+
+          auto &entities = engine.get_entities();
+          for (auto &entity : entities)
+          {
+            if (entity->get_entity_name() == "MAP")
+              entity->destroy_box_alpha(engine, box);
+            else if (entity->get_entity_name() == "DIRECTIONAL WALL")
+            {
+              std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
+              dir_wall_ptr->destroy_box_alpha(engine, box, direction);
+            }
+            else if (entity->get_entity_name() == "BRICKS")
+            {
+              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
+              bricks_ptr->destroy_box_alpha(engine, box, 0);
+            }
+          }
+        }
+        else if (current_frame == 2)
+        {
+          std::cout << "MINING 2\n";
+          Bound2f box; // Cubo de arriba a la derecha
+          auto minC = 0.65;
+          box.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.75));
+          box.pMax = box.pMin + Vector2f(11 * direction, -15); // Extremo del vector para señalar tamaño de caja
+
+          Bound2f box2; // Cubo de abajo a la derecha
+          box2.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.80));
+          box2.pMax = box2.pMin + Vector2f(8 * direction, -10); // Extremo del vector para señalar tamaño de caja
+
+          Bound2f box3; // Cubo central a la derecha
+          box3.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.65));
+          box3.pMax = box3.pMin + Vector2f(13 * direction, -7); // Extremo del vector para señalar tamaño de caja
+
+          Bound2f box4; // Destruimos un cubo en la posición del lemming
+          position.x -= direction * 9.0;
+          position.y -= 5.6;
+
+          box4.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.80));
+          box4.pMax = box4.pMin + Vector2f(12 * direction, -17);
+
+          position.x += direction * 9.0; // Volvemos a poner el Lemming donde estaba
+          position.y += 5.6;
+
+          Bound2f box5; // Destruimos un cubo más a medio camino del movimineto de excabación
+          position.x -= direction * 4.0;
+          position.y -= 2.5;
+
+          minC = 0.6;
+          box5.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.80));
+          box5.pMax = box5.pMin + Vector2f(14 * direction, -17);
+
+          position.x += direction * 4.0; // Volvemos a poner el Lemming donde estaba
+          position.y += 2.5;
+
+          auto &entities = engine.get_entities();
+          for (auto &entity : entities)
+          {
+            if (entity->get_entity_name() == "MAP")
+            {
+              entity->destroy_box_alpha(engine, box);
+              entity->destroy_box_alpha(engine, box2);
+              entity->destroy_box_alpha(engine, box3);
+              entity->destroy_box_alpha(engine, box4);
+              entity->destroy_box_alpha(engine, box5);
+            }
+            else if (entity->get_entity_name() == "DIRECTIONAL WALL")
+            {
+              std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
+              dir_wall_ptr->destroy_box_alpha(engine, box, direction);
+              dir_wall_ptr->destroy_box_alpha(engine, box2, direction);
+              dir_wall_ptr->destroy_box_alpha(engine, box3, direction);
+              dir_wall_ptr->destroy_box_alpha(engine, box4, direction);
+              dir_wall_ptr->destroy_box_alpha(engine, box5, direction);
+            }
+            else if (entity->get_entity_name() == "BRICKS")
+            {
+              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
+              bricks_ptr->destroy_box_alpha(engine, box, 0);
+              bricks_ptr->destroy_box_alpha(engine, box2, 0);
+              bricks_ptr->destroy_box_alpha(engine, box3, 0);
+              bricks_ptr->destroy_box_alpha(engine, box4, 0);
+              bricks_ptr->destroy_box_alpha(engine, box5, 0);
+            }
+          }
+        }
+      }
+
       if (!Utils::STATE_IS_LOOP_ANIMATION[get_state()] && current_frame == 0)
       {
         is_playing = false; // Detiene la animación si no es en bucle
@@ -824,21 +954,6 @@ public:
         add_skill_explode_all();
       }
     }
-    // STATES LOGIC
-    if (is_walking())
-      return;
-    if (is_falling())
-      return;
-    if (is_floating())
-      return;
-    if (is_exploding())
-      return;
-    if (is_idle())
-      return;
-    if (is_escaping())
-      return;
-    if (is_blocking())
-      return;
     if (is_digging())
     {
       if (current_frame == 4 || current_frame == 12)
@@ -885,166 +1000,6 @@ public:
       }
       else
         do_action_in_frame = false;
-      return;
-    }
-
-    if (is_mining())
-    {
-      if (change_state_mine)
-      {
-        current_frame = 0;
-      }
-
-      if (current_frame == 0)
-      {
-        if (change_state_mine)
-        {
-          do_action_in_frame = false;
-        }
-
-        if (!do_action_in_frame)
-        { // Hay que mover la posición 0 a la altura de la 23 para que no se teletransporte
-          if (!change_state_mine)
-          {                                // Actualizamos la posivion del Lemming
-            position.x += direction * 8.0; // Dirección indica el sentido de avance del Lemming
-            position.y += 5.0;
-          }
-          do_action_in_frame = true;
-        }
-
-        if (change_state_mine)
-          change_state_mine = false;
-      }
-      else if (current_frame == 1)
-      {
-        if (do_action_in_frame)
-        { // Destruimos el cubo de mapa
-          Bound2f box;
-          auto minC = 0.65;
-          box.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.50));
-          box.pMax = box.pMin + Vector2f(7 * direction, -9.0); // Extremo del vector para señalar tamaño de caja
-
-          auto &entities = engine.get_entities();
-          for (auto &entity : entities)
-          {
-            if (entity->get_entity_name() == "MAP")
-              entity->destroy_box_alpha(engine, box);
-            else if (entity->get_entity_name() == "DIRECTIONAL WALL")
-            {
-              std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
-              dir_wall_ptr->destroy_box_alpha(engine, box, direction);
-            }
-            else if (entity->get_entity_name() == "BRICKS")
-            {
-              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
-              bricks_ptr->destroy_box_alpha(engine, box, 0);
-            }
-          }
-          do_action_in_frame = false;
-        }
-      }
-      else if (current_frame == 2)
-      {
-        std::cout << "MINING 2\n";
-        if (!do_action_in_frame)
-        {
-          Bound2f box; // Cubo de arriba a la derecha
-          auto minC = 0.65;
-          box.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.75));
-          box.pMax = box.pMin + Vector2f(11 * direction, -15); // Extremo del vector para señalar tamaño de caja
-
-          Bound2f box2; // Cubo de abajo a la derecha
-          box2.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.80));
-          box2.pMax = box2.pMin + Vector2f(8 * direction, -10); // Extremo del vector para señalar tamaño de caja
-
-          Bound2f box3; // Cubo central a la derecha
-          box3.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.65));
-          box3.pMax = box3.pMin + Vector2f(13 * direction, -7); // Extremo del vector para señalar tamaño de caja
-
-          Bound2f box4; // Destruimos un cubo en la posición del lemming
-          position.x -= direction * 9.0;
-          position.y -= 5.6;
-
-          box4.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.80));
-          box4.pMax = box4.pMin + Vector2f(12 * direction, -17);
-
-          position.x += direction * 9.0; // Volvemos a poner el Lemming donde estaba
-          position.y += 5.6;
-
-          Bound2f box5; // Destruimos un cubo más a medio camino del movimineto de excabación
-          position.x -= direction * 4.0;
-          position.y -= 2.5;
-
-          minC = 0.6;
-          box5.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.80));
-          box5.pMax = box5.pMin + Vector2f(14 * direction, -17);
-
-          position.x += direction * 4.0; // Volvemos a poner el Lemming donde estaba
-          position.y += 2.5;
-
-          auto &entities = engine.get_entities();
-          for (auto &entity : entities)
-          {
-            if (entity->get_entity_name() == "MAP")
-            {
-              entity->destroy_box_alpha(engine, box);
-              entity->destroy_box_alpha(engine, box2);
-              entity->destroy_box_alpha(engine, box3);
-              entity->destroy_box_alpha(engine, box4);
-              entity->destroy_box_alpha(engine, box5);
-            }
-            else if (entity->get_entity_name() == "DIRECTIONAL WALL")
-            {
-              std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
-              dir_wall_ptr->destroy_box_alpha(engine, box, direction);
-              dir_wall_ptr->destroy_box_alpha(engine, box2, direction);
-              dir_wall_ptr->destroy_box_alpha(engine, box3, direction);
-              dir_wall_ptr->destroy_box_alpha(engine, box4, direction);
-              dir_wall_ptr->destroy_box_alpha(engine, box5, direction);
-            }
-            else if (entity->get_entity_name() == "BRICKS")
-            {
-              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
-              bricks_ptr->destroy_box_alpha(engine, box, 0);
-              bricks_ptr->destroy_box_alpha(engine, box2, 0);
-              bricks_ptr->destroy_box_alpha(engine, box3, 0);
-              bricks_ptr->destroy_box_alpha(engine, box4, 0);
-              bricks_ptr->destroy_box_alpha(engine, box5, 0);
-            }
-          }
-          do_action_in_frame = true;
-        }
-      }
-      else
-        do_action_in_frame = false;
-      // Comprobamos que haya suelo
-      Ray ray_down = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0.5)), Vector2f(0, 1));
-      Float hit_offset_down;
-      EntityPtr hit_entity_down;
-      engine.intersect_ray(ray_down, get_entity_id(),
-                           {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
-
-      if (hit_offset_down > (diagonal.y / 2)) // Detectamos que no hay suelo
-      {
-        remove_skill(Utils::Lemming_Skills::MINE);
-        on_ground = false;
-      }
-      else if (hit_entity_down->get_entity_name() == "METAL")
-      {
-        remove_skill(Utils::Lemming_Skills::MINE);
-        go_walk();
-      }
-      // Comprobamos si hay suelo en diagonal
-      Ray ray_dia = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0.5)), Vector2f(direction * 1, 1));
-
-      engine.intersect_ray(ray_dia, get_entity_id(),
-                           {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
-
-      if (hit_offset_down > (diagonal.y / 1.8)) // Detectamos que no hay suelo
-      {
-        remove_skill(Utils::Lemming_Skills::MINE);
-        on_ground = false;
-      }
       return;
     }
   }
