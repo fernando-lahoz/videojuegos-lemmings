@@ -339,6 +339,26 @@ Bound2f Entity::default_down_point() const
     return Bound2f(l_p, r_p);
 }
 
+Bound2f Entity::get_right_point() const
+{
+    return right_point;
+}
+
+Bound2f Entity::get_left_point() const
+{
+    return left_point;
+}
+
+Bound2f Entity::get_up_point() const
+{
+    return up_point;
+}
+
+Bound2f Entity::get_down_point() const
+{
+    return down_point;
+}
+
 bool Entity::collides(std::shared_ptr<Entity> other) const
 {
     if (!collisions_active)

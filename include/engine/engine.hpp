@@ -172,6 +172,14 @@ public:
             Float &hit_offset,
             EntityPtr &hit_entity);
 
+    bool alpha_box_collision_if_all_Y_force_entity_names(Bound2f box,
+            int not_this_entity_id,
+            const std::vector<std::string> &force_entity_names,
+            Point2f &max_collision_pixel,Physics_engine::ReturnedPixel horizontal_pixel, 
+            Physics_engine::ReturnedPixel vertical_pixel, 
+            EntityPtr &hit_entity);
+
+
     /*
     bool intesect_ray_entity(Ray &ray, 
             EntityPtr entity,

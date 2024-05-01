@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "lemmings/utils.hpp"
+#include "engine/rigid_body.hpp"
 #include "engine/entity.hpp"
 #include "math/math.hpp"
 #include "memory/keyBindings.hpp"
@@ -36,6 +37,7 @@ private:
   bool is_arrow_hovered = false;
 
   // principal level settings
+  std::shared_ptr<Rigid_body> map_ptr;
   int level = 0;
   int difficulty = 0;
   float game_speed = 1;
@@ -212,6 +214,16 @@ public:
     {
       return level_selected;
     }
+  }
+
+  std::shared_ptr<Rigid_body> get_map_ptr()
+  {
+    return map_ptr;
+  }
+
+  void set_map_ptr(std::shared_ptr<Rigid_body> new_ptr)
+  {
+    map_ptr = new_ptr;
   }
 
   int conversion_level_ia()

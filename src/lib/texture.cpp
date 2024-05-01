@@ -46,7 +46,7 @@ void Texture::load(const std::string &file, SDL_Renderer *renderer)
     SDL_QueryTexture(texture.get(), nullptr, nullptr, &width, &height);
 }
 
-void Texture::change_pixel(Point2i pixel, Uint8 rgba[4])
+bool Texture::change_pixel(Point2i pixel, Uint8 rgba[4])
 {
     if (!surface)
         throw std::runtime_error("No surface loaded");
@@ -67,6 +67,34 @@ void Texture::change_pixel(Point2i pixel, Uint8 rgba[4])
     Uint8 *p = (Uint8 *)surface->pixels + pixel.y * surface->pitch + pixel.x * bpp;
 
     Uint32 new_pixel_value = SDL_MapRGBA(surface->format, rgba[0], rgba[1], rgba[2], rgba[3]);
+
+    Uint32 pixel_value;
+    switch (bpp)
+    {
+    case 1:
+        pixel_value = *p;
+        break;
+    case 2:
+        pixel_value = *(Uint16 *)p;
+        break;
+    case 3:
+        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            pixel_value = p[0] << 16 | p[1] << 8 | p[2];
+        else
+            pixel_value = p[0] | p[1] << 8 | p[2] << 16;
+        break;
+    case 4:
+        pixel_value = *(Uint32 *)p;
+        break;
+    default:
+        throw std::runtime_error("Unknown pixel format");
+    }
+
+    Uint8 r, g, b, a;
+    SDL_GetRGBA(pixel_value, surface->format, &r, &g, &b, &a);
+
+    if (a >= 16)
+        return false;
 
     switch (bpp)
     {
@@ -98,6 +126,7 @@ void Texture::change_pixel(Point2i pixel, Uint8 rgba[4])
     }
 
     modified = true;
+    return true;
 }
 
 bool Texture::set_alpha_pixel(Point2i ipixel, uint8_t alpha, SDL_Renderer *renderer)
@@ -207,6 +236,32 @@ bool Texture::set_alpha_box(Bound2f box, uint8_t alpha, SDL_Renderer *renderer)
 
     modified = true;
     return destroyed_anything;
+}
+
+bool Texture::fill_box_with_color(Bound2f box, RGBA color, SDL_Renderer *renderer)
+{
+    box.pMin = clamp(box.pMin, Point2f(0, 0), Point2f(1, 1));
+    box.pMax = clamp(box.pMax, Point2f(0, 0), Point2f(1, 1));
+
+    if (box.area() < 0.000001)
+        return false;
+
+    bool filled_anything = false;
+
+    for (int x = box.pMin.x * get_width(); x < box.pMax.x * get_width(); x++)
+    {
+        for (int y = box.pMin.y * get_height(); y < box.pMax.y * get_height(); y++)
+        {
+            uint8_t rgba[4] = {color.r, color.g, color.b, color.a};
+            if (change_pixel(Point2i(x, y), rgba))
+            {
+                filled_anything = true;
+            }
+        }
+    }
+
+    modified = true;
+    return filled_anything;
 }
 
 bool Texture::is_alpha_pixel(Point2f lpixel) const

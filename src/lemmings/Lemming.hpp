@@ -260,7 +260,9 @@ public:
     override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
     override_left_point(Bound2f(Point2f(0.4, 0.45), Point2f(0.5, 0.55)));
     override_right_point(Bound2f(Point2f(0.5, 0.45), Point2f(0.6, 0.55)));
+
     disable_alpha_mouse();
+    // disable_alpha_collision();
   }
   ~Lemming()
   {
@@ -380,7 +382,7 @@ public:
       {
         if (current_frame == 8)
         {
-          Ray ray_down = Ray(local_to_world(Point2f(0.5 + (0.15 * direction), 0.25)), Vector2f(0, 1));
+          Ray ray_down = Ray(local_to_world(Point2f(0.5 + (0.15 * direction), 0.15)), Vector2f(0, 1));
           Ray ray_up = Ray(local_to_world(Point2f(0.5 - (0.15 * direction), 0.5)), Vector2f(0, -1));
           float hit_offset;
           EntityPtr hit_entity;
@@ -396,11 +398,21 @@ public:
           }
           engine.intersect_ray(ray_down, get_entity_id(),
                                {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset, hit_entity);
-          if (hit_offset < diagonal.y * (1. / 20.))
+          // if (hit_offset < diagonal.y * (1. / 20.))
+          // {
+          //   current_frame = 0;
+          //   position.y -= 6;
+          //   on_ground = false;
+          // }
+          if (hit_offset == 0)
           {
             current_frame = 0;
             position.y -= 6;
             on_ground = false;
+          }
+          else
+          {
+            position.y += round(hit_offset) - 2;
           }
         }
         else if (current_frame == 9)
@@ -470,13 +482,13 @@ public:
         }
         else if (current_frame == 6)
         {
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.65))), Point2f(local_to_world(Point2f(0.7, 0.7)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.65))), Point2f(local_to_world(Point2f(0.6, 0.7))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.65))), Point2f(local_to_world(Point2f(0.7, 0.65)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.65))), Point2f(local_to_world(Point2f(0.6, 0.7))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 22)
         {
           position.x += 4 * direction;
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.65))), Point2f(local_to_world(Point2f(0.7, 0.7)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.65))), Point2f(local_to_world(Point2f(0.6, 0.7))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.65))), Point2f(local_to_world(Point2f(0.7, 0.65)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.65))), Point2f(local_to_world(Point2f(0.6, 0.7))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 10 || current_frame == 4 || current_frame == 15 || current_frame == 26)
@@ -535,7 +547,55 @@ public:
       }
       if (is_walking())
       {
+        bool cond = false;
+        Point2f collision_pixel;
+        EntityPtr hit_entity;
+        Bound2f collision_point_up = direction == -1 ? Bound2f(Point2f(0.4, 0.5), Point2f(0.45, 0.75)) : Bound2f(Point2f(0.55, 0.5), Point2f(0.6, 0.75));
+        Bound2f collision_point_down = direction == -1 ? Bound2f(Point2f(0.4, 0.75), Point2f(0.45, 1.05)) : Bound2f(Point2f(0.55, 0.75), Point2f(0.6, 1.05));
+        // bool collides = Physics_engine::alpha_box_collision_if_all(
+        //     *game_info.get_map_ptr(), Entity::local_to_world(collision_point),
+        //     Physics_engine::GET_FIRST, Physics_engine::GET_FIRST,
+        //     valid_pixel, collision_pixel);
+
+        bool is_valid = engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point_up),
+                                                                               get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"},
+                                                                               collision_pixel, Physics_engine::GET_LAST, Physics_engine::GET_LAST,
+                                                                               hit_entity);
+        if (is_valid)
+        {
+          float distance_y = collision_pixel.y - (Entity::get_position2D().y + 30);
+          std::cout << "collision_pixel.y: " << collision_pixel.y << " \n";
+          position.y = (static_cast<int>((position.y + (static_cast<int>(distance_y) / 2) * 2)) / 2) * 2;
+          if (distance_y < 0)
+          {
+            std::cout << "El lemming sube - dist: " << distance_y << " \n";
+            cond = true;
+          }
+        }
+        if (!cond)
+        {
+          is_valid = engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point_down),
+                                                                            get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"},
+                                                                            collision_pixel, Physics_engine::GET_FIRST, Physics_engine::GET_FIRST,
+                                                                            hit_entity);
+          if (is_valid)
+          {
+            float distance_y = collision_pixel.y - (Entity::get_position2D().y + 30);
+            position.y = (static_cast<int>((position.y + (static_cast<int>(distance_y) / 2) * 2)) / 2) * 2;
+            cond = true;
+            if (distance_y > 0)
+            {
+              std::cout << "El lemming baja - dist: " << distance_y << " \n";
+            }
+          }
+        }
+        if (!cond)
+        {
+          std::cout << "El lemming cae \n";
+          on_ground = false;
+        }
         position.x += 2 * direction;
+        /*
         Ray ray_down = Ray(local_to_world(Point2f((direction > 0) ? 0.45 : 1 - 0.45, 0.4)), Vector2f(0, 1));
         Ray ray_mid_down = Ray(local_to_world(Point2f(0.5, 0.75)), Vector2f(0, 1));
         float hit_offset_down = diagonal.y / 2;
@@ -586,6 +646,7 @@ public:
           // std::cout << "lemming nº" << get_entity_id() << " se cayó pq detecto dist: " << hit_offset_down << "\n";
           on_ground = false;
         }
+        */
       }
 
       if (is_blocking() && current_frame == 0)
@@ -1027,24 +1088,34 @@ public:
           }
           else if (skills & Utils::CLIMB)
             go_climb();
-          else if (other->get_entity_name() != "BRICKS")
+          else // if (other->get_entity_name() != "BRICKS")
           {
-            // Usamos un rayo para comprobar si el muro de más adelante es como un escalón
-            Ray ray_lr = Ray(local_to_world(Point2f(direction > 0 ? 0.4 : 1 - 0.4, 0.40)), Vector2f(direction * 1, 0));
-            Float hit_offset_lr;
-            EntityPtr hit_entity_lr;
-            engine.intersect_ray(ray_lr, get_entity_id(),
-                                 {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_lr, hit_entity_lr);
+            // Comprobamos si todos lo pixeles desde la nariz a los pies son opacos
+            bool valid_pixel = false;
+            Point2f collision_pixel;
+            Bound2f collision_point = direction == -1 ? Bound2f(Point2f(0.4, 0.4), Point2f(0.45, 0.75)) : Bound2f(Point2f(0.55, 0.4), Point2f(0.6, 0.75));
+            bool collides = Physics_engine::alpha_box_collision_if_all(
+                *other, Entity::local_to_world(collision_point),
+                Physics_engine::GET_FIRST, Physics_engine::GET_FIRST,
+                valid_pixel, collision_pixel);
 
-            Ray ray_up = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0)), Vector2f(0, -1));
-            Float hit_offset_up;
-            EntityPtr hit_entity_up;
-            engine.intersect_ray(ray_up, get_entity_id(),
-                                 {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_up, hit_entity_up);
-            if (hit_offset_lr < 30 || hit_offset_up < 45)
-            { // Si no cabe un lemming de ancho o si no cabe de alto al subir el escalon, entonces cambia de dirección por ser muro
+            float distance_y = collision_pixel.y - (Entity::get_position2D().y + 30);
+
+            // Si todos lo son colisiona y cambia de sentido
+            if (collides)
+            {
+
+              std::cout << "COLISIONA:  " << collision_pixel << " " << Entity::world_to_local(collision_pixel) << "  ; d = " << distance_y << "\n";
               position.x -= 3 * direction;
               direction *= -1;
+            }
+            else if (valid_pixel)
+            {
+              // std::cout << "NO COLISIONA:  d = " << distance_y << "\n";
+            }
+            else
+            {
+              // std::cout << "NO COLISIONA:  d = NULL \n";
             }
           }
         }

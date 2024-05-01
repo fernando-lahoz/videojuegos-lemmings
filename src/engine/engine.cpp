@@ -20,35 +20,49 @@ EngineIO::InputEvent Engine::SDL_to_input_event(SDL_KeyboardEvent key)
     std::cout << "Key pressed: " << key.keysym.sym << std::endl;
     */
     if (key.keysym.sym >= SDLK_a && key.keysym.sym <= SDLK_z)
-            return (EngineIO::InputEvent)(key.keysym.sym - SDLK_a + 65);
-    
+        return (EngineIO::InputEvent)(key.keysym.sym - SDLK_a + 65);
+
     if (key.keysym.sym >= SDLK_SPACE && key.keysym.sym < 256)
-            return (EngineIO::InputEvent)(key.keysym.sym);
-        
+        return (EngineIO::InputEvent)(key.keysym.sym);
+
     if (key.keysym.sym >= SDLK_F1 && key.keysym.sym <= SDLK_F12)
-            return (EngineIO::InputEvent)(key.keysym.sym - SDLK_F1 + 256);
+        return (EngineIO::InputEvent)(key.keysym.sym - SDLK_F1 + 256);
 
     if (key.keysym.sym >= SDLK_NUMLOCKCLEAR && key.keysym.sym <= SDLK_KP_PERIOD)
-            return (EngineIO::InputEvent)(key.keysym.sym - SDLK_NUMLOCKCLEAR + 268);
+        return (EngineIO::InputEvent)(key.keysym.sym - SDLK_NUMLOCKCLEAR + 268);
 
     switch (key.keysym.sym)
     {
-        case SDLK_RIGHT:        return EngineIO::InputEvent::RIGHT;
-        case SDLK_LEFT:         return EngineIO::InputEvent::LEFT;
-        case SDLK_UP:           return EngineIO::InputEvent::UP;
-        case SDLK_DOWN:         return EngineIO::InputEvent::DOWN;
-        case SDLK_SPACE:        return EngineIO::InputEvent::SPACE;
-        case SDLK_LSHIFT:       return EngineIO::InputEvent::SHIFT;
-        case SDLK_LCTRL:
-        case SDLK_RCTRL:        return EngineIO::InputEvent::CTRL;
-        case SDLK_LALT:
-        case SDLK_RALT:         return EngineIO::InputEvent::ALT;
-        case SDLK_RETURN:       return EngineIO::InputEvent::ENTER;
-        case SDLK_ESCAPE:       return EngineIO::InputEvent::ESC;
-        case SDLK_TAB:          return EngineIO::InputEvent::TAB;
-        case SDLK_BACKSPACE:    return EngineIO::InputEvent::BACKSPACE;
-        case SDLK_CAPSLOCK:     return EngineIO::InputEvent::CAPS_LOCK;
-        default:                return EngineIO::InputEvent::NONE;
+    case SDLK_RIGHT:
+        return EngineIO::InputEvent::RIGHT;
+    case SDLK_LEFT:
+        return EngineIO::InputEvent::LEFT;
+    case SDLK_UP:
+        return EngineIO::InputEvent::UP;
+    case SDLK_DOWN:
+        return EngineIO::InputEvent::DOWN;
+    case SDLK_SPACE:
+        return EngineIO::InputEvent::SPACE;
+    case SDLK_LSHIFT:
+        return EngineIO::InputEvent::SHIFT;
+    case SDLK_LCTRL:
+    case SDLK_RCTRL:
+        return EngineIO::InputEvent::CTRL;
+    case SDLK_LALT:
+    case SDLK_RALT:
+        return EngineIO::InputEvent::ALT;
+    case SDLK_RETURN:
+        return EngineIO::InputEvent::ENTER;
+    case SDLK_ESCAPE:
+        return EngineIO::InputEvent::ESC;
+    case SDLK_TAB:
+        return EngineIO::InputEvent::TAB;
+    case SDLK_BACKSPACE:
+        return EngineIO::InputEvent::BACKSPACE;
+    case SDLK_CAPSLOCK:
+        return EngineIO::InputEvent::CAPS_LOCK;
+    default:
+        return EngineIO::InputEvent::NONE;
     }
 }
 
@@ -56,10 +70,14 @@ EngineIO::InputEvent Engine::SDL_to_input_event(SDL_MouseButtonEvent button)
 {
     switch (button.button)
     {
-        case SDL_BUTTON_LEFT:   return EngineIO::InputEvent::MOUSE_LEFT;
-        case SDL_BUTTON_RIGHT:  return EngineIO::InputEvent::MOUSE_RIGHT;
-        case SDL_BUTTON_MIDDLE: return EngineIO::InputEvent::MOUSE_MIDDLE;
-        default:                return EngineIO::InputEvent::NONE;
+    case SDL_BUTTON_LEFT:
+        return EngineIO::InputEvent::MOUSE_LEFT;
+    case SDL_BUTTON_RIGHT:
+        return EngineIO::InputEvent::MOUSE_RIGHT;
+    case SDL_BUTTON_MIDDLE:
+        return EngineIO::InputEvent::MOUSE_MIDDLE;
+    default:
+        return EngineIO::InputEvent::NONE;
     }
 }
 
@@ -114,9 +132,9 @@ void Engine::send_event_up(EngineIO::InputEvent event)
 void Engine::change_input_state(EngineIO::InputEvent event, bool is_down)
 {
     if (is_down)
-        input_state.insert(event);  //input_state |= event;
+        input_state.insert(event); // input_state |= event;
     else
-        input_state.erase(event);   //input_state &= ~event;
+        input_state.erase(event); // input_state &= ~event;
 }
 
 void Engine::update_mouse_position()
@@ -397,7 +415,8 @@ void Engine::process_new_entities()
     for (auto &entity : new_entities)
     {
         entity->set_entity_id(last_entity_id++);
-        if (last_entity_id == std::numeric_limits<int>::max()) {
+        if (last_entity_id == std::numeric_limits<int>::max())
+        {
             last_entity_id = 0;
         }
         entities.push_back(entity);
@@ -446,7 +465,7 @@ Engine::Engine(std::shared_ptr<Game> &&game_)
     auto [win_w, win_h] = game->get_initial_window_size();
 
     renderer = std::make_shared<Render_2D>(this->game->get_name(),
-            win_w < 0 ? (int)cam_w : win_w, win_h < 0 ? (int)cam_h : win_h);
+                                           win_w < 0 ? (int)cam_w : win_w, win_h < 0 ? (int)cam_h : win_h);
     physics = Physics_engine();
 
     check_point = std::chrono::steady_clock::now();
@@ -638,11 +657,64 @@ bool Engine::intersect_ray(Ray &ray,
     return hit_offset < INFINITY;
 }
 
+bool Engine::alpha_box_collision_if_all_Y_force_entity_names(Bound2f box,
+                                                             int not_this_entity_id,
+                                                             const std::vector<std::string> &force_entity_names,
+                                                             Point2f &max_collision_pixel, Physics_engine::ReturnedPixel horizontal_pixel,
+                                                             Physics_engine::ReturnedPixel vertical_pixel,
+                                                             EntityPtr &hit_entity)
+{
+    bool has_max_been_set = false;
+    max_collision_pixel = vertical_pixel == Physics_engine::GET_FIRST ? Point2f(INFINITY, INFINITY) : Point2f(-INFINITY, -INFINITY);
+    for (auto &entity : entities)
+    {
+        if (entity->get_entity_id() == not_this_entity_id)
+            continue;
+
+        bool continued = true;
+        for (auto force_entity_name : force_entity_names)
+        {
+            if (entity->get_entity_name() == force_entity_name)
+            {
+                continued = false;
+                break;
+            }
+        }
+        if (continued)
+            continue;
+
+        if (!box.overlaps(entity->bound2f()))
+            continue;
+
+        Point2f collision_pixel;
+        bool is_pixel_valid;
+        std::cout << entity->get_entity_name() << std::endl;
+        Physics_engine::alpha_box_collision_if_all(
+            *entity, box,
+            horizontal_pixel, vertical_pixel, is_pixel_valid,
+            collision_pixel);
+        if (is_pixel_valid) {
+            if (!has_max_been_set) {
+                max_collision_pixel = collision_pixel;
+                hit_entity = entity;
+                has_max_been_set = true;
+            }
+            else if (vertical_pixel == Physics_engine::GET_FIRST ? collision_pixel.y < max_collision_pixel.y : collision_pixel.y > max_collision_pixel.y) {
+                max_collision_pixel = collision_pixel;
+                hit_entity = entity;
+                has_max_been_set = true;
+            }
+        }
+    }
+
+    return has_max_been_set;
+}
+
 void Engine::set_ignored_events()
 {
     static constexpr uint32_t ignored_events[] = {
-        //SDL_AUDIODEVICEADDED,
-        //SDL_AUDIODEVICEREMOVED,
+        // SDL_AUDIODEVICEADDED,
+        // SDL_AUDIODEVICEREMOVED,
         SDL_CONTROLLERAXISMOTION,
         SDL_CONTROLLERBUTTONDOWN,
         SDL_CONTROLLERBUTTONUP,
@@ -688,46 +760,48 @@ void Engine::start()
     end = false;
     int watchdog_counter = -1;
     bool watchdog_jumped = false;
-    
-    watchdog = std::thread {[&](){
-        std::printf("Im ON...\n");
-        using namespace std::chrono_literals;
-        using namespace std::chrono;
 
-        int x = 0;
-        auto time_point = steady_clock::now();
-        while (!end) {
-            std::this_thread::sleep_until(time_point + 1ms);
-            time_point += 1ms;
-        
-            {
-                std::lock_guard<std::mutex> lock {mtx};
-                x = watchdog_counter--;
-                switch (x)
-                {
-                case 0:
-                    watchdog_jumped = true;
-                    break;
-                case -1:
-                    watchdog_counter = -1;
-                    break;
-                }
-            }
+    watchdog = std::thread{[&]()
+                           {
+                               std::printf("Im ON...\n");
+                               using namespace std::chrono_literals;
+                               using namespace std::chrono;
 
-            // std::printf("...%d\n", x);
-            switch (x)
-            {
-            case 0:
-                // std::printf("Blocked...\n");
-                mixer.block_sound();
-                break;
-            case -1:
-                break;
-            //default:
-                //std::printf("...%d\n", x);
-            }            
-        }
-    }};
+                               int x = 0;
+                               auto time_point = steady_clock::now();
+                               while (!end)
+                               {
+                                   std::this_thread::sleep_until(time_point + 1ms);
+                                   time_point += 1ms;
+
+                                   {
+                                       std::lock_guard<std::mutex> lock{mtx};
+                                       x = watchdog_counter--;
+                                       switch (x)
+                                       {
+                                       case 0:
+                                           watchdog_jumped = true;
+                                           break;
+                                       case -1:
+                                           watchdog_counter = -1;
+                                           break;
+                                       }
+                                   }
+
+                                   // std::printf("...%d\n", x);
+                                   switch (x)
+                                   {
+                                   case 0:
+                                       // std::printf("Blocked...\n");
+                                       mixer.block_sound();
+                                       break;
+                                   case -1:
+                                       break;
+                                       // default:
+                                       // std::printf("...%d\n", x);
+                                   }
+                               }
+                           }};
 
     set_ignored_events();
 
@@ -735,7 +809,7 @@ void Engine::start()
 
     bool quit = false;
     while (!quit && !quit_event)
-    {       
+    {
         // auto init = std::chrono::steady_clock::now();
         update_delta_time();
         renderer->update_resolution(*this);
@@ -743,10 +817,8 @@ void Engine::start()
 
         game->on_loop_start(*this);
 
-
-
         {
-            std::lock_guard<std::mutex> lock {mtx};
+            std::lock_guard<std::mutex> lock{mtx};
             watchdog_counter = (total_delta_ns / total_measurements) / 1'000'000; /*ns -> ms*/
         }
 
@@ -754,17 +826,16 @@ void Engine::start()
 
         bool local_jumped;
         {
-            std::lock_guard<std::mutex> lock {mtx};
+            std::lock_guard<std::mutex> lock{mtx};
             watchdog_counter = -1; // cancel
             local_jumped = watchdog_jumped;
             watchdog_jumped = false;
         }
-        if (local_jumped) {
+        if (local_jumped)
+        {
             // std::printf("Resumed...\n");
             mixer.release_sound();
         }
-
-
 
         // Update call to physics engine
         compute_physics();
@@ -798,7 +869,8 @@ void Engine::start()
     SDL_Quit();
 }
 
-Engine::~Engine() {
+Engine::~Engine()
+{
     end = true;
     if (watchdog.joinable())
         watchdog.join();
@@ -896,7 +968,6 @@ void Engine::set_window_title(const std::string title)
 {
     renderer->set_window_title(title);
 }
-
 
 double Engine::get_delta_time()
 {

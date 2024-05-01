@@ -10,6 +10,7 @@
 #include "geometry/point.hpp"
 #include "lib/error.hpp"
 #include "geometry/bounding_box.hpp"
+#include "lib/spectrum.hpp"
 
 class Texture
 {
@@ -38,9 +39,11 @@ public:
     // Returns true if the pixel has an alpha value > 128
     bool is_alpha_pixel(Point2f pixel) const;
 
-    void change_pixel(Point2i ipixel, uint8_t rgb[3]);
+    bool change_pixel(Point2i ipixel, uint8_t rgb[3]);
     bool set_alpha_pixel(Point2i ipixel, uint8_t alpha, SDL_Renderer *renderer);
     bool set_alpha_box(Bound2f box, uint8_t alpha, SDL_Renderer *renderer);
+
+    bool fill_box_with_color(Bound2f box, RGBA color, SDL_Renderer *renderer);
 
     int get_width() const;
     int get_height() const;
