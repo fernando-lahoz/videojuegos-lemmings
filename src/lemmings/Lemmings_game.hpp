@@ -68,20 +68,19 @@ public:
 
     // HUD CAMERA
     auto ptr = std::make_shared<Static_camera>(Bound2f(Point2f(10000, -500), Point2f(10640, -100)), Bound2f(Point2f(0, 0), Point2f(640, 400)), 8);
-    create_camera(std::dynamic_pointer_cast<Camera2D>(ptr));
-
+    create_camera(ptr);
+    
     // GAME CAMERA
     auto ptr2 = std::make_shared<Dynamic_camera>(game_info, Bound2f(Point2f(1884, 0), Point2f(2524, 320)), Bound2f(Point2f(0, 0), Point2f(640, 320)), 7);
-    create_camera(std::dynamic_pointer_cast<Camera2D>(ptr2));
+    create_camera(ptr2);
     game_info.set_game_camera_id(ptr2->get_id());
     game_info.set_dynamic_camera(*ptr2);
-
     // MINIMAP CAMERA
     auto minimap_camera = std::make_shared<Static_camera>(Bound2f(Point2f(0, 0), Point2f(3168, 320)), Bound2f(Point2f(416, 356), Point2f(616, 396)), 2);
     create_camera(minimap_camera);
-    minimap_camera->set_shader("Lemming", std::move(Shader(engine).filled_box(RGBA{238, 204, 0, 255})));
-    minimap_camera->set_shader("BkgMap", std::move(Shader(engine).color_mask(RGBA{0, 136, 0, 255}, Shader::Resolution::AUTO, 22)));
-    minimap_camera->set_shader("ALL", std::move(Shader(engine).invisible()));
+    minimap_camera->set_shader("Lemming", Shader(engine).filled_box(Utils::colors::minimap_lemming, 50, 50));
+    minimap_camera->set_shader("BkgMap", Shader(engine).color_mask(RGBA{0, 136, 0, 255}, Shader::Resolution::AUTO, 22));
+    minimap_camera->set_shader("ALL", Shader(engine).invisible());
 
     // KEY BINDINGS
     keyboard.set_key_bindings();

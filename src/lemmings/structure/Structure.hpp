@@ -24,7 +24,7 @@ protected:
 
 public:
   Structure(Point3f position, Vector2f diagonal, Engine &engine, std::string base_path, int structure_type, int max_frames, float animation_duration, std::string name, bool is_loop, bool is_event_triggered, Game_info &_game_info, bool is_debug = false)
-      : Rigid_body(position, diagonal, engine.load_texture(base_path + "_" + std::to_string(structure_type) + "_0.png"), engine, name, "BkgMap"),
+      : Rigid_body(position, diagonal, engine.load_texture(base_path + "_" + std::to_string(structure_type) + "_0.png"), engine, name, "Struct"),
         base_path(base_path),
         is_loop(is_loop),
         is_event_triggered(is_event_triggered),

@@ -16,6 +16,7 @@ public:
     {
       textures.push_back(engine.load_texture(("assets/structure/structure_" + std::to_string(structure_type + 7) + "_" + std::to_string(i) + ".png").c_str()));
     }
+    set_class("BkgMap");
   }
 
   void pre_physics(Engine &engine) override

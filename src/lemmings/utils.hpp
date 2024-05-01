@@ -385,6 +385,12 @@ namespace Utils
                                             {BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLACK, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE},
                                             {BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLACK, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE}};
 
+  namespace colors {
+    constexpr RGBA minimap_lemming = { 238, 204, 0, 255 };
+    constexpr RGBA background_blue = { 0, 3, 52, 255 };
+    constexpr RGBA black = { 0, 0, 0, 255 };
+  }
+
   // MENU CONSTANTS
 
   enum MENU_TYPE

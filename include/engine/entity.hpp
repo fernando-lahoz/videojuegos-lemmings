@@ -88,6 +88,11 @@ public:
     //  Ex: Rigid body, generic entity
     std::string get_class() const;
 
+    void set_class(std::string new_class)
+    {
+        class_name = new_class;
+    }
+
     Point2f get_position2D() const;
     Point3f get_position3D() const;
 

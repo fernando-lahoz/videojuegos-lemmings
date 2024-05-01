@@ -2,7 +2,6 @@
 
 #include "engine/engine.hpp"
 
-//TODO: change constructors
 
 Shader::Shader(Engine& engine)
     : renderer{engine.get_renderer()}
@@ -103,17 +102,19 @@ void Shader::render_copy(const Texture& texture, SDL_Rect& rect)
 {
     int w = texture.get_width(), h = texture.get_height();
 
-    constexpr Float scale = 0.5f;
     int h_aux = 0, w_aux = 0;
 
     switch (type)
     {
     case Type::FILLED_BOX:
 
+        if (this->buffer_width <= 0 || this->buffer_height <= 0)
+            break;
+
         w_aux = rect.w;
         h_aux = rect.h;
-        rect.w = (Float)rect.w * scale;
-        rect.h = (Float)rect.h * scale;
+        rect.w = (rect.w * this->buffer_width) / 100; // buffer_widht = scale percentage
+        rect.h = (rect.h * this->buffer_height) / 100;
         rect.x += (w_aux - rect.w) / 2;
         rect.y += (h_aux - rect.h) / 2;
 
@@ -125,6 +126,9 @@ void Shader::render_copy(const Texture& texture, SDL_Rect& rect)
         break;
     
     case Type::COLOR_MASK:
+        if (texture.get() == nullptr)
+            break;
+
         SDL_SetRenderDrawColor(renderer, mask_color.r, mask_color.g,
                                          mask_color.b, mask_color.a);
 
@@ -132,6 +136,9 @@ void Shader::render_copy(const Texture& texture, SDL_Rect& rect)
 
         [[fallthrough]];
     case Type::CHANGE_RESOLUTION:
+        if (texture.get() == nullptr)
+            break;
+
         if (buffer_width == AUTO && buffer_height == AUTO) { generate_buffer(w, h); }
         else if (buffer_width == AUTO) { generate_buffer((buffer_height * w) / h, buffer_height); }
         else if (buffer_height == AUTO) { generate_buffer(buffer_width, ((buffer_width * h) / w)); }
@@ -151,7 +158,10 @@ void Shader::render_copy(const Texture& texture, SDL_Rect& rect)
         SDL_SetTextureBlendMode(texture.get(), SDL_BLENDMODE_BLEND);
         break;
     case Type::NONE:
-        SDL_RenderCopy(renderer, texture.get(), nullptr, &rect);
+        if (texture.get() != nullptr)
+        {
+            SDL_RenderCopy(renderer, texture.get(), nullptr, &rect);
+        }
         break;
     case Type::INVISIBLE:
         break;

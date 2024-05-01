@@ -34,7 +34,7 @@ public:
 
     Shader& change_resolution(int w, int h);
     Shader& color_mask(RGBA color, int w = AUTO, int h = AUTO);
-    Shader& filled_box(RGBA color, int w = AUTO, int h = AUTO);
+    Shader& filled_box(RGBA color, int w = 100, int h = 100);
     Shader& invisible();
 
 private:
