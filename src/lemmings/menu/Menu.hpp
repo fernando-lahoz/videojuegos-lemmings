@@ -118,9 +118,11 @@ public:
     else if (type == Utils::LEVEL_SELECTOR)
     {
       game_info.set_ia(false);
-      auto background = std::make_shared<Entity>(Point3f(10000, 0, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_brown.png"), engine, "Background", "Background");
+      auto background = std::make_shared<Entity>(Point3f(10000, 0, 4), Vector2f(640, 400), engine.load_texture("assets/menu/background_brown.png"), engine, "Background", "Background");
       engine.get_game().create_entity(background);
       Texture txt = engine.load_texture("assets/maps/raw/map_0_" + std::to_string(level) + ".png");
+      auto map_background = std::make_shared<Map_dynamic>(Point3f(10000, 20, 3), Vector2f(640, 65), engine, game_info, true);
+      engine.get_game().create_entity(map_background);
 
       // mapa 0,0  640,65 : 640px 65px
       auto map = std::make_shared<Map_dynamic>(Point3f(10320 - (txt.get_width() * 65 / (2 * txt.get_height())), 20, 2), Vector2f(txt.get_width() * 65 / txt.get_height(), 65), engine, game_info);
@@ -188,7 +190,8 @@ public:
       int level_map_num = game_info.get_ia() ? game_info.conversion_level_ia() : level;
       std::cout << "Nivel mapa: " << level_map_num << "\n";
       Texture txt = engine.load_texture("assets/maps/raw/map_" + std::to_string(difficulty) + "_" + std::to_string(level_map_num) + ".png");
-
+      auto map_background = std::make_shared<Entity>(Point3f(10000, 20, 3), Vector2f(640, 65), engine.load_texture("assets/maps/background_" + std::to_string(Utils::LEVEL_BACKGROUND_TYPE[difficulty][level_map_num]) + ".png"), engine, "Background", "Background");
+      engine.get_game().create_entity(map_background);
       // mapa 0,0  640,65 : 640px 65px
       auto map = std::make_shared<Entity>(Point3f(10320 - (txt.get_width() * 65 / (2 * txt.get_height())), 20, 2), Vector2f(txt.get_width() * 65 / txt.get_height(), 65), txt, engine, "MAP");
       engine.get_game().create_entity(map);
@@ -234,10 +237,11 @@ public:
                                               "TEXT");
       engine.get_game().create_entity(text);
 
-      if (game_info.get_ia()){
-          text = std::make_shared<Text_displayer>(Point3f(10050, 25, 2), Vector2f(8, 15), game_info, "center",
-                                                      engine.load_texture("assets/font/font-red.png"),
-                                                      Vector2i(16, 30), lemmings_font_map, "Autoplay", engine, "TEXT");
+      if (game_info.get_ia())
+      {
+        text = std::make_shared<Text_displayer>(Point3f(10050, 10, 2), Vector2f(8, 15), game_info, "center",
+                                                engine.load_texture("assets/font/font-red.png"),
+                                                Vector2i(16, 30), lemmings_font_map, "Autoplay", engine, "TEXT");
 
         engine.get_game().create_entity(text);
       }
@@ -269,9 +273,12 @@ public:
 
       int rescued = game_info.get_percen_lemmings_in();
       int needed;
-      if (game_info.get_ia()){
+      if (game_info.get_ia())
+      {
         needed = Utils::LEVEL_SAVE_LEMMINGS_IA[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS_IA[game_info.get_difficulty()][game_info.get_level()];
-      } else {
+      }
+      else
+      {
         needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_difficulty()][game_info.get_level()];
       }
 
@@ -289,10 +296,11 @@ public:
 
       engine.get_game().create_entity(text);
 
-      if (game_info.get_ia()){
-          text = std::make_shared<Text_displayer>(Point3f(10050, 25, 2), Vector2f(8, 15), game_info, "center",
-                                                      engine.load_texture("assets/font/font-red.png"),
-                                                      Vector2i(16, 30), lemmings_font_map, "Autoplay", engine, "TEXT");
+      if (game_info.get_ia())
+      {
+        text = std::make_shared<Text_displayer>(Point3f(10050, 10, 2), Vector2f(8, 15), game_info, "center",
+                                                engine.load_texture("assets/font/font-red.png"),
+                                                Vector2i(16, 30), lemmings_font_map, "Autoplay", engine, "TEXT");
 
         engine.get_game().create_entity(text);
       }
@@ -593,6 +601,8 @@ public:
       std::cout << "Nivel mapa: " << level_map_num << "\n";
       Texture txt = engine.load_texture("assets/maps/raw/map_0_" + std::to_string(level_map_num) + ".png");
 
+      auto map_background = std::make_shared<Map_dynamic>(Point3f(10000, 20, 3), Vector2f(640, 65), engine, game_info, true);
+      engine.get_game().create_entity(map_background);
       // mapa 0,0  640,65 : 640px 65px
       auto map = std::make_shared<Map_dynamic>(Point3f(10320 - (txt.get_width() * 65 / (2 * txt.get_height())), 20, 2), Vector2f(txt.get_width() * 65 / txt.get_height(), 65), engine, game_info);
       engine.get_game().create_entity(map);
@@ -625,7 +635,7 @@ public:
                                                     Vector2i(16, 30), lemmings_font_map, "Saved Lemmings", 7);
       engine.get_game().create_entity(dynamic_text);
 
-      dynamic_text = std::make_shared<Text_dynamic>(Point3f(10050, 25, 2), Vector2f(8, 15), engine, game_info, "center",
+      dynamic_text = std::make_shared<Text_dynamic>(Point3f(10050, 10, 2), Vector2f(8, 15), engine, game_info, "center",
                                                     engine.load_texture("assets/font/font-blue.png"),
                                                     Vector2i(16, 30), lemmings_font_map, "Autoplay", 7);
 
