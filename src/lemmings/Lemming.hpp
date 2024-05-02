@@ -970,13 +970,14 @@ public:
               go_idle();
             }
           }
-          if (position.y < -10)
-          {
-            brick_ptr = NULL;
-            remove_skill(Utils::Lemming_Skills::BUILD);
-            restart_animation();
-            go_idle();
-          }
+          // Los lemmings se pueden llegar a salir del mapa sin problemas
+          // if (position.y < -10)
+          // {
+          //   brick_ptr = NULL;
+          //   remove_skill(Utils::Lemming_Skills::BUILD);
+          //   restart_animation();
+          //   go_idle();
+          // }
         }
       }
 
