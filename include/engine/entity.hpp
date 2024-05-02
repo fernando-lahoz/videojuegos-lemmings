@@ -232,6 +232,7 @@ public:
     virtual void on_event_up(Engine &engine, EngineIO::InputEvent event);
 
     bool destroy_box_alpha(Engine &engine, Bound2f box);
+    bool fill_box_with_color(Engine &engine, Bound2f box, RGBA color);
 
     // This is called right before the physics are computed
     virtual void pre_physics(Engine &engine);

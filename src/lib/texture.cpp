@@ -46,7 +46,7 @@ void Texture::load(const std::string &file, SDL_Renderer *renderer)
     SDL_QueryTexture(texture.get(), nullptr, nullptr, &width, &height);
 }
 
-bool Texture::change_pixel(Point2i pixel, Uint8 rgba[4])
+bool Texture::change_pixel(Point2i pixel, Uint8 rgba[4], SDL_Renderer *renderer)
 {
     if (!surface)
         throw std::runtime_error("No surface loaded");
@@ -60,70 +60,25 @@ bool Texture::change_pixel(Point2i pixel, Uint8 rgba[4])
         surface = std::shared_ptr<SDL_Surface>(SDL_ConvertSurfaceFormat(surface.get(), SDL_PIXELFORMAT_ARGB8888, 0), SDL_FreeSurface);
 
         // Allocate new texture
-        texture = std::shared_ptr<SDL_Texture>(SDL_CreateTextureFromSurface(nullptr, surface.get()), SDL_DestroyTexture);
+        texture = std::shared_ptr<SDL_Texture>(SDL_CreateTextureFromSurface(renderer, surface.get()), SDL_DestroyTexture);
     }
 
-    int bpp = surface->format->BytesPerPixel;
-    Uint8 *p = (Uint8 *)surface->pixels + pixel.y * surface->pitch + pixel.x * bpp;
-
-    Uint32 new_pixel_value = SDL_MapRGBA(surface->format, rgba[0], rgba[1], rgba[2], rgba[3]);
-
-    Uint32 pixel_value;
-    switch (bpp)
-    {
-    case 1:
-        pixel_value = *p;
-        break;
-    case 2:
-        pixel_value = *(Uint16 *)p;
-        break;
-    case 3:
-        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-            pixel_value = p[0] << 16 | p[1] << 8 | p[2];
-        else
-            pixel_value = p[0] | p[1] << 8 | p[2] << 16;
-        break;
-    case 4:
-        pixel_value = *(Uint32 *)p;
-        break;
-    default:
-        throw std::runtime_error("Unknown pixel format");
-    }
-
+    Uint32* pixels = (Uint32*)surface->pixels;
+    
     Uint8 r, g, b, a;
+    Uint32 pixel_value = pixels[(pixel.y * surface->w) + pixel.x];
     SDL_GetRGBA(pixel_value, surface->format, &r, &g, &b, &a);
 
+    std::cout << "ALPHA:   " << a << '\n';
     if (a >= 16)
         return false;
 
-    switch (bpp)
-    {
-    case 1:
-        *p = new_pixel_value;
-        break;
-    case 2:
-        *(Uint16 *)p = new_pixel_value;
-        break;
-    case 3:
-        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-        {
-            p[0] = (new_pixel_value >> 16) & 0xff;
-            p[1] = (new_pixel_value >> 8) & 0xff;
-            p[2] = new_pixel_value & 0xff;
-        }
-        else
-        {
-            p[0] = new_pixel_value & 0xff;
-            p[1] = (new_pixel_value >> 8) & 0xff;
-            p[2] = (new_pixel_value >> 16) & 0xff;
-        }
-        break;
-    case 4:
-        *(Uint32 *)p = new_pixel_value;
-        break;
-    default:
-        throw std::runtime_error("Unknown pixel format");
-    }
+    Uint32 new_pixel_value = SDL_MapRGBA(surface->format, rgba[0], rgba[1], rgba[2], rgba[3]);
+    pixels[(pixel.y * surface->w) + pixel.x] = new_pixel_value;
+
+    // Update texture
+    SDL_UpdateTexture(texture.get(), nullptr, surface->pixels, surface->pitch);
+	
 
     modified = true;
     return true;
@@ -143,67 +98,17 @@ bool Texture::set_alpha_pixel(Point2i ipixel, uint8_t alpha, SDL_Renderer *rende
         texture = std::shared_ptr<SDL_Texture>(SDL_CreateTextureFromSurface(renderer, surface.get()), SDL_DestroyTexture);
     }
 
-    int bpp = surface->format->BytesPerPixel;
-    Uint8 *p = (Uint8 *)surface->pixels + ipixel.y * surface->pitch + ipixel.x * bpp;
-
-    Uint32 pixel_value;
-    switch (bpp)
-    {
-    case 1:
-        pixel_value = *p;
-        break;
-    case 2:
-        pixel_value = *(Uint16 *)p;
-        break;
-    case 3:
-        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-            pixel_value = p[0] << 16 | p[1] << 8 | p[2];
-        else
-            pixel_value = p[0] | p[1] << 8 | p[2] << 16;
-        break;
-    case 4:
-        pixel_value = *(Uint32 *)p;
-        break;
-    default:
-        throw std::runtime_error("Unknown pixel format");
-    }
-
+    Uint32* pixels = (Uint32*)surface->pixels;
+    
     Uint8 r, g, b, a;
+    Uint32 pixel_value = pixels[(ipixel.y * surface->w) + ipixel.x];
     SDL_GetRGBA(pixel_value, surface->format, &r, &g, &b, &a);
 
     if (a < 16)
         return false;
 
-    Uint32 new_pixel_value = SDL_MapRGBA(surface->format, r, g, b, alpha);
-
-    switch (bpp)
-    {
-    case 1:
-        *p = new_pixel_value;
-        break;
-    case 2:
-        *(Uint16 *)p = new_pixel_value;
-        break;
-    case 3:
-        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-        {
-            p[0] = (new_pixel_value >> 16) & 0xff;
-            p[1] = (new_pixel_value >> 8) & 0xff;
-            p[2] = new_pixel_value & 0xff;
-        }
-        else
-        {
-            p[0] = new_pixel_value & 0xff;
-            p[1] = (new_pixel_value >> 8) & 0xff;
-            p[2] = (new_pixel_value >> 16) & 0xff;
-        }
-        break;
-    case 4:
-        *(Uint32 *)p = new_pixel_value;
-        break;
-    default:
-        throw std::runtime_error("Unknown pixel format");
-    }
+    Uint32 new_pixel_value = SDL_MapRGBA(surface->format, 0, 0, 0, alpha);
+    pixels[(ipixel.y * surface->w) + ipixel.x] = new_pixel_value;
 
     // Update texture
     SDL_UpdateTexture(texture.get(), nullptr, surface->pixels, surface->pitch);
@@ -253,7 +158,7 @@ bool Texture::fill_box_with_color(Bound2f box, RGBA color, SDL_Renderer *rendere
         for (int y = box.pMin.y * get_height(); y < box.pMax.y * get_height(); y++)
         {
             uint8_t rgba[4] = {color.r, color.g, color.b, color.a};
-            if (change_pixel(Point2i(x, y), rgba))
+            if (change_pixel(Point2i(std::round(x), std::round(y)), rgba, renderer))
             {
                 filled_anything = true;
             }

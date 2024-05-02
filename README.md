@@ -9,7 +9,8 @@ pacman -S mingw-w64-ucrt-x86_64-gcc \
           mingw-w64-ucrt-x86_64-make \
           mingw-w64-ucrt-x86_64-cmake \
           mingw-w64-ucrt-x86_64-ninja \
-          mingw-w64-ucrt-x86_64-pkgconf
+          mingw-w64-ucrt-x86_64-pkgconf \
+          mingw-w64-ucrt-x86_64-gdb
 
 pacman -S mingw-w64-ucrt-x86_64-ntldd
 ```

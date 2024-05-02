@@ -39,7 +39,7 @@ public:
     // Returns true if the pixel has an alpha value > 128
     bool is_alpha_pixel(Point2f pixel) const;
 
-    bool change_pixel(Point2i ipixel, uint8_t rgb[3]);
+    bool change_pixel(Point2i ipixel, uint8_t rgb[3], SDL_Renderer* renderer);
     bool set_alpha_pixel(Point2i ipixel, uint8_t alpha, SDL_Renderer *renderer);
     bool set_alpha_box(Bound2f box, uint8_t alpha, SDL_Renderer *renderer);
 

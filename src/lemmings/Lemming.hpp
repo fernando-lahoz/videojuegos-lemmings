@@ -61,6 +61,7 @@ class Lemming : public Rigid_body
   std::chrono::time_point<std::chrono::steady_clock> last_falling = std::chrono::steady_clock::now();
 
   std::shared_ptr<Brick> brick_ptr;
+  int brick_num = 0;
 
   std::string get_type() { return type; }
 
@@ -119,8 +120,10 @@ class Lemming : public Rigid_body
 
   void go_build()
   {
-    if (!is_building())
+    if (!is_building()) {
+      brick_num = 0;
       restart_animation();
+    }
     state = Utils::BUILDING;
     type = Utils::LEMMING_TYPE[Utils::BUILDING];
   }
@@ -572,7 +575,7 @@ public:
         if (collides)
         {
           float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
-          std::cout << "COLLIDES: " << distance_y << '\n';
+          //std::cout << "COLLIDES: " << distance_y << '\n';
           
           cond = true;
         }
@@ -580,11 +583,11 @@ public:
         if (!cond && is_valid_up)
         {
           float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
-          std::cout << "collision_pixel.y: " << collision_pixel_up.y << ' ' << distance_y << " \n";
+          //std::cout << "collision_pixel.y: " << collision_pixel_up.y << ' ' << distance_y << " \n";
           position.y = (static_cast<int>((position.y + (static_cast<int>(distance_y) / 2) * 2)) / 2) * 2;
           if (distance_y < 0)
           {
-            std::cout << "El lemming sube - dist: " << distance_y << " \n";
+            //std::cout << "El lemming sube - dist: " << distance_y << " \n";
             cond = true;
           }
         }
@@ -598,13 +601,13 @@ public:
             cond = true;
             if (distance_y > 0)
             {
-              std::cout << "El lemming baja - dist: " << distance_y << " \n";
+              //std::cout << "El lemming baja - dist: " << distance_y << " \n";
             }
           }
         }
         if (!cond)
         {
-          std::cout << "El lemming cae \n";
+          //std::cout << "El lemming cae \n";
           on_ground = false;
         }
         
@@ -915,12 +918,18 @@ public:
         {
           if (!brick_ptr)
           {
-            auto point = direction == -1 ? local_to_world(Point2f(-0.85, 0.15)) : local_to_world(Point2f(0.45, 0.15));
-            brick_ptr = std::make_shared<Brick>(Point3f((static_cast<int>(point.x) / 2) * 2, (static_cast<int>(point.y) / 2) * 2, 250), engine, game_info, direction);
-            engine.get_game().create_entity(brick_ptr);
+            //TODO: remove Brick references...
+
+            //brick_ptr = std::make_shared<Brick>(Point3f((static_cast<int>(point.x) / 2) * 2, (static_cast<int>(point.y) / 2) * 2, 250), engine, game_info, direction);
+            //engine.get_game().create_entity(brick_ptr);
+            brick_num++;
+            auto bound = direction == -1 ? Bound2f(Point2f(0.25, 0.7), Point2f(0.55, 0.75)) : Bound2f(Point2f(0.45, 0.7), Point2f(0.75, 0.75));
+            game_info.get_map_ptr()->fill_box_with_color(engine, local_to_world(bound), Utils::BRICKS_COLOR_FOR_TYPE[Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty()][game_info.get_level()]]);
           }
           else
-            brick_ptr->add_brick(engine);
+          {
+            //brick_ptr->add_brick(engine);
+          }
         }
         else if (current_frame == 0)
         {
@@ -933,7 +942,7 @@ public:
           Ray ray_dir = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(direction, 0));
           Float hit_offset;
           EntityPtr hit_entity;
-          if (brick_ptr && !brick_ptr->check_bricks())
+          if (/*brick_ptr && !brick_ptr->check_bricks()*/ brick_num >= 12)
           {
             brick_ptr = NULL;
             remove_skill(Utils::Lemming_Skills::BUILD);
@@ -1118,7 +1127,7 @@ public:
             if (collides)
             {
 
-              std::cout << "COLISIONA:  " << collision_pixel << " " << Entity::world_to_local(collision_pixel) << "  ; d = " << distance_y << "\n";
+              //std::cout << "COLISIONA:  " << collision_pixel << " " << Entity::world_to_local(collision_pixel) << "  ; d = " << distance_y << "\n";
               position.x -= 3 * direction;
               direction *= -1;
             }
@@ -1462,10 +1471,11 @@ public:
           // Realizamos el sonido de presion sobre el lemming
           engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::MOUSE_PRESS_SOUND), game_info.get_effects_volume());
           game_info.action_done();
-          std::cout << "HABILIDAD AÑADIDA" << std::endl;
+          //std::cout << "HABILIDAD AÑADIDA" << std::endl;
         }
-        else
-          std::cout << "HABILIDAD NO AÑADIDA" << std::endl;
+        else {
+          //std::cout << "HABILIDAD NO AÑADIDA" << std::endl;
+        }
       }
     }
 

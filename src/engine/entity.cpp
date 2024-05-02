@@ -406,6 +406,11 @@ bool Entity::destroy_box_alpha(Engine &engine, Bound2f box)
     return active_texture.set_alpha_box(world_to_local(box), 0, engine.get_renderer());
 }
 
+bool Entity::fill_box_with_color(Engine &engine, Bound2f box, RGBA color)
+{
+    return active_texture.fill_box_with_color(world_to_local(box), color, engine.get_renderer());
+}
+
 bool Entity::contains_the_mouse(Engine &engine)
 {
     return engine.is_entity_hovered(*this);
