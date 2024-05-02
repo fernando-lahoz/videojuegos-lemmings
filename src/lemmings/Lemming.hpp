@@ -259,7 +259,7 @@ public:
         game_info(_game_info), engine(_engine)
   {
     constructor_set_collision_type(Collision_type::CHARACTER);
-    override_down_point(Bound2f(Point2f(0.425, 0.65), Point2f(0.575, 0.85)));
+    override_down_point(Bound2f(Point2f(0.45, 0.65), Point2f(0.55, 0.85)));
     override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
     override_left_point(Bound2f(Point2f(0.4, 0.45), Point2f(0.5, 0.55)));
     override_right_point(Bound2f(Point2f(0.5, 0.45), Point2f(0.6, 0.55)));
@@ -556,8 +556,8 @@ public:
         bool cond = false;
         Point2f collision_pixel_up, collision_pixel_down;
         EntityPtr hit_entity;
-        Bound2f collision_point_up = direction == -1 ? Bound2f(Point2f(0.4, 0.4), Point2f(0.45, 0.75)) : Bound2f(Point2f(0.55, 0.4), Point2f(0.6, 0.75));
-        Bound2f collision_point_down = direction == -1 ? Bound2f(Point2f(0.45, 0.75), Point2f(0.5, 1.05)) : Bound2f(Point2f(0.5, 0.75), Point2f(0.55, 1.05));
+        Bound2f collision_point_up = direction == -1 ? Bound2f(Point2f(0.45, 0.4), Point2f(0.5, 0.75)) : Bound2f(Point2f(0.5, 0.4), Point2f(0.55, 0.75));
+        Bound2f collision_point_down = direction == -1 ? Bound2f(Point2f(0.5, 0.75), Point2f(0.55, 1.05)) : Bound2f(Point2f(0.45, 0.75), Point2f(0.5, 1.05));
  
         bool is_valid_up = false;
         bool collides = engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point_up), 
@@ -574,7 +574,7 @@ public:
         
         if (collides)
         {
-          float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
+          //float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
           //std::cout << "COLLIDES: " << distance_y << '\n';
           
           cond = true;
@@ -584,7 +584,7 @@ public:
         {
           float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
           //std::cout << "collision_pixel.y: " << collision_pixel_up.y << ' ' << distance_y << " \n";
-          position.y = (static_cast<int>((position.y + (static_cast<int>(distance_y) / 2) * 2)) / 2) * 2;
+          position.y = (static_cast<int>((position.y + (std::round(distance_y) / 2) * 2)) / 2) * 2;
           if (distance_y < 0)
           {
             //std::cout << "El lemming sube - dist: " << distance_y << " \n";
@@ -597,7 +597,7 @@ public:
           if (is_down_valid)
           {
             float distance_y = collision_pixel_down.y - (Entity::get_position2D().y + 30);
-            position.y = (static_cast<int>((position.y + (static_cast<int>(distance_y) / 2) * 2)) / 2) * 2;
+            position.y = (static_cast<int>((position.y + (std::round(distance_y) / 2) * 2)) / 2) * 2;
             cond = true;
             if (distance_y > 0)
             {
@@ -607,7 +607,7 @@ public:
         }
         if (!cond)
         {
-          //std::cout << "El lemming cae \n";
+          std::cout << "El lemming cae \n";
           on_ground = false;
         }
         
@@ -1122,7 +1122,7 @@ public:
                 Physics_engine::GET_FIRST, Physics_engine::GET_FIRST,
                 valid_pixel, collision_pixel);
 
-            float distance_y = collision_pixel.y - (Entity::get_position2D().y + 30);
+            //float distance_y = collision_pixel.y - (Entity::get_position2D().y + 30);
 
             // Si todos lo son colisiona y cambia de sentido
             if (collides)
@@ -1146,8 +1146,11 @@ public:
 
       if ((is_falling() || is_floating()) && !(other->get_entity_name() == "Lemming"))
       {
+        position.x = (static_cast<int>(position.x) / 2) * 2;
+        std::cout << "position.x :"  << position.x << "\n";
         if (check_collision_down(other))
         {
+          //std::cout << "COLLISION DOWN !\n";
           on_ground = true;
           if (distance_fall >= Utils::MAX_DISTANCE_FALL && !is_floating())
             go_crash();
