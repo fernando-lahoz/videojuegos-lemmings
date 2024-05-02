@@ -120,7 +120,8 @@ class Lemming : public Rigid_body
 
   void go_build()
   {
-    if (!is_building()) {
+    if (!is_building())
+    {
       brick_num = 0;
       restart_animation();
     }
@@ -444,55 +445,55 @@ public:
         if (current_frame == 2)
         {
           position.x += 2 * direction;
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.3))), Point2f(local_to_world(Point2f(0.7, 0.4)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.3))), Point2f(local_to_world(Point2f(0.6, 0.4))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.5, 0.3))), Point2f(local_to_world(Point2f(0.7, 0.4)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.3))), Point2f(local_to_world(Point2f(0.5, 0.4))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 18)
         {
           position.x += 2 * direction;
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.3))), Point2f(local_to_world(Point2f(0.9, 0.4)))) : Bound2f(Point2f(local_to_world(Point2f(0.1, 0.3))), Point2f(local_to_world(Point2f(0.6, 0.4))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.5, 0.3))), Point2f(local_to_world(Point2f(0.9, 0.4)))) : Bound2f(Point2f(local_to_world(Point2f(0.1, 0.3))), Point2f(local_to_world(Point2f(0.5, 0.4))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 3)
         {
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.35))), Point2f(local_to_world(Point2f(0.75, 0.55)))) : Bound2f(Point2f(local_to_world(Point2f(0.25, 0.35))), Point2f(local_to_world(Point2f(0.6, 0.55))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.5, 0.35))), Point2f(local_to_world(Point2f(0.75, 0.55)))) : Bound2f(Point2f(local_to_world(Point2f(0.25, 0.35))), Point2f(local_to_world(Point2f(0.5, 0.55))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 19)
         {
           position.x += 2 * direction;
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.35))), Point2f(local_to_world(Point2f(0.95, 0.55)))) : Bound2f(Point2f(local_to_world(Point2f(0.05, 0.35))), Point2f(local_to_world(Point2f(0.6, 0.55))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.5, 0.35))), Point2f(local_to_world(Point2f(0.95, 0.55)))) : Bound2f(Point2f(local_to_world(Point2f(0.05, 0.35))), Point2f(local_to_world(Point2f(0.5, 0.55))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 4)
         {
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.5))), Point2f(local_to_world(Point2f(0.75, 0.6)))) : Bound2f(Point2f(local_to_world(Point2f(0.25, 0.5))), Point2f(local_to_world(Point2f(0.6, 0.6))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.5, 0.5))), Point2f(local_to_world(Point2f(0.75, 0.6)))) : Bound2f(Point2f(local_to_world(Point2f(0.25, 0.5))), Point2f(local_to_world(Point2f(0.5, 0.6))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 20)
         {
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.5))), Point2f(local_to_world(Point2f(0.95, 0.6)))) : Bound2f(Point2f(local_to_world(Point2f(0.05, 0.5))), Point2f(local_to_world(Point2f(0.6, 0.6))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.5, 0.5))), Point2f(local_to_world(Point2f(0.95, 0.6)))) : Bound2f(Point2f(local_to_world(Point2f(0.05, 0.5))), Point2f(local_to_world(Point2f(0.5, 0.6))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 5)
         {
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.55))), Point2f(local_to_world(Point2f(0.75, 0.7)))) : Bound2f(Point2f(local_to_world(Point2f(0.25, 0.55))), Point2f(local_to_world(Point2f(0.6, 0.7))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.5, 0.55))), Point2f(local_to_world(Point2f(0.75, 0.7)))) : Bound2f(Point2f(local_to_world(Point2f(0.25, 0.55))), Point2f(local_to_world(Point2f(0.5, 0.7))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 21)
         {
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.55))), Point2f(local_to_world(Point2f(0.95, 0.7)))) : Bound2f(Point2f(local_to_world(Point2f(0.05, 0.55))), Point2f(local_to_world(Point2f(0.6, 0.7))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.5, 0.55))), Point2f(local_to_world(Point2f(0.95, 0.7)))) : Bound2f(Point2f(local_to_world(Point2f(0.05, 0.55))), Point2f(local_to_world(Point2f(0.5, 0.7))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 6)
         {
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.65))), Point2f(local_to_world(Point2f(0.7, 0.65)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.65))), Point2f(local_to_world(Point2f(0.6, 0.7))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.65))), Point2f(local_to_world(Point2f(0.7, 0.75)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.65))), Point2f(local_to_world(Point2f(0.6, 0.75))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 22)
         {
           position.x += 4 * direction;
-          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.65))), Point2f(local_to_world(Point2f(0.7, 0.65)))) : Bound2f(Point2f(local_to_world(Point2f(0.3, 0.65))), Point2f(local_to_world(Point2f(0.6, 0.7))));
+          box = direction > 0 ? Bound2f(Point2f(local_to_world(Point2f(0.4, 0.65))), Point2f(local_to_world(Point2f(0.7, 0.75)))) : Bound2f(Point2f(local_to_world(Point2f(0.2, 0.65))), Point2f(local_to_world(Point2f(0.6, 0.75))));
           is_frame_destroy_alpha = true;
         }
         else if (current_frame == 10 || current_frame == 4 || current_frame == 15 || current_frame == 26)
@@ -525,6 +526,29 @@ public:
             }
           }
         }
+        if (current_frame == 3 || current_frame == 4 || current_frame == 5 || current_frame == 19 || current_frame == 20 || current_frame == 21)
+        {
+          if (!bashing_destroyed_map)
+          {
+            remove_skill(Utils::Lemming_Skills::BASH);
+            go_walk();
+            std::cout << "Termina de cavar...: " << bashing_destroyed_map << std::endl;
+          }
+          else
+          {
+            bashing_destroyed_map = false;
+            float hit_offset_down;
+            EntityPtr hit_entity_down;
+            Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.4)), Vector2f(0, 1));
+            engine.intersect_ray(ray_down, get_entity_id(),
+                                 {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
+            if (hit_offset_down > diagonal.y * 0.5)
+            {
+              remove_skill(Utils::Lemming_Skills::BASH);
+              go_walk();
+            }
+          }
+        }
         if (current_frame == 31 || current_frame == 14)
         {
           if (!bashing_destroyed_map)
@@ -541,7 +565,7 @@ public:
             Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.4)), Vector2f(0, 1));
             engine.intersect_ray(ray_down, get_entity_id(),
                                  {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
-            if (hit_offset_down > diagonal.y * (14. / 20.))
+            if (hit_offset_down > diagonal.y * 0.5)
             {
               remove_skill(Utils::Lemming_Skills::BASH);
               go_walk();
@@ -558,42 +582,41 @@ public:
         EntityPtr hit_entity;
         Bound2f collision_point_up = direction == -1 ? Bound2f(Point2f(0.4, 0.4), Point2f(0.45, 0.75)) : Bound2f(Point2f(0.55, 0.4), Point2f(0.6, 0.75));
         Bound2f collision_point_down = direction == -1 ? Bound2f(Point2f(0.45, 0.75), Point2f(0.5, 1.05)) : Bound2f(Point2f(0.5, 0.75), Point2f(0.55, 1.05));
- 
+
         bool is_valid_up = false;
-        bool collides = engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point_up), 
+        bool collides = engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point_up),
                                                                                get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, is_valid_up,
                                                                                collision_pixel_up, Physics_engine::GET_LAST, Physics_engine::GET_LAST,
                                                                                hit_entity);
-        
+
         bool is_down_valid = false;
         engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point_down),
-                                                                            get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, is_down_valid,
-                                                                            collision_pixel_down, Physics_engine::GET_FIRST, Physics_engine::GET_FIRST,
-                                                                            hit_entity);
-        
-        
+                                                               get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, is_down_valid,
+                                                               collision_pixel_down, Physics_engine::GET_FIRST, Physics_engine::GET_FIRST,
+                                                               hit_entity);
+
         if (collides)
         {
           float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
-          //std::cout << "COLLIDES: " << distance_y << '\n';
-          
+          // std::cout << "COLLIDES: " << distance_y << '\n';
+
           cond = true;
         }
-        
+
         if (!cond && is_valid_up)
         {
           float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
-          //std::cout << "collision_pixel.y: " << collision_pixel_up.y << ' ' << distance_y << " \n";
+          // std::cout << "collision_pixel.y: " << collision_pixel_up.y << ' ' << distance_y << " \n";
           position.y = (static_cast<int>((position.y + (static_cast<int>(distance_y) / 2) * 2)) / 2) * 2;
           if (distance_y < 0)
           {
-            //std::cout << "El lemming sube - dist: " << distance_y << " \n";
+            // std::cout << "El lemming sube - dist: " << distance_y << " \n";
             cond = true;
           }
         }
         if (!cond)
         {
-          
+
           if (is_down_valid)
           {
             float distance_y = collision_pixel_down.y - (Entity::get_position2D().y + 30);
@@ -601,16 +624,16 @@ public:
             cond = true;
             if (distance_y > 0)
             {
-              //std::cout << "El lemming baja - dist: " << distance_y << " \n";
+              // std::cout << "El lemming baja - dist: " << distance_y << " \n";
             }
           }
         }
         if (!cond)
         {
-          //std::cout << "El lemming cae \n";
+          // std::cout << "El lemming cae \n";
           on_ground = false;
         }
-        
+
         /*
         Ray ray_down = Ray(local_to_world(Point2f((direction > 0) ? 0.45 : 1 - 0.45, 0.4)), Vector2f(0, 1));
         Ray ray_mid_down = Ray(local_to_world(Point2f(0.5, 0.75)), Vector2f(0, 1));
@@ -918,17 +941,17 @@ public:
         {
           if (!brick_ptr)
           {
-            //TODO: remove Brick references...
+            // TODO: remove Brick references...
 
-            //brick_ptr = std::make_shared<Brick>(Point3f((static_cast<int>(point.x) / 2) * 2, (static_cast<int>(point.y) / 2) * 2, 250), engine, game_info, direction);
-            //engine.get_game().create_entity(brick_ptr);
+            // brick_ptr = std::make_shared<Brick>(Point3f((static_cast<int>(point.x) / 2) * 2, (static_cast<int>(point.y) / 2) * 2, 250), engine, game_info, direction);
+            // engine.get_game().create_entity(brick_ptr);
             brick_num++;
             auto bound = direction == -1 ? Bound2f(Point2f(0.25, 0.7), Point2f(0.55, 0.75)) : Bound2f(Point2f(0.45, 0.7), Point2f(0.75, 0.75));
             game_info.get_map_ptr()->fill_box_with_color(engine, local_to_world(bound), Utils::BRICKS_COLOR_FOR_TYPE[Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty()][game_info.get_level()]]);
           }
           else
           {
-            //brick_ptr->add_brick(engine);
+            // brick_ptr->add_brick(engine);
           }
         }
         else if (current_frame == 0)
@@ -1128,7 +1151,7 @@ public:
             if (collides)
             {
 
-              //std::cout << "COLISIONA:  " << collision_pixel << " " << Entity::world_to_local(collision_pixel) << "  ; d = " << distance_y << "\n";
+              // std::cout << "COLISIONA:  " << collision_pixel << " " << Entity::world_to_local(collision_pixel) << "  ; d = " << distance_y << "\n";
               position.x -= 3 * direction;
               direction *= -1;
             }
@@ -1472,10 +1495,11 @@ public:
           // Realizamos el sonido de presion sobre el lemming
           engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::MOUSE_PRESS_SOUND), game_info.get_effects_volume());
           game_info.action_done();
-          //std::cout << "HABILIDAD AÑADIDA" << std::endl;
+          // std::cout << "HABILIDAD AÑADIDA" << std::endl;
         }
-        else {
-          //std::cout << "HABILIDAD NO AÑADIDA" << std::endl;
+        else
+        {
+          // std::cout << "HABILIDAD NO AÑADIDA" << std::endl;
         }
       }
     }
