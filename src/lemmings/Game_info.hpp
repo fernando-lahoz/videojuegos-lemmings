@@ -476,16 +476,20 @@ public:
 
   void add_spawn_velocity()
   {
-    if (spawn_velocity < 97)
+    if (spawn_velocity < 99)
     {
-      spawn_velocity = spawn_velocity + 3;
+      std::cout << "spawn_velocity: " << spawn_velocity << std::endl;
+      spawn_velocity = spawn_velocity + 1;
     }
   }
   void sub_spawn_velocity()
   {
-    if (spawn_velocity > 3)
+    auto min_spawn_velocity = (ia ? Utils::LEVEL_SPAWN_VELOCITY_IA[difficulty_ia][level_ia] : Utils::LEVEL_SPAWN_VELOCITY[difficulty][level]);
+    std::cout << "min_spawn_velocity: " << min_spawn_velocity << std::endl;
+    if (spawn_velocity > min_spawn_velocity)
     {
-      spawn_velocity = spawn_velocity - 3;
+      std::cout << "spawn_velocity: " << spawn_velocity << std::endl;
+      spawn_velocity = spawn_velocity - 1;
     }
   }
   int get_spawn_velocity() const { return spawn_velocity; }
