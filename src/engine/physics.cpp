@@ -170,10 +170,7 @@ bool Physics_engine::alpha_box_collision_if_all(const Entity &entity, const Boun
                 {
                     some_alpha = true;
 
-                    if (!none_solid)
-                    {
-                        break;
-                    }
+                    break;
                 }
             }
         }

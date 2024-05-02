@@ -659,12 +659,13 @@ bool Engine::intersect_ray(Ray &ray,
 
 bool Engine::alpha_box_collision_if_all_Y_force_entity_names(Bound2f box,
                                                              int not_this_entity_id,
-                                                             const std::vector<std::string> &force_entity_names,
+                                                             const std::vector<std::string> &force_entity_names, bool& is_valid,
                                                              Point2f &max_collision_pixel, Physics_engine::ReturnedPixel horizontal_pixel,
                                                              Physics_engine::ReturnedPixel vertical_pixel,
                                                              EntityPtr &hit_entity)
 {
     bool has_max_been_set = false;
+    bool collides = false;
     max_collision_pixel = vertical_pixel == Physics_engine::GET_FIRST ? Point2f(INFINITY, INFINITY) : Point2f(-INFINITY, -INFINITY);
     for (auto &entity : entities)
     {
@@ -688,11 +689,11 @@ bool Engine::alpha_box_collision_if_all_Y_force_entity_names(Bound2f box,
 
         Point2f collision_pixel;
         bool is_pixel_valid;
-        std::cout << entity->get_entity_name() << std::endl;
-        Physics_engine::alpha_box_collision_if_all(
+        bool collides_entity = Physics_engine::alpha_box_collision_if_all(
             *entity, box,
             horizontal_pixel, vertical_pixel, is_pixel_valid,
             collision_pixel);
+        collides = collides || collides_entity;
         if (is_pixel_valid) {
             if (!has_max_been_set) {
                 max_collision_pixel = collision_pixel;
@@ -706,8 +707,8 @@ bool Engine::alpha_box_collision_if_all_Y_force_entity_names(Bound2f box,
             }
         }
     }
-
-    return has_max_been_set;
+    is_valid = has_max_been_set;
+    return collides;
 }
 
 void Engine::set_ignored_events()

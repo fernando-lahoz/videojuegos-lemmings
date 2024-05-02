@@ -256,7 +256,7 @@ public:
         game_info(_game_info), engine(_engine)
   {
     constructor_set_collision_type(Collision_type::CHARACTER);
-    override_down_point(Bound2f(Point2f(0.45, 0.65), Point2f(0.55, 0.85)));
+    override_down_point(Bound2f(Point2f(0.425, 0.65), Point2f(0.575, 0.85)));
     override_up_point(Bound2f(Point2f(0.4, 0.2), Point2f(0.6, 0.4)));
     override_left_point(Bound2f(Point2f(0.4, 0.45), Point2f(0.5, 0.55)));
     override_right_point(Bound2f(Point2f(0.5, 0.45), Point2f(0.6, 0.55)));
@@ -426,12 +426,13 @@ public:
           go_walk();
         }
 
-        if (position.y < -8)
-        {
-          std::cout << "Lemming escalador llegó al límite de altura del mapa\n";
-          go_fall();
-          direction *= -1;
-        }
+        // Los lemmings se pueden colar por encima del mapa en el original
+        // if (position.y < -8)
+        // {
+        //   std::cout << "Lemming escalador llegó al límite de altura del mapa\n";
+        //   go_fall();
+        //   direction *= -1;
+        // }
       }
       if (is_bashing())
       {
@@ -547,24 +548,39 @@ public:
       }
       if (is_walking())
       {
-        bool cond = false;
-        Point2f collision_pixel;
-        EntityPtr hit_entity;
-        Bound2f collision_point_up = direction == -1 ? Bound2f(Point2f(0.4, 0.5), Point2f(0.45, 0.75)) : Bound2f(Point2f(0.55, 0.5), Point2f(0.6, 0.75));
-        Bound2f collision_point_down = direction == -1 ? Bound2f(Point2f(0.4, 0.75), Point2f(0.45, 1.05)) : Bound2f(Point2f(0.55, 0.75), Point2f(0.6, 1.05));
-        // bool collides = Physics_engine::alpha_box_collision_if_all(
-        //     *game_info.get_map_ptr(), Entity::local_to_world(collision_point),
-        //     Physics_engine::GET_FIRST, Physics_engine::GET_FIRST,
-        //     valid_pixel, collision_pixel);
+        position.x += 2 * direction;
 
-        bool is_valid = engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point_up),
-                                                                               get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"},
-                                                                               collision_pixel, Physics_engine::GET_LAST, Physics_engine::GET_LAST,
+        bool cond = false;
+        Point2f collision_pixel_up, collision_pixel_down;
+        EntityPtr hit_entity;
+        Bound2f collision_point_up = direction == -1 ? Bound2f(Point2f(0.4, 0.4), Point2f(0.45, 0.75)) : Bound2f(Point2f(0.55, 0.4), Point2f(0.6, 0.75));
+        Bound2f collision_point_down = direction == -1 ? Bound2f(Point2f(0.45, 0.75), Point2f(0.5, 1.05)) : Bound2f(Point2f(0.5, 0.75), Point2f(0.55, 1.05));
+ 
+        bool is_valid_up = false;
+        bool collides = engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point_up), 
+                                                                               get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, is_valid_up,
+                                                                               collision_pixel_up, Physics_engine::GET_LAST, Physics_engine::GET_LAST,
                                                                                hit_entity);
-        if (is_valid)
+        
+        bool is_down_valid = false;
+        engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point_down),
+                                                                            get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, is_down_valid,
+                                                                            collision_pixel_down, Physics_engine::GET_FIRST, Physics_engine::GET_FIRST,
+                                                                            hit_entity);
+        
+        
+        if (collides)
         {
-          float distance_y = collision_pixel.y - (Entity::get_position2D().y + 30);
-          std::cout << "collision_pixel.y: " << collision_pixel.y << " \n";
+          float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
+          std::cout << "COLLIDES: " << distance_y << '\n';
+          
+          cond = true;
+        }
+        
+        if (!cond && is_valid_up)
+        {
+          float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
+          std::cout << "collision_pixel.y: " << collision_pixel_up.y << ' ' << distance_y << " \n";
           position.y = (static_cast<int>((position.y + (static_cast<int>(distance_y) / 2) * 2)) / 2) * 2;
           if (distance_y < 0)
           {
@@ -574,13 +590,10 @@ public:
         }
         if (!cond)
         {
-          is_valid = engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point_down),
-                                                                            get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"},
-                                                                            collision_pixel, Physics_engine::GET_FIRST, Physics_engine::GET_FIRST,
-                                                                            hit_entity);
-          if (is_valid)
+          
+          if (is_down_valid)
           {
-            float distance_y = collision_pixel.y - (Entity::get_position2D().y + 30);
+            float distance_y = collision_pixel_down.y - (Entity::get_position2D().y + 30);
             position.y = (static_cast<int>((position.y + (static_cast<int>(distance_y) / 2) * 2)) / 2) * 2;
             cond = true;
             if (distance_y > 0)
@@ -594,7 +607,7 @@ public:
           std::cout << "El lemming cae \n";
           on_ground = false;
         }
-        position.x += 2 * direction;
+        
         /*
         Ray ray_down = Ray(local_to_world(Point2f((direction > 0) ? 0.45 : 1 - 0.45, 0.4)), Vector2f(0, 1));
         Ray ray_mid_down = Ray(local_to_world(Point2f(0.5, 0.75)), Vector2f(0, 1));
@@ -1375,12 +1388,13 @@ public:
       return;
     if (is_exploding())
       return;
-    if (is_walking() && position.y < -8)
-    {
-      position.y = -8;
-      position.x -= 2 * direction;
-      direction *= -1;
-    }
+    // Los lemmings se pueden salir del mapa sin problema
+    // if (is_walking() && position.y < -8)
+    // {
+    //   position.y = -8;
+    //   position.x -= 2 * direction;
+    //   direction *= -1;
+    // }
     if (is_falling() || is_floating())
     {
       distance_fall = distance_fall + (position.y - last_y);
