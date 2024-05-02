@@ -299,20 +299,40 @@ public:
     int ind = skill_to_index(skill);
     int a = game_info.get_skill_amount(Utils::SKILL_TO_SKILLS_AMOUNT[ind]);
     if (a <= 0)
+      return false; // Verifica que haya habilidades disponibles
+
+    if (skills & skill) // Verifica si ya tiene la habilidad
       return false;
 
-    if (skills & skill) // The new skill cannot be added before
-      return false;
-    // RESTRICTIONS
-    if (((is_floating() || is_falling()) && (skill >= Utils::SKILL_EGOIST)) || ((skill == Utils::CLIMB || skill == Utils::FLOAT) && (skills >= Utils::SKILL_EGOIST)) ||
-        (is_escaping() || is_crashing() || is_exploding() || is_drowning()) || (skill >= Utils::SKILL_EGOIST && skills >= Utils::SKILL_EGOIST) || false)
-      return false;
+    // Condiciones específicas para agregar habilidades
+    if (is_blocking() && skill != Utils::EXPLODE)
+      return false; // Solo se puede añadir explotar cuando está bloqueando
+
+    if (is_building() && skill != Utils::BLOCK && skill != Utils::EXPLODE && skill != Utils::CLIMB && skill != Utils::FLOAT)
+      return false; // Solo se puede añadir bloquear o explotar cuando está construyendo
+
+    if ((is_floating() || is_falling() || is_climbing()) && (skill != Utils::EXPLODE && skill != Utils::CLIMB && skill != Utils::FLOAT))
+      return false; // Restricciones para flotar, caer o escalar
+
+    if (is_escaping() || is_crashing() || is_exploding() || is_drowning())
+      return false; // Restricciones para estados en los que no se pueden añadir habilidades
+
+    // Quitar habilidad actual si la habilidad añadida implica que cambie de estado
+    if (is_building() && (skill != Utils::EXPLODE) && (skill != Utils::CLIMB) && (skill != Utils::FLOAT))
+      remove_skill(Utils::Lemming_Skills::BUILD);
+    if (is_mining() && (skill != Utils::EXPLODE) && (skill != Utils::CLIMB) && (skill != Utils::FLOAT))
+      remove_skill(Utils::Lemming_Skills::MINE);
+    if (is_bashing() && (skill != Utils::EXPLODE) && (skill != Utils::CLIMB) && (skill != Utils::FLOAT))
+      remove_skill(Utils::Lemming_Skills::BASH);
+    if (is_digging() && (skill != Utils::EXPLODE) && (skill != Utils::CLIMB) && (skill != Utils::FLOAT))
+      remove_skill(Utils::Lemming_Skills::DIG);
+
     if (skill == Utils::Lemming_Skills::EXPLODE)
       set_dead_marked(true);
     else
     {
       skills = skills | skill;
-      if (skills < Utils::SKILL_EGOIST) // change name type of the lemming depending on the skill
+      if (skill == Utils::CLIMB && skill == Utils::FLOAT) // change name type of the lemming depending on the skill
       {
         if (skills & Utils::FLOAT && skills & Utils::CLIMB)
           type = Utils::LEMMING_TYPE[14]; // ATHLETE
@@ -582,7 +602,7 @@ public:
         EntityPtr hit_entity;
         Bound2f collision_point_up = direction == -1 ? Bound2f(Point2f(0.45, 0.4), Point2f(0.5, 0.75)) : Bound2f(Point2f(0.5, 0.4), Point2f(0.55, 0.75));
         Bound2f collision_point_down = direction == -1 ? Bound2f(Point2f(0.5, 0.75), Point2f(0.55, 1.05)) : Bound2f(Point2f(0.45, 0.75), Point2f(0.5, 1.05));
- 
+
         bool is_valid_up = false;
         bool collides = engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point_up),
                                                                                get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, is_valid_up,
@@ -598,15 +618,15 @@ public:
         if (collides)
         {
           float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
-          //std::cout << "COLLIDES: " << distance_y << '\n';
-          
+          // std::cout << "COLLIDES: " << distance_y << '\n';
+
           cond = true;
         }
 
         if (!cond && is_valid_up)
         {
           float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
-          //std::cout << "collision_pixel.y: " << collision_pixel_up.y << ' ' << distance_y << " \n";
+          // std::cout << "collision_pixel.y: " << collision_pixel_up.y << ' ' << distance_y << " \n";
           position.y = (static_cast<int>((position.y + (static_cast<int>(distance_y) / 2) * 2)) / 2) * 2;
           if (distance_y < 0)
           {
@@ -630,7 +650,7 @@ public:
         }
         if (!cond)
         {
-          //std::cout << "El lemming cae \n";
+          // std::cout << "El lemming cae \n";
           on_ground = false;
         }
 
@@ -1145,7 +1165,7 @@ public:
                 Physics_engine::GET_FIRST, Physics_engine::GET_FIRST,
                 valid_pixel, collision_pixel);
 
-            //float distance_y = collision_pixel.y - (Entity::get_position2D().y + 30);
+            // float distance_y = collision_pixel.y - (Entity::get_position2D().y + 30);
 
             // Si todos lo son colisiona y cambia de sentido
             if (collides)
@@ -1170,10 +1190,10 @@ public:
       if ((is_falling() || is_floating()) && !(other->get_entity_name() == "Lemming"))
       {
         position.x = (static_cast<int>(position.x) / 2) * 2;
-        std::cout << "position.x :"  << position.x << "\n";
+        std::cout << "position.x :" << position.x << "\n";
         if (check_collision_down(other))
         {
-          //std::cout << "COLLISION DOWN !\n";
+          // std::cout << "COLLISION DOWN !\n";
           on_ground = true;
           if (distance_fall >= Utils::MAX_DISTANCE_FALL && !is_floating())
             go_crash();
