@@ -4,6 +4,7 @@
 #include "engine/render_2D.hpp"
 #include "engine/engine.hpp"
 #include "geometry/point.hpp"
+#include "engine/particle.hpp"
 
 #include "lemmings/structure/Chain.hpp"
 #include "lemmings/structure/Ball_zapper.hpp"
@@ -54,7 +55,7 @@ class Lemming : public Rigid_body
   // Este booleano indica si un lemming es marcado para explotar
   bool dead_marked = false;
   // Este es el tiempo de vida que le queda al lemming si es marcado para explotar
-  double time_to_live = 5.0f;
+  double time_to_live = (Float)(rand() % 50) / 100 + 4.5f;
   int last_time_to_live = 6;
   std::shared_ptr<Dynamic_counter_image> counter;
 
@@ -357,7 +358,7 @@ public:
     {
       // Restamos el delta time si el tiempo de vida es mayor a cero
       if (time_to_live > 0.0f)
-        time_to_live -= engine.get_delta_time() * game_info.get_game_speed();
+        time_to_live -= engine.get_delta_time(); // * game_info.get_game_speed();
       // Si se acaba el tiempo explotamos
       if (time_to_live <= 0.0f)
         return true;
@@ -384,7 +385,7 @@ public:
     if (!is_playing)
       return;
 
-    time_frame_sprite += engine.get_delta_time() * game_info.get_game_speed();
+    time_frame_sprite += engine.get_delta_time(); // * game_info.get_game_speed();
     if (time_frame_sprite >= Utils::STATE_ANIMATION_DURATION[get_state()] / Utils::STATE_N_FRAMES[get_state()])
     {
       time_frame_sprite = 0.0f;
@@ -882,6 +883,7 @@ public:
           }
 
           destroy_lemming(engine);
+          spawn_particles();
           // Hacemos que suene el pop al petar el lemming
           engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::EXPLODE_SOUND), game_info.get_effects_volume());
           return;
@@ -1533,5 +1535,30 @@ public:
     // Change type after rigid body creation
     //  (sets by default it to STRUCTURE)
     change_collision_type(engine, Collision_type::CHARACTER);
+  }
+
+  void spawn_particles()
+  {
+    auto base_path = "";
+    if (game_info.get_ia())
+      base_path = "assets/levvil/levvil_";
+    else
+      base_path = "assets/lemming/lemming_";
+
+    for (size_t i = 0; i < 30; i++)
+    {
+      if (i % 3 == 0)
+      {
+        engine.get_game().create_entity(std::make_shared<Particle>(Point3f(position.x + diagonal.x / 2, position.y + diagonal.y / 2, 0), Vector2f(2, 2), 5, engine.load_texture(game_info.get_ia() ? "assets/levvil/levvil_particle_skin.png" : "assets/lemming/lemming_particle_skin.png"), engine, game_info.get_ia() ? "Levvil Particle" : "Lemming Particle"));
+      }
+      else if (i % 3 == 1)
+      {
+        engine.get_game().create_entity(std::make_shared<Particle>(Point3f(position.x + diagonal.x / 2, position.y + diagonal.y / 2, 0), Vector2f(2, 2), 5, engine.load_texture(game_info.get_ia() ? "assets/levvil/levvil_particle_hair.png" : "assets/lemming/lemming_particle_hair.png"), engine, game_info.get_ia() ? "Levvil Particle" : "Lemming Particle"));
+      }
+      else
+      {
+        engine.get_game().create_entity(std::make_shared<Particle>(Point3f(position.x + diagonal.x / 2, position.y + diagonal.y / 2, 0), Vector2f(2, 2), 5, engine.load_texture(game_info.get_ia() ? "assets/levvil/levvil_particle_cloth.png" : "assets/lemming/lemming_particle_cloth.png"), engine, game_info.get_ia() ? "Levvil Particle" : "Lemming Particle"));
+      }
+    }
   }
 };

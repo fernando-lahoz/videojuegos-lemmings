@@ -360,7 +360,7 @@ void Engine::update_delta_time()
         total_measurements++;
     }
 
-    delta_time = (double)delta_ns / 1e9;
+    delta_time = (double)delta_ns / 1e9 * delta_time_factor;
 }
 
 void Engine::compute_physics()
@@ -1045,6 +1045,11 @@ void Engine::set_window_title(const std::string title)
 double Engine::get_delta_time()
 {
     return delta_time;
+}
+
+void Engine::set_delta_time_factor(double new_value)
+{
+    delta_time_factor = new_value;
 }
 
 void Engine::destroy_all_entities()

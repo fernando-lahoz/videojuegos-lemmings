@@ -67,6 +67,7 @@ private:
     TimePoint check_point;
     uint64_t delta_ns = 0, total_delta_ns = 0, total_measurements = 1;
     double delta_time; // Delta time in seconds
+    double delta_time_factor = 1.0;
 
     int preload_id = 0;
     std::mutex preloaders_mutex;
@@ -121,6 +122,7 @@ public:
 
     EntityCollection& get_entities();
     double get_delta_time();
+    void set_delta_time_factor(double new_value);
     void destroy_all_entities();
     Game& get_game();
     Camera2D& get_main_camera();

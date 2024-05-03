@@ -58,7 +58,8 @@ public:
       game_info.set_cursor_menu_visible();
       game_info.set_is_transition_done(false);
       clear_screen(engine);
-      if (game_info.get_build_menu() == Utils::MENU_TYPE::IA){
+      if (game_info.get_build_menu() == Utils::MENU_TYPE::IA)
+      {
         game_info.set_ia(true);
       }
       std::cout << "GO TO MENU" << std::endl;
@@ -88,7 +89,7 @@ public:
 
           if (!game_info.get_level_is_paused())
           {
-            game_info.set_time_left(game_info.get_time_left() - engine.get_delta_time() * game_info.get_game_speed());
+            game_info.set_time_left(game_info.get_time_left() - engine.get_delta_time()); // * game_info.get_game_speed());
           }
         }
         else
@@ -96,6 +97,7 @@ public:
           std::cout << "LEMMINGS OUT: " << game_info.get_n_lemmings_out() << std::endl;
           std::cout << "GAME OVER" << std::endl;
           game_info.set_do_transition(true);
+          engine.set_delta_time_factor(1.0);
           game_info.manage_level_results();
           game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_OUTRO);
           game_info.set_do_action(Utils::ACTIONS::GO_MENU);
@@ -113,28 +115,28 @@ public:
       }
     }
 
-
-    //Update sound and music if its the start of level
+    // Update sound and music if its the start of level
     if (game_info.get_level_is_paused() || game_info.get_level_ended())
       return;
 
-    //Hacemos sonar una puerta que chirria
-    if(game_info.get_play_open_sound()) {
-        engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::DOOR_SOUND), game_info.get_effects_volume());
-        game_info.set_play_open_sound(false);
+    // Hacemos sonar una puerta que chirria
+    if (game_info.get_play_open_sound())
+    {
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::DOOR_SOUND), game_info.get_effects_volume());
+      game_info.set_play_open_sound(false);
     }
 
     if (!game_info.get_is_door_opening())
     { // Espera a que la animación termine para comenzar a invocar
-      
-      //Hacemos sonar el letsgo
-      if(game_info.get_play_letsgo_sound())
+
+      // Hacemos sonar el letsgo
+      if (game_info.get_play_letsgo_sound())
       {
         engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::LETS_GO_SOUND), game_info.get_effects_volume());
-        
-        //FIXME: Necesito una función para saber cuando no esta sonando nigun sonido, aunque parece no ser necesaria
-        //UPDATE: Usa esta: SoundMixer::is_playing_any_sound()
-        //while(engine.get_sound_mixer().is_playing_music()); //Esperamos a que termine el let's go
+
+        // FIXME: Necesito una función para saber cuando no esta sonando nigun sonido, aunque parece no ser necesaria
+        // UPDATE: Usa esta: SoundMixer::is_playing_any_sound()
+        // while(engine.get_sound_mixer().is_playing_music()); //Esperamos a que termine el let's go
         game_info.set_play_letsgo_sound(false);
       }
       else if (game_info.get_play_music() && !engine.get_sound_mixer().is_playing_any_sound())
@@ -143,10 +145,11 @@ public:
         game_info.set_play_music(false);
 
         // Setup music
-        auto& mixer = engine.get_sound_mixer();
+        auto &mixer = engine.get_sound_mixer();
         int difficulty = game_info.get_difficulty();
         int level = game_info.get_level();
-        std::string music_file = [&]() {
+        std::string music_file = [&]()
+        {
           using namespace Utils;
           if (level == 0)
           {

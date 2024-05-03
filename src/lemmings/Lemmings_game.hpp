@@ -17,8 +17,6 @@
 #include "lemmings/keyboard/Keyboard_manager.hpp"
 #include "lemmings/AI_autoplay.cpp"
 
-// TODO: add particles when lemming die
-
 class Lemmings_game : public Game
 {
 private:
@@ -69,7 +67,7 @@ public:
     // HUD CAMERA
     auto ptr = std::make_shared<Static_camera>(Bound2f(Point2f(10000, -500), Point2f(10640, -100)), Bound2f(Point2f(0, 0), Point2f(640, 400)), 8);
     create_camera(ptr);
-    
+
     // GAME CAMERA
     auto ptr2 = std::make_shared<Dynamic_camera>(game_info, Bound2f(Point2f(1884, 0), Point2f(2524, 320)), Bound2f(Point2f(0, 0), Point2f(640, 320)), 7);
     create_camera(ptr2);

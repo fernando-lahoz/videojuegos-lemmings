@@ -128,10 +128,12 @@ public:
       else if (n == Utils::HUD::HUD_ADD_VELOCITY)
       {
         game_info.add_game_speed();
+        engine.set_delta_time_factor(game_info.get_game_speed());
       }
       else if (n == Utils::HUD::HUD_SUB_VELOCITY)
       {
         game_info.sub_game_speed();
+        engine.set_delta_time_factor(game_info.get_game_speed());
       }
       else if (n == Utils::HUD_PAUSE)
       {
