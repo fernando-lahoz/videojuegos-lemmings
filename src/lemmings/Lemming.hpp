@@ -617,7 +617,7 @@ public:
 
         if (collides)
         {
-          float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
+          //float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
           // std::cout << "COLLIDES: " << distance_y << '\n';
 
           cond = true;
@@ -630,7 +630,7 @@ public:
           position.y = (static_cast<int>((position.y + (static_cast<int>(distance_y) / 2) * 2)) / 2) * 2;
           if (distance_y < 0)
           {
-            // std::cout << "El lemming sube - dist: " << distance_y << " \n";
+            //std::cout << "El lemming sube - dist: " << distance_y << " \n";
             cond = true;
           }
         }
@@ -1152,36 +1152,33 @@ public:
               direction *= -1;
             }
           }
-          else if (skills & Utils::CLIMB)
-            go_climb();
           else // if (other->get_entity_name() != "BRICKS")
           {
             // Comprobamos si todos lo pixeles desde la nariz a los pies son opacos
             bool valid_pixel = false;
             Point2f collision_pixel;
             Bound2f collision_point = direction == -1 ? Bound2f(Point2f(0.4, 0.4), Point2f(0.45, 0.75)) : Bound2f(Point2f(0.55, 0.4), Point2f(0.6, 0.75));
-            bool collides = Physics_engine::alpha_box_collision_if_all(
-                *other, Entity::local_to_world(collision_point),
-                Physics_engine::GET_FIRST, Physics_engine::GET_FIRST,
-                valid_pixel, collision_pixel);
+            // bool collides = Physics_engine::alpha_box_collision_if_all(
+            //     *other, Entity::local_to_world(collision_point),
+            //     Physics_engine::GET_FIRST, Physics_engine::GET_FIRST,
+            //     valid_pixel, collision_pixel);
 
-            // float distance_y = collision_pixel.y - (Entity::get_position2D().y + 30);
+            EntityPtr dummy;
+            bool collides = engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point),
+                                                                               get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, valid_pixel,
+                                                                               collision_pixel, Physics_engine::GET_LAST, Physics_engine::GET_LAST,
+                                                                               dummy);
 
             // Si todos lo son colisiona y cambia de sentido
             if (collides)
             {
-
-              // std::cout << "COLISIONA:  " << collision_pixel << " " << Entity::world_to_local(collision_pixel) << "  ; d = " << distance_y << "\n";
-              position.x -= 3 * direction;
-              direction *= -1;
-            }
-            else if (valid_pixel)
-            {
-              // std::cout << "NO COLISIONA:  d = " << distance_y << "\n";
-            }
-            else
-            {
-              // std::cout << "NO COLISIONA:  d = NULL \n";
+              if (skills & Utils::CLIMB) {
+                go_climb();
+              }
+              else {
+                position.x -= 3 * direction;
+                direction *= -1;
+              }
             }
           }
         }
@@ -1190,7 +1187,6 @@ public:
       if ((is_falling() || is_floating()) && !(other->get_entity_name() == "Lemming"))
       {
         position.x = (static_cast<int>(position.x) / 2) * 2;
-        std::cout << "position.x :" << position.x << "\n";
         if (check_collision_down(other))
         {
           // std::cout << "COLLISION DOWN !\n";

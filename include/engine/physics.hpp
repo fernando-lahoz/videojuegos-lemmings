@@ -33,5 +33,8 @@ public:
                                            ReturnedPixel vertical_pixel,
                                            bool &none_solid, Point2f &pixel);
 
+    static std::vector<std::pair<Float, Float>>
+    alpha_box_collision_get_height_mask(const Entity &entity, const Bound2f &box);
+
     void post_physics(Engine &engine);
 };

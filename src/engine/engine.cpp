@@ -664,9 +664,7 @@ bool Engine::alpha_box_collision_if_all_Y_force_entity_names(Bound2f box,
                                                              Physics_engine::ReturnedPixel vertical_pixel,
                                                              EntityPtr &hit_entity)
 {
-    bool has_max_been_set = false;
-    bool collides = false;
-    max_collision_pixel = vertical_pixel == Physics_engine::GET_FIRST ? Point2f(INFINITY, INFINITY) : Point2f(-INFINITY, -INFINITY);
+    std::vector<std::pair<Float, Float>> mask;
     for (auto &entity : entities)
     {
         if (entity->get_entity_id() == not_this_entity_id)
@@ -687,28 +685,102 @@ bool Engine::alpha_box_collision_if_all_Y_force_entity_names(Bound2f box,
         if (!box.overlaps(entity->bound2f()))
             continue;
 
-        Point2f collision_pixel;
-        bool is_pixel_valid;
-        bool collides_entity = Physics_engine::alpha_box_collision_if_all(
-            *entity, box,
-            horizontal_pixel, vertical_pixel, is_pixel_valid,
-            collision_pixel);
-        collides = collides || collides_entity;
-        if (is_pixel_valid) {
-            if (!has_max_been_set) {
-                max_collision_pixel = collision_pixel;
-                hit_entity = entity;
-                has_max_been_set = true;
+        std::vector<std::pair<Float, Float>> local_mask = Physics_engine::alpha_box_collision_get_height_mask(*entity, box);
+        
+        std::vector<std::pair<Float, Float>> new_mask;
+        auto it1 = mask.begin();
+        auto it2 = local_mask.begin();
+        while (it1 != mask.end() && it2 != local_mask.end())
+        {
+            auto *upper = &it1;
+            auto *lower = &it2;
+            auto upper_end = mask.end();
+            auto lower_end = local_mask.end();
+
+            if (it1->first > it2->first)
+            {
+                std::swap(upper, lower);
+                std::swap(upper_end, lower_end);
             }
-            else if (vertical_pixel == Physics_engine::GET_FIRST ? collision_pixel.y < max_collision_pixel.y : collision_pixel.y > max_collision_pixel.y) {
-                max_collision_pixel = collision_pixel;
-                hit_entity = entity;
-                has_max_been_set = true;
+
+            const auto [a, b] = **upper;
+            const auto [A, B] = **lower;
+
+            if (A > b) // No se tocan -> Avanzas upper
+            {
+                new_mask.push_back({a, b});
+                ++(*upper);
+            }
+            else // Mezcla
+            {
+                auto *aux = (b < B) ? &++(*upper) : &++(*lower);
+                auto aux_end = (b < B) ? upper_end : lower_end;
+                auto *other = (b < B) ? &++(*lower) : &++(*upper);
+                auto other_end = (b < B) ? lower_end : upper_end;
+                auto b_max = std::max(b, B);
+                
+                while (*aux != aux_end && *other != other_end)
+                {
+                    const auto [c, d] = **aux;
+                    if (c < b_max && d < b_max)
+                    {
+                        ++(*aux);
+                    }
+                    else if (c < b_max && d > b_max)
+                    {
+                        b_max = d;
+                        std::swap(aux, other);
+                        std::swap(aux_end, other_end);
+                        ++(*aux);
+                    }
+                    else
+                    {
+                        ++(*other);
+                        break;
+                    }
+                }
+                new_mask.push_back({a, b_max});
             }
         }
+
+        if (it1 == mask.end())
+        {
+            new_mask.insert( new_mask.end(), it2, local_mask.end() );
+        }
+        else if (it2 == local_mask.end())
+        {
+            new_mask.insert( new_mask.end(), it1, mask.end() );
+        }
+
+        mask.swap(new_mask);
     }
-    is_valid = has_max_been_set;
-    return collides;
+    
+    is_valid = !mask.empty();
+
+
+    if (is_valid && vertical_pixel == Physics_engine::GET_FIRST)
+    {
+        max_collision_pixel = {box.pMin.x, mask.front().first};
+    }
+    else if (is_valid && vertical_pixel == Physics_engine::GET_LAST)
+    {
+        if (mask.back().second < box.pMax.y) {
+            max_collision_pixel = {box.pMin.x, box.pMax.y};
+        } else {
+            max_collision_pixel = {box.pMin.x, mask.back().first};
+        }
+        
+        //std::cout << "max_collision_pixel: "<< max_collision_pixel << "\n";
+    }
+
+    // std::cout << "MASK: [ ";
+    // for (auto p : mask)
+    //     std::cout << "{"<< p.first << " , " << p.second << "} ";
+    // std::cout << "]\n"; 
+
+    // std::cout << "box: "<< box.pMin.y << " , " << box.pMax.y << "\n";
+
+    return mask.size() == 1 && mask.front().first <= box.pMin.y && mask.back().second >= box.pMax.y;
 }
 
 void Engine::set_ignored_events()

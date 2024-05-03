@@ -100,10 +100,8 @@ bool Physics_engine::alpha_box_collision_if_all(const Entity &entity, const Boun
 
     Vector2f diagonal = l_box.diagonal();
 
-    // int n_tests_x = std::round(diagonal.x * active_texture.get_width());
-    // int n_tests_y = std::round(diagonal.y * active_texture.get_height());
-    int n_tests_x = std::round(box.pMax.x - box.pMin.x) / 2;
-    int n_tests_y = std::round(box.pMax.y - box.pMin.y) / 2;
+    int n_tests_x = std::round(diagonal.x * active_texture.get_width());
+    int n_tests_y = std::round(diagonal.y * active_texture.get_height());
 
     Float pixel_size_x = 1.0 / active_texture.get_width();
     Float pixel_size_y = 1.0 / active_texture.get_height();
@@ -180,6 +178,56 @@ bool Physics_engine::alpha_box_collision_if_all(const Entity &entity, const Boun
 
     is_valid = !none_solid;
     return !some_alpha;
+}
+
+std::vector<std::pair<Float, Float>>
+Physics_engine::
+alpha_box_collision_get_height_mask(const Entity &entity, const Bound2f &box)
+{
+    Bound2f l_box = entity.world_to_local(box);
+    Texture active_texture = entity.get_active_texture();
+
+    if (!entity.is_alpha_collision())
+    {
+        return {};
+    }
+
+    l_box = Bound2f(clamp(l_box.pMin, Point2f(0, 0), Point2f(1, 1)),
+                    clamp(l_box.pMax, Point2f(0, 0), Point2f(1, 1)));
+
+    Vector2f diagonal = l_box.diagonal();
+
+    unsigned n_tests_x = std::round(diagonal.x * active_texture.get_width());
+    unsigned n_tests_y = std::round(diagonal.y * active_texture.get_height());
+
+    Float pixel_size_x = 1.0 / active_texture.get_width();
+    Float pixel_size_y = 1.0 / active_texture.get_height();
+
+    std::vector<std::pair<Float, Float>> mask;
+
+    bool looking_for_solid = true;
+
+    for (unsigned x = 0; x < n_tests_x; x++)
+    {
+        for (unsigned y = 0; y < n_tests_y; y++)
+        {
+            Point2f sample_point = l_box.pMin + Vector2f(x * pixel_size_x, y * pixel_size_y);
+            bool is_solid = !active_texture.is_alpha_pixel(sample_point);
+            if (is_solid == looking_for_solid)
+            {
+                if (is_solid) {
+                    mask.push_back({entity.local_to_world(sample_point).y, box.pMax.y});
+                }
+                else {
+                    mask.back().second = entity.local_to_world(sample_point).y;
+                }
+                
+                looking_for_solid = !looking_for_solid;
+            }
+        }
+    }
+
+    return mask;
 }
 
 void Physics_engine::pre_physics(Engine &engine)
