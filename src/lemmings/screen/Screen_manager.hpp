@@ -44,7 +44,7 @@ public:
     auto &entities = engine.get_entities();
     for (auto &entity : entities)
     {
-      if (entity->get_entity_name() != "Cursor")
+      if (entity->get_entity_name() != "Cursor" && entity->get_entity_name() != "Transition")
       {
         entity->destroy();
       }
@@ -111,7 +111,7 @@ public:
       if (game_info.get_do_transition())
       {
         game_info.set_do_transition(false);
-        engine.get_game().create_entity(std::make_shared<Transition>(engine, game_info, 0.5f));
+        engine.get_game().create_entity(std::make_shared<Transition>(engine, game_info, 1.0f));
       }
     }
 
