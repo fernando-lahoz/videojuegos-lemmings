@@ -17,6 +17,7 @@ private:
   Game_info &game_info;
 
   int last_lemmings_hovered = 0;
+  float timer_transition = 0.0f;
 
 public:
   Screen_manager(Game_info &_game_info, Keyboard_manager &_keyboard) : level(_game_info), menu(_game_info, _keyboard), game_info(_game_info)
@@ -96,7 +97,7 @@ public:
         {
           std::cout << "LEMMINGS OUT: " << game_info.get_n_lemmings_out() << std::endl;
           std::cout << "GAME OVER" << std::endl;
-          game_info.set_do_transition(true);
+          timer_transition = 2.f;
           engine.set_delta_time_factor(1.0);
           game_info.manage_level_results();
           game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_OUTRO);
@@ -108,6 +109,13 @@ public:
     }
     else
     {
+      if (timer_transition > 0)
+      {
+        timer_transition -= engine.get_delta_time();
+        if (timer_transition < 0)
+          engine.get_game().create_entity(std::make_shared<Transition>(engine, game_info, 1.0f));
+      }
+
       if (game_info.get_do_transition())
       {
         game_info.set_do_transition(false);
