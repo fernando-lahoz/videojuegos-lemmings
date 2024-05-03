@@ -404,15 +404,14 @@ public:
         position.y += 2;
       if (is_climbing())
       {
-        if (current_frame == 8)
+        if (current_frame == 1)
         {
-          Ray ray_down = Ray(local_to_world(Point2f(0.5 + (0.15 * direction), 0.15)), Vector2f(0, 1));
-          Ray ray_up = Ray(local_to_world(Point2f(0.5 - (0.15 * direction), 0.5)), Vector2f(0, -1));
+          Ray ray_up = Ray(local_to_world(Point2f(0.5 - (0.05 * direction), 0.3)), Vector2f(0, -1));
           float hit_offset;
           EntityPtr hit_entity;
           engine.intersect_ray(ray_up, get_entity_id(),
                                {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset, hit_entity);
-          if (hit_offset < diagonal.y * (10. / 20.))
+          if (hit_offset < diagonal.y * 0.2)
           {
             std::cout << "Lemming choco con techo\n";
             position.y -= 6;
@@ -420,6 +419,12 @@ public:
             direction *= -1;
             return;
           }
+        }
+        if (current_frame == 8)
+        {
+          Ray ray_down = Ray(local_to_world(Point2f(0.5 + (0.15 * direction), 0.15)), Vector2f(0, 1));
+          float hit_offset;
+          EntityPtr hit_entity;
           engine.intersect_ray(ray_down, get_entity_id(),
                                {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset, hit_entity);
           // if (hit_offset < diagonal.y * (1. / 20.))
@@ -617,8 +622,8 @@ public:
 
         if (collides)
         {
-          //float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
-          // std::cout << "COLLIDES: " << distance_y << '\n';
+          // float distance_y = collision_pixel_up.y - (Entity::get_position2D().y + 30);
+          //  std::cout << "COLLIDES: " << distance_y << '\n';
 
           cond = true;
         }
@@ -630,7 +635,7 @@ public:
           position.y = (static_cast<int>((position.y + (static_cast<int>(distance_y) / 2) * 2)) / 2) * 2;
           if (distance_y < 0)
           {
-            //std::cout << "El lemming sube - dist: " << distance_y << " \n";
+            // std::cout << "El lemming sube - dist: " << distance_y << " \n";
             cond = true;
           }
         }
@@ -653,59 +658,6 @@ public:
           // std::cout << "El lemming cae \n";
           on_ground = false;
         }
-
-        /*
-        Ray ray_down = Ray(local_to_world(Point2f((direction > 0) ? 0.45 : 1 - 0.45, 0.4)), Vector2f(0, 1));
-        Ray ray_mid_down = Ray(local_to_world(Point2f(0.5, 0.75)), Vector2f(0, 1));
-        float hit_offset_down = diagonal.y / 2;
-        float offset_fall = 0.7;
-        float offset_adjust = 0.35;
-        EntityPtr hit_entity_down;
-
-        Ray ray_up = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0)), Vector2f(0, -1));
-        Float hit_offset_up;
-        EntityPtr hit_entity_up;
-        engine.intersect_ray(ray_up, get_entity_id(),
-                             {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_up, hit_entity_up);
-
-        engine.intersect_ray(ray_down, get_entity_id(),
-                             {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
-
-        if (hit_entity_down && hit_entity_down->get_entity_name() == "BRICKS")
-        {
-          std::shared_ptr<Brick> ptr = std::dynamic_pointer_cast<Brick>(hit_entity_down);
-          if (direction != ptr->get_direction())
-            engine.intersect_ray(ray_mid_down, get_entity_id(),
-                                 {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset_down, hit_entity_down);
-        }
-        if (hit_offset_down == 0)
-        {
-          offset_fall = 0.35;
-          offset_adjust = 0;
-          engine.intersect_ray(ray_mid_down, get_entity_id(),
-                               {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
-        }
-        if (hit_offset_down < diagonal.y * offset_fall)
-        {
-          if (hit_offset_down > 0 && (hit_offset_down > diagonal.y * (8. / 20.) || hit_offset_down < diagonal.y * (6. / 20.)))
-          { // std::cout << "sube baja altura " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << " - " << static_cast<int>(round(hit_offset_down / 2.) * 2) << "\n";
-            hit_offset_down = (static_cast<int>(round(hit_offset_down / 2.) * 2));
-
-            if ((abs(hit_offset_down - diagonal.y * offset_adjust) > 0) || hit_offset_up > 0)
-            { // En caso de que el Lemming ya toque el techo, no puede subir más su posición
-              position.y += (hit_offset_down - diagonal.y * offset_adjust);
-              // position.y = (static_cast<int>(position.y) / 2) * 2;
-              // position.y = static_cast<int>(position.y);
-            }
-          }
-        }
-        else
-        {
-          // std::cout << "cae " << diagonal.y * (14. / 20.) << " - " << hit_offset_down << "\n";
-          // std::cout << "lemming nº" << get_entity_id() << " se cayó pq detecto dist: " << hit_offset_down << "\n";
-          on_ground = false;
-        }
-        */
       }
 
       if (is_blocking() && current_frame == 0)
@@ -764,7 +716,7 @@ public:
         {                                // Hay que mover la posición 0 a la altura de la 23 para que no se teletransporte
                                          // Actualizamos la posivion del Lemming
           position.x += direction * 8.0; // Dirección indica el sentido de avance del Lemming
-          position.y += 5.0;
+          position.y += 6.0;
         }
         else if (current_frame == 1)
         {
@@ -1165,18 +1117,20 @@ public:
 
             EntityPtr dummy;
             bool collides = engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point),
-                                                                               get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, valid_pixel,
-                                                                               collision_pixel, Physics_engine::GET_LAST, Physics_engine::GET_LAST,
-                                                                               dummy);
+                                                                                   get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, valid_pixel,
+                                                                                   collision_pixel, Physics_engine::GET_LAST, Physics_engine::GET_LAST,
+                                                                                   dummy);
 
             // Si todos lo son colisiona y cambia de sentido
             if (collides)
             {
-              if (skills & Utils::CLIMB) {
+              if (skills & Utils::CLIMB)
+              {
                 go_climb();
               }
-              else {
-                position.x -= 3 * direction;
+              else
+              {
+                position.x -= 2 * direction;
                 direction *= -1;
               }
             }
@@ -1210,7 +1164,7 @@ public:
               {
                 if (current_frame == 2)
                 {
-                  position.y += hit_offset_down - 31; // El offset que deberían tener los Lemmmings es 32
+                  position.y += hit_offset_down - 32; // El offset que deberían tener los Lemmmings es 32
                   if (hit_offset_down - 31 > 0)
                   {
                     position.y = (static_cast<int>(position.y) / 2) * 2 - (((float)position.y > (int)position.y) ? 1 : 0);
