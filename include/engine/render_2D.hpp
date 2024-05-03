@@ -90,6 +90,7 @@ protected:
     bool render_entity(Entity& entity, Camera2D& camera, Camera2D& main_camera, bool always_visible = false);
     void render_fixed_text(FixedText& text, Camera2D& camera, Camera2D& main_camera);
 
+    friend class Shader;
 public:
     SDL_Rect rect1, rect2;
     SDL_Window* window = nullptr;

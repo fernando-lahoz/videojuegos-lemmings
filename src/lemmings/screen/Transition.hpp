@@ -28,7 +28,7 @@ private:
 
 public:
   Transition(Engine &engine, Game_info &_game_info, float _animation_duration)
-      : Entity(Point3f(10000, -0, -100), Vector2f(640, 400), engine.load_texture("assets/transition/transition_255.png"), engine, "Transition"),
+      : Entity(Point3f(10000, -0, -100), Vector2f(641, 401), engine.load_texture("assets/transition/transition_255.png"), engine, "Transition"),
         animation_duration(_animation_duration), game_info(_game_info)
   {
     txt = engine.load_texture("assets/transition/transition_255.png");

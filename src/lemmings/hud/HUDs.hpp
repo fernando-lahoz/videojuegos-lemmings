@@ -66,9 +66,9 @@ public:
         auto hudElement = std::make_shared<HUD>(Point3f(10320, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_PAUSE, false, true, false, false);
         engine.get_game().create_entity(hudElement);
 
-        engine.get_game().create_entity(std::make_shared<Entity>(Point3f(9998, -180, 4), Vector2f(644, 32), engine.load_texture("assets/hud/hud_background.png"), engine, "HUD BACKGROUND"));
+        engine.get_game().create_entity(std::make_shared<Entity>(Point3f(9998, -180, 5), Vector2f(644, 32), engine.load_texture("assets/hud/hud_background.png"), engine, "HUD BACKGROUND"));
 
-        hudElement = std::make_shared<HUD>(Point3f(10000, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_VELOCITY, false, false, false, false);
+        hudElement = std::make_shared<HUD>(Point3f(10000, -148, 4), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_VELOCITY, false, false, false, false);
         engine.get_game().create_entity(hudElement);
 
         hudElement = std::make_shared<HUD>(Point3f(10011, -128, 1), Vector2f(12, 12), game_info, engine, "assets/hud/hud_option_0_button_", Utils::HUD_ADD_VELOCITY, true, true, false, false);
@@ -86,31 +86,31 @@ public:
         hudElement = std::make_shared<HUD>(Point3f(10043, -115, 1), Vector2f(12, 12), game_info, engine, "assets/hud/hud_option_1_button_", Utils::HUD_SUB_SPAWN_VELOCITY, true, true, false, false);
         engine.get_game().create_entity(hudElement);
 
-        hudElement = std::make_shared<HUD>(Point3f(10064, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_CLIMBING);
+        hudElement = std::make_shared<HUD>(Point3f(10064, -148, 4), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_CLIMBING);
         engine.get_game().create_entity(hudElement);
 
         hudElement = std::make_shared<HUD>(Point3f(10096, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_FLOATING);
         engine.get_game().create_entity(hudElement);
 
-        hudElement = std::make_shared<HUD>(Point3f(10128, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_EXPLODE);
+        hudElement = std::make_shared<HUD>(Point3f(10128, -148, 4), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_EXPLODE);
         engine.get_game().create_entity(hudElement);
 
         hudElement = std::make_shared<HUD>(Point3f(10160, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_BLOCKING);
         engine.get_game().create_entity(hudElement);
 
-        hudElement = std::make_shared<HUD>(Point3f(10192, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_BUILDING);
+        hudElement = std::make_shared<HUD>(Point3f(10192, -148, 4), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_BUILDING);
         engine.get_game().create_entity(hudElement);
 
         hudElement = std::make_shared<HUD>(Point3f(10224, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_BASH);
         engine.get_game().create_entity(hudElement);
 
-        hudElement = std::make_shared<HUD>(Point3f(10256, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_MINE);
+        hudElement = std::make_shared<HUD>(Point3f(10256, -148, 4), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_MINE);
         engine.get_game().create_entity(hudElement);
 
         hudElement = std::make_shared<HUD>(Point3f(10288, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_DIG);
         engine.get_game().create_entity(hudElement);
 
-        hudElement = std::make_shared<HUD>(Point3f(10352, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_ALL_EXPLODE, false, true, false, false);
+        hudElement = std::make_shared<HUD>(Point3f(10352, -148, 4), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_ALL_EXPLODE, false, true, false, false);
         engine.get_game().create_entity(hudElement);
 
         hudElement = std::make_shared<HUD>(Point3f(10800, -148, 2), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_selected_", Utils::HUD_CURSOR, false, false, false, false, true);

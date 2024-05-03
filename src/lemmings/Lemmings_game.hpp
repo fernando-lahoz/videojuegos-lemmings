@@ -77,7 +77,7 @@ public:
     auto minimap_camera = std::make_shared<Static_camera>(Bound2f(Point2f(0, 0), Point2f(3168, 320)), Bound2f(Point2f(416, 356), Point2f(616, 396)), 2);
     create_camera(minimap_camera);
     minimap_camera->set_shader("Lemming", Shader(engine).filled_box(Utils::colors::minimap_lemming, 50, 50));
-    minimap_camera->set_shader("BkgMap", Shader(engine).color_mask(RGBA{0, 136, 0, 255}, Shader::Resolution::AUTO, 22));
+    minimap_camera->set_shader("BkgMap", Shader(engine).color_mask(RGBA{0, 136, 0, 255}, 264, 40));
     minimap_camera->set_shader("ALL", Shader(engine).invisible());
 
     // KEY BINDINGS

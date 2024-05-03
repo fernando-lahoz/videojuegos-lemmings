@@ -6,6 +6,9 @@
 #include "lib/texture.hpp"
 
 class Engine;
+class Entity;
+class Render_2D;
+class Camera2D;
 
 class Shader
 {
@@ -38,7 +41,7 @@ public:
     Shader& invisible();
 
 private:
-    void render_copy(const Texture& texture, SDL_Rect& rect);
+    void render_copy(Entity& entity, Camera2D& camera, Camera2D& main_camera, Render_2D& render2d);
     Shader() = default;
 
     friend class Camera2D;

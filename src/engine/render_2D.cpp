@@ -154,13 +154,13 @@ SDL_Rect Render_2D::bound_to_rect(Bound2f bound, Camera2D& camera, Camera2D& mai
     SDL_Rect rect;
 
     auto w_position = world_to_raster(bound.pMin, camera, main_camera);
-    rect.x = (int)std::round(w_position.x);
-    rect.y = (int)std::round(w_position.y);
+    rect.x = (int)(w_position.x);
+    rect.y = (int)(w_position.y);
 
 
     auto w_diag = world_to_raster(bound.diagonal(), camera, main_camera);
-    rect.w = (int)std::round(w_diag.x);
-    rect.h = (int)std::round(w_diag.y);
+    rect.w = (int)(w_diag.x);
+    rect.h = (int)(w_diag.y);
 
 
     return rect;
@@ -170,18 +170,18 @@ bool Render_2D::render_entity(Entity& entity, Camera2D& camera, Camera2D& main_c
 {
     if (always_visible || camera.is_visible(entity))
     {
-        auto e_bound = entity.bound2f();
-        auto rect = bound_to_rect(e_bound, camera, main_camera);
-        
         auto texture = entity.get_active_texture();
         Shader *shader = camera.find_shader_for(entity.get_class());
         
         if (shader != nullptr)
         {
-            shader->render_copy(texture, rect);
+            shader->render_copy(entity, camera, main_camera, *this);
         }
         else if (texture.get() != nullptr)
         {
+            auto e_bound = entity.bound2f();
+            auto rect = bound_to_rect(e_bound, camera, main_camera);
+
             SDL_RenderCopy(renderer, texture.get(), nullptr, &rect);
         }
 
@@ -277,13 +277,13 @@ void Render_2D::flush_texture_cache()
     textures.clear();
 }
 
-Point2f bound_to_bound(Point2f p, Bound2f src, Bound2f dst)
+static Point2f bound_to_bound(Point2f p, Bound2f src, Bound2f dst)
 {
     return Point2f(((p.x - src.pMin.x) / src.width()) * dst.width() + dst.pMin.x,
                    ((p.y - src.pMin.y) / src.height()) * dst.height() + dst.pMin.y);
 }
 
-Vector2f bound_to_bound(Vector2f p, Bound2f src, Bound2f dst)
+static Vector2f bound_to_bound(Vector2f p, Bound2f src, Bound2f dst)
 {
     return Vector2f((((p.x) / src.width()) * dst.width()),
                    (((p.y) / src.height()) * dst.height()));
