@@ -329,7 +329,13 @@ public:
       remove_skill(Utils::Lemming_Skills::DIG);
 
     if (skill == Utils::Lemming_Skills::EXPLODE)
-      set_dead_marked(true);
+    {
+      if (!get_dead_marked())
+      {
+        set_dead_marked(true);
+        game_info.sub_skill_amount(Utils::SKILL_TO_SKILLS_AMOUNT[skill_to_index(skill)]);
+      }
+    }
     else
     {
       skills = skills | skill;
@@ -344,8 +350,8 @@ public:
         else
           type = Utils::LEMMING_TYPE[Utils::FALLING];
       }
+      game_info.sub_skill_amount(Utils::SKILL_TO_SKILLS_AMOUNT[skill_to_index(skill)]);
     }
-    game_info.sub_skill_amount(Utils::SKILL_TO_SKILLS_AMOUNT[skill_to_index(skill)]);
     return true;
   }
 
