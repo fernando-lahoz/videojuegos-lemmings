@@ -15,7 +15,7 @@
 #include "lemmings/utils.hpp"
 #include "lemmings/screen/Screen_manager.hpp"
 #include "lemmings/keyboard/Keyboard_manager.hpp"
-#include "lemmings/AI_autoplay.cpp"
+#include "lemmings/AI_autoplay.hpp"
 
 class Lemmings_game : public Game
 {
@@ -58,7 +58,7 @@ public:
 
   void on_game_startup(Engine &engine) override
   {
-    engine.set_window_icon("assets/icon.png");
+    engine.set_window_icon("assets/icon.ico");
     game_info.set_window_size(engine);
 
     // Cargamos los efectos de sonido

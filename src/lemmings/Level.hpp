@@ -434,7 +434,7 @@ public:
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2707.5, 261, 301), 1, engine, 1, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2835, 261, 301), 1, engine, 1, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(2952.5, 261, 301), 1, engine, 1, 0.4f, game_info));
-        engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(3090, 261, 301), 1, engine, 1, 0.4f, game_info));
+        engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(3071, 261, 301), 1, engine, 1, 0.4f, game_info));
 
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(2240, 301.847, 100), Vector2f(1255, 24), engine));
 

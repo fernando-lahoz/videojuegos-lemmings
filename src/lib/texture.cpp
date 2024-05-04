@@ -69,7 +69,6 @@ bool Texture::change_pixel(Point2i pixel, Uint8 rgba[4], SDL_Renderer *renderer)
     Uint32 pixel_value = pixels[(pixel.y * surface->w) + pixel.x];
     SDL_GetRGBA(pixel_value, surface->format, &r, &g, &b, &a);
 
-    std::cout << "ALPHA:   " << a << '\n';
     if (a >= 16)
         return false;
 

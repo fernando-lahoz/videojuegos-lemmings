@@ -1,9 +1,12 @@
+#pragma once
+
 #include <vector>
 #include <utility>
 #include <iostream>
 #include "lemmings/Lemming.hpp"
 #include "geometry/point.hpp"
 #include "engine/physics.hpp"
+#include "lemmings/AI/tile_space.hpp"
 
 class AI_autoplay
 {
@@ -14,7 +17,10 @@ public:
         DIRT,
         INIT,
         GOAL,
-        BRIDGE
+        BRIDGE,
+        METAL,
+        DIRECTIONAL_RIGHT,
+        DIRECTIONAL_LEFT
     };
 
     enum class DIRECTION
