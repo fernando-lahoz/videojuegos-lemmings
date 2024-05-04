@@ -255,7 +255,7 @@ public:
     virtual void on_trigger_IO_event(Engine &engine, Entity *trigger, EngineIO::InputEvent event);
 };
 
-// TODO: custom names for pointers should not be equal for shared and raw
+// NOTE: custom names for pointers should not be equal for shared and raw
 //  shared_ptr<Entity> -> Entity_sp
 //  Entity* -> Entity_ptr (should be returned as reference though)
 using EntityPtr = std::shared_ptr<Entity>;

@@ -979,7 +979,7 @@ public:
       else
         frame_path = "assets/lemming/lemming_" + std::to_string(direction) + "_" + std::to_string(get_state()) + "_" + std::to_string(current_frame) + ".png";
 
-      Texture txt = engine.load_texture(frame_path.c_str());
+      Texture txt = engine.load_texture(frame_path);
       set_active_texture(txt);
     }
   }
