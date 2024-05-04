@@ -15,7 +15,6 @@
 #include "lemmings/structure/Flamethrower.hpp"
 #include "lemmings/structure/Spinner.hpp"
 #include "lemmings/structure/Chain.hpp"
-#include "lemmings/structure/Brick.hpp"
 #include "lemmings/structure/Directional_wall.hpp"
 #include "lemmings/structure/Liquid_trigger.hpp"
 #include "lemmings/structure/Ball_zapper.hpp"

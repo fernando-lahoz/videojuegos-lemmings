@@ -15,7 +15,6 @@
 #include "lemmings/structure/Pin_trigger.hpp"
 #include "lemmings/structure/Thumper.hpp"
 #include "lemmings/structure/Directional_wall.hpp"
-#include "lemmings/structure/Brick.hpp"
 #include "lemmings/Game_info.hpp"
 #include "lemmings/display/Dynamic_counter_image.hpp"
 #include "lemmings/utils.hpp"
@@ -61,7 +60,6 @@ class Lemming : public Rigid_body
 
   std::chrono::time_point<std::chrono::steady_clock> last_falling = std::chrono::steady_clock::now();
 
-  std::shared_ptr<Brick> brick_ptr;
   int brick_num = 0;
 
   std::string get_type() { return type; }
@@ -550,15 +548,9 @@ public:
               if (dir_wall_ptr->destroy_box_alpha(engine, box, direction))
                 bashing_destroyed_map = true;
             }
-            else if (entity->get_entity_name() == "BRICKS")
-            {
-              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
-              if (bricks_ptr->destroy_box_alpha(engine, box, 0))
-                bashing_destroyed_map = true;
-            }
           }
         }
-        if (current_frame == 3 || current_frame == 4 || current_frame == 5 || current_frame == 19 || current_frame == 20 || current_frame == 21)
+        if (current_frame == 3 || current_frame == 6 || current_frame == 19 || current_frame == 22)
         {
           if (!bashing_destroyed_map)
           {
@@ -569,40 +561,17 @@ public:
           else
           {
             bashing_destroyed_map = false;
-            float hit_offset_down;
-            EntityPtr hit_entity_down;
-            Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.4)), Vector2f(0, 1));
-            engine.intersect_ray(ray_down, get_entity_id(),
-                                 {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
-            if (hit_offset_down > diagonal.y * 0.5)
-            {
-              remove_skill(Utils::Lemming_Skills::BASH);
-              go_walk();
-            }
           }
         }
-        if (current_frame == 31 || current_frame == 14)
+        float hit_offset_down;
+        EntityPtr hit_entity_down;
+        Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.4)), Vector2f(0, 1));
+        engine.intersect_ray(ray_down, get_entity_id(),
+                             {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset_down, hit_entity_down);
+        if (hit_offset_down > diagonal.y * 0.5)
         {
-          if (!bashing_destroyed_map)
-          {
-            remove_skill(Utils::Lemming_Skills::BASH);
-            go_walk();
-            std::cout << "Termina de cavar...: " << bashing_destroyed_map << std::endl;
-          }
-          else
-          {
-            bashing_destroyed_map = false;
-            float hit_offset_down;
-            EntityPtr hit_entity_down;
-            Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.4)), Vector2f(0, 1));
-            engine.intersect_ray(ray_down, get_entity_id(),
-                                 {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
-            if (hit_offset_down > diagonal.y * 0.5)
-            {
-              remove_skill(Utils::Lemming_Skills::BASH);
-              go_walk();
-            }
-          }
+          remove_skill(Utils::Lemming_Skills::BASH);
+          go_walk();
         }
       }
       if (is_walking())
@@ -673,7 +642,7 @@ public:
         Float hit_offset_down;
         EntityPtr hit_entity_down;
         engine.intersect_ray(ray_down, get_entity_id(),
-                             {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
+                             {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset_down, hit_entity_down);
         if (hit_offset_down > diagonal.y / 2)
         {
           remove_skill(Utils::Lemming_Skills::BLOCK);
@@ -690,7 +659,7 @@ public:
         Float hit_offset_down;
         EntityPtr hit_entity_down;
         engine.intersect_ray(ray_down, get_entity_id(),
-                             {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
+                             {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset_down, hit_entity_down);
 
         if (hit_offset_down > (diagonal.y / 2)) // Detectamos que no hay suelo
         {
@@ -711,7 +680,7 @@ public:
         Ray ray_dia = Ray(local_to_world(Point2f(direction > 0 ? 0.65 : 1 - 0.65, 0.5)), Vector2f(direction * 1, 1));
 
         engine.intersect_ray(ray_dia, get_entity_id(),
-                             {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
+                             {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset_down, hit_entity_down);
 
         if (hit_offset_down > (diagonal.y / 1.8)) // Detectamos que no hay suelo
         {
@@ -742,11 +711,6 @@ public:
             {
               std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
               dir_wall_ptr->destroy_box_alpha(engine, box, direction);
-            }
-            else if (entity->get_entity_name() == "BRICKS")
-            {
-              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
-              bricks_ptr->destroy_box_alpha(engine, box, 0);
             }
           }
         }
@@ -807,15 +771,6 @@ public:
               dir_wall_ptr->destroy_box_alpha(engine, box4, direction);
               dir_wall_ptr->destroy_box_alpha(engine, box5, direction);
             }
-            else if (entity->get_entity_name() == "BRICKS")
-            {
-              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
-              bricks_ptr->destroy_box_alpha(engine, box, 0);
-              bricks_ptr->destroy_box_alpha(engine, box2, 0);
-              bricks_ptr->destroy_box_alpha(engine, box3, 0);
-              bricks_ptr->destroy_box_alpha(engine, box4, 0);
-              bricks_ptr->destroy_box_alpha(engine, box5, 0);
-            }
           }
         }
       }
@@ -868,20 +823,6 @@ public:
               if (dir_wall_ptr->destroy_box_alpha(engine, box5, 0))
                 destroyed = true;
             }
-            else if (entity->get_entity_name() == "BRICKS")
-            {
-              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
-              if (bricks_ptr->destroy_box_alpha(engine, box, 0))
-                destroyed = true;
-              if (bricks_ptr->destroy_box_alpha(engine, box2, 0))
-                destroyed = true;
-              if (bricks_ptr->destroy_box_alpha(engine, box3, 0))
-                destroyed = true;
-              if (bricks_ptr->destroy_box_alpha(engine, box4, 0))
-                destroyed = true;
-              if (bricks_ptr->destroy_box_alpha(engine, box5, 0))
-                destroyed = true;
-            }
           }
           if (!destroyed)
           {
@@ -919,20 +860,9 @@ public:
       {
         if (current_frame == 9)
         {
-          if (!brick_ptr)
-          {
-            // TODO: remove Brick references...
-
-            // brick_ptr = std::make_shared<Brick>(Point3f((static_cast<int>(point.x) / 2) * 2, (static_cast<int>(point.y) / 2) * 2, 250), engine, game_info, direction);
-            // engine.get_game().create_entity(brick_ptr);
-            brick_num++;
-            auto bound = direction == -1 ? Bound2f(Point2f(0.25, 0.7), Point2f(0.55, 0.75)) : Bound2f(Point2f(0.45, 0.7), Point2f(0.75, 0.75));
-            game_info.get_map_ptr()->fill_box_with_color(engine, local_to_world(bound), Utils::BRICKS_COLOR_FOR_TYPE[Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty()][game_info.get_level()]]);
-          }
-          else
-          {
-            // brick_ptr->add_brick(engine);
-          }
+          brick_num++;
+          auto bound = direction == -1 ? Bound2f(Point2f(0.25, 0.7), Point2f(0.55, 0.75)) : Bound2f(Point2f(0.45, 0.7), Point2f(0.75, 0.75));
+          game_info.get_map_ptr()->fill_box_with_color(engine, local_to_world(bound), Utils::BRICKS_COLOR_FOR_TYPE[Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty()][game_info.get_level()]]);
         }
         else if (current_frame == 0)
         {
@@ -945,29 +875,26 @@ public:
           Ray ray_dir = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(direction, 0));
           Float hit_offset;
           EntityPtr hit_entity;
-          if (/*brick_ptr && !brick_ptr->check_bricks()*/ brick_num >= 12)
+          if (brick_num >= 12)
           {
-            brick_ptr = NULL;
             remove_skill(Utils::Lemming_Skills::BUILD);
             go_idle();
           }
           else if (engine.intersect_ray(ray_up, get_entity_id(),
-                                        {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset, hit_entity))
+                                        {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset, hit_entity))
           {
             if (hit_offset < diagonal.y * 1.1 / 4)
             {
-              brick_ptr = NULL;
               remove_skill(Utils::Lemming_Skills::BUILD);
               restart_animation();
               go_idle();
             }
           }
           else if (engine.intersect_ray(ray_dir, get_entity_id(),
-                                        {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset, hit_entity))
+                                        {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset, hit_entity))
           {
             if (hit_offset < diagonal.y / 4)
             {
-              brick_ptr = NULL;
               remove_skill(Utils::Lemming_Skills::BUILD);
               restart_animation();
               go_idle();
@@ -976,7 +903,6 @@ public:
           // Los lemmings se pueden llegar a salir del mapa sin problemas
           // if (position.y < -10)
           // {
-          //   brick_ptr = NULL;
           //   remove_skill(Utils::Lemming_Skills::BUILD);
           //   restart_animation();
           //   go_idle();
@@ -1071,12 +997,6 @@ public:
                 destroyed = true;
               }
             }
-            else if (entity->get_entity_name() == "BRICKS")
-            {
-              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
-              if (bricks_ptr->destroy_box_alpha(engine, box, 0))
-                destroyed = true;
-            }
           }
           if (!destroyed)
           {
@@ -1098,7 +1018,7 @@ public:
     if (game_info.get_level_is_paused())
       return;
     Entity::on_collision(engine, other);
-    if (other->get_entity_name() == "MAP" || other->get_entity_name() == "DIRECTIONAL WALL" || other->get_entity_name() == "METAL" || other->get_entity_name() == "BRICKS" || other->get_entity_name() == "Lemming")
+    if (other->get_entity_name() == "MAP" || other->get_entity_name() == "DIRECTIONAL WALL" || other->get_entity_name() == "METAL" || other->get_entity_name() == "Lemming")
     {
       if (is_walking())
       {
@@ -1165,7 +1085,7 @@ public:
             Float hit_offset_down;
             EntityPtr hit_entity_down;
             engine.intersect_ray(ray_down, get_entity_id(),
-                                 {"MAP", "METAL", "DIRECTIONAL WALL", "BRICKS"}, hit_offset_down, hit_entity_down);
+                                 {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset_down, hit_entity_down);
 
             if (hit_offset_down < 34)
             { // El impacto con el suelo ocurre cuando el offset es menor a 34 que es lo que mide el Lemming
