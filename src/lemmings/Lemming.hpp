@@ -42,7 +42,7 @@ class Lemming : public Rigid_body
   bool change_state_mine = false;
   bool explosion_in_liquid = false;
 
-  bool bashing_destroyed_map = false; // Indica si en un loop de la animacion se ha roto algo
+  bool destroyed_map = false; // Indica si en un loop de la animacion se ha roto algo
 
   int state = Utils::FALLING;
 
@@ -174,7 +174,10 @@ class Lemming : public Rigid_body
   void go_bash()
   {
     if (!is_bashing())
+    {
+      destroyed_map = false;
       restart_animation();
+    }
     state = Utils::BASHING;
     type = Utils::LEMMING_TYPE[Utils::BASHING];
   }
@@ -182,7 +185,10 @@ class Lemming : public Rigid_body
   void go_mine()
   {
     if (!is_mining())
+    {
+      destroyed_map = false;
       restart_animation();
+    }
     state = Utils::MINING;
     type = Utils::LEMMING_TYPE[Utils::MINING];
   }
@@ -540,27 +546,27 @@ public:
             if (entity->get_entity_name() == "MAP")
             {
               if (entity->destroy_box_alpha(engine, box))
-                bashing_destroyed_map = true;
+                destroyed_map = true;
             }
             else if (entity->get_entity_name() == "DIRECTIONAL WALL")
             {
               std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
               if (dir_wall_ptr->destroy_box_alpha(engine, box, direction))
-                bashing_destroyed_map = true;
+                destroyed_map = true;
             }
           }
         }
         if (current_frame == 3 || current_frame == 6 || current_frame == 19 || current_frame == 22)
         {
-          if (!bashing_destroyed_map)
+          if (!destroyed_map)
           {
             remove_skill(Utils::Lemming_Skills::BASH);
             go_walk();
-            std::cout << "Termina de cavar...: " << bashing_destroyed_map << std::endl;
+            std::cout << "Termina de cavar...: " << destroyed_map << std::endl;
           }
           else
           {
-            bashing_destroyed_map = false;
+            destroyed_map = false;
           }
         }
         float hit_offset_down;
@@ -706,11 +712,19 @@ public:
           for (auto &entity : entities)
           {
             if (entity->get_entity_name() == "MAP")
-              entity->destroy_box_alpha(engine, box);
+            {
+              if (entity->destroy_box_alpha(engine, box))
+              {
+                destroyed_map = true;
+              }
+            }
             else if (entity->get_entity_name() == "DIRECTIONAL WALL")
             {
               std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
-              dir_wall_ptr->destroy_box_alpha(engine, box, direction);
+              if (dir_wall_ptr->destroy_box_alpha(engine, box, direction))
+              {
+                destroyed_map = true;
+              }
             }
           }
         }
@@ -756,21 +770,64 @@ public:
           {
             if (entity->get_entity_name() == "MAP")
             {
-              entity->destroy_box_alpha(engine, box);
-              entity->destroy_box_alpha(engine, box2);
-              entity->destroy_box_alpha(engine, box3);
-              entity->destroy_box_alpha(engine, box4);
-              entity->destroy_box_alpha(engine, box5);
+              if (entity->destroy_box_alpha(engine, box))
+              {
+                destroyed_map = true;
+              }
+              if (entity->destroy_box_alpha(engine, box2))
+              {
+                destroyed_map = true;
+              }
+              if (entity->destroy_box_alpha(engine, box3))
+              {
+                destroyed_map = true;
+              }
+              if (entity->destroy_box_alpha(engine, box4))
+              {
+                destroyed_map = true;
+              }
+              if (entity->destroy_box_alpha(engine, box5))
+              {
+                destroyed_map = true;
+              }
             }
             else if (entity->get_entity_name() == "DIRECTIONAL WALL")
             {
               std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
-              dir_wall_ptr->destroy_box_alpha(engine, box, direction);
-              dir_wall_ptr->destroy_box_alpha(engine, box2, direction);
-              dir_wall_ptr->destroy_box_alpha(engine, box3, direction);
-              dir_wall_ptr->destroy_box_alpha(engine, box4, direction);
-              dir_wall_ptr->destroy_box_alpha(engine, box5, direction);
+              if (dir_wall_ptr->destroy_box_alpha(engine, box, direction))
+              {
+                destroyed_map = true;
+              }
+              if (dir_wall_ptr->destroy_box_alpha(engine, box2, direction))
+              {
+                destroyed_map = true;
+              }
+              if (dir_wall_ptr->destroy_box_alpha(engine, box3, direction))
+              {
+                destroyed_map = true;
+              }
+              if (dir_wall_ptr->destroy_box_alpha(engine, box4, direction))
+              {
+                destroyed_map = true;
+              }
+              if (dir_wall_ptr->destroy_box_alpha(engine, box5, direction))
+              {
+                destroyed_map = true;
+              }
             }
+          }
+        }
+        else if (current_frame == 3)
+        {
+          if (!destroyed_map)
+          {
+            remove_skill(Utils::Lemming_Skills::MINE);
+            go_walk();
+            std::cout << "Termina de cavar...: " << destroyed_map << std::endl;
+          }
+          else
+          {
+            destroyed_map = false;
           }
         }
       }
