@@ -6,6 +6,7 @@
 #include "lemmings/Lemming.hpp"
 #include "geometry/point.hpp"
 #include "engine/physics.hpp"
+
 #include "lemmings/AI/tile_space.hpp"
 
 class AI_autoplay
@@ -20,7 +21,8 @@ public:
         BRIDGE,
         METAL,
         DIRECTIONAL_RIGHT,
-        DIRECTIONAL_LEFT
+        DIRECTIONAL_LEFT,
+        DEATH
     };
 
     enum class DIRECTION
