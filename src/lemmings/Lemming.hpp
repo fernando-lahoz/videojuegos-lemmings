@@ -701,7 +701,7 @@ public:
 
         engine.intersect_ray(ray_down, get_entity_id(),
                              "METAL", hit_offset_down, hit_entity_down);
-        if (hit_entity_down && hit_offset_down < (diagonal.y / 2))
+        if (hit_entity_down && hit_offset_down < (diagonal.y / 4) - 1)
         {
           remove_skill(Utils::Lemming_Skills::MINE);
           go_walk();
