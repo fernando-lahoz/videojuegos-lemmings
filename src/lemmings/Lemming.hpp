@@ -309,8 +309,8 @@ public:
     if (is_blocking() && skill != Utils::EXPLODE)
       return false; // Solo se puede añadir explotar cuando está bloqueando
 
-    if (is_building() && skill != Utils::BLOCK && skill != Utils::EXPLODE && skill != Utils::CLIMB && skill != Utils::FLOAT)
-      return false; // Solo se puede añadir bloquear o explotar cuando está construyendo
+    // if (is_building() && skill != Utils::BLOCK && skill != Utils::EXPLODE && skill != Utils::CLIMB && skill != Utils::FLOAT)
+    //   return false; // Solo se puede añadir bloquear o explotar cuando está construyendo
 
     if ((is_floating() || is_falling() || is_climbing()) && (skill != Utils::EXPLODE && skill != Utils::CLIMB && skill != Utils::FLOAT))
       return false; // Restricciones para flotar, caer o escalar

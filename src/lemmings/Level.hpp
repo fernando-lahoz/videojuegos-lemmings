@@ -390,6 +390,9 @@ public:
         auto gate = std::make_shared<Gate>(Point3f(0.0158057, 184.844, 500), engine, 4, Utils::LEVEL_GATE_TIME_ANIMATION[gate_type], game_info);
 
         engine.get_game().create_entity(gate);
+        auto gate2 = std::make_shared<Gate>(Point3f(2919.5, 91.0902, 500), engine, 4, Utils::LEVEL_GATE_TIME_ANIMATION[gate_type], game_info);
+
+        engine.get_game().create_entity(gate2);
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1521.51, 260.04, 301), 1, engine, 3, 0.4f, game_info));
 
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(1519, 298.847, 100), Vector2f(131, 24), engine));
@@ -1233,6 +1236,8 @@ public:
         break;
       case 17:
         engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
+        engine.get_game().create_entity(std::make_shared<Gate>(Point3f(0.0158057, 184.844, 500), engine, 4, Utils::LEVEL_GATE_TIME_ANIMATION[gate_type], game_info));
+        engine.get_game().create_entity(std::make_shared<Gate>(Point3f(2919.5, 91.0902, 500), engine, 4, Utils::LEVEL_GATE_TIME_ANIMATION[gate_type], game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1521.51, 260.04, 301), 1, engine, 3, 0.4f, game_info));
 
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(1519, 298.847, 100), Vector2f(131, 24), engine));
