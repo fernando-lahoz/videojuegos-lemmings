@@ -79,6 +79,11 @@ public:
         {
           game_info.sub_spawn_velocity();
         }
+
+        if (!contains_the_mouse(engine))
+        {
+          multi_pressed = false;
+        }
       }
     }
   }
