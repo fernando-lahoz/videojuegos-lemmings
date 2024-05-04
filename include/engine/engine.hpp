@@ -123,6 +123,7 @@ public:
     EntityCollection& get_entities();
     double get_delta_time();
     void set_delta_time_factor(double new_value);
+    double get_delta_time_factor();
     void destroy_all_entities();
     Game& get_game();
     Camera2D& get_main_camera();

@@ -23,11 +23,14 @@ private:
   Game_info &game_info;
   int option_selected = 11;
   float last_position;
+  bool multi_pressed = false;
+  float timer_multipressed = 0.025f;
 
 public:
   HUD(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, std::string _path, int _n, bool _is_hovereable = false, bool _is_clickable = true, bool _is_changeable = false, bool _is_selectable = true)
       : Rigid_body(position, size, engine.load_texture(_path + std::to_string(_n) + ".png"), engine, "HUD"), game_info(_game_info) //, HUDs &_huds
   {
+    multi_pressed = false;
     is_hovereable = _is_hovereable;
     is_clickable = _is_clickable;
     is_changeable = _is_changeable;
@@ -52,7 +55,7 @@ public:
     last_position = position.x;
   }
 
-  void pre_physics(Engine &) override
+  void pre_physics(Engine &engine) override
   {
     if (is_cursor && option_selected != game_info.get_option_selected())
     {
@@ -62,22 +65,39 @@ public:
       last_position = Utils::positions[option_selected].x;
       set_position3D(Point3f(new_position, Utils::positions[option_selected].y, 2));
     }
+    if (multi_pressed)
+    {
+      timer_multipressed -= engine.get_delta_time() / engine.get_delta_time_factor();
+      if (timer_multipressed < 0)
+      {
+        timer_multipressed = 0.025f;
+        if (n == Utils::HUD_ADD_SPAWN_VELOCITY)
+        {
+          game_info.add_spawn_velocity();
+        }
+        else if (n == Utils::HUD_SUB_SPAWN_VELOCITY)
+        {
+          game_info.sub_spawn_velocity();
+        }
+      }
+    }
   }
 
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override
   {
 
-    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && is_clickable/* && !(game_info.get_level_is_paused() && n != Utils::HUD_PAUSE)*/)
+    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && is_clickable /* && !(game_info.get_level_is_paused() && n != Utils::HUD_PAUSE)*/)
     {
       // std::cout << "PULSADO: " << n << std::endl;
       if (is_selectable)
       {
         game_info.set_option_selected(n);
 
-        //Hacemos sonar el sonido de opcion seleccionada si la opcion no es reventar a todos en pedacitos
-        if(n != Utils::HUD_ALL_EXPLODE){
+        // Hacemos sonar el sonido de opcion seleccionada si la opcion no es reventar a todos en pedacitos
+        if (n != Utils::HUD_ALL_EXPLODE)
+        {
 
-          //FIXME: Dependiendo de la opcion elegida deberia sonar mas agudo o mas grave
+          // FIXME: Dependiendo de la opcion elegida deberia sonar mas agudo o mas grave
           engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND), game_info.get_effects_volume());
         }
       }
@@ -89,7 +109,7 @@ public:
         auto &entities = engine.get_entities();
         int j = 0;
 
-        //FIXME Esto es porque puedes clicar la habilidad mas de una vez, lo suyo seria que no pudieses
+        // FIXME Esto es porque puedes clicar la habilidad mas de una vez, lo suyo seria que no pudieses
         bool isEveryOneDoomed = true;
 
         for (std::size_t i = 0; i < entities.size(); i++)
@@ -100,17 +120,17 @@ public:
             std::shared_ptr<Lemming> lemming_ptr = std::dynamic_pointer_cast<Lemming>(entities[i]);
             if (lemming_ptr)
             {
-              //Miramos si algun lemming fue marcado para morir y con eso vemos si estan todos condenados
+              // Miramos si algun lemming fue marcado para morir y con eso vemos si estan todos condenados
               isEveryOneDoomed &= lemming_ptr->get_dead_marked();
               lemming_ptr->set_dead_marked(true);
             }
           }
         }
 
-        //Si aun no estaban condenados
-        if(!isEveryOneDoomed)
+        // Si aun no estaban condenados
+        if (!isEveryOneDoomed)
         {
-          //Hacemos que recen por su vida
+          // Hacemos que recen por su vida
           engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::OH_NO_SOUND), game_info.get_effects_volume());
         }
 
@@ -119,11 +139,13 @@ public:
       }
       else if (n == Utils::HUD_ADD_SPAWN_VELOCITY)
       {
-        game_info.add_spawn_velocity();
+        timer_multipressed = 0.f;
+        multi_pressed = true;
       }
       else if (n == Utils::HUD_SUB_SPAWN_VELOCITY)
       {
-        game_info.sub_spawn_velocity();
+        timer_multipressed = 0.f;
+        multi_pressed = true;
       }
       else if (n == Utils::HUD::HUD_ADD_VELOCITY)
       {
@@ -137,7 +159,7 @@ public:
       }
       else if (n == Utils::HUD_PAUSE)
       {
-        //std::cout << (game_info.get_level_is_paused() ? "PAUSE\n" : "PLAY\n");
+        // std::cout << (game_info.get_level_is_paused() ? "PAUSE\n" : "PLAY\n");
         game_info.set_level_is_paused(!game_info.get_level_is_paused());
       }
 
@@ -169,6 +191,11 @@ public:
 
   void on_event_up([[maybe_unused]] Engine &engine, EngineIO::InputEvent event) override
   {
+
+    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && is_clickable /* && !(game_info.get_level_is_paused() && n != Utils::HUD_PAUSE)*/)
+    {
+      multi_pressed = false;
+    }
     if (event == EngineIO::InputEvent::MOUSE_HOVER && !game_info.get_level_is_paused())
     {
       txt = engine.load_texture(path + std::to_string(n) + ".png");

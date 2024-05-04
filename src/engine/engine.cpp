@@ -1052,6 +1052,11 @@ void Engine::set_delta_time_factor(double new_value)
     delta_time_factor = new_value;
 }
 
+double Engine::get_delta_time_factor()
+{
+    return delta_time_factor;
+}
+
 void Engine::destroy_all_entities()
 {
     for (auto &entity : entities)
