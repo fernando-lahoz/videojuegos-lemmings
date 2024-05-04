@@ -98,7 +98,6 @@ public:
           std::cout << "LEMMINGS OUT: " << game_info.get_n_lemmings_out() << std::endl;
           std::cout << "GAME OVER" << std::endl;
           timer_transition = 2.f;
-          engine.set_delta_time_factor(1.0);
           game_info.manage_level_results();
           game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_OUTRO);
           game_info.set_do_action(Utils::ACTIONS::GO_MENU);
@@ -113,10 +112,13 @@ public:
       {
         timer_transition -= engine.get_delta_time();
         if (timer_transition < 0)
+        {
+          engine.set_delta_time_factor(1.0);
           engine.get_game().create_entity(std::make_shared<Transition>(engine, game_info, 1.0f));
+        }
       }
 
-      if (game_info.get_do_transition())
+      if (game_info.get_do_transition() && game_info.get_can_do_transition())
       {
         game_info.set_do_transition(false);
         engine.get_game().create_entity(std::make_shared<Transition>(engine, game_info, 1.0f));

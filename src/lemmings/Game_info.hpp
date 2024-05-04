@@ -22,6 +22,7 @@ private:
   int build_menu = 0;
   bool is_transition_done = false;
   bool do_transition = false;
+  bool can_do_transition = true;
 
   // credits
   int credit_frame = 0;
@@ -281,6 +282,9 @@ public:
 
   void set_do_transition(bool new_value) { do_transition = new_value; }
   bool get_do_transition() const { return do_transition; }
+
+  void set_can_do_transition(bool new_value) { can_do_transition = new_value; }
+  bool get_can_do_transition() const { return can_do_transition; }
 
   void add_level_selected()
   {

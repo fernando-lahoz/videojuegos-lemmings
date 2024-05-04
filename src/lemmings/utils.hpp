@@ -12,7 +12,7 @@ namespace Utils
   // LEMMINGS CONSTANTS
   const int STATE_IS_LOOP_ANIMATION[14] = {false, true, true, true, true, true, true, false, true, true, true, false, false, false}; // indicates if the animation is loop
   const int STATE_N_FRAMES[14] = {8, 9, 4, 16, 16, 16, 11, 30, 16, 32, 24, 8, 16, 16};                                               // number of frames of each animation
-  const float STATE_ANIMATION_DURATION[14] = {1.0f, 0.7f, 0.2f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.3f, 2.0f, 1.5f, 1.0f, 1.0f, 1.0f};   // duration of each animation in seconds
+  const float STATE_ANIMATION_DURATION[14] = {1.0f, 0.7f, 0.2f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.9f, 2.0f, 1.5f, 1.0f, 1.0f, 1.0f};   // duration of each animation in seconds
   const float MAX_DISTANCE_FALL = 122.0f;
 
   enum Lemming_Skills
@@ -160,7 +160,7 @@ namespace Utils
                                            {1, 15, 30, 80, 1, 99, 1, 1, 55, 90, 1, 1, 1, 50, 70, 60, 10, 50, 1, 1, 85, 1, 75, 70, 99, 1, 50, 10, 1, 50, 20}};
   const float LEVEL_CAMERA_POS_INI[4][31] = {{320, 1630.62, 1584, 1510.69, 1563.04, 1164.07, 1523.75, 1139.67, 1147.27, 1584, 1584, 1584, 1584, 1034.38, 934.507, 675, 1390.75, 1435, 1364.21, 1061, 1397.68, 734.727, 965.85, 1477.24, 1584, 1280.3, 1772.63, 1522.43, 1597.36, 2022.82, 1517.53},
                                              {1584, 1027.6, 1034.38, 1185.76, 1001.41, 1538.59, 1240.05, 1977.11, 1598, 1663.83, 1600, 1775, 1385, 1512, 912.615, 1630.62, 1164.07, 1523.75, 1584, 1139.67, 1147, 1356.45, 1147.27, 1584, 1083.21, 1080, 1584, 1115, 1311.31, 850, 934.66},
-                                             {1584, 675, 1620.7, 1390.75, 1653.65, 1610.62, 1435, 1001.41, 1538.59, 1584, 1240.05, 1977.11, 1151.02, 2249.64, 548.323, 932, 1154.59, 1584, 1477.24, 1364.21, 632, 1564, 1522.43, 1598, 1126, 1061, 1584, 1508, 960, 1185.76, 1034.38},
+                                             {1584, 675, 1620.7, 1390.75, 1653.65, 1610.62, 1435, 1001.41, 1538.59, 1584, 1240.05, 1977.11, 1151.02, 2249.64, 548.323, 932, 1154.59, 1584, 1584, 1364.21, 632, 1564, 1522.43, 1598, 1126, 1061, 1584, 1508, 960, 1185.76, 1034.38},
                                              {1584, 1195, 1872, 1584, 1280.3, 1597.36, 1663.83, 1397.68, 1446.76, 2022.82, 1563, 1034.38, 1657.19, 1772.63, 1204.78, 1600, 1414.38, 1335, 1600, 1775, 1563.04, 1385, 1031, 2421.89, 1517.53, 1512, 734.727, 1414.38, 2488, 2656.72, 320}};
   const std::vector<int> LEVEL_SKILLS_AMOUNT[4][31] = {{
                                                            {99, 99, 99, 99, 99, 99, 99, 99},
@@ -363,7 +363,7 @@ namespace Utils
                                               {Point3f(1584.f, 100, 500), Point3f(2617.62, 22.738, 500), Point3f(760.483, 89.9639, 500), Point3f(1873.84, 32.5396, 500), Point3f(1563.87, -53.6483, 500), Point3f(1802.29, 17.8308, 500), Point3f(1890.52, 167.937, 500), Point3f(2452.57, 124.853, 500), Point3f(2622.83, 55.0826, 500), Point3f(1415.92, 186.71, 500), Point3f(1849.65, 168.914, 500), Point3f(958.085, 178.929, 500), Point3f(1827.79, 9.22238, 500), Point3f(851.436, 91.1705, 500), Point3f(3050.02, 92.4837, 500), Point3f(2379.09, -43.9708, 500), Point3f(1956.13, 144.995, 500), Point3f(0.0158057, 8.93832, 500), Point3f(1790.87, 168.578, 500), Point3f(2014.15, 174.778, 500), Point3f(2550.65, 207.787, 500), Point3f(1628.92, 120.158, 500), Point3f(1657.57, 200.037, 500), Point3f(1279.2, 0.348938, 500), Point3f(1545.31, 144.155, 500), Point3f(2860.95, 64.5198, 500), Point3f(1554.76, 88.3305, 500), Point3f(1670.5, 27.6365, 500), Point3f(2049.4, 46.7436, 500), Point3f(2149.12, 2.13625, 500), Point3f(1947.22, 136.837, 500)},
                                               {Point3f(1584.f, 100, 500), Point3f(2196.85, -53.998, 500), Point3f(1300.28, 24.2471, 500), Point3f(1822.42, 184.225, 500), Point3f(1874.37, 206.627, 500), Point3f(1122.54, 24.2606, 500), Point3f(1611.43, 179.119, 500), Point3f(1953.04, 105.043, 500), Point3f(1893.76, 199.935, 299), Point3f(859.625, 20.6917, 500), Point3f(967.888, 8.22437, 500), Point3f(1947.22, 136.837, 500), Point3f(1632.85, 42.5451, 500), Point3f(2167.66, 90.55, 500), Point3f(2043.61, 184.145, 500), Point3f(1537.54, 32.7569, 500), Point3f(1838.84, 119.993, 500), Point3f(1919.54, 32.6393, 500), Point3f(1545.68, 82.4331, 500), Point3f(1910.24, 32.8758, 500), Point3f(1728.38, -8.13497, 500), Point3f(1910.24, 32.8758, 500), Point3f(2225.08, 154.242, 500), Point3f(583.367, 189.813, 500), Point3f(1430.89, 192.7, 500), Point3f(1872.05, 75.0468, 500), Point3f(2537.51, 170.078, 500), Point3f(1838.84, 119.993, 500), Point3f(1089.25, 136.753, 500), Point3f(650.604, 178.342, 500), Point3f(1543.99, -38.0992, 500)}};
 
-  const RGBA BRICKS_COLOR_FOR_TYPE[4] = { {120, 77, 0, 255}, {224, 207, 252, 255}, {255, 244, 95, 255}, {0, 96, 160, 255}};
+  const RGBA BRICKS_COLOR_FOR_TYPE[4] = {{120, 77, 0, 255}, {224, 207, 252, 255}, {255, 244, 95, 255}, {0, 96, 160, 255}};
 
   enum BRICKS_TYPE
   {
@@ -387,10 +387,11 @@ namespace Utils
                                             {BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLACK, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE},
                                             {BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLACK, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE}};
 
-  namespace colors {
-    constexpr RGBA minimap_lemming = { 238, 204, 0, 255 };
-    constexpr RGBA background_blue = { 0, 3, 52, 255 };
-    constexpr RGBA black = { 0, 0, 0, 255 };
+  namespace colors
+  {
+    constexpr RGBA minimap_lemming = {238, 204, 0, 255};
+    constexpr RGBA background_blue = {0, 3, 52, 255};
+    constexpr RGBA black = {0, 0, 0, 255};
   }
 
   // MENU CONSTANTS

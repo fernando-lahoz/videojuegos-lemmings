@@ -21,6 +21,7 @@ private:
   float time_frame_sprite = 0.0f; // Acumulador de tiempo para la animación del sprite
   int current_frame = 0;          // Frame actual de la animación
   bool is_playing = false;
+  bool is_done = false;
 
   Music intro;
 
@@ -64,8 +65,9 @@ public:
       int times = time_frame_sprite / (animation_duration / n_frames);
       time_frame_sprite = time_frame_sprite - (animation_duration / n_frames) * times;
 
-      if (state == AnimationState::Action)
+      if (state == AnimationState::Action && game_info.get_can_do_transition() && !is_done)
       {
+        is_done = true;
         // time_frame_wait = 0.8f;
         std::cout << "INTRO ENDED" << std::endl;
         game_info.set_do_transition(true);

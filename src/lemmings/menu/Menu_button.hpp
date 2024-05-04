@@ -50,21 +50,30 @@ public:
         break;
 
       case Utils::PLAY:
-        game_info.set_do_transition(true);
-        game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level_selected(), game_info.get_difficulty_selected());
-        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        if (game_info.get_can_do_transition())
+        {
+          game_info.set_do_transition(true);
+          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level_selected(), game_info.get_difficulty_selected());
+          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        }
         break;
 
       case Utils::PLAYER_SOLO:
-        game_info.set_do_transition(true);
-        game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_SELECTOR, 0, 0);
-        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        if (game_info.get_can_do_transition())
+        {
+          game_info.set_do_transition(true);
+          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_SELECTOR, 0, 0);
+          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        }
         break;
 
       case Utils::PLAYER_VS_IA:
-        game_info.set_do_transition(true);
-        game_info.set_build_menu(Utils::MENU_TYPE::IA, 0, 0);
-        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        if (game_info.get_can_do_transition())
+        {
+          game_info.set_do_transition(true);
+          game_info.set_build_menu(Utils::MENU_TYPE::IA, 0, 0);
+          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        }
         break;
 
       case Utils::EXIT:
@@ -72,9 +81,12 @@ public:
         break;
 
       case Utils::SETTINGS:
-        game_info.set_do_transition(true);
-        game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
-        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        if (game_info.get_can_do_transition())
+        {
+          game_info.set_do_transition(true);
+          game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
+          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        }
 
         // Guardamos en una variable el contenido de fichero de comfiguración
         EngineIO::InputEvent aux[18];
@@ -87,9 +99,12 @@ public:
         break;
 
       case Utils::RESET_ALL:
-        game_info.set_do_transition(true);
-        game_info.set_build_menu(Utils::MENU_TYPE::RESET_DATA, 0, 0);
-        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        if (game_info.get_can_do_transition())
+        {
+          game_info.set_do_transition(true);
+          game_info.set_build_menu(Utils::MENU_TYPE::RESET_DATA, 0, 0);
+          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        }
         break;
 
       case Utils::SAVE:
@@ -108,23 +123,29 @@ public:
         break;
 
       case Utils::BACK_TO_CONFIG:
-        game_info.set_do_transition(true);
-        game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
-        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        if (game_info.get_can_do_transition())
+        {
+          game_info.set_do_transition(true);
+          game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
+          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        }
         break;
 
       case Utils::RESET_ALL_CONFIRM:
-        // Guardar configuración de botones actual
-        KeyBindings().setDefaultKeyBindings(conf_buttons);
-        keyboard.set_key_bindings();
-        dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
-        game_info.reset_levels_info();
-        game_info.set_volume_aspect(100, 100, 1);
-        game_info.start_sound_assets(engine);
-        game_info.set_window_size(engine);
-        game_info.set_do_transition(true);
-        game_info.set_build_menu(Utils::MENU_TYPE::INTRO, 0, 0);
-        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        if (game_info.get_can_do_transition())
+        {
+          // Guardar configuración de botones actual
+          KeyBindings().setDefaultKeyBindings(conf_buttons);
+          keyboard.set_key_bindings();
+          dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
+          game_info.reset_levels_info();
+          game_info.set_volume_aspect(100, 100, 1);
+          game_info.start_sound_assets(engine);
+          game_info.set_window_size(engine);
+          game_info.set_do_transition(true);
+          game_info.set_build_menu(Utils::MENU_TYPE::INTRO, 0, 0);
+          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        }
         break;
 
       default:

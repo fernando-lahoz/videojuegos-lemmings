@@ -309,8 +309,8 @@ public:
     if (is_blocking() && skill != Utils::EXPLODE)
       return false; // Solo se puede añadir explotar cuando está bloqueando
 
-    if (is_building() && skill != Utils::BLOCK && skill != Utils::EXPLODE && skill != Utils::CLIMB && skill != Utils::FLOAT)
-      return false; // Solo se puede añadir bloquear o explotar cuando está construyendo
+    // if (is_building() && skill != Utils::BLOCK && skill != Utils::EXPLODE && skill != Utils::CLIMB && skill != Utils::FLOAT)
+    //   return false; // Solo se puede añadir bloquear o explotar cuando está construyendo
 
     if ((is_floating() || is_falling() || is_climbing()) && (skill != Utils::EXPLODE && skill != Utils::CLIMB && skill != Utils::FLOAT))
       return false; // Restricciones para flotar, caer o escalar
@@ -329,7 +329,13 @@ public:
       remove_skill(Utils::Lemming_Skills::DIG);
 
     if (skill == Utils::Lemming_Skills::EXPLODE)
-      set_dead_marked(true);
+    {
+      if (!get_dead_marked())
+      {
+        set_dead_marked(true);
+        game_info.sub_skill_amount(Utils::SKILL_TO_SKILLS_AMOUNT[skill_to_index(skill)]);
+      }
+    }
     else
     {
       skills = skills | skill;
@@ -344,8 +350,8 @@ public:
         else
           type = Utils::LEMMING_TYPE[Utils::FALLING];
       }
+      game_info.sub_skill_amount(Utils::SKILL_TO_SKILLS_AMOUNT[skill_to_index(skill)]);
     }
-    game_info.sub_skill_amount(Utils::SKILL_TO_SKILLS_AMOUNT[skill_to_index(skill)]);
     return true;
   }
 
@@ -695,7 +701,7 @@ public:
 
         engine.intersect_ray(ray_down, get_entity_id(),
                              "METAL", hit_offset_down, hit_entity_down);
-        if (hit_entity_down && hit_offset_down < (diagonal.y / 2))
+        if (hit_entity_down && hit_offset_down < (diagonal.y / 4) - 1)
         {
           remove_skill(Utils::Lemming_Skills::MINE);
           go_walk();
@@ -1056,18 +1062,20 @@ public:
                 // std::cout << "HE CAVADO" << std::endl;
                 destroyed = true;
               }
-              else if (entity->get_entity_name() == "DIRECTIONAL WALL")
+            }
+            else if (entity->get_entity_name() == "DIRECTIONAL WALL")
+            {
+              std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
+              if (dir_wall_ptr->destroy_box_alpha(engine, box, 0))
               {
-                std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
-                if (dir_wall_ptr->destroy_box_alpha(engine, box, 0))
-                  destroyed = true;
+                destroyed = true;
               }
-              else if (entity->get_entity_name() == "BRICKS")
-              {
-                std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
-                if (bricks_ptr->destroy_box_alpha(engine, box, 0))
-                  destroyed = true;
-              }
+            }
+            else if (entity->get_entity_name() == "BRICKS")
+            {
+              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
+              if (bricks_ptr->destroy_box_alpha(engine, box, 0))
+                destroyed = true;
             }
           }
           if (!destroyed)

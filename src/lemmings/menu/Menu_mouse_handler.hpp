@@ -32,7 +32,7 @@ public:
       {
         return;
       }
-      if (menu_type == Utils::MENU_TYPE::LEVEL_INTRO)
+      if (menu_type == Utils::MENU_TYPE::LEVEL_INTRO && game_info.get_can_do_transition())
       {
         game_info.set_do_transition(true);
         game_info.set_build_level(game_info.conversion_level_ia());
@@ -40,13 +40,16 @@ public:
         game_info.set_do_action(Utils::ACTIONS::GO_LEVEL);
         return;
       }
-      if (menu_type == Utils::MENU_TYPE::LEVEL_OUTRO)
+      if (menu_type == Utils::MENU_TYPE::LEVEL_OUTRO && game_info.get_can_do_transition())
       {
         int rescued = game_info.get_percen_lemmings_in();
         int needed;
-        if (game_info.get_ia()){
+        if (game_info.get_ia())
+        {
           needed = Utils::LEVEL_SAVE_LEMMINGS_IA[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS_IA[game_info.get_difficulty()][game_info.get_level()];
-        } else{
+        }
+        else
+        {
           needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_difficulty()][game_info.get_level()];
         }
         if (rescued < needed)
@@ -66,7 +69,8 @@ public:
               game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, 1, game_info.get_difficulty() + 1);
             }
           }
-          else if(game_info.get_ia() && game_info.get_level() == Utils::LEVEL_MAX_IA_DIFFICULTY[game_info.get_difficulty()]){
+          else if (game_info.get_ia() && game_info.get_level() == Utils::LEVEL_MAX_IA_DIFFICULTY[game_info.get_difficulty()])
+          {
             if (game_info.get_difficulty() == 1)
             {
               game_info.set_build_menu(Utils::MENU_TYPE::GAME_COMPLETE, 0, 0);
@@ -93,14 +97,14 @@ public:
         // game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         // return;
       }
-      if (menu_type == Utils::MENU_TYPE::INTRO)
+      if (menu_type == Utils::MENU_TYPE::INTRO && game_info.get_can_do_transition())
       {
         game_info.set_do_transition(true);
         game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
-      if (menu_type == Utils::MENU_TYPE::GAME_COMPLETE)
+      if (menu_type == Utils::MENU_TYPE::GAME_COMPLETE && game_info.get_can_do_transition())
       {
         game_info.set_do_transition(true);
         game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
@@ -117,7 +121,7 @@ public:
         /* code */
         return;
       }
-      if (menu_type == Utils::MENU_TYPE::LEVEL_INTRO)
+      if (menu_type == Utils::MENU_TYPE::LEVEL_INTRO && game_info.get_can_do_transition())
       {
         game_info.set_do_transition(true);
         game_info.set_build_level(game_info.conversion_level_ia());
@@ -125,13 +129,16 @@ public:
         game_info.set_do_action(Utils::ACTIONS::GO_LEVEL);
         return;
       }
-      if (menu_type == Utils::MENU_TYPE::LEVEL_OUTRO)
+      if (menu_type == Utils::MENU_TYPE::LEVEL_OUTRO && game_info.get_can_do_transition())
       {
         int rescued = game_info.get_percen_lemmings_in();
         int needed;
-        if (game_info.get_ia()){
+        if (game_info.get_ia())
+        {
           needed = Utils::LEVEL_SAVE_LEMMINGS_IA[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS_IA[game_info.get_difficulty()][game_info.get_level()];
-        } else{
+        }
+        else
+        {
           needed = Utils::LEVEL_SAVE_LEMMINGS[game_info.get_difficulty()][game_info.get_level()] * 100 / Utils::LEVEL_N_LEMMINGS[game_info.get_difficulty()][game_info.get_level()];
         }
 
@@ -161,14 +168,14 @@ public:
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
-      if (menu_type == Utils::MENU_TYPE::INTRO)
+      if (menu_type == Utils::MENU_TYPE::INTRO && game_info.get_can_do_transition())
       {
         game_info.set_do_transition(true);
         game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
         game_info.set_do_action(Utils::ACTIONS::GO_MENU);
         return;
       }
-      if (menu_type == Utils::MENU_TYPE::GAME_COMPLETE)
+      if (menu_type == Utils::MENU_TYPE::GAME_COMPLETE && game_info.get_can_do_transition())
       {
         game_info.set_do_transition(true);
         game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
