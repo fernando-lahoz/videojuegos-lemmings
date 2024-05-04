@@ -1062,18 +1062,20 @@ public:
                 // std::cout << "HE CAVADO" << std::endl;
                 destroyed = true;
               }
-              else if (entity->get_entity_name() == "DIRECTIONAL WALL")
+            }
+            else if (entity->get_entity_name() == "DIRECTIONAL WALL")
+            {
+              std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
+              if (dir_wall_ptr->destroy_box_alpha(engine, box, 0))
               {
-                std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
-                if (dir_wall_ptr->destroy_box_alpha(engine, box, 0))
-                  destroyed = true;
+                destroyed = true;
               }
-              else if (entity->get_entity_name() == "BRICKS")
-              {
-                std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
-                if (bricks_ptr->destroy_box_alpha(engine, box, 0))
-                  destroyed = true;
-              }
+            }
+            else if (entity->get_entity_name() == "BRICKS")
+            {
+              std::shared_ptr<Brick> bricks_ptr = std::dynamic_pointer_cast<Brick>(entity);
+              if (bricks_ptr->destroy_box_alpha(engine, box, 0))
+                destroyed = true;
             }
           }
           if (!destroyed)

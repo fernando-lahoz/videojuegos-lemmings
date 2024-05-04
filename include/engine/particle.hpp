@@ -17,7 +17,7 @@ public:
     {
         this->time_to_live = time_to_live;
         constructor_set_collision_type(Entity::Collision_type::HUD);
-        set_gravity(60);
+        set_gravity(100);
         set_speed(Vector2f((Float)(rand() % (int)(400 * 100)) / 100 - 200, -(Float)(rand() % (int)(600 * 100)) / 100));
     }
 
