@@ -331,6 +331,8 @@ public:
         door = std::make_shared<Door>(Point3f(1248.95, 71.9481, 500), engine, 4, 1.0f, level_number, game_info);
         engine.get_game().create_entity(door);
         engine.get_game().create_entity(std::make_shared<Thumper>(Point3f(1245, 255, 500), engine, 0.75f, game_info));
+        engine.get_game().create_entity(std::make_shared<Thumper>(Point3f(1401.34, 255, 500), engine, 0.75f, game_info));
+        engine.get_game().create_entity(std::make_shared<Thumper>(Point3f(1656.39, 255, 500), engine, 0.75f, game_info));
 
         break;
       }
@@ -1036,6 +1038,8 @@ public:
         engine.get_game().create_entity(std::make_shared<Door>(Point3f(1248.95, 71.9481, 500), engine, Utils::LEVEL_DOOR_TYPE[difficulty_number][level_number], 1.0f, level_number, game_info, difficulty_number));
 
         engine.get_game().create_entity(std::make_shared<Thumper>(Point3f(1245, 255, 500), engine, 0.75f, game_info));
+        engine.get_game().create_entity(std::make_shared<Thumper>(Point3f(1401.34, 255, 500), engine, 0.75f, game_info));
+        engine.get_game().create_entity(std::make_shared<Thumper>(Point3f(1656.39, 255, 500), engine, 0.75f, game_info));
 
         break;
       case 7:
