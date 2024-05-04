@@ -31,6 +31,7 @@ public:
       : Entity(Point3f(10000, -0, -100), Vector2f(641, 401), engine.load_texture("assets/transition/transition_255.png"), engine, "Transition"),
         animation_duration(_animation_duration), game_info(_game_info)
   {
+    game_info.set_can_do_transition(false);
     txt = engine.load_texture("assets/transition/transition_255.png");
     disable_collisions();
   }
@@ -83,6 +84,7 @@ public:
         // time_frame_wait = 0.8f;
         std::cout << "TRANSITION HALF" << std::endl;
         game_info.set_is_transition_done(true);
+        game_info.set_can_do_transition(true);
         engine.get_sound_mixer().pause_all_sounds();
         engine.get_sound_mixer().pause_music();
         state = AnimationState::Backward;

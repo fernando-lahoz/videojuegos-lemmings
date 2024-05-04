@@ -64,7 +64,7 @@ public:
       int times = time_frame_sprite / (animation_duration / n_frames);
       time_frame_sprite = time_frame_sprite - (animation_duration / n_frames) * times;
 
-      if (state == AnimationState::Action)
+      if (state == AnimationState::Action && game_info.get_can_do_transition())
       {
         // time_frame_wait = 0.8f;
         std::cout << "INTRO ENDED" << std::endl;
