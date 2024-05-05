@@ -61,6 +61,8 @@ class Lemming : public Rigid_body
   std::chrono::time_point<std::chrono::steady_clock> last_falling = std::chrono::steady_clock::now();
 
   int brick_num = 0;
+  bool build_anything = false;
+  bool build_hit_builder = false;
 
   std::string get_type() { return type; }
 
@@ -121,6 +123,8 @@ class Lemming : public Rigid_body
   {
     if (!is_building())
     {
+      build_hit_builder = false;
+      build_anything = false;
       brick_num = 0;
       restart_animation();
     }
@@ -923,16 +927,14 @@ public:
         if (current_frame == 9)
         {
           brick_num++;
+          // std::cout << "Building nº step " << brick_num << std::endl;
           auto bound = direction == -1 ? Bound2f(Point2f(0.25, 0.7), Point2f(0.55, 0.75)) : Bound2f(Point2f(0.45, 0.7), Point2f(0.75, 0.75));
-          game_info.get_map_ptr()->fill_box_with_color(engine, local_to_world(bound), Utils::BRICKS_COLOR_FOR_TYPE[Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty()][game_info.get_level()]]);
+          build_anything = game_info.get_map_ptr()->fill_box_with_color(engine, local_to_world(bound), Utils::BRICKS_COLOR_FOR_TYPE[Utils::LEVEL_BRICKS_TYPE[game_info.get_difficulty()][game_info.get_level()]]);
         }
         else if (current_frame == 0)
         {
           position.y -= 2;
           position.x += 4 * direction;
-        }
-        else if (current_frame == 1)
-        {
           Ray ray_up = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(0, -1));
           Ray ray_dir = Ray(local_to_world(Point2f(0.5, 0.5)), Vector2f(direction, 0));
           Float hit_offset;
@@ -942,25 +944,26 @@ public:
             remove_skill(Utils::Lemming_Skills::BUILD);
             go_idle();
           }
-          else if (engine.intersect_ray(ray_up, get_entity_id(),
-                                        {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset, hit_entity))
+          if (engine.intersect_ray(ray_up, get_entity_id(),
+                                   {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset, hit_entity))
           {
-            if (hit_offset < diagonal.y * 1.1 / 4)
+            if (hit_offset < diagonal.y * 0.2)
             {
               remove_skill(Utils::Lemming_Skills::BUILD);
-              restart_animation();
-              go_idle();
+              direction *= -1;
+              go_walk();
             }
           }
-          else if (engine.intersect_ray(ray_dir, get_entity_id(),
-                                        {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset, hit_entity))
+          if (build_hit_builder)
           {
-            if (hit_offset < diagonal.y / 4)
-            {
-              remove_skill(Utils::Lemming_Skills::BUILD);
-              restart_animation();
-              go_idle();
-            }
+            // std::cout << "BUILDER: CAMBIE DIR YA QUE CHOQUE CON BLOCKER" << std::endl;
+            direction *= -1;
+          }
+          if (!build_anything)
+          {
+            remove_skill(Utils::Lemming_Skills::BUILD);
+            direction *= -1;
+            go_walk();
           }
           // Los lemmings se pueden llegar a salir del mapa sin problemas
           // if (position.y < -10)
@@ -989,7 +992,10 @@ public:
     }
   }
 
-  int get_direction() const { return direction; }
+  int get_direction() const
+  {
+    return direction;
+  }
 
   void pre_physics(Engine &engine) override
   {
@@ -1080,8 +1086,31 @@ public:
     if (game_info.get_level_is_paused())
       return;
     Entity::on_collision(engine, other);
+
     if (other->get_entity_name() == "MAP" || other->get_entity_name() == "DIRECTIONAL WALL" || other->get_entity_name() == "METAL" || other->get_entity_name() == "Lemming")
     {
+
+      if (is_building())
+      {
+        if ((check_collision_left(other) && direction == -1) || (check_collision_right(other) && direction == 1))
+        {
+          if (other->get_entity_name() == "Lemming")
+          {
+            std::shared_ptr<Entity> lemming_ptr = std::dynamic_pointer_cast<Entity>(other);
+            float distance = lemming_ptr->get_position2D().x - position.x;
+            if ((direction == 1 && 12 > distance && distance > 8) || (direction == -1 && -12 < distance && distance < -8))
+            {
+              // std::cout << "HE CHOCADO CON UN BLOCKER SIENDO BUILDER" << std::endl;
+              build_hit_builder = true;
+            }
+            else
+            {
+              build_hit_builder = false;
+            }
+          }
+        }
+      }
+
       if (is_walking())
       {
         if ((check_collision_left(other) && direction == -1) || (check_collision_right(other) && direction == 1))
