@@ -183,5 +183,31 @@ public:
         return;
       }
     }
+
+    if (event == EngineIO::InputEvent::ENTER || event == EngineIO::InputEvent::SPACE)
+    {
+      if (menu_type == Utils::MENU_TYPE::INTRO && game_info.get_can_do_transition())
+      {
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        return;
+      }
+    }
+
+    if (event == EngineIO::InputEvent::ESC)
+    {
+      if (menu_type == Utils::MENU_TYPE::INTRO && game_info.get_can_do_transition())
+      {
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        return;
+      }
+      else if (game_info.get_actual_state() == Utils::STATE::GAME)
+      {
+        // TODO: add esc menu to return to the main default
+      }
+    }
   }
 };
