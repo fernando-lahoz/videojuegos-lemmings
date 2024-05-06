@@ -54,7 +54,7 @@ class Lemming : public Rigid_body
   // Este booleano indica si un lemming es marcado para explotar
   bool dead_marked = false;
   // Este es el tiempo de vida que le queda al lemming si es marcado para explotar
-  double time_to_live = (Float)(rand() % 50) / 100 + 4.5f;
+  double time_to_live = 5.0f;
   int last_time_to_live = 6;
   std::shared_ptr<Dynamic_counter_image> counter;
 
@@ -280,6 +280,7 @@ public:
     override_right_point(Bound2f(Point2f(0.5, 0.45), Point2f(0.6, 0.55)));
 
     disable_alpha_mouse();
+    time_to_live = 5.5f - 0.01f * (100 - position.z);
     // disable_alpha_collision();
   }
   ~Lemming()
@@ -568,7 +569,6 @@ public:
               {
                 hit_directional_wall_bad_direction = true;
               }
-                
             }
           }
         }
@@ -581,12 +581,12 @@ public:
             frames_to_check_basher -= 1;
           }
         }
-        
+
         if ((frames_to_check_basher == 0) &&
-            ( current_frame == 3  ||
-              current_frame == 6  ||
-              current_frame == 19 ||
-              current_frame == 22 ))
+            (current_frame == 3 ||
+             current_frame == 6 ||
+             current_frame == 19 ||
+             current_frame == 22))
         {
           if (!destroyed_map)
           {
@@ -605,13 +605,12 @@ public:
           go_walk();
         }
 
-
         float hit_offset_down;
         EntityPtr hit_entity_down;
         Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.4)), Vector2f(0, 1));
         engine.intersect_ray(ray_down, get_entity_id(),
-                            {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset_down, hit_entity_down);
-        
+                             {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset_down, hit_entity_down);
+
         if (hit_offset_down > diagonal.y * 0.5)
         {
           remove_skill(Utils::Lemming_Skills::BASH);
