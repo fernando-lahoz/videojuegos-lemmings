@@ -1511,7 +1511,8 @@ public:
     // Evita que se puedan seleccionar desde el minimapa
     if (engine.get_camera_in_which_hovered(*this) != game_info.get_game_camera_id())
       return;
-    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && !game_info.get_level_is_paused())
+    auto mouse_pos = engine.get_mouse_position_in_camera(engine.get_camera(7)); // GAME CAMERA = 7
+    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && !game_info.get_level_is_paused() && abs(mouse_pos.x - (position.x + diagonal.x / 2)) < 10 && abs(mouse_pos.y - (position.y + diagonal.y / 2)) < 10)
     {
       int skill = Utils::HUD_TO_SKILL[game_info.get_option_selected()];
       if (skill != Utils::NO_SKILLS && game_info.get_action_possible() && !game_info.get_ia())
@@ -1531,7 +1532,7 @@ public:
       }
     }
 
-    if (event == EngineIO::InputEvent::MOUSE_HOVER)
+    if (event == EngineIO::InputEvent::MOUSE_HOVER && abs(mouse_pos.x - (position.x + diagonal.x / 2)) < 10 && abs(mouse_pos.y - (position.y + diagonal.y / 2)) < 10)
     {
       if (!is_hovered && !((is_escaping() || is_crashing() || is_exploding() || is_drowning())))
       {
@@ -1547,11 +1548,7 @@ public:
           game_info.set_is_cursor_hover(true);
       }
     }
-  }
-
-  void on_event_up([[maybe_unused]] Engine &engine, EngineIO::InputEvent event) override
-  {
-    if (event == EngineIO::InputEvent::MOUSE_HOVER && game_info.get_is_cursor_hover() == true)
+    if (event == EngineIO::InputEvent::MOUSE_HOVER && game_info.get_is_cursor_hover() == true && (abs(mouse_pos.x - (position.x + diagonal.x / 2)) > 10 || abs(mouse_pos.y - (position.y + diagonal.y / 2)) > 10))
     {
       if (is_hovered)
       {
@@ -1560,9 +1557,26 @@ public:
         if (game_info.get_lemmings_hovered() == 0)
           game_info.set_lemming_hovered_type("");
       }
-      game_info.set_cursor_txt("assets/cursor.png", engine);
+      if (game_info.get_lemmings_hovered() == 0)
+        game_info.set_cursor_txt("assets/cursor.png", engine);
       game_info.set_is_cursor_hover(false);
     }
+  }
+
+  void on_event_up([[maybe_unused]] Engine &engine, EngineIO::InputEvent event) override
+  {
+    // if (event == EngineIO::InputEvent::MOUSE_HOVER && game_info.get_is_cursor_hover() == true)
+    // {
+    //   if (is_hovered)
+    //   {
+    //     game_info.sub_lemmings_hovered();
+    //     is_hovered = false;
+    //     if (game_info.get_lemmings_hovered() == 0)
+    //       game_info.set_lemming_hovered_type("");
+    //   }
+    //   game_info.set_cursor_txt("assets/cursor.png", engine);
+    //   game_info.set_is_cursor_hover(false);
+    // }
   }
 
   void destroy_lemming(Engine &engine)

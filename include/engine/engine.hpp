@@ -131,6 +131,7 @@ public:
     void destroy_all_entities();
     Game& get_game();
     Camera2D& get_main_camera();
+    Camera2D& get_camera(int id);
     SoundMixer& get_sound_mixer();
     SDL_Renderer *get_renderer();
 

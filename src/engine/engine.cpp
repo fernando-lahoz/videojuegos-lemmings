@@ -486,6 +486,17 @@ Camera2D &Engine::get_main_camera()
     return *cameras[0];
 }
 
+Camera2D &Engine::get_camera(int id)
+{
+    for (auto &camera : cameras)
+    {
+        if (camera->get_layer() == id)
+            return *camera;
+    }
+
+    return *cameras[0];
+}
+
 SoundMixer &Engine::get_sound_mixer()
 {
     return mixer;
@@ -659,7 +670,7 @@ bool Engine::intersect_ray(Ray &ray,
 
 bool Engine::alpha_box_collision_if_all_Y_force_entity_names(Bound2f box,
                                                              int not_this_entity_id,
-                                                             const std::vector<std::string> &force_entity_names, bool& is_valid,
+                                                             const std::vector<std::string> &force_entity_names, bool &is_valid,
                                                              Point2f &max_collision_pixel, Physics_engine::ReturnedPixel horizontal_pixel,
                                                              Physics_engine::ReturnedPixel vertical_pixel,
                                                              EntityPtr &hit_entity)
@@ -686,7 +697,7 @@ bool Engine::alpha_box_collision_if_all_Y_force_entity_names(Bound2f box,
             continue;
 
         std::vector<std::pair<Float, Float>> local_mask = Physics_engine::alpha_box_collision_get_height_mask(*entity, box);
-        
+
         std::vector<std::pair<Float, Float>> new_mask;
         auto it1 = mask.begin();
         auto it2 = local_mask.begin();
@@ -718,7 +729,7 @@ bool Engine::alpha_box_collision_if_all_Y_force_entity_names(Bound2f box,
                 auto *other = (b < B) ? &++(*lower) : &++(*upper);
                 auto other_end = (b < B) ? lower_end : upper_end;
                 auto b_max = std::max(b, B);
-                
+
                 while (*aux != aux_end && *other != other_end)
                 {
                     const auto [c, d] = **aux;
@@ -745,18 +756,17 @@ bool Engine::alpha_box_collision_if_all_Y_force_entity_names(Bound2f box,
 
         if (it1 == mask.end())
         {
-            new_mask.insert( new_mask.end(), it2, local_mask.end() );
+            new_mask.insert(new_mask.end(), it2, local_mask.end());
         }
         else if (it2 == local_mask.end())
         {
-            new_mask.insert( new_mask.end(), it1, mask.end() );
+            new_mask.insert(new_mask.end(), it1, mask.end());
         }
 
         mask.swap(new_mask);
     }
-    
-    is_valid = !mask.empty();
 
+    is_valid = !mask.empty();
 
     if (is_valid && vertical_pixel == Physics_engine::GET_FIRST)
     {
@@ -764,19 +774,22 @@ bool Engine::alpha_box_collision_if_all_Y_force_entity_names(Bound2f box,
     }
     else if (is_valid && vertical_pixel == Physics_engine::GET_LAST)
     {
-        if (mask.back().second < box.pMax.y) {
+        if (mask.back().second < box.pMax.y)
+        {
             max_collision_pixel = {box.pMin.x, box.pMax.y};
-        } else {
+        }
+        else
+        {
             max_collision_pixel = {box.pMin.x, mask.back().first};
         }
-        
-        //std::cout << "max_collision_pixel: "<< max_collision_pixel << "\n";
+
+        // std::cout << "max_collision_pixel: "<< max_collision_pixel << "\n";
     }
 
     // std::cout << "MASK: [ ";
     // for (auto p : mask)
     //     std::cout << "{"<< p.first << " , " << p.second << "} ";
-    // std::cout << "]\n"; 
+    // std::cout << "]\n";
 
     // std::cout << "box: "<< box.pMin.y << " , " << box.pMax.y << "\n";
 
@@ -1049,7 +1062,7 @@ void Engine::set_window_title(const std::string title)
 
 double Engine::get_delta_time()
 {
-    if(is_game_paused)
+    if (is_game_paused)
         return 0.0f;
     else
         return delta_time;
@@ -1064,7 +1077,6 @@ double Engine::get_delta_time_factor()
 {
     return delta_time_factor;
 }
-
 
 void Engine::set_is_game_paused(bool new_value)
 {
