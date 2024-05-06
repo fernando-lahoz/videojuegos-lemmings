@@ -1784,8 +1784,20 @@ public:
       break;
     }
 
-    // if (AI...) { // guardar en game_info, supongo
-      TileSpace(txt, map_ptr->bound2f(), map_entities, init_tiles, goal_tiles, death_tiles);
+
+    // Horrible things happening here. Don't read!
+    //if (game_info.get_ia()) {
+      TileSpace* tile_space = game_info.get_tile_space_pointer();
+      if (tile_space == nullptr)
+      {
+        tile_space = new TileSpace(txt, map_ptr->bound2f(), map_entities, init_tiles, goal_tiles, death_tiles);
+      }
+      else
+      {
+        delete tile_space;
+        tile_space = new TileSpace(txt, map_ptr->bound2f(), map_entities, init_tiles, goal_tiles, death_tiles);
+      }
+      game_info.set_tile_space_pointer(tile_space);   
     //}
   }
 };
