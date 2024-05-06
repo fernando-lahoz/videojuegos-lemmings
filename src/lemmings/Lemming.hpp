@@ -64,6 +64,9 @@ class Lemming : public Rigid_body
   bool build_anything = false;
   bool build_hit_builder = false;
 
+  int last_cheked_frame_basher = 0;
+  int frames_to_check_basher = 0;
+
   std::string get_type() { return type; }
 
   void restart_animation()
@@ -179,6 +182,8 @@ class Lemming : public Rigid_body
   {
     if (!is_bashing())
     {
+      last_cheked_frame_basher = -1;
+      frames_to_check_basher = 22;
       destroyed_map = false;
       restart_animation();
     }
@@ -560,7 +565,23 @@ public:
             }
           }
         }
-        if (current_frame == 3 || current_frame == 6 || current_frame == 19 || current_frame == 22)
+
+        if (last_cheked_frame_basher != current_frame)
+        {
+          last_cheked_frame_basher = current_frame;
+          if (frames_to_check_basher > 0)
+          {
+            frames_to_check_basher -= 1;
+            if (frames_to_check_basher > 0)
+              destroyed_map = false;
+          }
+        }
+        
+        if (frames_to_check_basher == 0 &&
+            ( current_frame == 3  ||
+              current_frame == 6  ||
+              current_frame == 19 ||
+              current_frame == 22 ))
         {
           if (!destroyed_map)
           {
@@ -573,11 +594,13 @@ public:
             destroyed_map = false;
           }
         }
+
+
         float hit_offset_down;
         EntityPtr hit_entity_down;
         Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.4)), Vector2f(0, 1));
         engine.intersect_ray(ray_down, get_entity_id(),
-                             {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset_down, hit_entity_down);
+                            {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset_down, hit_entity_down);
         if (hit_offset_down > diagonal.y * 0.5)
         {
           remove_skill(Utils::Lemming_Skills::BASH);

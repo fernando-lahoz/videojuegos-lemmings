@@ -60,6 +60,7 @@ public:
   {
     engine.set_window_icon("assets/icon.ico");
     game_info.set_window_size(engine);
+    engine.show_window();
 
     // Cargamos los efectos de sonido
     game_info.start_sound_assets(engine);

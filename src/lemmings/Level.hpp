@@ -25,6 +25,8 @@
 
 #include "lemmings/Game_info.hpp"
 
+#include "lemmings/AI/tile_space.hpp"
+
 class Level
 {
 private:
@@ -62,8 +64,24 @@ public:
 
     game_info.set_map_ptr(map_ptr);
     engine.get_game().create_entity(map_ptr);
-    engine.get_game().create_entity(std::make_shared<Door>(Utils::LEVEL_DOOR_POSITION[difficulty_number][level_number], engine, Utils::LEVEL_DOOR_TYPE[difficulty_number][level_number], 1.0f, level_number, game_info, difficulty_number));
+    auto door = std::make_shared<Door>(Utils::LEVEL_DOOR_POSITION[difficulty_number][level_number], engine, Utils::LEVEL_DOOR_TYPE[difficulty_number][level_number], 1.0f, level_number, game_info, difficulty_number);
+    engine.get_game().create_entity(door);
     engine.get_game().create_entity(std::make_shared<Gate>(Utils::LEVEL_GATE_POSITION[difficulty_number][level_number], engine, gate_type, Utils::LEVEL_GATE_TIME_ANIMATION[gate_type], game_info));
+    
+    
+    auto spawn_pos = door->calculate_spawn_position(Vector2f(40, 40));
+    auto gate_pos = Utils::LEVEL_GATE_POSITION[difficulty_number][level_number];
+
+    std::vector<Bound2f> init_tiles = { // Ajustar a valor real donde aparece el lemming
+      Bound2f({spawn_pos.x, spawn_pos.y}, {spawn_pos.x + 40, spawn_pos.y + 40})
+    };
+    std::vector<Bound2f> goal_tiles = { // Ajustar a valor real donde aparece el lemming
+      Bound2f({gate_pos.x + 41, gate_pos.y + 84}, {gate_pos.x + 41 + 6, gate_pos.y + 84 + 20})
+    };
+
+    std::vector<Bound2f> death_tiles;
+    std::vector<Entity*> map_entities;
+    
     switch (difficulty_number)
     {
     case 0:
@@ -98,7 +116,8 @@ public:
       }
       case 4:
       {
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 0), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap"));
+        auto map_elem_0 = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 0), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_2.png"), engine, "MAP", "BkgMap");
+        engine.get_game().create_entity(map_elem_0);
 
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1022, 250.847, 299), 1.5, engine, 2, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1213, 250.847, 299), 1.5, engine, 2, 0.4f, game_info));
@@ -106,8 +125,10 @@ public:
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1595, 250.847, 299), 1.5, engine, 2, 0.4f, game_info));
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1786, 250.847, 299), 1.5, engine, 2, 0.4f, game_info));
 
-        engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(1096, 292.847, 100), Vector2f(876, 29), engine));
-
+        auto death_trigger_0 = std::make_shared<Liquid_trigger>(Point3f(1096, 292.847, 100), Vector2f(876, 29), engine);
+        engine.get_game().create_entity(death_trigger_0);
+        death_tiles.push_back(death_trigger_0->bound2f());
+        
         break;
       }
       case 5:
@@ -121,7 +142,6 @@ public:
         engine.get_game().create_entity(std::make_shared<Liquid>(Point3f(1261, 249, 302), 1, engine, 0, 0.4f, game_info));
 
         engine.get_game().create_entity(std::make_shared<Liquid_trigger>(Point3f(995, 289.847, 100), Vector2f(359, 30), engine));
-
         break;
       }
       case 6:
@@ -237,9 +257,13 @@ public:
       }
       case 11:
       {
-        engine.get_game().create_entity(std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap"));
-        engine.get_game().create_entity(std::make_shared<Directional_wall>(Point3f(1416.76, 112.478, 301), Vector2f(192, 160), engine, 0, game_info));
+        auto map_entity_0 = std::make_shared<Rigid_body>(Point3f(-(txt.get_width()) + 3168 / 2, 0, 300), Vector2f(txt.get_width() * 2, txt.get_height() * 2), engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + "_metal.png"), engine, "METAL", "BkgMap");
+        auto map_entity_1 =  std::make_shared<Directional_wall>(Point3f(1416.76, 112.478, 301), Vector2f(192, 160), engine, 0, game_info);
+        engine.get_game().create_entity(map_entity_0);
+        engine.get_game().create_entity(map_entity_1);
 
+        map_entities.push_back(map_entity_0.get());
+        map_entities.push_back(map_entity_1.get());
         break;
       }
       case 12:
@@ -1759,5 +1783,9 @@ public:
     default:
       break;
     }
+
+    // if (AI...) { // guardar en game_info, supongo
+      TileSpace(txt, map_ptr->bound2f(), map_entities, init_tiles, goal_tiles, death_tiles);
+    //}
   }
 };

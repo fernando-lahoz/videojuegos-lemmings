@@ -113,6 +113,7 @@ public:
     // The event will be sent with this id
     int preload_textures(const std::vector<std::string>& paths);
 
+    void show_window();
     void set_window_icon(const std::string& path);
     void set_fullscreen();
     void set_windowmode();

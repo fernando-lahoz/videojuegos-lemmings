@@ -12,18 +12,6 @@
 class AI_autoplay
 {
 public:
-    enum class TILE
-    {
-        EMPTY,
-        DIRT,
-        INIT,
-        GOAL,
-        BRIDGE,
-        METAL,
-        DIRECTIONAL_RIGHT,
-        DIRECTIONAL_LEFT,
-        DEATH
-    };
 
     enum class DIRECTION
     {

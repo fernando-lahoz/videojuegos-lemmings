@@ -132,7 +132,11 @@ public:
 
     inline void set_window_size(Vector2i size)
     {
+        Vector2i prev_size, position;
+        SDL_GetWindowSize(window, &prev_size.x, &prev_size.y);
+        SDL_GetWindowPosition(window, &position.x, &position.y);
         SDL_SetWindowSize(window, size.x, size.y);
+        SDL_SetWindowPosition(window, position.x + (prev_size.x - size.x) / 2, position.y + (prev_size.y - size.y) / 2);
     }
 
     inline Vector2i get_window_size()
@@ -145,6 +149,12 @@ public:
     inline void set_window_title(const std::string &title)
     {
         SDL_SetWindowTitle(window, title.c_str());
+    }
+
+    inline void show_window()
+    {
+        SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+        SDL_ShowWindow(window);
     }
 
 };

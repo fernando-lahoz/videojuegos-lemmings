@@ -1012,6 +1012,11 @@ int Engine::preload_textures(const std::vector<std::string> &paths)
     return id;
 }
 
+void Engine::show_window()
+{
+    renderer->show_window();
+}
+
 void Engine::set_window_icon(const std::string &path)
 {
     renderer->set_window_icon(path);
