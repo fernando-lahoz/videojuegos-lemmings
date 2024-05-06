@@ -85,7 +85,8 @@ public:
         TILE tile;
 
         int8_t _random_color = 0;
-        bool visited = false;
+        bool _visited:1 = false;
+        bool _deleted:1 = false;
     };
 
 private:
@@ -94,12 +95,16 @@ private:
 
     void spaguetti_cooking(const std::vector<TILE>& tile_buffer, Point2<std::size_t> dim);
 
-    void coalesce();
+    void pile_up(int height);
+
+    void chop(int width);
 
 public:
+
+    TileSpace(const TileSpace& other) = delete;
+    TileSpace(TileSpace&& other) = delete;
     
     TileSpace() = default;
-
     
     TileSpace(const Texture& texture, const Bound2f& map_global_pos,
                      const std::vector<Entity*>& map_entities,
@@ -236,8 +241,6 @@ void TileSpace::add_entities_to_matrix(std::vector<TILE>& tile_buffer,
 
 void TileSpace::spaguetti_cooking(const std::vector<TILE>& tile_buffer, Point2<std::size_t> dim)
 {
-    int counter_box = 0;
-
     std::vector<Box*> prev_row_boxes;
 
     TILE now_searching = TILE::NONE;
@@ -310,7 +313,7 @@ void TileSpace::spaguetti_cooking(const std::vector<TILE>& tile_buffer, Point2<s
     }
 }
 
-void TileSpace::coalesce()
+void TileSpace::pile_up(int height)
 {
     std::stack<Box*> box_stack;
 
@@ -337,9 +340,9 @@ void TileSpace::coalesce()
             box = box_stack.top();
             box_stack.pop();
 
-            if (box->visited)
+            if (box->_visited)
                 continue;
-            box->visited = true;
+            box->_visited = true;
 
             Box *box_to_mix = nullptr;
             do
@@ -398,7 +401,11 @@ void TileSpace::coalesce()
                                 });
                     box_collection.erase(past_end, box_collection.end());
                 }
-            } while (box_to_mix != nullptr);
+            } while (box_to_mix != nullptr &&
+                    (box->pixel_box.diagonal().y < height ||
+                     ( box->tile == TILE::INIT  ||
+                       box->tile == TILE::DEATH ||
+                       box->tile == TILE::GOAL )));
 
             for (Box *lower : box->down)
             {
@@ -424,6 +431,153 @@ void TileSpace::coalesce()
     }
 }
 
+void TileSpace::chop(int width)
+{
+    std::vector<int> new_boxes_width;
+    std::vector<Box*> new_boxes;
+    std::vector<Box*> new_boxes_to_add_to_buffer;
+    new_boxes.reserve(width);
+
+    for (auto& ptr : box_collection)
+    {
+        Box *box = ptr.get();
+
+        int box_width = box->pixel_box.diagonal().x;
+
+        if (box_width <= width ||
+            ( box->tile == TILE::INIT  ||
+              box->tile == TILE::DEATH ||
+              box->tile == TILE::GOAL ))
+        {
+            box->_deleted = false;
+            continue;
+        }   
+
+        int num_boxes = box_width / width;
+        int remaining = box_width % width;
+
+
+        new_boxes.resize(num_boxes);
+        new_boxes_width.resize(num_boxes);
+        std::fill(new_boxes_width.begin(), new_boxes_width.end(), width);
+        
+        while (remaining > 0)
+        {
+            for (int& w : new_boxes_width)
+            {
+                if (remaining == 0)
+                    break;
+                w += 1;
+                remaining -= 1;
+            }
+        }
+
+        for (Box *neighbour : box->up)
+        {
+            auto past_end = std::remove(neighbour->down.begin(), neighbour->down.end(), box);
+            neighbour->down.erase(past_end, neighbour->down.end());
+        }
+        for (Box *neighbour : box->down)
+        {
+            auto past_end = std::remove(neighbour->up.begin(), neighbour->up.end(), box);
+            neighbour->up.erase(past_end, neighbour->up.end());
+        }
+        for (Box *neighbour : box->left)
+        {
+            auto past_end = std::remove(neighbour->right.begin(), neighbour->right.end(), box);
+            neighbour->right.erase(past_end, neighbour->right.end());
+        }
+        for (Box *neighbour : box->right)
+        {
+            auto past_end = std::remove(neighbour->left.begin(), neighbour->left.end(), box);
+            neighbour->left.erase(past_end, neighbour->left.end());
+        }
+       
+        int acummulated_width = 0;
+
+        for (int i = 0; i < num_boxes; i++)
+        {
+            new_boxes[i] = new Box();
+            new_boxes[i]->tile = box->tile;
+
+            // Dim
+            new_boxes[i]->pixel_box.pMin.x = box->pixel_box.pMin.x + acummulated_width;
+            new_boxes[i]->pixel_box.pMax.x = new_boxes[i]->pixel_box.pMin.x + new_boxes_width[i];
+            new_boxes[i]->pixel_box.pMin.y = box->pixel_box.pMin.y;
+            new_boxes[i]->pixel_box.pMax.y = box->pixel_box.pMax.y;
+            acummulated_width += new_boxes_width[i];
+
+            // Left neighbours
+            if (i == 0) {
+                new_boxes[i]->left = std::move(box->left);
+                for (Box *neighbour : new_boxes[i]->left)
+                {
+                    neighbour->right.push_back(new_boxes[i]);
+                }
+            } else {
+                new_boxes[i]->left = {new_boxes[i - 1]};
+                new_boxes[i - 1]->right = {new_boxes[i]};
+            }
+            
+            // Right neighbours
+            if (i == num_boxes - 1) {
+                new_boxes[i]->right = std::move(box->right);
+                for (Box *neighbour : new_boxes[i]->right)
+                {
+                    neighbour->left.push_back(new_boxes[i]);
+                }
+            }
+
+            // Up neighbours
+            for (Box *upper_box : box->up)
+            {
+                const int a1 = upper_box->pixel_box.pMin.x;
+                const int b1 = upper_box->pixel_box.pMax.x;
+
+                const int a2 = new_boxes[i]->pixel_box.pMin.x;
+                const int b2 = new_boxes[i]->pixel_box.pMax.x;
+
+                if ((a1 <= a2 && b1 > a2) || (a2 <= a1 && b2 > a1))
+                {
+                    new_boxes[i]->up.push_back(upper_box);
+                    upper_box->down.push_back(new_boxes[i]);
+                }
+            }
+
+            // Down neighbours
+            for (Box *lower_box : box->down)
+            {
+                const int a1 = lower_box->pixel_box.pMin.x;
+                const int b1 = lower_box->pixel_box.pMax.x;
+
+                const int a2 = new_boxes[i]->pixel_box.pMin.x;
+                const int b2 = new_boxes[i]->pixel_box.pMax.x;
+
+                if ((a1 <= a2 && b1 > a2) || (a2 <= a1 && b2 > a1))
+                {
+                    new_boxes[i]->down.push_back(lower_box);
+                    lower_box->up.push_back(new_boxes[i]);
+                }
+            }
+        }
+
+        box->_deleted = true;
+        
+        new_boxes_to_add_to_buffer.insert(new_boxes_to_add_to_buffer.end(),
+                                          new_boxes.begin(), new_boxes.end());
+    }
+
+    auto past_end = std::remove_if(box_collection.begin(), box_collection.end(),
+                                    [](std::unique_ptr<Box>& ptr) {
+                                        return ptr->_deleted;
+                                    });
+    box_collection.erase(past_end, box_collection.end());
+
+    for (Box *new_box : new_boxes_to_add_to_buffer)
+    {
+        box_collection.emplace_back(new_box);
+    }
+}
 
 bool TileSpace::save_as_png(const std::string& path)
 {
@@ -693,9 +847,11 @@ TileSpace::TileSpace(const Texture& texture, const Bound2f& map_global_pos,
     auto [blurred_map, blurred_dim] = map_blurr(tile_buffer, standar_deviation, skewness, kernel_size, dim);
 
     spaguetti_cooking(blurred_map, blurred_dim);
-    coalesce();
+    pile_up(160);
+    chop(5);
+    //adopt_orphans(5); //[optional]
 
     // Uncomment to save as image
-    //save_as_png("tile_space_blurred.png");
-    //save_map_as_png("blurred_map_tiles.png", blurred_map, blurred_dim);
+    save_as_png("tile_space_blurred.png");
+    save_map_as_png("blurred_map_tiles.png", blurred_map, blurred_dim);
 }

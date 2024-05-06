@@ -10,6 +10,8 @@
 #include "memory/levelsInfo.hpp"
 #include "memory/volumeAndAspect.hpp"
 
+class TileSpace;
+
 class Game_info
 {
 private:
@@ -105,6 +107,8 @@ private:
   // volume
   VolumeAndAspect volumeAndAspect;
 
+  TileSpace* tile_space = nullptr;
+
 public:
   enum SoundAssets
   {
@@ -192,6 +196,17 @@ public:
     play_letsgo_sound = true;
     play_music = true;
     is_door_open = false;
+  }
+
+
+  TileSpace* get_tile_space_pointer()
+  {
+    return tile_space;
+  }
+
+  void set_tile_space_pointer(TileSpace* tile_space_ptr)
+  {
+    tile_space = tile_space_ptr;
   }
 
   int conversion_level_selected_ia()
