@@ -66,6 +66,18 @@ private:
     }
   }
 
+  void pop_exit(Engine &engine){
+    auto background = std::make_shared<Entity>(Point3f(10100, 100, 1), Vector2f(420, 200), engine.load_texture("assets/menu/background_green.png"), engine, "POP", "POP");
+      				engine.get_game().create_entity(background);
+    auto text = std::make_shared<Text_displayer>(Point3f(10300, 200, 1), Vector2f(8 * 1.25, 15 * 1.25), game_info, "center",
+                                              engine.load_texture("assets/font/font-red.png"),
+                                              Vector2i(16, 30), lemmings_font_map, "Are you sure?", engine,
+                                              "POP");
+    engine.get_game().create_entity(text);
+    auto button3 = std::make_shared<Menu_button>(Point3f(10334, 220, 2), Vector2f(125, 125), engine, game_info, keyboard, Utils::BUTTON_TYPE::SETTINGS);
+    engine.get_game().create_entity(button3);
+  }
+
   // create a const static member to store some strings in a 4x2 matrix
 
 public:
@@ -77,6 +89,7 @@ public:
   {
     engine.get_game().create_entity(std::make_shared<Menu_mouse_handler>(Point3f(10000, 0, 4), Vector2f(640, 400), engine, game_info, type));
 
+    game_info.set_actual_menu_page(type);
     if (type == Utils::TITLE)
     {
       engine.flush_texture_cache();
@@ -691,6 +704,29 @@ public:
 
       // Boton de vuelta al menu
       auto b_back = std::make_shared<Menu_button>(Point3f(10020, 340, 2), Vector2f(70, 37), engine, game_info, keyboard, Utils::BUTTON_TYPE::BACK_TO_CONFIG);
+      engine.get_game().create_entity(b_back);
+    }
+    else if (type == Utils::MENU_TYPE::EXIT_GAME){
+      auto background = std::make_shared<Entity>(Point3f(10000, 0, 3), Vector2f(640, 400), engine.load_texture("assets/menu/background_brown.png"), engine, "Background", "Background");
+      engine.get_game().create_entity(background);
+
+      auto text = std::make_shared<Text_displayer>(Point3f(10320, 115, 2), Vector2f(12, 22.5), game_info, "center",
+                                                   engine.load_texture("assets/font/font-red.png"),
+                                                   Vector2i(16, 30), lemmings_font_map, "You're about to leave the game", engine,
+                                                   "TEXT");
+      engine.get_game().create_entity(text);
+      text = std::make_shared<Text_displayer>(Point3f(10320, 150, 2), Vector2f(12, 22.5), game_info, "center",
+                                              engine.load_texture("assets/font/font-red.png"),
+                                              Vector2i(16, 30), lemmings_font_map, "If you're sure then press the button below", engine,
+                                              "TEXT");
+      engine.get_game().create_entity(text);
+
+      // Boton de reset de datos
+      auto b_reset = std::make_shared<Menu_button>(Point3f(10280, 215, 2), Vector2f(80, 80), engine, game_info, keyboard, Utils::BUTTON_TYPE::YES_EXIT);
+      engine.get_game().create_entity(b_reset);
+
+      // Boton de vuelta al menu
+      auto b_back = std::make_shared<Menu_button>(Point3f(10020, 340, 2), Vector2f(70, 37), engine, game_info, keyboard, Utils::BUTTON_TYPE::NO_EXIT);
       engine.get_game().create_entity(b_back);
     }
   }

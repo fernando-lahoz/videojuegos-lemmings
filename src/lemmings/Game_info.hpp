@@ -96,6 +96,11 @@ private:
 
   // ia
 
+  //exit?
+  bool question_exit = false;
+  int actual_menu_page = Utils::MENU_TYPE::TITLE;
+  int last_menu_page = Utils::MENU_TYPE::TITLE;
+
   // sound effects
   Sound SOUND_EFFECT[19];
 
@@ -288,6 +293,14 @@ public:
 
   void set_ia(bool ia_) { ia = ia_; }
   int get_ia() const { return ia; }
+
+  void set_actual_menu_page(int type){ actual_menu_page = type;}
+  void set_exit() { question_exit = true; last_menu_page = actual_menu_page; actual_menu_page = Utils::MENU_TYPE::EXIT_GAME; }
+  int get_exit() const { return question_exit; }
+  int get_actual_menu_page(){return actual_menu_page;}
+  int get_last_state_before_exit(){
+    return last_menu_page;
+  }
 
   void set_do_action(int action) { do_action = action; }
   int get_do_action() const { return do_action; }

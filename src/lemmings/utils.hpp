@@ -406,7 +406,8 @@ namespace Utils
     CONFIG = 5,         // Muestra configuración
     IA = 6,             // Selector de nivel de IA
     RESET_DATA = 7,     // Pantalla para confirmar reset
-    GAME_COMPLETE = 8   // Pantalla para confirmar reset
+    GAME_COMPLETE = 8,   // Pantalla para confirmar reset
+    EXIT_GAME = 9,
   };
   enum BUTTON_TYPE
   {
@@ -438,8 +439,9 @@ namespace Utils
     MAP_LEFT = 25,
     MAP_RIGHT = 26,
     BACK_TO_CONFIG = 27,
-    RESET_ALL_CONFIRM = 28
-
+    RESET_ALL_CONFIRM = 28,
+    YES_EXIT = 29,
+    NO_EXIT = 30,
   };
   enum ACTIONS
   {

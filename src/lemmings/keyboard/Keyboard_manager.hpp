@@ -64,8 +64,10 @@ public:
 			// En el caso de que estemos en el menú, el botón de escape cierra el juego.
 			if (game_info.get_actual_state() == Utils::STATE::MENU)
 			{
-				if (event == EngineIO::InputEvent::ESC)
-					engine.quit();
+				if (event == EngineIO::InputEvent::ESC){
+					std::cout << "Se ha pulsado ESC \n" << std::endl;
+					//engine.quit();
+				}
 				else
 				{
 

@@ -80,6 +80,19 @@ public:
         engine.quit();
         break;
 
+      case Utils::YES_EXIT:
+        engine.quit();
+        break;
+      
+      case Utils::NO_EXIT:
+        if (game_info.get_can_do_transition())
+        {
+          game_info.set_do_transition(true);
+          game_info.set_build_menu(game_info.get_last_state_before_exit(), 0, 0);
+          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        }
+        break;
+
       case Utils::SETTINGS:
         if (game_info.get_can_do_transition())
         {
