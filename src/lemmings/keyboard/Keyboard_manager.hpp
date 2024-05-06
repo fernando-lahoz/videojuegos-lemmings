@@ -166,6 +166,7 @@ public:
 			{
 				available[PAUSE] = false;
 				game_info.set_level_is_paused(!game_info.get_level_is_paused());
+				engine.set_is_game_paused(game_info.get_level_is_paused());
 			}
 		}
 	}

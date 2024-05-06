@@ -166,6 +166,7 @@ public:
       {
         // std::cout << (game_info.get_level_is_paused() ? "PAUSE\n" : "PLAY\n");
         game_info.set_level_is_paused(!game_info.get_level_is_paused());
+        engine.set_is_game_paused(game_info.get_level_is_paused());
       }
 
       if (is_changeable)

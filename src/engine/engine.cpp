@@ -1049,7 +1049,10 @@ void Engine::set_window_title(const std::string title)
 
 double Engine::get_delta_time()
 {
-    return delta_time;
+    if(is_game_paused)
+        return 0.0f;
+    else
+        return delta_time;
 }
 
 void Engine::set_delta_time_factor(double new_value)
@@ -1060,6 +1063,17 @@ void Engine::set_delta_time_factor(double new_value)
 double Engine::get_delta_time_factor()
 {
     return delta_time_factor;
+}
+
+
+void Engine::set_is_game_paused(bool new_value)
+{
+    is_game_paused = new_value;
+}
+
+bool Engine::get_is_game_paused()
+{
+    return is_game_paused;
 }
 
 void Engine::destroy_all_entities()
