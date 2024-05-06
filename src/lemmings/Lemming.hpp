@@ -547,6 +547,8 @@ public:
           position.x += 6 * direction;
         else if (current_frame == 22)
           position.x += 4 * direction;
+
+        bool hit_directional_wall_bad_direction = false;
         if (is_frame_destroy_alpha)
         {
           auto &entities = engine.get_entities();
@@ -562,6 +564,11 @@ public:
               std::shared_ptr<Directional_wall> dir_wall_ptr = std::dynamic_pointer_cast<Directional_wall>(entity);
               if (dir_wall_ptr->destroy_box_alpha(engine, box, direction))
                 destroyed_map = true;
+              else if (this->collides(entity))
+              {
+                hit_directional_wall_bad_direction = true;
+              }
+                
             }
           }
         }
@@ -572,12 +579,10 @@ public:
           if (frames_to_check_basher > 0)
           {
             frames_to_check_basher -= 1;
-            if (frames_to_check_basher > 0)
-              destroyed_map = false;
           }
         }
         
-        if (frames_to_check_basher == 0 &&
+        if ((frames_to_check_basher == 0) &&
             ( current_frame == 3  ||
               current_frame == 6  ||
               current_frame == 19 ||
@@ -594,6 +599,11 @@ public:
             destroyed_map = false;
           }
         }
+        else if (hit_directional_wall_bad_direction)
+        {
+          remove_skill(Utils::Lemming_Skills::BASH);
+          go_walk();
+        }
 
 
         float hit_offset_down;
@@ -601,6 +611,7 @@ public:
         Ray ray_down = Ray(local_to_world(Point2f(0.5, 0.4)), Vector2f(0, 1));
         engine.intersect_ray(ray_down, get_entity_id(),
                             {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset_down, hit_entity_down);
+        
         if (hit_offset_down > diagonal.y * 0.5)
         {
           remove_skill(Utils::Lemming_Skills::BASH);
