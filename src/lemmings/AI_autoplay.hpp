@@ -331,7 +331,9 @@ public:
     void apply_action(
         std::vector<ACTION> &l_actions,
         DIRECTION &direction,
-        uint2 &current_tile, ACTION action)
+        uint2 &current_tile, 
+        uint2 &destiny_tile, 
+        ACTION action)
     {
         int dir_offset = (direction == DIRECTION::LEFT) ? -1 : 1;
 
@@ -402,7 +404,9 @@ public:
 
     void undo_action(std::vector<ACTION> &l_actions,
                      DIRECTION &direction,
-                     uint2 &current_tile, ACTION action)
+                     uint2 &current_tile, 
+                     uint2 &destiny_tile,
+                     ACTION action)
     {
         int dir_offset = (direction == DIRECTION::LEFT) ? -1 : 1;
 
@@ -491,14 +495,20 @@ public:
 
         /**************** Mandatory actions *******************/
 
+        // Can-do-something functions return true if it can do the action 
+        //  in ANY of the possible tiles 
+
         if (can_fall(current_tile, direction))
         {
-            apply_action(actions, direction, current_tile, ACTION::FALL);
+            for (auto destiny_tile : tiles_under_current)
+            {
+                apply_action(actions, direction, current_tile, destiny_tile, ACTION::FALL);
 
-            if (add_step(current_tile, direction))
-                return true;
+                if (add_step(current_tile, direction))
+                    return true;
 
-            undo_action(actions, direction, current_tile, ACTION::FALL);
+                undo_action(actions, direction, current_tile, destiny_tile, ACTION::FALL);
+            }
 
             return false;
         }
@@ -506,22 +516,32 @@ public:
         // Has to go before swap direction
         if (can_dig_straight(current_tile, direction))
         {
-            apply_action(actions, direction, current_tile, ACTION::DIG_STRAIGHT);
+            auto tiles_to_side = (direction == DIRECTION::LEFT) ? tiles_to_left : tiles_to_right;
 
-            if (add_step(current_tile, direction))
-                return true;
+            for (auto destiny_tile : tiles_to_side)
+            {
+                apply_action(actions, direction, current_tile, destiny_tile, ACTION::DIG_STRAIGHT);
 
-            undo_action(actions, direction, current_tile, ACTION::DIG_STRAIGHT);
+                if (add_step(current_tile, direction))
+                    return true;
+
+                undo_action(actions, direction, current_tile, destiny_tile, ACTION::DIG_STRAIGHT);
+            }
         }
 
         if (can_swap_direction(current_tile, direction))
         {
-            apply_action(actions, direction, current_tile, ACTION::SWAP_DIRECTION);
+            auto tiles_to_side = (direction == DIRECTION::LEFT) ? tiles_to_left : tiles_to_right;
 
-            if (add_step(current_tile, direction))
-                return true;
+            for (auto destiny_tile : tiles_to_side)
+            {
+                apply_action(actions, direction, current_tile, destiny_tile, ACTION ::SWAP_DIRECTION);
 
-            undo_action(actions, direction, current_tile, ACTION::SWAP_DIRECTION);
+                if (add_step(current_tile, direction))
+                    return true;
+
+                undo_action(actions, direction, current_tile, destiny_tile, ACTION::SWAP_DIRECTION);
+            }
 
             return false;
         }
@@ -530,52 +550,79 @@ public:
 
         if (can_dig_down(current_tile, direction))
         {
-            apply_action(actions, direction, current_tile, ACTION::DIG_DOWN);
+            for (auto destiny_tile : tiles_under_current)
+            {
+                apply_action(actions, direction, current_tile, destiny_tile, ACTION::DIG_DOWN);
 
-            if (add_step(current_tile, direction))
-                return true;
+                if (add_step(current_tile, direction))
+                    return true;
 
-            undo_action(actions, direction, current_tile, ACTION::DIG_DOWN);
+                undo_action(actions, direction, current_tile, destiny_tile, ACTION::DIG_DOWN);
+            }
         }
 
         if (can_move_left(current_tile, direction))
         {
-            apply_action(actions, direction, current_tile, ACTION::MOVE_LEFT);
+            auto tiles_to_side = (direction == DIRECTION::LEFT) ? tiles_to_left : tiles_to_right;
 
-            if (add_step(current_tile, direction))
-                return true;
+            for (auto destiny_tile : tiles_to_side)
+            {
+                apply_action(actions, direction, current_tile, destiny_tile, ACTION::MOVE_LEFT);
 
-            undo_action(actions, direction, current_tile, ACTION::MOVE_LEFT);
+                if (add_step(current_tile, direction))
+                    return true;
+
+                undo_action(actions, direction, current_tile, destiny_tile, ACTION::MOVE_LEFT);
+            }
         }
 
         if (can_move_right(current_tile, direction))
         {
-            apply_action(actions, direction, current_tile, ACTION::MOVE_RIGHT);
+            auto tiles_to_side = (direction == DIRECTION::LEFT) ? tiles_to_left : tiles_to_right;
 
-            if (add_step(current_tile, direction))
-                return true;
+            for (auto destiny_tile : tiles_to_side)
+            {
+                apply_action(actions, direction, current_tile, destiny_tile, ACTION::MOVE_RIGHT);
 
-            undo_action(actions, direction, current_tile, ACTION::MOVE_RIGHT);
+                if (add_step(current_tile, direction))
+                    return true;
+
+                undo_action(actions, direction, current_tile, destiny_tile, ACTION::MOVE_RIGHT);
+            }
         }
 
         if (can_become_wall(current_tile, direction))
         {
-            apply_action(actions, direction, current_tile, ACTION::LEMMING_WALL);
+            // Aquí en realidad no tiene sentido probar varias,
+            //  solo comprobará la de más abajo (la de encima del suelo)
+            auto tiles_to_side = (direction == DIRECTION::LEFT) ? tiles_to_right : tiles_to_left;
 
-            if (add_step(current_tile, direction))
-                return true;
+            for (auto destiny_tile : tiles_to_side)
+            {
+                apply_action(actions, direction, current_tile, destiny_tile, ACTION::LEMMING_WALL);
 
-            undo_action(actions, direction, current_tile, ACTION::LEMMING_WALL);
+                if (add_step(current_tile, direction))
+                    return true;
+
+                undo_action(actions, direction, current_tile, destiny_tile, ACTION::LEMMING_WALL);
+            }
         }
 
         if (can_build(current_tile, direction))
         {
-            apply_action(actions, direction, current_tile, ACTION::BUILD);
+            // Aquí en realidad no tiene sentido probar varias,
+            //  solo comprobará la de más abajo (la de encima del suelo)
+            auto tiles_to_side = (direction == DIRECTION::LEFT) ? tiles_to_left : tiles_to_right;
 
-            if (add_step(current_tile, direction))
-                return true;
+            for (auto destiny_tile : tiles_under_current)
+            {
+                apply_action(actions, direction, current_tile, destiny_tile, ACTION::BUILD);
 
-            undo_action(actions, direction, current_tile, ACTION::BUILD);
+                if (add_step(current_tile, direction))
+                    return true;
+
+                undo_action(actions, direction, current_tile, destiny_tile, ACTION::BUILD);
+            }
         }
 
         return false;
