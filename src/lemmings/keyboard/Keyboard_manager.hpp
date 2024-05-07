@@ -59,7 +59,7 @@ public:
 
 	void manage_key_down(Engine &engine, EngineIO::InputEvent event)
 	{
-		if (!game_info.get_ia())
+		if (!game_info.get_ia() && !game_info.get_is_pop_exit_active())
 		{
 			// En el caso de que estemos en el menú, el botón de escape cierra el juego.
 			if (game_info.get_actual_state() == Utils::STATE::MENU)
@@ -171,7 +171,7 @@ public:
 				game_info.sub_spawn_velocity();
 
 			// Si es el botón de pausa, se pausa o reanuda el juego.
-			if (event == actionKey[PAUSE] && available[0])
+			if (event == actionKey[PAUSE] && available[0] && !game_info.get_is_pop_exit_active())
 			{
 				available[PAUSE] = false;
 				game_info.set_level_is_paused(!game_info.get_level_is_paused());
@@ -183,7 +183,7 @@ public:
 	void manage_key_up([[maybe_unused]] Engine &engine, EngineIO::InputEvent event)
 	{
 		// Gestiona que se puedan volver a pulsar los botones de habilidades.
-		if (!game_info.get_ia())
+		if (!game_info.get_ia() && !game_info.get_is_pop_exit_active())
 		{
 			for (int i = 0; i < NUM_CHECKABLE_KEYS; i++)
 				if (event == actionKey[i])

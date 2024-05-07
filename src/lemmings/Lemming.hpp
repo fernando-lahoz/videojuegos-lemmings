@@ -1515,7 +1515,7 @@ public:
     if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && !game_info.get_level_is_paused() && abs(mouse_pos.x - (position.x + diagonal.x / 2)) < 10 && abs(mouse_pos.y - (position.y + diagonal.y / 2)) < 10)
     {
       int skill = Utils::HUD_TO_SKILL[game_info.get_option_selected()];
-      if (skill != Utils::NO_SKILLS && game_info.get_action_possible() && !game_info.get_ia())
+      if (skill != Utils::NO_SKILLS && game_info.get_action_possible() && !game_info.get_ia() && !game_info.get_is_pop_exit_active())
       {
         bool res = add_skill(Utils::HUD_TO_SKILL[game_info.get_option_selected()]);
         if (res)
@@ -1544,7 +1544,7 @@ public:
       if (game_info.get_is_cursor_hover() == false && !((is_escaping() || is_crashing() || is_exploding() || is_drowning())))
       {
         game_info.set_cursor_txt("assets/cursor_hover.png", engine);
-        if (!game_info.get_ia())
+        if (!game_info.get_ia() && !game_info.get_is_pop_exit_active())
           game_info.set_is_cursor_hover(true);
       }
     }

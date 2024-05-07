@@ -443,6 +443,7 @@ namespace Utils
     YES_EXIT = 29,
     NO_EXIT = 30,
     NO_EXIT_GAME = 31,
+    GO_HOME = 32,
   };
   enum ACTIONS
   {

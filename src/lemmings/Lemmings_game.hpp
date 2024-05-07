@@ -89,27 +89,39 @@ private:
 
     auto x_b = 10320 - 100;
 
-    auto s_musica = std::make_shared<Menu_slider>(Point3f(x_b + 90, 74, 1), 86, Vector2f(12, 12), 0, engine, game_info);
+    auto b_sonido = std::make_shared<Entity>(Point3f(x_b, 91, 2), Vector2f(200, 80), engine.load_texture("assets/menu/menu_wide_volume.png"), engine, "Background", "Background");
+    b_sonido->set_class("POP");
+    engine.get_game().create_entity(b_sonido);
+
+    auto s_musica = std::make_shared<Menu_slider>(Point3f(x_b + 90, 130, 1), 86, Vector2f(12, 12), 0, engine, game_info);
+    s_musica->set_class("POP");
     engine.get_game().create_entity(s_musica);
-    auto s_efectos = std::make_shared<Menu_slider>(Point3f(x_b + 90, 90, 1), 86, Vector2f(12, 12), 1, engine, game_info);
+    auto s_efectos = std::make_shared<Menu_slider>(Point3f(x_b + 90, 146, 1), 86, Vector2f(12, 12), 1, engine, game_info);
+    s_efectos->set_class("POP");
     engine.get_game().create_entity(s_efectos);
-    text = std::make_shared<Text_displayer>(Point3f(x_b + 85, 80, 0), Vector2f(5, 10), game_info, "right",
+    text = std::make_shared<Text_displayer>(Point3f(x_b + 85, 136, 0), Vector2f(5, 10), game_info, "right",
                                             engine.load_texture("assets/font/font-cyan.png"),
                                             Vector2i(16, 30), lemmings_font_map, "Music", engine,
-                                            "TEXT");
-      engine.get_game().create_entity(text);
-      text = std::make_shared<Text_displayer>(Point3f(x_b + 85, 96, 0), Vector2f(5, 10), game_info, "right",
-                                              engine.load_texture("assets/font/font-cyan.png"),
-                                              Vector2i(16, 30), lemmings_font_map, "Effects", engine,
-                                              "TEXT");
+                                            "POP");
+    engine.get_game().create_entity(text);
+    text = std::make_shared<Text_displayer>(Point3f(x_b + 85, 152, 0), Vector2f(5, 10), game_info, "right",
+                                            engine.load_texture("assets/font/font-cyan.png"),
+                                            Vector2i(16, 30), lemmings_font_map, "Effects", engine,
+                                            "POP");
+    engine.get_game().create_entity(text);
 
-    // Boton de reset de datos
-    auto b_reset = std::make_shared<Menu_button>(Point3f(10280, 250, 2), Vector2f(60, 60), engine, game_info, keyboard, Utils::BUTTON_TYPE::YES_EXIT);
-    b_reset->set_class("POP");
-    engine.get_game().create_entity(b_reset);
+    // Botón volver a menú
+    auto b_home = std::make_shared<Menu_button>(Point3f(10300, 180, 2), Vector2f(60, 60), engine, game_info, keyboard, Utils::BUTTON_TYPE::GO_HOME);
+    b_home->set_class("POP");
+    engine.get_game().create_entity(b_home);
 
-    // Boton de vuelta al menu
-    auto b_back = std::make_shared<Menu_button>(Point3f(10175, 75, 2), Vector2f(35, 18.5), engine, game_info, keyboard, Utils::BUTTON_TYPE::NO_EXIT_GAME);
+    // Botón de salir juego
+    auto b_exit = std::make_shared<Menu_button>(Point3f(10300, 250, 2), Vector2f(60, 60), engine, game_info, keyboard, Utils::BUTTON_TYPE::YES_EXIT);
+    b_exit->set_class("POP");
+    engine.get_game().create_entity(b_exit);
+
+    // Botón de vuelta al menu
+    auto b_back = std::make_shared<Menu_button>(Point3f(10175, 65, 2), Vector2f(35, 18.5), engine, game_info, keyboard, Utils::BUTTON_TYPE::NO_EXIT_GAME);
     b_back->set_class("POP");
     engine.get_game().create_entity(b_back);
   }
@@ -127,10 +139,10 @@ private:
     if (game_info.get_delete_exit()){
       //eliminar pop
       delete_exit(engine);
-      game_info.set_level_is_paused(false);
-      engine.set_is_game_paused(false);
       std::cout << "Eliminando pop exit\n";
       game_info.pop_exit_eliminado();
+      game_info.set_level_is_paused(false);
+      engine.set_is_game_paused(false);
     }
   }
 
