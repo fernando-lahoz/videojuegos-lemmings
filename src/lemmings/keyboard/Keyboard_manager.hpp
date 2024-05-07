@@ -80,6 +80,13 @@ public:
 				}
 			}
 
+			if (game_info.get_actual_state() == Utils::STATE::GAME){
+				if (event == EngineIO::InputEvent::ESC){
+					std::cout << "Se ha pulsado ESC en GAME\n" << std::endl;
+					game_info.set_pop_exit();
+					//engine.quit();
+				}
+			}
 			// En el caso de que estemos en el juego, primero se comprueba el botón que se ha pulsado.
 			// Si es un botón de habilidad, se selecciona la habilidad correspondiente.
 			for (int i = ABILITY_1; i < NUM_CHECKABLE_KEYS; i++)

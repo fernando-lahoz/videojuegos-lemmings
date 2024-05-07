@@ -16,6 +16,7 @@
 #include "lemmings/screen/Screen_manager.hpp"
 #include "lemmings/keyboard/Keyboard_manager.hpp"
 #include "lemmings/AI_autoplay.hpp"
+#include "lemmings/menu/Menu_slider.hpp"
 
 class Lemmings_game : public Game
 {
@@ -27,6 +28,111 @@ private:
   AI_autoplay ai;
   std::vector<std::shared_ptr<Lemming>> lemmings;
   EntityPtr map;
+
+  static Point2i lemmings_font_map(char c)
+  {
+    if (c >= 'A' && c <= 'M')
+      return {(c - 'A'), 0};
+    else if (c >= 'N' && c <= 'Z')
+      return {(c - 'N'), 1};
+    else if (c >= 'a' && c <= 'm')
+      return {(c - 'a'), 2};
+    else if (c >= 'n' && c <= 'z')
+      return {(c - 'n'), 3};
+    else if (c >= '0' && c <= '9')
+      return {(c - '0'), 4};
+    else
+    {
+      switch (c)
+      {
+      case '.':
+        return {0, 5};
+      case '(':
+        return {1, 5};
+      case ')':
+        return {2, 5};
+      case '\'':
+        return {3, 5};
+      case '!':
+        return {4, 5};
+      case '%':
+        return {5, 5};
+      case '-':
+        return {6, 5};
+      default:
+        return {12, 5}; // white space
+      }
+    }
+  }
+  
+  void delete_exit(Engine &engine){
+
+    auto entities = engine.get_entities();
+    for (auto &entity : entities){
+      if(entity->get_class() == "POP"){
+        entity->destroy();
+      }
+    }
+  }
+
+  void pop_up_menu_in_game(Engine &engine){
+    auto background = std::make_shared<Entity>(Point3f(10170, 50, 3), Vector2f(300, 300), engine.load_texture("assets/menu/background_brown.png"), engine, "Background", "Background");
+    background->set_class("POP");
+
+    engine.get_game().create_entity(background);
+
+    auto text = std::make_shared<Text_displayer>(Point3f(10320, 70, 2), Vector2f(12, 22.5), game_info, "center",
+                                                  engine.load_texture("assets/font/font-red.png"),
+                                                  Vector2i(16, 30), lemmings_font_map, "MENU", engine,
+                                                  "POP");
+    engine.get_game().create_entity(text);
+
+    auto x_b = 10320 - 100;
+
+    auto s_musica = std::make_shared<Menu_slider>(Point3f(x_b + 90, 74, 1), 86, Vector2f(12, 12), 0, engine, game_info);
+    engine.get_game().create_entity(s_musica);
+    auto s_efectos = std::make_shared<Menu_slider>(Point3f(x_b + 90, 90, 1), 86, Vector2f(12, 12), 1, engine, game_info);
+    engine.get_game().create_entity(s_efectos);
+    text = std::make_shared<Text_displayer>(Point3f(x_b + 85, 80, 0), Vector2f(5, 10), game_info, "right",
+                                            engine.load_texture("assets/font/font-cyan.png"),
+                                            Vector2i(16, 30), lemmings_font_map, "Music", engine,
+                                            "TEXT");
+      engine.get_game().create_entity(text);
+      text = std::make_shared<Text_displayer>(Point3f(x_b + 85, 96, 0), Vector2f(5, 10), game_info, "right",
+                                              engine.load_texture("assets/font/font-cyan.png"),
+                                              Vector2i(16, 30), lemmings_font_map, "Effects", engine,
+                                              "TEXT");
+
+    // Boton de reset de datos
+    auto b_reset = std::make_shared<Menu_button>(Point3f(10280, 250, 2), Vector2f(60, 60), engine, game_info, keyboard, Utils::BUTTON_TYPE::YES_EXIT);
+    b_reset->set_class("POP");
+    engine.get_game().create_entity(b_reset);
+
+    // Boton de vuelta al menu
+    auto b_back = std::make_shared<Menu_button>(Point3f(10175, 75, 2), Vector2f(35, 18.5), engine, game_info, keyboard, Utils::BUTTON_TYPE::NO_EXIT_GAME);
+    b_back->set_class("POP");
+    engine.get_game().create_entity(b_back);
+  }
+
+
+  void create_pop_up_exit(Engine &engine){
+    if (game_info.get_pop_exit()){
+      //crear pop
+      game_info.set_level_is_paused(true);
+      engine.set_is_game_paused(true);
+      pop_up_menu_in_game(engine);
+      std::cout << "Creando pop exit\n";
+      game_info.pop_exit_creado();
+    }
+    if (game_info.get_delete_exit()){
+      //eliminar pop
+      delete_exit(engine);
+      game_info.set_level_is_paused(false);
+      engine.set_is_game_paused(false);
+      std::cout << "Eliminando pop exit\n";
+      game_info.pop_exit_eliminado();
+    }
+  }
 
 public:
   Lemmings_game()
@@ -131,6 +237,7 @@ public:
   void on_loop_start(Engine &engine) override
   {
     ai.update_execution(engine, game_info, map, lemmings);
+    create_pop_up_exit(engine);
     // std::cout << engine.get_delta_time() << std::endl;
     screen.update_game(engine);
   }

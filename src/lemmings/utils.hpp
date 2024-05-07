@@ -442,6 +442,7 @@ namespace Utils
     RESET_ALL_CONFIRM = 28,
     YES_EXIT = 29,
     NO_EXIT = 30,
+    NO_EXIT_GAME = 31,
   };
   enum ACTIONS
   {

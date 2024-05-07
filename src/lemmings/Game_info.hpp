@@ -101,6 +101,9 @@ private:
   int actual_menu_page = Utils::MENU_TYPE::TITLE;
   int last_menu_page = Utils::MENU_TYPE::TITLE;
 
+  bool crear_pop_exit = false;
+  bool eliminar_pop_exit = false;
+
   // sound effects
   Sound SOUND_EFFECT[19];
 
@@ -296,6 +299,12 @@ public:
 
   void set_actual_menu_page(int type){ actual_menu_page = type;}
   void set_exit() { question_exit = true; last_menu_page = actual_menu_page; actual_menu_page = Utils::MENU_TYPE::EXIT_GAME; }
+  void set_pop_exit(){ crear_pop_exit = true; eliminar_pop_exit =false;}
+  void pop_exit_creado(){ crear_pop_exit = false;}
+  void set_delete_exit(){ crear_pop_exit = false; eliminar_pop_exit = true;}
+  void pop_exit_eliminado(){ eliminar_pop_exit = false;}
+  bool get_pop_exit(){return crear_pop_exit;}
+  bool get_delete_exit(){return eliminar_pop_exit;}
   int get_exit() const { return question_exit; }
   int get_actual_menu_page(){return actual_menu_page;}
   int get_last_state_before_exit(){

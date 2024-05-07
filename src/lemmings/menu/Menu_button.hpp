@@ -93,6 +93,10 @@ public:
         }
         break;
 
+      case Utils::NO_EXIT_GAME:
+        game_info.set_delete_exit();
+        break;
+
       case Utils::SETTINGS:
         if (game_info.get_can_do_transition())
         {
