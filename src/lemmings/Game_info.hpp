@@ -96,7 +96,7 @@ private:
 
   // ia
 
-  //exit?
+  // exit?
   bool question_exit = false;
   int actual_menu_page = Utils::MENU_TYPE::TITLE;
   int last_menu_page = Utils::MENU_TYPE::TITLE;
@@ -115,7 +115,7 @@ private:
   // volume
   VolumeAndAspect volumeAndAspect;
 
-  TileSpace* tile_space = nullptr;
+  TileSpace *tile_space = nullptr;
 
 public:
   enum SoundAssets
@@ -206,13 +206,12 @@ public:
     is_door_open = false;
   }
 
-
-  TileSpace* get_tile_space_pointer()
+  TileSpace *get_tile_space_pointer()
   {
     return tile_space;
   }
 
-  void set_tile_space_pointer(TileSpace* tile_space_ptr)
+  void set_tile_space_pointer(TileSpace *tile_space_ptr)
   {
     tile_space = tile_space_ptr;
   }
@@ -297,17 +296,31 @@ public:
   void set_ia(bool ia_) { ia = ia_; }
   int get_ia() const { return ia; }
 
-  void set_actual_menu_page(int type){ actual_menu_page = type;}
-  void set_exit() { question_exit = true; last_menu_page = actual_menu_page; actual_menu_page = Utils::MENU_TYPE::EXIT_GAME; }
-  void set_pop_exit(){ crear_pop_exit = true; eliminar_pop_exit =false;}
-  void pop_exit_creado(){ crear_pop_exit = false;}
-  void set_delete_exit(){ crear_pop_exit = false; eliminar_pop_exit = true;}
-  void pop_exit_eliminado(){ eliminar_pop_exit = false;}
-  bool get_pop_exit(){return crear_pop_exit;}
-  bool get_delete_exit(){return eliminar_pop_exit;}
+  void set_actual_menu_page(int type) { actual_menu_page = type; }
+  void set_exit()
+  {
+    question_exit = true;
+    last_menu_page = actual_menu_page;
+    actual_menu_page = Utils::MENU_TYPE::EXIT_GAME;
+  }
+  void set_pop_exit()
+  {
+    crear_pop_exit = true;
+    eliminar_pop_exit = false;
+  }
+  void pop_exit_creado() { crear_pop_exit = false; }
+  void set_delete_exit()
+  {
+    crear_pop_exit = false;
+    eliminar_pop_exit = true;
+  }
+  void pop_exit_eliminado() { eliminar_pop_exit = false; }
+  bool get_pop_exit() { return crear_pop_exit; }
+  bool get_delete_exit() { return eliminar_pop_exit; }
   int get_exit() const { return question_exit; }
-  int get_actual_menu_page(){return actual_menu_page;}
-  int get_last_state_before_exit(){
+  int get_actual_menu_page() { return actual_menu_page; }
+  int get_last_state_before_exit()
+  {
     return last_menu_page;
   }
 
@@ -410,10 +423,11 @@ public:
       return difficulty_selected;
   }
 
-  void add_game_speed() { game_speed = math::min(game_speed + 0.5, 2); }
+  void add_game_speed() { game_speed = math::min(game_speed + 0.5, 2.5); }
   void sub_game_speed() { game_speed = math::max(game_speed - 0.5, 0.5); }
   float get_game_speed() const { return game_speed; }
-  int get_game_speed_hud() const { return game_speed * 2; }
+  int get_game_speed_hud() const { return game_speed; }
+  int get_game_speed_hud2() const { return int(game_speed * 10) % 10; }
 
   void add_spawned_lemmings() { spawned_lemmings++; }
   void set_spawned_lemmings(int new_value) { spawned_lemmings = new_value; }

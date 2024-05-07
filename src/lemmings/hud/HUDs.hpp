@@ -214,12 +214,25 @@ public:
             engine,                          // Instancia de Engine
             Utils::TEXT_TYPE::SKILL_COUNTER, // text_type
             1,                               // maxDigits
-            10017,                           // startX
+            10009.7,                         // startX
             -146,                            // startY
             7,                               // digitWidth
             16,                              // digitHeight
             1,                               // paddingX
             &Game_info::get_game_speed_hud   // Función miembro de Game_info
+        );
+
+        Dynamic_value_display display_game_speed2(
+            game_info,                       // Referencia a Game_info
+            engine,                          // Instancia de Engine
+            Utils::TEXT_TYPE::SKILL_COUNTER, // text_type
+            1,                               // maxDigits
+            10019.7,                         // startX
+            -146,                            // startY
+            7,                               // digitWidth
+            16,                              // digitHeight
+            1,                               // paddingX
+            &Game_info::get_game_speed_hud2  // Función miembro de Game_info
         );
 
         Dynamic_value_display display_spawn_velocity(
