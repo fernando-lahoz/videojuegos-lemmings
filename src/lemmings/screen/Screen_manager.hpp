@@ -73,7 +73,7 @@ public:
       std::cout << "GO TO LEVEL" << std::endl;
       go_level(engine, game_info.get_build_level(), game_info.get_build_difficulty());
     }
-    else if (game_info.get_do_action() == Utils::ACTIONS::NO_ACTION)
+    else if (game_info.get_do_action() == Utils::ACTIONS::NO_ACTION )
     {
       if (game_info.get_actual_state() == Utils::STATE::GAME)
       {
