@@ -852,6 +852,6 @@ TileSpace::TileSpace(const Texture& texture, const Bound2f& map_global_pos,
     //adopt_orphans(5); //[optional]
 
     // Uncomment to save as image
-    save_as_png("tile_space_blurred.png");
-    save_map_as_png("blurred_map_tiles.png", blurred_map, blurred_dim);
+    //save_as_png("tile_space_blurred.png");
+    //save_map_as_png("blurred_map_tiles.png", blurred_map, blurred_dim);
 }
