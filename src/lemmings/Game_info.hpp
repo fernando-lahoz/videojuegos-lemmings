@@ -106,7 +106,7 @@ private:
   bool is_pop_active = false;
 
   // sound effects
-  Sound SOUND_EFFECT[19];
+  Sound SOUND_EFFECT[27];
 
   bool play_open_sound = false;
   bool play_letsgo_sound = false;
@@ -123,6 +123,14 @@ public:
   {
     CHAIN_SOUND,
     CHANGE_OP_SOUND,
+    CHANGE_OP_SOUND1,
+    CHANGE_OP_SOUND2,
+    CHANGE_OP_SOUND3,
+    CHANGE_OP_SOUND4,
+    CHANGE_OP_SOUND5,
+    CHANGE_OP_SOUND6,
+    CHANGE_OP_SOUND7,
+    CHANGE_OP_SOUND8,
     CHINK_SOUND,
     DIE_SOUND,
     DOOR_SOUND,
@@ -147,6 +155,14 @@ public:
   {
     SOUND_EFFECT[CHAIN_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/chain.wav");
     SOUND_EFFECT[CHANGE_OP_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/changeop.wav");
+    SOUND_EFFECT[CHANGE_OP_SOUND1] = engine.get_sound_mixer().load_sound("assets/sounds/changeop1.wav");
+    SOUND_EFFECT[CHANGE_OP_SOUND2] = engine.get_sound_mixer().load_sound("assets/sounds/changeop2.wav");
+    SOUND_EFFECT[CHANGE_OP_SOUND3] = engine.get_sound_mixer().load_sound("assets/sounds/changeop3.wav");
+    SOUND_EFFECT[CHANGE_OP_SOUND4] = engine.get_sound_mixer().load_sound("assets/sounds/changeop4.wav");
+    SOUND_EFFECT[CHANGE_OP_SOUND5] = engine.get_sound_mixer().load_sound("assets/sounds/changeop5.wav");
+    SOUND_EFFECT[CHANGE_OP_SOUND6] = engine.get_sound_mixer().load_sound("assets/sounds/changeop6.wav");
+    SOUND_EFFECT[CHANGE_OP_SOUND7] = engine.get_sound_mixer().load_sound("assets/sounds/changeop7.wav");
+    SOUND_EFFECT[CHANGE_OP_SOUND8] = engine.get_sound_mixer().load_sound("assets/sounds/changeop8.wav");
     SOUND_EFFECT[CHINK_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/chink.wav");
     SOUND_EFFECT[DIE_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/die.wav");
     SOUND_EFFECT[DOOR_SOUND] = engine.get_sound_mixer().load_sound("assets/sounds/door.wav");
@@ -319,7 +335,7 @@ public:
   }
   void pop_exit_eliminado() { eliminar_pop_exit = false; }
   bool get_pop_exit() { return crear_pop_exit; }
-  bool get_is_pop_exit_active(){return is_pop_active;}
+  bool get_is_pop_exit_active() { return is_pop_active; }
   bool get_delete_exit() { return eliminar_pop_exit; }
   int get_exit() const { return question_exit; }
   int get_actual_menu_page() { return actual_menu_page; }

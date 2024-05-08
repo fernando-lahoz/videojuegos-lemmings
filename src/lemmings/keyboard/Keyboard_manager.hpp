@@ -64,9 +64,11 @@ public:
 			// En el caso de que estemos en el menú, el botón de escape cierra el juego.
 			if (game_info.get_actual_state() == Utils::STATE::MENU)
 			{
-				if (event == EngineIO::InputEvent::ESC){
-					std::cout << "Se ha pulsado ESC \n" << std::endl;
-					//engine.quit();
+				if (event == EngineIO::InputEvent::ESC)
+				{
+					std::cout << "Se ha pulsado ESC \n"
+										<< std::endl;
+					// engine.quit();
 				}
 				else
 				{
@@ -80,11 +82,14 @@ public:
 				}
 			}
 
-			if (game_info.get_actual_state() == Utils::STATE::GAME){
-				if (event == EngineIO::InputEvent::ESC){
-					std::cout << "Se ha pulsado ESC en GAME\n" << std::endl;
+			if (game_info.get_actual_state() == Utils::STATE::GAME)
+			{
+				if (event == EngineIO::InputEvent::ESC)
+				{
+					std::cout << "Se ha pulsado ESC en GAME\n"
+										<< std::endl;
 					game_info.set_pop_exit();
-					//engine.quit();
+					// engine.quit();
 				}
 			}
 			// En el caso de que estemos en el juego, primero se comprueba el botón que se ha pulsado.
@@ -95,7 +100,38 @@ public:
 				{
 					game_info.set_option_selected(i + 1);
 					available[i] = false;
-					engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND), game_info.get_effects_volume());
+					Sound sound;
+					switch (i)
+					{
+					case 1:
+						sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND1);
+						break;
+					case 2:
+						sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND2);
+						break;
+					case 3:
+						sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND3);
+						break;
+					case 4:
+						sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND4);
+						break;
+					case 5:
+						sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND5);
+						break;
+					case 6:
+						sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND6);
+						break;
+					case 7:
+						sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND7);
+						break;
+					case 8:
+						sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND8);
+						break;
+					default:
+						sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND);
+						break;
+					}
+					engine.get_sound_mixer().play_sound(sound, game_info.get_effects_volume());
 				}
 			}
 
@@ -104,14 +140,76 @@ public:
 			{
 				int new_option = (game_info.get_option_selected() - 1) % 8 + 2;
 				game_info.set_option_selected(new_option);
-				engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND), game_info.get_effects_volume());
+				Sound sound;
+				switch (new_option - 1)
+				{
+				case 1:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND1);
+					break;
+				case 2:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND2);
+					break;
+				case 3:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND3);
+					break;
+				case 4:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND4);
+					break;
+				case 5:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND5);
+					break;
+				case 6:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND6);
+					break;
+				case 7:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND7);
+					break;
+				case 8:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND8);
+					break;
+				default:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND);
+					break;
+				}
+				engine.get_sound_mixer().play_sound(sound, game_info.get_effects_volume());
 			}
 			if (event == actionKey[ABILITY_DOWN])
 			{
 				int new_option = game_info.get_option_selected() - 3;
 				new_option = new_option < 0 ? new_option + 10 : new_option + 2;
 				game_info.set_option_selected(new_option);
-				engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND), game_info.get_effects_volume());
+				Sound sound;
+				switch (new_option - 1)
+				{
+				case 1:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND1);
+					break;
+				case 2:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND2);
+					break;
+				case 3:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND3);
+					break;
+				case 4:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND4);
+					break;
+				case 5:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND5);
+					break;
+				case 6:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND6);
+					break;
+				case 7:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND7);
+					break;
+				case 8:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND8);
+					break;
+				default:
+					sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND);
+					break;
+				}
+				engine.get_sound_mixer().play_sound(sound, game_info.get_effects_volume());
 			}
 
 			// Si es el botón de destrucción total, se espera a que se mantenga el botón pulsado

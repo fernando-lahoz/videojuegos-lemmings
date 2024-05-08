@@ -52,7 +52,7 @@ public:
 
     void update_position(Engine &engine) override
     {
-        Float delta_time = engine.get_delta_time();
+        Float delta_time = engine.get_delta_time() / engine.get_delta_time_factor();
 
         if (!game_info.get_is_camera_stopped())
         {
@@ -89,7 +89,7 @@ public:
                     game_info.set_pos_camera(game_info.get_pos_camera() + 200 * delta_time);
                 }
             }
-            //std::cout << "Camera Position:" << game_info.get_pos_camera() << std::endl;
+            // std::cout << "Camera Position:" << game_info.get_pos_camera() << std::endl;
         }
 
         if (game_info.get_do_restart_camera())

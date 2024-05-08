@@ -8,7 +8,6 @@ CMakeUserPresets.json
 .project_name
 
 assets/music
-assets/sounds
 assets/video
 
 cmake_install.cmake

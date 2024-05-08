@@ -1200,7 +1200,10 @@ public:
           // std::cout << "COLLISION DOWN !\n";
           on_ground = true;
           if (distance_fall >= Utils::MAX_DISTANCE_FALL && !is_floating())
+          {
             go_crash();
+            position.y -= 2;
+          }
           else
           {
             // Lanzamos un rayo hacia abajo con el fin de saber cuanto se a metido en el suelo
@@ -1254,16 +1257,11 @@ public:
       go_drown();
     }
 
-    if (other->get_entity_name() == "Fire")
-    {
-      on_ground = true;
-      go_crash();
-    }
-
-    if (other->get_entity_name() == "Spinner" || other->get_entity_name() == "Flamethrower")
+    if (other->get_entity_name() == "Spinner" || other->get_entity_name() == "Flamethrower" || other->get_entity_name() == "Fire")
     {
       on_ground = true;
       destroy_lemming(engine);
+      engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::SoundAssets::DIE_SOUND), game_info.get_effects_volume());
     }
 
     if (other->get_entity_name() == "Chain")

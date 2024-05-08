@@ -93,7 +93,6 @@ public:
 
     if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && is_clickable /* && !(game_info.get_level_is_paused() && n != Utils::HUD_PAUSE)*/)
     {
-      // std::cout << "PULSADO: " << n << std::endl;
       if (is_selectable)
       {
         game_info.set_option_selected(n);
@@ -101,9 +100,38 @@ public:
         // Hacemos sonar el sonido de opcion seleccionada si la opcion no es reventar a todos en pedacitos
         if (n != Utils::HUD_ALL_EXPLODE)
         {
-
-          // FIXME: Dependiendo de la opcion elegida deberia sonar mas agudo o mas grave
-          engine.get_sound_mixer().play_sound(game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND), game_info.get_effects_volume());
+          Sound sound;
+          switch (n)
+          {
+          case 2:
+            sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND1);
+            break;
+          case 3:
+            sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND2);
+            break;
+          case 4:
+            sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND3);
+            break;
+          case 5:
+            sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND4);
+            break;
+          case 6:
+            sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND5);
+            break;
+          case 7:
+            sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND6);
+            break;
+          case 8:
+            sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND7);
+            break;
+          case 9:
+            sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND8);
+            break;
+          default:
+            sound = game_info.get_sound_asset(Game_info::CHANGE_OP_SOUND);
+            break;
+          }
+          engine.get_sound_mixer().play_sound(sound, game_info.get_effects_volume());
         }
       }
 
