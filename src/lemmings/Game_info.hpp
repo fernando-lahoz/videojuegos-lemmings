@@ -514,7 +514,7 @@ public:
 
   void set_option_selected(int option)
   {
-    if (ia)
+    if (ia || is_pop_active)
       option_selected = Utils::NO_OPTION_SELECTED;
     else
       option_selected = option;
@@ -547,7 +547,7 @@ public:
 
   void add_lemmings_hovered() { lemmings_hovered++; }
   void sub_lemmings_hovered() { lemmings_hovered--; }
-  int get_lemmings_hovered() const { return lemmings_hovered; }
+  int get_lemmings_hovered() const { if (ia || is_pop_active) return 0; else return lemmings_hovered; }
 
   void add_spawn_velocity()
   {

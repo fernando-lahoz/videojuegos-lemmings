@@ -91,7 +91,7 @@ public:
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override
   {
 
-    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && is_clickable /* && !(game_info.get_level_is_paused() && n != Utils::HUD_PAUSE)*/)
+    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && is_clickable  && !game_info.get_is_pop_exit_active() /* && !(game_info.get_level_is_paused() && n != Utils::HUD_PAUSE)*/)
     {
       if (is_selectable)
       {
