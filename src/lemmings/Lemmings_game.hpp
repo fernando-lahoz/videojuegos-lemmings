@@ -67,7 +67,12 @@ private:
 
   void delete_exit(Engine &engine)
   {
-
+    EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS];
+    game_info.get_conf_buttons(conf_buttons);
+    KeyBindings().setKeyBindings(conf_buttons); // Modificamos el fichero
+    keyboard.set_key_bindings();
+    game_info.set_volume_aspect(game_info.get_conf_var(0), game_info.get_conf_var(1), game_info.get_conf_var(2));
+    game_info.start_sound_assets(engine);
     auto entities = engine.get_entities();
     for (auto &entity : entities)
     {
@@ -77,6 +82,7 @@ private:
       }
     }
   }
+  
 
   void pop_up_menu_in_game(Engine &engine)
   {
@@ -87,6 +93,7 @@ private:
 
     auto x_b = 10320 - 100;
     auto y_b = 220;
+    game_info.set_config_screen();
 
     auto b_sonido = std::make_shared<Entity>(Point3f(x_b, y_b, 2), Vector2f(200, 80), engine.load_texture("assets/menu/menu_wide_volume.png"), engine, "Background", "Background");
     b_sonido->set_class("POP");
