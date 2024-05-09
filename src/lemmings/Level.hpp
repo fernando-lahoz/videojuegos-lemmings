@@ -48,6 +48,7 @@ public:
   void setup_level(Engine &engine, int level_number, int difficulty_number = 0)
   {
     hud.setupElements(engine);
+    engine.set_delta_time_factor(1.0);
     game_info.start_game_info(level_number, difficulty_number);
     txt = engine.load_texture(basic_path + std::to_string(difficulty_number) + "_" + std::to_string(level_number) + ".png");
     size_map_x = (0.713 / txt.get_height()) * txt.get_width();
