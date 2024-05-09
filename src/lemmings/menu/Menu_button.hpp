@@ -30,7 +30,7 @@ public:
       : Rigid_body(position, size, !_game_info.get_sound_effects() && _is_changeable ? _engine.load_texture("assets/menu/menu_button_" + std::to_string(_type + 1) + ".png") : _engine.load_texture(name_file(_type)), engine, "Menu Button"),
         type(_type), game_info(_game_info), engine(_engine), keyboard(_keyboard)
   {
-    //std::cout << "Type: " << _type << std::endl;
+    // std::cout << "Type: " << _type << std::endl;
     txt_on = engine.load_texture(name_file(_type));
     if (_is_changeable)
     {
@@ -45,165 +45,165 @@ public:
   {
     switch (button_type)
     {
-      case Utils::BACK:
-        if (game_info.get_build_menu() == Utils::MENU_TYPE::CONFIG)
-        {
-          EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS];
-          game_info.get_conf_buttons(conf_buttons);
-          KeyBindings().setKeyBindings(conf_buttons); // Modificamos el fichero
-          keyboard.set_key_bindings();
-          dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
-        }
-        game_info.menu_back();
-        break;
-
-      case Utils::PLAY:
-        if (game_info.get_can_do_transition())
-        {
-          game_info.set_do_transition(true);
-          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level_selected(), game_info.get_difficulty_selected());
-          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        }
-        break;
-
-      case Utils::PLAYER_SOLO:
-        if (game_info.get_can_do_transition())
-        {
-          game_info.set_do_transition(true);
-          game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_SELECTOR, 0, 0);
-          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        }
-        break;
-
-      case Utils::PLAYER_VS_IA:
-        if (game_info.get_can_do_transition())
-        {
-          game_info.set_do_transition(true);
-          game_info.set_build_menu(Utils::MENU_TYPE::IA, 0, 0);
-          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        }
-        break;
-
-      case Utils::EXIT:
-        engine.quit();
-        break;
-
-      case Utils::YES_EXIT:
-        engine.quit();
-        break;
-
-      case Utils::GO_HOME:
-        std::cout << "IR A HOME BOTON\n";
-        if (game_info.get_can_do_transition())
-        {
-          std::cout << "IR A HOME BOTON\n";
-          game_info.set_delete_exit();
-          game_info.set_do_transition(true);
-          game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
-          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        }
-        break;
-      
-      case Utils::NO_EXIT:
-        if (game_info.get_can_do_transition())
-        {
-          game_info.set_do_transition(true);
-          game_info.set_build_menu(game_info.get_last_state_before_exit(), 0, 0);
-          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        }
-        break;
-
-      case Utils::NO_EXIT_GAME:
-        game_info.set_delete_exit();
-        break;
-
-      case Utils::SETTINGS:
-        if (game_info.get_can_do_transition())
-        {
-          game_info.set_do_transition(true);
-          game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
-          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        }
-
-        // Guardamos en una variable el contenido de fichero de comfiguración
-        EngineIO::InputEvent aux[18];
-        KeyBindings().readKeyBindingsFile(aux); // Leemos fichero con valores asociados a los botones de partida
-        game_info.set_conf_buttons(aux);
-        break;
-
-      case Utils::RESET_KEYB:
-        game_info.set_default_keys();
+    case Utils::BACK:
+      if (game_info.get_build_menu() == Utils::MENU_TYPE::CONFIG)
+      {
         EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS];
         game_info.get_conf_buttons(conf_buttons);
         KeyBindings().setKeyBindings(conf_buttons); // Modificamos el fichero
         keyboard.set_key_bindings();
         dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
-        break;
+      }
+      game_info.menu_back();
+      break;
 
-      case Utils::RESET_ALL:
-        if (game_info.get_can_do_transition())
-        {
-          game_info.set_do_transition(true);
-          game_info.set_build_menu(Utils::MENU_TYPE::RESET_DATA, 0, 0);
-          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        }
-        break;
+    case Utils::PLAY:
+      if (game_info.get_can_do_transition())
+      {
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_INTRO, game_info.get_level_selected(), game_info.get_difficulty_selected());
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+      }
+      break;
 
-      case Utils::SAVE:
+    case Utils::PLAYER_SOLO:
+      if (game_info.get_can_do_transition())
+      {
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_SELECTOR, 0, 0);
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+      }
+      break;
+
+    case Utils::PLAYER_VS_IA:
+      if (game_info.get_can_do_transition())
+      {
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(Utils::MENU_TYPE::IA, 0, 0);
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+      }
+      break;
+
+    case Utils::EXIT:
+      engine.quit();
+      break;
+
+    case Utils::YES_EXIT:
+      engine.quit();
+      break;
+
+    case Utils::GO_HOME:
+      std::cout << "IR A HOME BOTON\n";
+      if (game_info.get_can_do_transition())
+      {
+        std::cout << "IR A HOME BOTON\n";
+        game_info.set_delete_exit();
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+      }
+      break;
+
+    case Utils::NO_EXIT:
+      if (game_info.get_can_do_transition())
+      {
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(game_info.get_last_state_before_exit(), game_info.get_level_selected(), game_info.get_difficulty_selected());
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+      }
+      break;
+
+    case Utils::NO_EXIT_GAME:
+      game_info.set_delete_exit();
+      break;
+
+    case Utils::SETTINGS:
+      if (game_info.get_can_do_transition())
+      {
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+      }
+
+      // Guardamos en una variable el contenido de fichero de comfiguración
+      EngineIO::InputEvent aux[18];
+      KeyBindings().readKeyBindingsFile(aux); // Leemos fichero con valores asociados a los botones de partida
+      game_info.set_conf_buttons(aux);
+      break;
+
+    case Utils::RESET_KEYB:
+      game_info.set_default_keys();
+      EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS];
+      game_info.get_conf_buttons(conf_buttons);
+      KeyBindings().setKeyBindings(conf_buttons); // Modificamos el fichero
+      keyboard.set_key_bindings();
+      dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
+      break;
+
+    case Utils::RESET_ALL:
+      if (game_info.get_can_do_transition())
+      {
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(Utils::MENU_TYPE::RESET_DATA, 0, 0);
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+      }
+      break;
+
+    case Utils::SAVE:
+      // Guardar configuración de botones actual
+      game_info.get_conf_buttons(conf_buttons);
+      KeyBindings().setKeyBindings(conf_buttons); // Modificamos el fichero
+      keyboard.set_key_bindings();                // Actualizamos botones de partida
+      // Actualiza teclas de movimiento de mapa en partida
+      dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
+      game_info.set_volume_aspect(game_info.get_conf_var(0), game_info.get_conf_var(1), game_info.get_conf_var(2));
+      game_info.set_window_size(engine);
+      std::cout << "CONFIGURACION GUARDADA" << std::endl;
+      game_info.menu_back();
+      break;
+
+    case Utils::BACK_TO_CONFIG:
+      if (game_info.get_can_do_transition())
+      {
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+      }
+      break;
+
+    case Utils::RESET_ALL_CONFIRM:
+      if (game_info.get_can_do_transition())
+      {
         // Guardar configuración de botones actual
-        game_info.get_conf_buttons(conf_buttons);
-        KeyBindings().setKeyBindings(conf_buttons); // Modificamos el fichero
-        keyboard.set_key_bindings(); // Actualizamos botones de partida
-        // Actualiza teclas de movimiento de mapa en partida
+        KeyBindings().setDefaultKeyBindings(conf_buttons);
+        keyboard.set_key_bindings();
         dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
-        game_info.set_volume_aspect(game_info.get_conf_var(0), game_info.get_conf_var(1), game_info.get_conf_var(2));
+        game_info.reset_levels_info();
+        game_info.set_volume_aspect(100, 100, 1);
         game_info.set_window_size(engine);
-        std::cout << "CONFIGURACION GUARDADA" << std::endl;
-        game_info.menu_back();
-        break;
+        game_info.set_do_transition(true);
+        game_info.set_build_menu(Utils::MENU_TYPE::INTRO, 0, 0);
+        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+      }
+      break;
 
-      case Utils::BACK_TO_CONFIG:
-        if (game_info.get_can_do_transition())
-        {
-          game_info.set_do_transition(true);
-          game_info.set_build_menu(Utils::MENU_TYPE::CONFIG, 0, 0);
-          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+    default:
+      if (button_type >= Utils::PAUSE && button_type <= Utils::MAP_RIGHT) // Gestión de teclas de modificación
+      {
+
+        if (button_type != game_info.get_last_button() || !game_info.get_is_button_conf())
+        { // Si no concuerda con el ultimo pulsado
+          // std::cout << "HABILITADO BOTON  " << button_type-9 << std::endl;
+          game_info.set_is_button_conf(true);
+          game_info.set_last_button(button_type);
         }
-        break;
-
-      case Utils::RESET_ALL_CONFIRM:
-        if (game_info.get_can_do_transition())
-        {
-          // Guardar configuración de botones actual
-          KeyBindings().setDefaultKeyBindings(conf_buttons);
-          keyboard.set_key_bindings();
-          dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
-          game_info.reset_levels_info();
-          game_info.set_volume_aspect(100, 100, 1);
-          game_info.set_window_size(engine);
-          game_info.set_do_transition(true);
-          game_info.set_build_menu(Utils::MENU_TYPE::INTRO, 0, 0);
-          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+        else
+        { // Si pulsamos dos veces seguida el mismo es como dejar de seleccionar el boton
+          // std::cout << "DESHABILITADO BOTON  " << button_type-9 << std::endl;
+          game_info.set_is_button_conf(false);
         }
-        break;
-
-      default:
-        if (button_type >= Utils::PAUSE && button_type <= Utils::MAP_RIGHT) // Gestión de teclas de modificación
-        {
-
-          if (button_type != game_info.get_last_button() || !game_info.get_is_button_conf())
-          { // Si no concuerda con el ultimo pulsado
-            // std::cout << "HABILITADO BOTON  " << button_type-9 << std::endl;
-            game_info.set_is_button_conf(true);
-            game_info.set_last_button(button_type);
-          }
-          else
-          { // Si pulsamos dos veces seguida el mismo es como dejar de seleccionar el boton
-            // std::cout << "DESHABILITADO BOTON  " << button_type-9 << std::endl;
-            game_info.set_is_button_conf(false);
-          }
-        }
-        break;
+      }
+      break;
     }
   }
 

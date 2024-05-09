@@ -28,7 +28,7 @@ private:
 
 public:
   HUD(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, std::string _path, int _n, bool _is_hovereable = false, bool _is_clickable = true, bool _is_changeable = false, bool _is_selectable = true)
-      : Rigid_body(position, size, engine.load_texture(_path + std::to_string(_n) + ".png"), engine, "HUD"), game_info(_game_info) //, HUDs &_huds
+      : Rigid_body(position, size, _n != Utils::HUD::HUD_POPUP ? engine.load_texture(_path + std::to_string(_n) + ".png") : engine.load_texture(_path + ".png"), engine, "HUD"), game_info(_game_info) //, HUDs &_huds
   {
     multi_pressed = false;
     is_hovereable = _is_hovereable;
@@ -38,11 +38,18 @@ public:
     is_cursor = false;
     path = _path;
     n = _n;
-    txt = engine.load_texture(_path + std::to_string(_n) + ".png");
+    if (_n != Utils::HUD::HUD_POPUP)
+    {
+      txt = engine.load_texture(_path + std::to_string(_n) + ".png");
+    }
+    else
+    {
+      txt = engine.load_texture(_path + ".png");
+    }
   }
 
   HUD(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, std::string _path, int _n, bool _is_hovereable, bool _is_clickable, bool _is_changeable, bool _is_selectable, bool _is_cursor)
-      : Rigid_body(position, size, engine.load_texture(_path + std::to_string(_n) + ".png"), engine, "HUD"), game_info(_game_info) //, HUDs &_huds
+      : Rigid_body(position, size, _n != Utils::HUD::HUD_POPUP ? engine.load_texture(_path + std::to_string(_n) + ".png") : engine.load_texture(_path + ".png"), engine, "HUD"), game_info(_game_info) //, HUDs &_huds
   {
     is_hovereable = _is_hovereable;
     is_clickable = _is_clickable;
@@ -51,7 +58,14 @@ public:
     is_cursor = _is_cursor;
     path = _path;
     n = _n;
-    txt = engine.load_texture(_path + std::to_string(_n) + ".png");
+    if (_n != Utils::HUD::HUD_POPUP)
+    {
+      txt = engine.load_texture(_path + std::to_string(_n) + ".png");
+    }
+    else
+    {
+      txt = engine.load_texture(_path + ".png");
+    }
     last_position = position.x;
   }
 
@@ -91,7 +105,18 @@ public:
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override
   {
 
-    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && is_clickable  && !game_info.get_is_pop_exit_active() /* && !(game_info.get_level_is_paused() && n != Utils::HUD_PAUSE)*/)
+    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && n == Utils::HUD_POPUP)
+    {
+      if (!game_info.get_is_pop_exit_active())
+      {
+        game_info.set_pop_exit();
+      }
+      else
+      {
+        game_info.set_delete_exit();
+      }
+    }
+    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && is_clickable && !game_info.get_is_pop_exit_active() /* && !(game_info.get_level_is_paused() && n != Utils::HUD_PAUSE)*/)
     {
       if (is_selectable)
       {
@@ -232,7 +257,15 @@ public:
     }
     if (event == EngineIO::InputEvent::MOUSE_HOVER && !game_info.get_level_is_paused())
     {
-      txt = engine.load_texture(path + std::to_string(n) + ".png");
+
+      if (n != Utils::HUD::HUD_POPUP)
+      {
+        txt = engine.load_texture(path + std::to_string(n) + ".png");
+      }
+      else
+      {
+        txt = engine.load_texture(path + ".png");
+      }
       set_active_texture(txt);
     }
   }
