@@ -67,12 +67,6 @@ private:
 
   void delete_exit(Engine &engine)
   {
-    EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS];
-    game_info.get_conf_buttons(conf_buttons);
-    KeyBindings().setKeyBindings(conf_buttons); // Modificamos el fichero
-    keyboard.set_key_bindings();
-    game_info.set_volume_aspect(game_info.get_conf_var(0), game_info.get_conf_var(1), game_info.get_conf_var(2));
-    game_info.start_sound_assets(engine);
     auto entities = engine.get_entities();
     for (auto &entity : entities)
     {

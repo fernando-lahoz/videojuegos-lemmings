@@ -206,12 +206,16 @@ public:
       }
       else if (game_info.get_actual_state() == Utils::STATE::MENU && game_info.get_actual_menu_page() != Utils::MENU_TYPE::EXIT_GAME)
       {
-        // std::cout << "EN MENU, SE ABRIRÁ POP EXIT\n";
-        game_info.set_do_transition(true);
-        game_info.set_exit();
-        game_info.set_build_menu(Utils::MENU_TYPE::EXIT_GAME, 0, 0);
-        game_info.set_do_action(Utils::ACTIONS::GO_MENU);
-        return;
+        if (!(game_info.get_build_menu() == Utils::MENU_TYPE::CONFIG && game_info.get_is_button_conf()))
+        {
+          // std::cout << "EN MENU, SE ABRIRÁ POP EXIT\n";
+          game_info.set_do_transition(true);
+          game_info.set_exit();
+          game_info.set_build_menu(Utils::MENU_TYPE::EXIT_GAME, 0, 0);
+          game_info.set_do_action(Utils::ACTIONS::GO_MENU);
+          return;
+        }
+        game_info.set_is_button_conf(false);
       }
     }
   }

@@ -87,7 +87,10 @@ public:
 
     void update_position(Engine &engine) override
     {
-        Float delta_time = engine.get_delta_time() / engine.get_delta_time_factor();
+
+        if (game_info.get_is_pop_exit_active()) return;
+
+        Float delta_time = engine.get_delta_time_raw() / engine.get_delta_time_factor();
 
         if (!game_info.get_is_camera_stopped())
         {

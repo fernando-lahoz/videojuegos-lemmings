@@ -1068,6 +1068,11 @@ double Engine::get_delta_time()
         return delta_time;
 }
 
+double Engine::get_delta_time_raw()
+{
+    return delta_time;
+}
+
 void Engine::set_delta_time_factor(double new_value)
 {
     delta_time_factor = new_value;

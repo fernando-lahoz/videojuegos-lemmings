@@ -678,7 +678,7 @@ public:
 
   void set_conf_buttons(EngineIO::InputEvent _conf_button, int idx)
   {
-    if (idx >= 0 && idx <= NUM_KEYBINDINGS)
+    if (idx >= 0 && idx <= NUM_KEYBINDINGS && _conf_button != EngineIO::InputEvent::ESC)
     {
       for (int i = 0; i < NUM_KEYBINDINGS; i++)
         if (conf_buttons[i] == _conf_button)

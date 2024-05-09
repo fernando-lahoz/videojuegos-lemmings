@@ -124,6 +124,7 @@ public:
 
     EntityCollection& get_entities();
     double get_delta_time();
+    double get_delta_time_raw();
     void set_delta_time_factor(double new_value);
     double get_delta_time_factor();
     void set_is_game_paused(bool new_value);
