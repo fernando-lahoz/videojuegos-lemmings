@@ -189,7 +189,7 @@ public:
       break;
 
     default:
-      if (button_type >= Utils::PAUSE && button_type <= Utils::MAP_RIGHT) // Gestión de teclas de modificación
+      if (button_type >= Utils::PAUSE && button_type <= Utils::ZOOM_OUT) // Gestión de teclas de modificación
       {
 
         if (button_type != game_info.get_last_button() || !game_info.get_is_button_conf())

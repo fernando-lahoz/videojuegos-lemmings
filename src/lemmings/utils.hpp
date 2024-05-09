@@ -444,7 +444,11 @@ namespace Utils
     SPAWN_UP = 29,
     SPAWN_DOWN = 30,
     MAP_LEFT = 31,
-    MAP_RIGHT = 32
+    MAP_RIGHT = 32,
+    MAP_UP = 33,
+    MAP_DOWN = 34,
+    ZOOM_IN = 35,
+    ZOOM_OUT = 36
   };
   enum ACTIONS
   {
