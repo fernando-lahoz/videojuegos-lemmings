@@ -190,6 +190,7 @@ public:
     Bound2f get_down_point() const;
 
     Vector2f get_diagonal() const;
+    void set_diagonal(Vector2f new_diagonal);
 
     Point2f max_corner2D() const;
     Point3f max_corner3D() const;

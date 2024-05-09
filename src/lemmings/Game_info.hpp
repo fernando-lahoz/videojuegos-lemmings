@@ -57,7 +57,7 @@ private:
   // camera settings
   bool do_restart_camera = false;
   bool is_camera_stopped = false;
-  float pos_camera = 0, pos_camera_y = 0;
+  Point2f pos_camera = {0, 0};
   Camera2D::ID game_camera_id;
   Camera2D *dynamic_camera = nullptr;
 
@@ -468,11 +468,8 @@ public:
   void set_all_die(bool new_value) { all_die = new_value; }
   bool get_all_die() const { return all_die; }
 
-  void set_pos_camera(float new_value) { pos_camera = new_value; }
-  float get_pos_camera() const { return pos_camera; }
-
-  void set_pos_camera_y(float new_value) { pos_camera_y = new_value; }
-  float get_pos_camera_y() const { return pos_camera_y; }
+  void set_pos_camera(Point2f new_value) { pos_camera = new_value; }
+  Point2f get_pos_camera() const { return pos_camera; }
 
   void set_is_camera_stopped(bool new_value) { is_camera_stopped = new_value; }
   bool get_is_camera_stopped() const { return is_camera_stopped; }

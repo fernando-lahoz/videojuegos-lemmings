@@ -79,6 +79,11 @@ Point2f Entity::local_to_world(Point2f l_p) const
     return l_p;
 }
 
+void Entity::set_diagonal(Vector2f new_diagonal)
+{
+    diagonal = new_diagonal;
+}
+
 std::string Entity::get_entity_name() const
 {
     return entity_name;

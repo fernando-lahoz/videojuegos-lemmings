@@ -44,6 +44,11 @@ public:
         assign_keys();
     }
 
+    Float get_zoom()
+    {
+        return current_zoom;
+    }
+
     void set_position(int x)
     {
         float half = std::abs(world_frame.pMin.x - world_frame.pMax.x) / 2;
@@ -89,14 +94,14 @@ public:
             update_zoom(engine);
 
             auto p = engine.get_mouse_position_in_camera(*this);
-            bool move_left = world_frame.is_near_border(p, Bound2f::Border::RIGHT, 10) || world_frame.is_past_border(p, Bound2f::Border::RIGHT) || engine.is_key_down(left_button);
-            bool move_right = world_frame.is_near_border(p, Bound2f::Border::LEFT, 10) || world_frame.is_past_border(p, Bound2f::Border::LEFT) || engine.is_key_down(right_button);
+            bool move_left = world_frame.is_near_border(p, Bound2f::Border::RIGHT, 20) || world_frame.is_past_border(p, Bound2f::Border::RIGHT) || engine.is_key_down(left_button);
+            bool move_right = world_frame.is_near_border(p, Bound2f::Border::LEFT, 20) || world_frame.is_past_border(p, Bound2f::Border::LEFT) || engine.is_key_down(right_button);
             //bool move_up = engine.is_key_down(up_button);
             //bool move_down = engine.is_key_down(down_button);
             bool move_up = false;
             bool move_down = false;
 
-            if (p.y < world_frame.pMin.y + 10) 
+            if (p.y < world_frame.pMin.y + 20) 
                 move_up = true;
 
             if (p.y > world_frame.pMax.y + 30)
@@ -169,7 +174,7 @@ public:
         {
             game_info.set_do_restart_camera(false);
             set_position(Utils::LEVEL_CAMERA_POS_INI[game_info.get_difficulty()][game_info.get_level()]);
-            game_info.set_pos_camera(Utils::LEVEL_CAMERA_POS_INI[game_info.get_difficulty()][game_info.get_level()]);
+            game_info.set_pos_camera(Point2f(Utils::LEVEL_CAMERA_POS_INI[game_info.get_difficulty()][game_info.get_level()], 0));
         }
     }
 
