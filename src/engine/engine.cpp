@@ -107,7 +107,7 @@ void Engine::send_event_down(EngineIO::InputEvent event)
     game->on_event_down(*this, event);
     for (auto &camera : cameras)
         camera->on_event_down(*this, event);
-    std::cout << event_entities.size() << std::endl;
+    // std::cout << event_entities.size() << std::endl;
 
     for (auto &entity : event_entities)
     {

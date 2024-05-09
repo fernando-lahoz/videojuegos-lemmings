@@ -154,7 +154,7 @@ public:
 		std::ifstream keyBindingsFile = std::ifstream("keyBindings.conf");
 		// Si no existe, se crea.
 		if (!keyBindingsFile.good()) {
-			std::cout << "El fichero no existe, creando.\n";
+			// std::cout << "El fichero no existe, creando.\n";
 			generateKeyBindingsFile();
 			keyBindingsFile = std::ifstream("keyBindings.conf");
 		}
@@ -167,7 +167,7 @@ public:
 		keyBindingsFile.close();
 		//std::cout << "Leidos " << i << " botones.\n";
 		if (i < NUM_KEYBINDINGS) {
-			std::cout << "Faltan botones en el archivo de configuración, creando uno nuevo.\n";
+			// std::cout << "Faltan botones en el archivo de configuración, creando uno nuevo.\n";
 			generateKeyBindingsFile();
 			readKeyBindingsFile(keyBindings);
 		}

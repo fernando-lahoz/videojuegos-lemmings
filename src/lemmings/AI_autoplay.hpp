@@ -675,7 +675,7 @@ public:
         }
         else
         {
-            std::cout << "WARNING: AI did not found a solution for the level" << std::endl;
+            // std::cout << "WARNING: AI did not found a solution for the level" << std::endl;
         }
     }
 

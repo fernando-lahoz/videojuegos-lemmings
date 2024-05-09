@@ -295,7 +295,7 @@ public:
   int skill_to_index(int skill)
   {
     int index = 0;
-    std::cout << "SKILL: " << skill << "\n";
+    // std::cout << "SKILL: " << skill << "\n";
     while (skill > 1)
     {
       skill = static_cast<Utils::Lemming_Skills>(skill >> 1);
@@ -435,7 +435,7 @@ public:
                                {"MAP", "METAL", "DIRECTIONAL WALL"}, hit_offset, hit_entity);
           if (hit_offset < diagonal.y * 0.2)
           {
-            std::cout << "Lemming choco con techo\n";
+            // std::cout << "Lemming choco con techo\n";
             position.y -= 6;
             go_fall();
             direction *= -1;
@@ -593,7 +593,7 @@ public:
           {
             remove_skill(Utils::Lemming_Skills::BASH);
             go_walk();
-            std::cout << "Termina de cavar...: " << destroyed_map << std::endl;
+            // std::cout << "Termina de cavar...: " << destroyed_map << std::endl;
           }
           else
           {
@@ -768,7 +768,7 @@ public:
         }
         else if (current_frame == 2)
         {
-          std::cout << "MINING 2\n";
+          // std::cout << "MINING 2\n";
           Bound2f box; // Cubo de arriba a la derecha
           auto minC = 0.65;
           box.pMin = local_to_world(Point2f(direction > 0 ? minC : 1 - minC, 0.75));
@@ -861,7 +861,7 @@ public:
           {
             remove_skill(Utils::Lemming_Skills::MINE);
             go_walk();
-            std::cout << "Termina de cavar...: " << destroyed_map << std::endl;
+            // std::cout << "Termina de cavar...: " << destroyed_map << std::endl;
           }
           else
           {
@@ -1541,7 +1541,7 @@ public:
       if (skill != Utils::NO_SKILLS && game_info.get_action_possible() && !game_info.get_ia())
       {
         bool res = add_skill(Utils::HUD_TO_SKILL[game_info.get_option_selected()]);
-        std::cout << "Señalado el skill\n";
+        // std::cout << "Señalado el skill\n";
         if (res)
         {
           // Realizamos el sonido de presion sobre el lemming

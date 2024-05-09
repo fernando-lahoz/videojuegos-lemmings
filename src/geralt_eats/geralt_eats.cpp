@@ -15,7 +15,7 @@ int main(int, char**)
     }
     catch(std::exception& e)
     {
-        std::cout << "Error: " << e.what() << '\n';
+        // std::cout << "Error: " << e.what() << '\n';
     }
 
     return EXIT_SUCCESS;

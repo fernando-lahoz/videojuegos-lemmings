@@ -139,14 +139,14 @@ private:
       game_info.set_level_is_paused(true);
       engine.set_is_game_paused(true);
       pop_up_menu_in_game(engine);
-      std::cout << "Creando pop exit\n";
+      // std::cout << "Creando pop exit\n";
       game_info.pop_exit_creado();
     }
     if (game_info.get_delete_exit())
     {
       // eliminar pop
       delete_exit(engine);
-      std::cout << "Eliminando pop exit\n";
+      // std::cout << "Eliminando pop exit\n";
       game_info.pop_exit_eliminado();
       game_info.set_level_is_paused(false);
       engine.set_is_game_paused(false);
@@ -217,7 +217,7 @@ public:
     auto cursor = std::make_shared<Cursor>(engine, game_info, 25);
     create_entity(cursor);
     auto cursor_menu = std::make_shared<Cursor_menu>(engine, game_info);
-    std::cout << cursor_menu << std::endl;
+    // std::cout << cursor_menu << std::endl;
     create_entity(cursor_menu);
     game_info.set_cursor_menu(cursor_menu);
     screen.go_menu(engine, Utils::MENU_TYPE::INTRO, 0, 0);
@@ -228,7 +228,7 @@ public:
   {
     int executor_id = -1;
 
-    std::cout << "Starting level " << level_id << " of difficulty " << difficulty_number << std::endl;
+    // std::cout << "Starting level " << level_id << " of difficulty " << difficulty_number << std::endl;
 
     if (difficulty_number == 0 && level_id == 1)
       executor_id = 1;

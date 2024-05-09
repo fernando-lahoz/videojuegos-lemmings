@@ -127,7 +127,7 @@ public:
   {
     if (change)
     {
-      std::cout << "Position = " << get_position2D() << std::endl;
+      // std::cout << "Position = " << get_position2D() << std::endl;
       change = false;
     }
   }

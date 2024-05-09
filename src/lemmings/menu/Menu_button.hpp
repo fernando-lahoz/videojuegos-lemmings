@@ -93,10 +93,10 @@ public:
       break;
 
     case Utils::GO_HOME:
-      std::cout << "IR A HOME BOTON\n";
+      // std::cout << "IR A HOME BOTON\n";
       if (game_info.get_can_do_transition())
       {
-        std::cout << "IR A HOME BOTON\n";
+        // std::cout << "IR A HOME BOTON\n";
         engine.set_delta_time_factor(1.0);
         game_info.set_delete_exit();
         game_info.set_do_transition(true);
@@ -159,7 +159,7 @@ public:
       dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
       game_info.set_volume_aspect(game_info.get_conf_var(0), game_info.get_conf_var(1), game_info.get_conf_var(2));
       game_info.set_window_size(engine);
-      std::cout << "CONFIGURACION GUARDADA" << std::endl;
+      // std::cout << "CONFIGURACION GUARDADA" << std::endl;
       game_info.menu_back();
       break;
 

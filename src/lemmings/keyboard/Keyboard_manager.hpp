@@ -64,8 +64,8 @@ public:
 		{
 			if (event == EngineIO::InputEvent::ESC)
 			{
-				std::cout << "Se ha pulsado ESC \n"
-									<< std::endl;
+				// std::cout << "Se ha pulsado ESC \n"
+									// << std::endl;
 				// engine.quit();
 			}
 			else
@@ -82,8 +82,8 @@ public:
 		{
 			if (event == EngineIO::InputEvent::ESC)
 			{
-				std::cout << "Se ha pulsado ESC en GAME\n"
-									<< std::endl;
+				// std::cout << "Se ha pulsado ESC en GAME\n"
+				// 					<< std::endl;
 				if (!game_info.get_is_pop_exit_active()){
 					game_info.set_pop_exit();
 				}

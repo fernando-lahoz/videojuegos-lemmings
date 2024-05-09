@@ -93,10 +93,10 @@ public:
 
             bool destroyed = ground->destroy_box_alpha(engine, box);
             
-            if (!destroyed)
-            {
-                std::cout << "Nothing destroyed\n";
-            }
+            // if (!destroyed)
+            // {
+            //     std::cout << "Nothing destroyed\n";
+            // }
         }
 
         Rigid_body::update_state(engine);
@@ -131,7 +131,7 @@ public:
         [[maybe_unused]]Entity *trigger, 
         [[maybe_unused]]std::shared_ptr<Entity> other) override
     {
-        std::cout << "Geralt recieved trigger collision event with "+other->get_entity_name()+"\n";
+        // std::cout << "Geralt recieved trigger collision event with "+other->get_entity_name()+"\n";
     }
 
 };

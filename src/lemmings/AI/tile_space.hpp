@@ -229,7 +229,7 @@ void TileSpace::add_entities_to_matrix(std::vector<TILE>& tile_buffer,
                         }
                         else
                         {
-                            std::cout << "Dynamic Cast to Directional_structure failed\n";
+                            // std::cout << "Dynamic Cast to Directional_structure failed\n";
                         }
                     }                   
                 }
@@ -581,7 +581,7 @@ void TileSpace::chop(int width)
 
 bool TileSpace::save_as_png(const std::string& path)
 {
-    std::cout << "Saving to PNG. " << box_collection.size() << " boxes\n";
+    // std::cout << "Saving to PNG. " << box_collection.size() << " boxes\n";
 
     std::random_device dev;
     std::mt19937 rng(dev());

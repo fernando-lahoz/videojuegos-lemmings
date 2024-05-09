@@ -77,7 +77,7 @@ public:
 				std::getline(file, line);
 				std::stringstream ss(line);
 				ss >> wonLv >> min >> sec >> perc;
-				std::cout << "Read level " << i << " " << j << " " << wonLv << " " << min << " " << sec << " " << perc << std::endl;
+				// std::cout << "Read level " << i << " " << j << " " << wonLv << " " << min << " " << sec << " " << perc << std::endl;
 				levels[i][j] = LevelInfo(wonLv, min, sec, perc);
 			}
 		}
@@ -85,14 +85,14 @@ public:
 			std::getline(file, line);
 			std::stringstream ss(line);
 			ss >> wonLv >> min >> sec >> perc;
-			std::cout << "Read AI level " << 1 << " " << i << " " << wonLv << " " << min << " " << sec << " " << perc << std::endl;
+			// std::cout << "Read AI level " << 1 << " " << i << " " << wonLv << " " << min << " " << sec << " " << perc << std::endl;
 			aiLevels[0][i] = LevelInfo(wonLv, min, sec, perc);
 		}
 		for (int i = 0; i < AI_LEVELS_MOD_2; i++) {
 			std::getline(file, line);
 			std::stringstream ss(line);
 			ss >> wonLv >> min >> sec >> perc;
-			std::cout << "Read AI level " << 2 << " " << i << " " << wonLv << " " << min << " " << sec << " " << perc << std::endl;
+			// std::cout << "Read AI level " << 2 << " " << i << " " << wonLv << " " << min << " " << sec << " " << perc << std::endl;
 			aiLevels[1][i] = LevelInfo(wonLv, min, sec, perc);
 		}
 

@@ -21,7 +21,7 @@ public:
     void load(const std::string& file)
     {
         
-            std::cout << "OA" << std::endl;
+            // std::cout << "OA" << std::endl;
         auto raw = Mix_LoadMUS(file.c_str());
         if (raw == nullptr)
             throw error::sdl_exception(ERROR_CONTEXT);
@@ -120,7 +120,7 @@ public:
     //Plays music from the beginning
     inline void play_music(Music music, bool loop = false, uint8_t volume = 100)
     {
-        std::cout << "PLAY" << std::endl;
+        // std::cout << "PLAY" << std::endl;
         is_music_paused = false;
         Mix_VolumeMusic(volume);
         Mix_PlayMusic(music.get(), loop ? -1 : 0);

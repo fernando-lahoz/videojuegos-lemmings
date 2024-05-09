@@ -352,21 +352,21 @@ int main() {
 
     bool goal_reached = add_step(map, init_tile, initial_direction, actions);
 
-    if (goal_reached)
-    {
-        std::cout << "Goal reached!" << std::endl;
+    // if (goal_reached)
+    // {
+    //     std::cout << "Goal reached!" << std::endl;
 
-        std::cout << "Actions: ";
-        for (auto action : actions) {
-            std::cout << to_string(action) << " ";
-        }
-        std::cout << std::endl;
-    }
-    else
-    {
-        std::cout << "Goal not reached!" << std::endl;
+    //     std::cout << "Actions: ";
+    //     for (auto action : actions) {
+    //         std::cout << to_string(action) << " ";
+    //     }
+    //     std::cout << std::endl;
+    // }
+    // else
+    // {
+    //     std::cout << "Goal not reached!" << std::endl;
     
-    }
+    // }
 
     return 0;
 }

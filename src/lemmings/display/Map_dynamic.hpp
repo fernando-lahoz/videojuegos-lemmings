@@ -52,7 +52,7 @@ public:
       map->destroy();
 
       int level_map_num = game_info.get_ia() ? game_info.conversion_level_selected_ia() : game_info.get_level_selected();
-      std::cout << "Nivel seleccionado: " << level_map_num << "  " << game_info.get_level_selected() << " Dificultad: " << game_info.get_difficulty_selected() << "\n";
+      // std::cout << "Nivel seleccionado: " << level_map_num << "  " << game_info.get_level_selected() << " Dificultad: " << game_info.get_difficulty_selected() << "\n";
       if (is_bkg_map)
       {
         txt = engine.load_texture("assets/maps/background_" + std::to_string(Utils::LEVEL_BACKGROUND_TYPE[game_info.get_difficulty_selected()][game_info.get_level_selected()]) + ".png");

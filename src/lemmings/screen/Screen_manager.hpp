@@ -63,17 +63,17 @@ public:
       {
         game_info.set_ia(true);
       }
-      std::cout << "GO TO MENU" << std::endl;
+      // std::cout << "GO TO MENU" << std::endl;
       go_menu(engine, game_info.get_build_menu(), game_info.get_level(), game_info.get_difficulty());
     }
     else if (game_info.get_do_action() == Utils::ACTIONS::GO_LEVEL && game_info.get_is_transition_done())
     {
       game_info.set_is_transition_done(false);
       clear_screen(engine);
-      std::cout << "GO TO LEVEL" << std::endl;
+      // std::cout << "GO TO LEVEL" << std::endl;
       go_level(engine, game_info.get_build_level(), game_info.get_build_difficulty());
     }
-    else if (game_info.get_do_action() == Utils::ACTIONS::NO_ACTION )
+    else if (game_info.get_do_action() == Utils::ACTIONS::NO_ACTION)
     {
       if (game_info.get_actual_state() == Utils::STATE::GAME)
       {
@@ -81,7 +81,7 @@ public:
 
         if (actual_lemmings_hovered != last_lemmings_hovered)
         {
-          std::cout << "Lemmings hovered: " << actual_lemmings_hovered << std::endl;
+          // std::cout << "Lemmings hovered: " << actual_lemmings_hovered << std::endl;
           last_lemmings_hovered = actual_lemmings_hovered;
         }
 
@@ -95,8 +95,8 @@ public:
         }
         else
         {
-          std::cout << "LEMMINGS OUT: " << game_info.get_n_lemmings_out() << std::endl;
-          std::cout << "GAME OVER" << std::endl;
+          // std::cout << "LEMMINGS OUT: " << game_info.get_n_lemmings_out() << std::endl;
+          // std::cout << "GAME OVER" << std::endl;
           timer_transition = 2.f;
           game_info.manage_level_results();
           game_info.set_build_menu(Utils::MENU_TYPE::LEVEL_OUTRO);

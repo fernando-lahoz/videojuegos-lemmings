@@ -68,7 +68,7 @@ public:
           current_frame = std::min(n_frames - 1, current_frame + times);
           if (current_frame >= n_frames - 1)
           {
-            std::cout << "TRANSITION END" << std::endl;
+            // std::cout << "TRANSITION END" << std::endl;
             destroy();
             return;
           }
@@ -82,7 +82,7 @@ public:
       if (state == AnimationState::Action)
       {
         // time_frame_wait = 0.8f;
-        std::cout << "TRANSITION HALF" << std::endl;
+        // std::cout << "TRANSITION HALF" << std::endl;
         game_info.set_is_transition_done(true);
         game_info.set_can_do_transition(true);
         engine.get_sound_mixer().pause_all_sounds();

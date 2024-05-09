@@ -493,7 +493,7 @@ public:
     {
       if (_level != -1 && _difficulty != -1)
       {
-        std::cout << "Level " << difficulty_ia << " : " << _difficulty << std::endl;
+        // std::cout << "Level " << difficulty_ia << " : " << _difficulty << std::endl;
         level_ia = _level;
         difficulty_ia = _difficulty;
       }
@@ -553,17 +553,17 @@ public:
   {
     if (spawn_velocity < 99)
     {
-      std::cout << "spawn_velocity: " << spawn_velocity << std::endl;
+      // std::cout << "spawn_velocity: " << spawn_velocity << std::endl;
       spawn_velocity = spawn_velocity + 1;
     }
   }
   void sub_spawn_velocity()
   {
     auto min_spawn_velocity = (ia ? Utils::LEVEL_SPAWN_VELOCITY_IA[difficulty_ia][level_ia] : Utils::LEVEL_SPAWN_VELOCITY[difficulty][level]);
-    std::cout << "min_spawn_velocity: " << min_spawn_velocity << std::endl;
+    // std::cout << "min_spawn_velocity: " << min_spawn_velocity << std::endl;
     if (spawn_velocity > min_spawn_velocity)
     {
-      std::cout << "spawn_velocity: " << spawn_velocity << std::endl;
+      // std::cout << "spawn_velocity: " << spawn_velocity << std::endl;
       spawn_velocity = spawn_velocity - 1;
     }
   }
