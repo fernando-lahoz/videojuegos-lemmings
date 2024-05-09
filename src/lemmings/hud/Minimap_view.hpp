@@ -12,20 +12,26 @@ class Minimap_view : public Entity
 {
 private:
   Game_info &game_info;
-  float last_position;
+  Point2f last_position;
   float calculated_position;
 
   Float last_mouse_position;
   bool holded = false;
+
   
   bool is_mouse_over_minimap(Engine &engine)
   {
     return Bound2f(Point2f(416, 356), Point2f(616, 396)).contains(engine.get_main_camera().world_to_screen(engine.get_mouse_position()));
   }
 
+  Point2f generate_init_p(Float p)
+  {
+    return Point2f {p, 356};
+  }
+
 public:
   Minimap_view(Point3f position, Vector2f size, Game_info &_game_info, Engine &engine, float _last_position)
-      : Entity(position, size, engine.load_texture("assets/hud/hud_minimap_view.png"), engine, "HUD"), game_info(_game_info), last_position(_last_position)
+      : Entity(position, size, engine.load_texture("assets/hud/hud_minimap_view.png"), engine, "HUD"), game_info(_game_info), last_position(generate_init_p(_last_position))
   {
     alpha_mouse = false;
   }
@@ -48,8 +54,8 @@ public:
         world_frame.pMin.x = ((x - 10412.0f) / 160.0f) * 2528.0f;
         world_frame.pMax.x = world_frame.pMin.x + 640.0f;
 
-        last_position = world_frame.pMin.x + 320.0f;
-        game_info.set_pos_camera(last_position);
+        //last_position = world_frame.pMin.x + 320.0f;
+        //game_info.set_pos_camera(last_position);
       }
       else
       {
@@ -57,11 +63,24 @@ public:
       }
     }
     
-    if (!holded && last_position != game_info.get_pos_camera())
+    if (!holded) //&& last_position != game_info.get_pos_camera())
     {
-      last_position = game_info.get_pos_camera();
-      calculated_position = 10412.0f + ((last_position - 320.0f) / 2528.0f) * 160.0f;
-      set_position2D(Point2f(calculated_position, -148));
+      auto cam = game_info.get_dynamic_camera();
+      auto map = game_info.get_map_ptr();
+      auto minimap_bound = Bound2f(Point2f(416, 356), Point2f(616, 396));
+
+      last_position = cam.get_world_frame().pMin;
+      last_position.x /= map->bound2f().diagonal().x;
+      last_position.y /= map->bound2f().diagonal().y;
+
+      last_position.x *= minimap_bound.diagonal().x;
+      last_position.y *= minimap_bound.diagonal().y;
+
+      last_position.x += minimap_bound.pMin.x;
+      last_position.y += minimap_bound.pMin.y;
+
+      std::cout << "Last position: " << last_position << std::endl;
+      set_position2D(last_position);
     }
   }
 
@@ -81,8 +100,8 @@ public:
       world_frame.pMin.x = ((x - 10412.0f) / 160.0f) * 2528.0f;
       world_frame.pMax.x = world_frame.pMin.x + 640.0f;
 
-      last_position = world_frame.pMin.x + 320.0f;
-      game_info.set_pos_camera(last_position);
+      //last_position = world_frame.pMin.x + 320.0f;
+      //game_info.set_pos_camera(last_position);
     }
   }
 

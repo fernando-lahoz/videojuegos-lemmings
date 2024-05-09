@@ -665,6 +665,12 @@ constexpr bool BoundingBox2<T>::all_intersections(const Ray &ray, Float &min_off
 }
 
 template <typename T>
+constexpr Point2<T> BoundingBox2<T>::centroid() const
+{
+    return pMin + diagonal() / 2;
+}
+
+template <typename T>
 std::ostream &operator<<(std::ostream &os, const BoundingBox2<T> &b) 
 {
     os << "[ " << b[0] << " - " << b[1] << " ]";

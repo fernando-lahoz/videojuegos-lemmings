@@ -1534,7 +1534,7 @@ public:
     // Evita que se puedan seleccionar desde el minimapa
     if (engine.get_camera_in_which_hovered(*this) != game_info.get_game_camera_id())
       return;
-    auto mouse_pos = engine.get_mouse_position_in_camera(engine.get_camera(7)); // GAME CAMERA = 7
+    auto mouse_pos = engine.get_mouse_position_in_camera(engine.get_camera(1)); // GAME CAMERA = 7
     if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && !game_info.get_level_is_paused() && !game_info.get_is_pop_exit_active() && abs(mouse_pos.x - (position.x + diagonal.x / 2)) < 10 && abs(mouse_pos.y - (position.y + diagonal.y / 2)) < 10)
     {
       int skill = Utils::HUD_TO_SKILL[game_info.get_option_selected()];

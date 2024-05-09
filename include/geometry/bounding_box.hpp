@@ -149,6 +149,7 @@ public:
     constexpr bool intersects(const Ray &ray, Float &hit_offset) const;
     constexpr bool all_intersections(const Ray &ray, Float &min_offset, Float &max_offset) const;
 
+    constexpr Point2<T> centroid() const;
 
     void print() const;
 };

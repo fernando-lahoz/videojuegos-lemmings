@@ -196,7 +196,7 @@ public:
     create_camera(ptr);
 
     // GAME CAMERA
-    auto ptr2 = std::make_shared<Dynamic_camera>(game_info, Bound2f(Point2f(1884, 0), Point2f(2524, 320)), Bound2f(Point2f(0, 0), Point2f(640, 320)), 7);
+    auto ptr2 = std::make_shared<Dynamic_camera>(game_info, Bound2f(Point2f(1884, 0), Point2f(2524, 320)), Bound2f(Point2f(0, 0), Point2f(640, 320)), 1);
     create_camera(ptr2);
     game_info.set_game_camera_id(ptr2->get_id());
     game_info.set_dynamic_camera(*ptr2);
