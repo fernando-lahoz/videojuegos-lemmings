@@ -62,11 +62,21 @@ public:
         return half;
     }
 
+    void reset_zoom()
+    {
+        current_zoom = 1.0f;
+        world_frame.pMin = world_frame.centroid() - (full_diagonal/2) / current_zoom;
+        world_frame.pMax = world_frame.centroid() + (full_diagonal/2) / current_zoom;
+    }
+
     void update_zoom(Engine &engine)
     {
+
+        Float delta_time = engine.get_delta_time_raw() / engine.get_delta_time_factor();
+
         if (engine.is_key_down(zoom_in_button))
         {
-            current_zoom += 0.1f;
+            current_zoom += 1 * delta_time;
             if (current_zoom > 2.0f)
                 current_zoom = 2.0f;
             
@@ -76,7 +86,7 @@ public:
 
         if (engine.is_key_down(zoom_out_button))
         {
-            current_zoom -= 0.1f;
+            current_zoom -= 1 * delta_time;
             if (current_zoom < 1.0f)
                 current_zoom = 1.0f;
             

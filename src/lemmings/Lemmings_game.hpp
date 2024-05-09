@@ -235,6 +235,7 @@ public:
     {
       executor_id = -1;
     }
+    dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->reset_zoom();
     // -1 if the ai should do nothing
     ai.init_executor(executor_id);
   }

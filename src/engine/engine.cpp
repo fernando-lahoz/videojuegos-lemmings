@@ -257,7 +257,6 @@ bool Engine::ray_march_alpha_end(Ray &ray, Float &offset,
 // Returns true if the program should quit
 bool Engine::process_events()
 {
-    static bool pressedf11 = false;
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
