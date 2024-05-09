@@ -72,7 +72,7 @@ public:
 			{
 				if (game_info.get_is_button_conf())
 				{																																			// Si hay un boton de configuración seleccionado
-					game_info.set_conf_buttons(event, game_info.get_last_button() - 9); // Guardamos la tecla pulsada
+					game_info.set_conf_buttons(event, game_info.get_last_button() - 15); // Guardamos la tecla pulsada
 				}
 				return;
 			}
