@@ -60,7 +60,7 @@ class Menu_slider : public Entity
 
             uint8_t slider_value = (x - box_xmin) / ratio;
             game_info.set_conf_var(slider_var, slider_value);
-            //   game_info.set_var(slider_var, slider_value);
+            if (slider_var == 0) Mix_VolumeMusic(slider_value);
         } else {
             set_active_texture(txt_off);
         }
@@ -80,14 +80,18 @@ class Menu_slider : public Entity
 
             uint8_t slider_value = (x - box_xmin) / ratio;
             game_info.set_conf_var(slider_var, slider_value);
-            //   game_info.set_var(slider_var, slider_value);
+            if (slider_var == 0) Mix_VolumeMusic(slider_value);
         }
     }
 
     void on_event_up(Engine&, EngineIO::InputEvent event) override
     {
         if (event == EngineIO::InputEvent::MOUSE_LEFT && holded) {
-        holded = false;
+            if (slider_var == 0)
+                    game_info.set_volume_music(game_info.get_conf_var(0));
+            else if (slider_var == 1)
+                    game_info.set_volume_effects(game_info.get_conf_var(1));
+            holded = false;
         }
     }
 

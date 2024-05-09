@@ -685,6 +685,7 @@ public:
           conf_buttons[i] = conf_buttons[idx];
       conf_buttons[idx] = _conf_button;
     }
+    
     set_is_button_conf(false);
   }
 
@@ -831,6 +832,25 @@ public:
   {
     volumeAndAspect.setMusicVol(_music);
     volumeAndAspect.setEffectsVol(_effects);
+    volumeAndAspect.setAspect(_aspect);
+    volumeAndAspect.writeVolAspFile();
+  }
+
+  void set_volume_music(uint8_t _music)
+  {
+    volumeAndAspect.setMusicVol(_music);
+    volumeAndAspect.writeVolAspFile();
+    Mix_VolumeMusic(_music);
+  }
+
+  void set_volume_effects(uint8_t _effects)
+  {
+    volumeAndAspect.setEffectsVol(_effects);
+    volumeAndAspect.writeVolAspFile();
+  }
+
+  void set_aspect_ratio(uint8_t _aspect)
+  {
     volumeAndAspect.setAspect(_aspect);
     volumeAndAspect.writeVolAspFile();
   }

@@ -390,56 +390,56 @@ public:
 
       // Botones de control de juego(habilidades, pausa, etc)
       float size_x = 150.0, size_y = 25.0, size_t = 0.5; // Tamaño de botones
-      float x_b = 10050, y_b = 55;                       // Posiciones x e y de los botones
+      float x_b = 10050, y_b = 70;                       // Posiciones x e y de los botones
       float i_bot = size_y + 2;                          // Incremento de posición en y entre los botones
       float i_tx = 87;                                   // Incremento de posición en x del texto del boton
 
       // Ajustes de sonido
-      auto b_sonido = std::make_shared<Entity>(Point3f(x_b, 35, 2), Vector2f(200, 80), engine.load_texture("assets/menu/menu_wide_volume.png"), engine, "Background", "Background");
+      auto b_sonido = std::make_shared<Entity>(Point3f(x_b, 50, 2), Vector2f(200, 80), engine.load_texture("assets/menu/menu_wide_volume.png"), engine, "Background", "Background");
       engine.get_game().create_entity(b_sonido);
 
-      auto s_musica = std::make_shared<Menu_slider>(Point3f(x_b + 90, 74, 1), 86, Vector2f(12, 12), 0, engine, game_info);
+      auto s_musica = std::make_shared<Menu_slider>(Point3f(x_b + 90, 89, 1), 86, Vector2f(12, 12), 0, engine, game_info);
       engine.get_game().create_entity(s_musica);
-      auto s_efectos = std::make_shared<Menu_slider>(Point3f(x_b + 90, 90, 1), 86, Vector2f(12, 12), 1, engine, game_info);
+      auto s_efectos = std::make_shared<Menu_slider>(Point3f(x_b + 90, 105, 1), 86, Vector2f(12, 12), 1, engine, game_info);
       engine.get_game().create_entity(s_efectos);
-      text = std::make_shared<Text_displayer>(Point3f(x_b + 85, 80, 0), Vector2f(5, 10), game_info, "right",
+      text = std::make_shared<Text_displayer>(Point3f(x_b + 85, 95, 0), Vector2f(5, 10), game_info, "right",
                                               engine.load_texture("assets/font/font-cyan.png"),
                                               Vector2i(16, 30), lemmings_font_map, "Music", engine,
                                               "TEXT");
       engine.get_game().create_entity(text);
-      text = std::make_shared<Text_displayer>(Point3f(x_b + 85, 96, 0), Vector2f(5, 10), game_info, "right",
+      text = std::make_shared<Text_displayer>(Point3f(x_b + 85, 111, 0), Vector2f(5, 10), game_info, "right",
                                               engine.load_texture("assets/font/font-cyan.png"),
                                               Vector2i(16, 30), lemmings_font_map, "Effects", engine,
                                               "TEXT");
       engine.get_game().create_entity(text);
 
       // Ajustes de resolucion
-      auto b_aspect = std::make_shared<Entity>(Point3f(x_b, 127, 2), Vector2f(200, 80), engine.load_texture("assets/menu/menu_wide_aspect.png"), engine, "Background", "Background");
+      auto b_aspect = std::make_shared<Entity>(Point3f(x_b, 142, 2), Vector2f(200, 80), engine.load_texture("assets/menu/menu_wide_aspect.png"), engine, "Background", "Background");
       engine.get_game().create_entity(b_aspect);
 
       for (int i = 0; i < 3; i++)
       {
-        auto b_asp = std::make_shared<Menu_option_button>(Point3f(x_b + 55 + 30 * i, 163, 1), Vector2f(25, 30), engine, game_info, game_info.get_conf_var(2), i);
+        auto b_asp = std::make_shared<Menu_option_button>(Point3f(x_b + 55 + 30 * i, 178, 1), Vector2f(25, 30), engine, game_info, game_info.get_conf_var(2), i);
         engine.get_game().create_entity(b_asp);
-        text = std::make_shared<Text_displayer>(Point3f(x_b + 67.5 + 30 * i, 172, 0), Vector2f(5, 10), game_info, "center",
+        text = std::make_shared<Text_displayer>(Point3f(x_b + 67.5 + 30 * i, 187, 0), Vector2f(5, 10), game_info, "center",
                                                 engine.load_texture("assets/font/font-cyan.png"),
                                                 Vector2i(16, 30), lemmings_font_map, ASPECT_STRING[i][0], engine,
                                                 "TEXT");
         engine.get_game().create_entity(text);
-        text = std::make_shared<Text_displayer>(Point3f(x_b + 67.5 + 30 * i, 186, 0), Vector2f(5, 10), game_info, "center",
+        text = std::make_shared<Text_displayer>(Point3f(x_b + 67.5 + 30 * i, 201, 0), Vector2f(5, 10), game_info, "center",
                                                 engine.load_texture("assets/font/font-cyan.png"),
                                                 Vector2i(16, 30), lemmings_font_map, ASPECT_STRING[i][1], engine,
                                                 "TEXT");
         engine.get_game().create_entity(text);
       }
-      auto b_asp = std::make_shared<Menu_option_button>(Point3f(x_b + 145, 163, 1), Vector2f(40, 30), engine, game_info, game_info.get_conf_var(2), 3);
+      auto b_asp = std::make_shared<Menu_option_button>(Point3f(x_b + 145, 178, 1), Vector2f(40, 30), engine, game_info, game_info.get_conf_var(2), 3);
       engine.get_game().create_entity(b_asp);
-      text = std::make_shared<Text_displayer>(Point3f(x_b + 165, 172, 0), Vector2f(5, 10), game_info, "center",
+      text = std::make_shared<Text_displayer>(Point3f(x_b + 165, 187, 0), Vector2f(5, 10), game_info, "center",
                                               engine.load_texture("assets/font/font-cyan.png"),
                                               Vector2i(16, 30), lemmings_font_map, ASPECT_STRING[3][0], engine,
                                               "TEXT");
       engine.get_game().create_entity(text);
-      text = std::make_shared<Text_displayer>(Point3f(x_b + 165, 186, 0), Vector2f(5, 10), game_info, "center",
+      text = std::make_shared<Text_displayer>(Point3f(x_b + 165, 201, 0), Vector2f(5, 10), game_info, "center",
                                               engine.load_texture("assets/font/font-cyan.png"),
                                               Vector2i(16, 30), lemmings_font_map, ASPECT_STRING[3][1], engine,
                                               "TEXT");
@@ -454,8 +454,8 @@ public:
       engine.get_game().create_entity(b_restall);
 
       // Boton de guardar, en el centro de la pantalla y abajo
-      auto b_save = std::make_shared<Menu_button>(Point3f(10280, 300, 2), Vector2f(80, 80), engine, game_info, keyboard, Utils::BUTTON_TYPE::SAVE);
-      engine.get_game().create_entity(b_save);
+      // auto b_save = std::make_shared<Menu_button>(Point3f(10280, 300, 2), Vector2f(80, 80), engine, game_info, keyboard, Utils::BUTTON_TYPE::SAVE);
+      // engine.get_game().create_entity(b_save);
 
       // Boton de vuelta al menu
       auto b_back = std::make_shared<Menu_button>(Point3f(10020, 340, 2), Vector2f(70, 37), engine, game_info, keyboard, Utils::BUTTON_TYPE::BACK);
@@ -533,7 +533,7 @@ public:
                                                  4, Utils::BUTTON_TYPE::EXPLODE_ALL - 9);
       engine.get_game().create_entity(dynamic_t);
 
-      auto b_ability_up = std::make_shared<Menu_button>(Point3f(x_b += 170, y_b = 55, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_UP);
+      auto b_ability_up = std::make_shared<Menu_button>(Point3f(x_b += 170, y_b = 70, 2), Vector2f(size_x, size_y), engine, game_info, keyboard, Utils::BUTTON_TYPE::ABILITY_UP);
       engine.get_game().create_entity(b_ability_up);
       dynamic_t = std::make_shared<Text_dynamic>(Point3f(x_b + i_tx, y_b + 15, 1), Vector2f(16 * size_t, 30 * size_t), engine, game_info, "center",
                                                  engine.load_texture("assets/font/font-red.png"),

@@ -38,9 +38,12 @@ public:
 
   void on_event_down(Engine &engine, EngineIO::InputEvent event) override
   {
-    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine))
+    if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine)) {
       var = desired;
       set_active_texture(txt_on);
+      game_info.set_aspect_ratio(desired);
+      game_info.set_window_size(engine);
+    }
   }
 
 };

@@ -46,6 +46,14 @@ public:
     switch (button_type)
     {
       case Utils::BACK:
+        if (game_info.get_build_menu() == Utils::MENU_TYPE::CONFIG)
+        {
+          EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS];
+          game_info.get_conf_buttons(conf_buttons);
+          KeyBindings().setKeyBindings(conf_buttons); // Modificamos el fichero
+          keyboard.set_key_bindings();
+          dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
+        }
         game_info.menu_back();
         break;
 
@@ -125,6 +133,11 @@ public:
 
       case Utils::RESET_KEYB:
         game_info.set_default_keys();
+        EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS];
+        game_info.get_conf_buttons(conf_buttons);
+        KeyBindings().setKeyBindings(conf_buttons); // Modificamos el fichero
+        keyboard.set_key_bindings();
+        dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
         break;
 
       case Utils::RESET_ALL:
@@ -138,14 +151,12 @@ public:
 
       case Utils::SAVE:
         // Guardar configuración de botones actual
-        EngineIO::InputEvent conf_buttons[NUM_KEYBINDINGS];
         game_info.get_conf_buttons(conf_buttons);
         KeyBindings().setKeyBindings(conf_buttons); // Modificamos el fichero
         keyboard.set_key_bindings(); // Actualizamos botones de partida
         // Actualiza teclas de movimiento de mapa en partida
         dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
         game_info.set_volume_aspect(game_info.get_conf_var(0), game_info.get_conf_var(1), game_info.get_conf_var(2));
-        game_info.start_sound_assets(engine);
         game_info.set_window_size(engine);
         std::cout << "CONFIGURACION GUARDADA" << std::endl;
         game_info.menu_back();
@@ -169,7 +180,6 @@ public:
           dynamic_cast<Dynamic_camera *>(game_info.get_dynamic_camera_ptr())->assign_keys();
           game_info.reset_levels_info();
           game_info.set_volume_aspect(100, 100, 1);
-          game_info.start_sound_assets(engine);
           game_info.set_window_size(engine);
           game_info.set_do_transition(true);
           game_info.set_build_menu(Utils::MENU_TYPE::INTRO, 0, 0);
