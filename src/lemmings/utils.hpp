@@ -72,6 +72,7 @@ namespace Utils
     HUD_MINIMAP = 18,
     HUD_CURSOR = 19,
     HUD_VELOCITY = 20,
+    HUD_POPUP = 21,
   };
 
   const int NO_OPTION_SELECTED = 11;
@@ -406,7 +407,7 @@ namespace Utils
     CONFIG = 5,         // Muestra configuración
     IA = 6,             // Selector de nivel de IA
     RESET_DATA = 7,     // Pantalla para confirmar reset
-    GAME_COMPLETE = 8,   // Pantalla para confirmar reset
+    GAME_COMPLETE = 8,  // Pantalla para confirmar reset
     EXIT_GAME = 9,
   };
   enum BUTTON_TYPE

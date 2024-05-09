@@ -68,6 +68,9 @@ public:
 
         engine.get_game().create_entity(std::make_shared<Entity>(Point3f(9998, -180, 5), Vector2f(644, 32), engine.load_texture("assets/hud/hud_background.png"), engine, "HUD BACKGROUND"));
 
+        hudElement = std::make_shared<HUD>(Point3f(10010, -490, 4), Vector2f(22, 22), game_info, engine, "assets/hud/icon_popup_menu", Utils::HUD_POPUP, false, false, false, false);
+        engine.get_game().create_entity(hudElement);
+
         hudElement = std::make_shared<HUD>(Point3f(10000, -148, 4), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_VELOCITY, false, false, false, false);
         engine.get_game().create_entity(hudElement);
 

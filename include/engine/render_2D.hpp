@@ -81,6 +81,8 @@ protected:
 
     std::mutex texture_mtx;
 
+    std::string window_icon;
+
     std::unordered_map<std::string, Texture> textures;
 
     void clear_window(Spectrum color = Spectrum(0, 0, 0));
@@ -128,6 +130,7 @@ public:
     inline void set_windowmode()
     {
         SDL_SetWindowFullscreen(window, 0);
+        set_window_icon(window_icon);
     }
 
     inline void set_window_size(Vector2i size)
