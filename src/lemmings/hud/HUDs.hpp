@@ -63,6 +63,8 @@ public:
 
     void setupElements(Engine &engine)
     {
+        engine.get_game().create_entity(std::make_shared<Entity>(Point3f(10000, -501, 5), Vector2f(1, 1), engine.load_texture("assets/hud/hud_background.png"), engine, "HUD BACKGROUND"));
+
         auto hudElement = std::make_shared<HUD>(Point3f(10320, -148, 3), Vector2f(32, 48), game_info, engine, "assets/hud/hud_option_", Utils::HUD_PAUSE, false, true, false, false);
         engine.get_game().create_entity(hudElement);
 
