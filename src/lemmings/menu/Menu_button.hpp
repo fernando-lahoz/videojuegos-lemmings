@@ -126,7 +126,7 @@ public:
       }
 
       // Guardamos en una variable el contenido de fichero de comfiguración
-      EngineIO::InputEvent aux[18];
+      EngineIO::InputEvent aux[22];
       KeyBindings().readKeyBindingsFile(aux); // Leemos fichero con valores asociados a los botones de partida
       game_info.set_conf_buttons(aux);
       break;

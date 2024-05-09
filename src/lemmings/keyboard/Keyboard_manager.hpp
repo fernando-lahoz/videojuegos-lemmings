@@ -51,7 +51,7 @@ public:
 
 	void set_key_bindings()
 	{
-		EngineIO::InputEvent aux[18];
+		EngineIO::InputEvent aux[22];
 		KeyBindings().readKeyBindingsFile(aux);
 		for (int i = 0; i < NUM_ACTIONS; i++)
 			actionKey[i] = aux[i];

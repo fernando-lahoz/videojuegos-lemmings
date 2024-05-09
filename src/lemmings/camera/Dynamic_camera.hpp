@@ -14,7 +14,7 @@
 class Dynamic_camera : public Camera2D
 {
     Game_info &game_info;
-    EngineIO::InputEvent left_button, right_button, up_button, down_button;
+    EngineIO::InputEvent left_button, right_button, up_button, down_button, zoom_in_button, zoom_out_button;
 
     unsigned int max_width = 3168, max_heigth = 320;
     Float current_zoom = 1.0f;
@@ -59,7 +59,7 @@ public:
 
     void update_zoom(Engine &engine)
     {
-        if (engine.is_key_down(EngineIO::InputEvent::CTRL))
+        if (engine.is_key_down(zoom_in_button))
         {
             current_zoom += 0.1f;
             if (current_zoom > 2.0f)
@@ -69,7 +69,7 @@ public:
             world_frame.pMax = world_frame.centroid() + (full_diagonal/2) / current_zoom;
         }
 
-        if (engine.is_key_down(EngineIO::InputEvent::ALT))
+        if (engine.is_key_down(zoom_out_button))
         {
             current_zoom -= 0.1f;
             if (current_zoom < 1.0f)
@@ -91,16 +91,8 @@ public:
             auto p = engine.get_mouse_position_in_camera(*this);
             bool move_left = world_frame.is_near_border(p, Bound2f::Border::RIGHT, 10) || world_frame.is_past_border(p, Bound2f::Border::RIGHT) || engine.is_key_down(left_button);
             bool move_right = world_frame.is_near_border(p, Bound2f::Border::LEFT, 10) || world_frame.is_past_border(p, Bound2f::Border::LEFT) || engine.is_key_down(right_button);
-            //bool move_up = engine.is_key_down(up_button);
-            //bool move_down = engine.is_key_down(down_button);
-            bool move_up = false;
-            bool move_down = false;
-
-            if (p.y < world_frame.pMin.y + 10) 
-                move_up = true;
-
-            if (p.y > world_frame.pMax.y + 30)
-                move_down = true;
+            bool move_up = p.y < world_frame.pMin.y + 10 || engine.is_key_down(up_button);
+            bool move_down = p.y > world_frame.pMax.y + 30 || engine.is_key_down(down_button);
 
 
 
@@ -175,9 +167,14 @@ public:
 
     void assign_keys()
     {
-        EngineIO::InputEvent aux[18];
+        EngineIO::InputEvent aux[22];
         KeyBindings().readKeyBindingsFile(aux);
         left_button = aux[16];
         right_button = aux[17];
+        up_button = aux[18];
+        down_button = aux[19];
+        zoom_in_button = aux[20];
+        zoom_out_button = aux[21];
+
     }
 };
