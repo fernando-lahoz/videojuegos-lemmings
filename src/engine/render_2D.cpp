@@ -241,6 +241,7 @@ Render_2D::Render_2D(const std::string& window_name, int width, int height)
 
 void Render_2D::set_window_icon(const std::string& window_icon)
 {
+    this->window_icon = window_icon;
     auto icon = IMG_Load(window_icon.c_str());
     if (icon == nullptr)
         throw error::sdl_exception(ERROR_CONTEXT);
