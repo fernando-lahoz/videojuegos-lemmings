@@ -993,7 +993,31 @@ public:
             // std::cout << "BUILDER: CAMBIE DIR YA QUE CHOQUE CON BLOCKER" << std::endl;
             direction *= -1;
           }
-          if (!build_anything)
+          bool cant_continue = true;
+          Bound2f collision_point1 = direction == -1 ? Bound2f(Point2f(0.4, 0.7), Point2f(0.45, 0.75)) : Bound2f(Point2f(0.55, 0.7), Point2f(0.6, 0.75));
+          Bound2f collision_point2 = direction == -1 ? Bound2f(Point2f(0.35, 0.7), Point2f(0.4, 0.75)) : Bound2f(Point2f(0.6, 0.7), Point2f(0.65, 0.75));
+          Bound2f collision_point3 = direction == -1 ? Bound2f(Point2f(0.3, 0.7), Point2f(0.35, 0.75)) : Bound2f(Point2f(0.65, 0.7), Point2f(0.7, 0.75));
+          Bound2f collision_point4 = direction == -1 ? Bound2f(Point2f(0.25, 0.7), Point2f(0.3, 0.75)) : Bound2f(Point2f(0.7, 0.7), Point2f(0.75, 0.75));
+
+          bool valid_pixel = false;
+          Point2f collision_pixel;
+          cant_continue = cant_continue && engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point1),
+                                                                                                  get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, valid_pixel,
+                                                                                                  collision_pixel, Physics_engine::GET_LAST, Physics_engine::GET_LAST,
+                                                                                                  hit_entity);
+          cant_continue = cant_continue && engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point2),
+                                                                                                  get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, valid_pixel,
+                                                                                                  collision_pixel, Physics_engine::GET_LAST, Physics_engine::GET_LAST,
+                                                                                                  hit_entity);
+          cant_continue = cant_continue && engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point3),
+                                                                                                  get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, valid_pixel,
+                                                                                                  collision_pixel, Physics_engine::GET_LAST, Physics_engine::GET_LAST,
+                                                                                                  hit_entity);
+          cant_continue = cant_continue && engine.alpha_box_collision_if_all_Y_force_entity_names(Entity::local_to_world(collision_point4),
+                                                                                                  get_entity_id(), {"MAP", "METAL", "DIRECTIONAL WALL"}, valid_pixel,
+                                                                                                  collision_pixel, Physics_engine::GET_LAST, Physics_engine::GET_LAST,
+                                                                                                  hit_entity);
+          if (cant_continue)
           {
             remove_skill(Utils::Lemming_Skills::BUILD);
             direction *= -1;
@@ -1514,7 +1538,7 @@ public:
     if (event == EngineIO::InputEvent::MOUSE_LEFT && contains_the_mouse(engine) && !game_info.get_level_is_paused() && !game_info.get_is_pop_exit_active() && abs(mouse_pos.x - (position.x + diagonal.x / 2)) < 10 && abs(mouse_pos.y - (position.y + diagonal.y / 2)) < 10)
     {
       int skill = Utils::HUD_TO_SKILL[game_info.get_option_selected()];
-      if (skill != Utils::NO_SKILLS && game_info.get_action_possible() && !game_info.get_ia() )
+      if (skill != Utils::NO_SKILLS && game_info.get_action_possible() && !game_info.get_ia())
       {
         bool res = add_skill(Utils::HUD_TO_SKILL[game_info.get_option_selected()]);
         std::cout << "Señalado el skill\n";
