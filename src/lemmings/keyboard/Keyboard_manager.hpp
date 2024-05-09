@@ -51,7 +51,7 @@ public:
 
 	void set_key_bindings()
 	{
-		EngineIO::InputEvent aux[18];
+		EngineIO::InputEvent aux[22];
 		KeyBindings().readKeyBindingsFile(aux);
 		for (int i = 0; i < NUM_ACTIONS; i++)
 			actionKey[i] = aux[i];
@@ -72,7 +72,7 @@ public:
 			{
 				if (game_info.get_is_button_conf())
 				{																																			// Si hay un boton de configuración seleccionado
-					game_info.set_conf_buttons(event, game_info.get_last_button() - 9); // Guardamos la tecla pulsada
+					game_info.set_conf_buttons(event, game_info.get_last_button() - 15); // Guardamos la tecla pulsada
 				}
 				return;
 			}

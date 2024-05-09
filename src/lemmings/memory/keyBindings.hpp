@@ -9,7 +9,7 @@
 #include <map>
 #include "engine/IO.hpp"
 
-#define NUM_KEYBINDINGS 18
+#define NUM_KEYBINDINGS 22
 
 std::map<EngineIO::InputEvent, std::string> keyName;
 
@@ -27,14 +27,19 @@ class KeyBindings
 		EngineIO::charToInputEvent('7'),
 		EngineIO::charToInputEvent('8'),
 		EngineIO::charToInputEvent('9'),
-		EngineIO::InputEvent::UP,
-		EngineIO::InputEvent::DOWN,
+		EngineIO::charToInputEvent('C'),
+		EngineIO::charToInputEvent('V'),
 		EngineIO::charToInputEvent('Q'),
 		EngineIO::charToInputEvent('A'),
 		EngineIO::charToInputEvent('W'),
 		EngineIO::charToInputEvent('S'),
 		EngineIO::InputEvent::LEFT,
-		EngineIO::InputEvent::RIGHT
+		EngineIO::InputEvent::RIGHT,
+		EngineIO::InputEvent::UP,
+		EngineIO::InputEvent::DOWN,
+		EngineIO::InputEvent::SHIFT,
+		EngineIO::InputEvent::CTRL
+
 	};
 
 public:
