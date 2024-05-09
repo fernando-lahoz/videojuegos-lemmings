@@ -97,6 +97,7 @@ public:
       if (game_info.get_can_do_transition())
       {
         std::cout << "IR A HOME BOTON\n";
+        engine.set_delta_time_factor(1.0);
         game_info.set_delete_exit();
         game_info.set_do_transition(true);
         game_info.set_build_menu(Utils::MENU_TYPE::TITLE, 0, 0);
